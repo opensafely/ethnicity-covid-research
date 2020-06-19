@@ -214,18 +214,35 @@ study = StudyDefinition(
         include_month=True,
     ),
     # https://github.com/ebmdatalab/tpp-sql-notebook/issues/27
-    ethnicity=patients.with_these_clinical_events(
-        ethnicity_codes,
+    ethnicity_16=patients.with_these_clinical_events(
+        ethnicity_codes_16,
         returning="category",
         find_last_match_in_period=True,
         include_date_of_match=True,
         return_expectations={
-            "category": {"ratios": {"1": 0.8, "5": 0.1, "3": 0.1}},
+            "category": {"ratios": {"1": 0.5, 
+                                    "2": 0.1, 
+                                    "3": 0.05,
+                                    "4" : 0.05, 
+                                    "5" : 0.05 , 
+                                    "6" : 0.05, 
+                                    "7" : 0.05, 
+                                    "8" : 0.05, 
+                                    "9" : 0.02,
+                                    "10" : 0.02,
+                                    "11" : 0.01,
+                                    "12" : 0.01,
+                                    "13" : 0.01,
+                                    "14" : 0.01,
+                                    "15" : 0.01,
+                                    "16" : 0.01,
+                                   }
+                        },
             "incidence": 0.75,
         },
     ),
-    ethnicity_16=patients.with_these_clinical_events(
-        ethnicity_codes_16,
+    ethnicity=patients.with_these_clinical_events(
+        ethnicity_codes,
         returning="category",
         find_last_match_in_period=True,
         include_date_of_match=True,
