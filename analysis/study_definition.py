@@ -215,7 +215,7 @@ study = StudyDefinition(
     ),
     # https://github.com/ebmdatalab/tpp-sql-notebook/issues/27
     ethnicity=patients.with_these_clinical_events(
-        ethnicity_codes,
+        ethnicity_codes_16,
         returning="category",
         find_last_match_in_period=True,
         include_date_of_match=True,
@@ -241,8 +241,8 @@ study = StudyDefinition(
             "incidence": 0.75,
         },
     ),
-    ethnicity_16=patients.with_these_clinical_events(
-        ethnicity_codes_16,
+    ethnicity=patients.with_these_clinical_events(
+        ethnicity_codes,
         returning="category",
         find_last_match_in_period=True,
         include_date_of_match=True,
