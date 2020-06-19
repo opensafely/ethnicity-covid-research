@@ -214,7 +214,7 @@ study = StudyDefinition(
         include_month=True,
     ),
     # https://github.com/ebmdatalab/tpp-sql-notebook/issues/27
-    ethnicity=patients.with_these_clinical_events(
+    ethnicity_16=patients.with_these_clinical_events(
         ethnicity_codes_16,
         returning="category",
         find_last_match_in_period=True,
