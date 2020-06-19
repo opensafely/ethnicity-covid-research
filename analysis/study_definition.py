@@ -221,7 +221,7 @@ study = StudyDefinition(
         include_date_of_match=True,
         return_expectations={
             "category": {"ratios": {"1": 0.5, 
-                                    "5": 0.1, 
+                                    "2": 0.1, 
                                     "3": 0.05,
                                     "4" : 0.05, 
                                     "5" : 0.05 , 
