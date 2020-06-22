@@ -224,6 +224,24 @@ study = StudyDefinition(
         },
     ),
 
+    household_id=patients.household_as_of(
+        "2020-02-01",
+        returning="pseudo_id",
+        return_expectations={
+            "int": {"distribution": "normal", "mean": 1000, "stddev": 200},
+            "incidence": 1,
+        },
+    ),
+
+    household_size=patients.household_as_of(
+        "2020-02-01",
+        returning="household_size",
+        return_expectations={
+            "int": {"distribution": "normal", "mean": 3, "stddev": 1},
+            "incidence": 1,
+        },
+    ),
+    
     # CONTINUOUS MEASURED COVARIATES
     bmi=patients.most_recent_bmi(
         on_or_after="2010-02-01",
