@@ -4,11 +4,14 @@ from datalab_cohorts import (
     codelist_from_csv,
     codelist,
     filter_codes_by_category,
+    combine_codelists
 )
 
 
 ## CODE LISTS
-# All codelist are held within the codelist/ folder.
+# All codelist are held within the codelist/ folder and this imports them from
+# codelists.py file which imports from that folder
+
 from codelists import *
 
 ## STUDY POPULATION
@@ -421,57 +424,31 @@ study = StudyDefinition(
     ),
 
     # CANCER - 3 TYPES
-    lung_cancer=patients.with_these_clinical_events(
-        lung_cancer_codes, return_first_date_in_period=True, include_month=True,
-        return_expectations={"date": {"latest": "2020-02-29"}},
-    ),
-    haem_cancer=patients.with_these_clinical_events(
-        haem_cancer_codes, return_first_date_in_period=True, include_month=True,
-        return_expectations={"date": {"latest": "2020-02-29"}},
-    ),
-    other_cancer=patients.with_these_clinical_events(
-        other_cancer_codes, return_first_date_in_period=True, include_month=True,
+    cancer=patients.with_these_clinical_events(
+        combine_codelists(lung_cancer_codes,
+                          haem_cancer,
+                          other_cancer),
+        return_first_date_in_period=True, include_month=True,
         return_expectations={"date": {"latest": "2020-02-29"}},
     ),
 
-    # IMMUNOSUPPRESSION
-    bone_marrow_transplant=patients.with_these_clinical_events(
-        bone_marrow_transplant_codes,
+    #### PERMANENT
+    permanent_immunodeficiency=patients.with_these_clinical_events(
+        combine_codelists(aplastic_codes,
+                          hiv_codes,
+                          permanent_immune_codes,
+                          sickle_cell_codes,
+                          organ_transplant_codes,
+                          spleen_codes,
+                          bone_marrow_transplant_codes)
+        ,
+        on_or_before="2020-02-29",
         return_last_date_in_period=True,
         include_month=True,
         return_expectations={"date": {"latest": "2020-02-29"}},
     ),
 
-    organ_transplant=patients.with_these_clinical_events(
-        organ_transplant_codes, return_first_date_in_period=True, include_month=True,
-        return_expectations={"date": {"latest": "2020-02-29"}},
-    ),
-
-    dysplenia=patients.with_these_clinical_events(
-        spleen_codes, return_first_date_in_period=True, include_month=True,
-        return_expectations={"date": {"latest": "2020-02-29"}},
-    ),
-
-    sickle_cell=patients.with_these_clinical_events(
-        sickle_cell_codes, return_first_date_in_period=True, include_month=True,
-        return_expectations={"date": {"latest": "2020-02-29"}},
-    ),
-
-    aplastic_anaemia=patients.with_these_clinical_events(
-        aplastic_codes, return_last_date_in_period=True, include_month=True,
-        return_expectations={"date": {"latest": "2020-02-29"}},
-    ),
-
-    hiv=patients.with_these_clinical_events(
-        hiv_codes, return_first_date_in_period=True, include_month=True,
-        return_expectations={"date": {"latest": "2020-02-29"}},
-    ),
-
-    permanent_immunodeficiency=patients.with_these_clinical_events(
-        permanent_immune_codes, return_first_date_in_period=True, include_month=True,
-        return_expectations={"date": {"latest": "2020-02-29"}},
-    ),
-
+    ### TEMPROARY IMMUNE
     temporary_immunodeficiency=patients.with_these_clinical_events(
         temp_immune_codes,
         between=["2019-03-01", "2020-02-29"], ## THIS IS RESTRICTED TO LAST YEAR
