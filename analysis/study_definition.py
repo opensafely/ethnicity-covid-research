@@ -278,7 +278,6 @@ study = StudyDefinition(
         return_expectations={"date": {"latest": "2020-02-29"}},
     ),
 
-    # https://github.com/ebmdatalab/tpp-sql-notebook/issues/55
     asthma=patients.categorised_as(
         {
             "0": "DEFAULT",
@@ -319,7 +318,7 @@ study = StudyDefinition(
             returning="number_of_matches_in_period",
         ),
     ),
-    # https://github.com/ebmdatalab/tpp-sql-notebook/issues/7
+
     chronic_cardiac_disease=patients.with_these_clinical_events(
         chronic_cardiac_disease_codes,
         return_first_date_in_period=True,
@@ -452,7 +451,6 @@ study = StudyDefinition(
         hypertension_codes, return_first_date_in_period=True, include_month=True,
     ),
     # Blood pressure
-    # https://github.com/ebmdatalab/tpp-sql-notebook/issues/35
     bp_sys=patients.mean_recorded_value(
         systolic_blood_pressure_codes,
         on_most_recent_day_of_measurement=True,
@@ -503,19 +501,18 @@ study = StudyDefinition(
             "incidence": 0.95,
         },
     ),
-    # # https://github.com/ebmdatalab/tpp-sql-notebook/issues/49
+
     ra_sle_psoriasis=patients.with_these_clinical_events(
         ra_sle_psoriasis_codes, return_first_date_in_period=True, include_month=True,
         return_expectations={"date": {"latest": "2020-02-29"}},
 
     ),
-    # https://github.com/ebmdatalab/tpp-sql-notebook/issues/51
+
     gi_bleed_and_ulcer=patients.with_these_clinical_events(
         gi_bleed_and_ulcer_codes, return_first_date_in_period=True, include_month=True,
         return_expectations = {"date": {"latest": "2020-02-29"}},
     ),
 
-    # https://github.com/ebmdatalab/tpp-sql-notebook/issues/50
     inflammatory_bowel_disease=patients.with_these_clinical_events(
         inflammatory_bowel_disease_codes,
         return_first_date_in_period=True,
