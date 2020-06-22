@@ -426,8 +426,8 @@ study = StudyDefinition(
     # CANCER - 3 TYPES
     cancer=patients.with_these_clinical_events(
         combine_codelists(lung_cancer_codes,
-                          haem_cancer,
-                          other_cancer),
+                          haem_cancer_codes,
+                          other_cancer_codes),
         return_first_date_in_period=True, include_month=True,
         return_expectations={"date": {"latest": "2020-02-29"}},
     ),
