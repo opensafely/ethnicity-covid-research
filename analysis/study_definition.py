@@ -353,16 +353,6 @@ study = StudyDefinition(
         return_expectations={"date": {"latest": "2020-02-29"}},
     ),
 
-    chemo_radio_therapy=patients.with_these_clinical_events(
-        chemo_radio_therapy_codes,
-        between=["2019-03-01", "2020-02-29"], ## THIS IS RESTRICTED TO LAST YEAR
-        return_last_date_in_period=True,
-        include_month=True,
-        return_expectations={
-            "date": {"earliest": "2019-03-01", "latest": "2020-02-29"}
-        },
-    ),
-
     organ_transplant=patients.with_these_clinical_events(
         organ_transplant_codes, return_first_date_in_period=True, include_month=True,
         return_expectations={"date": {"latest": "2020-02-29"}},
