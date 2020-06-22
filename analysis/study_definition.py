@@ -1,4 +1,4 @@
-from datalab_cohorts import (
+from cohortextractor import (
     StudyDefinition,
     patients,
     codelist_from_csv,
