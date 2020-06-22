@@ -258,7 +258,9 @@ study = StudyDefinition(
         chronic_respiratory_disease_codes,
         return_first_date_in_period=True,
         include_month=True,
+        return_expectations={"date": {"latest": "2020-02-29"}},
     ),
+
     # https://github.com/ebmdatalab/tpp-sql-notebook/issues/55
     asthma=patients.categorised_as(
         {
@@ -305,44 +307,55 @@ study = StudyDefinition(
         chronic_cardiac_disease_codes,
         return_first_date_in_period=True,
         include_month=True,
+        return_expectations={"date": {"latest": "2020-02-29"}},
     ),
     # https://github.com/ebmdatalab/tpp-sql-notebook/issues/30
     diabetes=patients.with_these_clinical_events(
         diabetes_codes, return_first_date_in_period=True, include_month=True,
+        return_expectations={"date": {"latest": "2020-02-29"}},
     ),
     # https://github.com/ebmdatalab/tpp-sql-notebook/issues/32
     lung_cancer=patients.with_these_clinical_events(
         lung_cancer_codes, return_first_date_in_period=True, include_month=True,
+        return_expectations={"date": {"latest": "2020-02-29"}},
     ),
     haem_cancer=patients.with_these_clinical_events(
         haem_cancer_codes, return_first_date_in_period=True, include_month=True,
+        return_expectations={"date": {"latest": "2020-02-29"}},
     ),
     other_cancer=patients.with_these_clinical_events(
         other_cancer_codes, return_first_date_in_period=True, include_month=True,
+        return_expectations={"date": {"latest": "2020-02-29"}},
     ),
     bone_marrow_transplant=patients.with_these_clinical_events(
         bone_marrow_transplant_codes,
         return_last_date_in_period=True,
         include_month=True,
+        return_expectations={"date": {"latest": "2020-02-29"}},
     ),
     chemo_radio_therapy=patients.with_these_clinical_events(
         chemo_radio_therapy_codes, return_last_date_in_period=True, include_month=True,
+        return_expectations={"date": {"latest": "2020-02-29"}},
     ),
     # # https://github.com/ebmdatalab/tpp-sql-notebook/issues/12
     chronic_liver_disease=patients.with_these_clinical_events(
         chronic_liver_disease_codes,
         return_first_date_in_period=True,
         include_month=True,
+        return_expectations={"date": {"latest": "2020-02-29"}},
     ),
     # # https://github.com/ebmdatalab/tpp-sql-notebook/issues/14
     other_neuro=patients.with_these_clinical_events(
         other_neuro, return_first_date_in_period=True, include_month=True,
+        return_expectations={"date": {"latest": "2020-02-29"}},
     ),
     stroke=patients.with_these_clinical_events(
         stroke, return_first_date_in_period=True, include_month=True,
+        return_expectations={"date": {"latest": "2020-02-29"}},
     ),
     dementia=patients.with_these_clinical_events(
         dementia, return_first_date_in_period=True, include_month=True,
+        return_expectations={"date": {"latest": "2020-02-29"}},
     ),
     # # Chronic kidney disease
     # https://github.com/ebmdatalab/tpp-sql-notebook/issues/17
@@ -359,35 +372,47 @@ study = StudyDefinition(
             "incidence": 0.95,
         },
     ),
-    dialysis=patients.with_these_clinical_events(
+    esrf=patients.with_these_clinical_events(
         dialysis_codes, return_first_date_in_period=True, include_month=True,
+        return_expectations={"date": {"latest": "2020-02-29"}},
     ),
     # https://github.com/ebmdatalab/tpp-sql-notebook/issues/31
     organ_transplant=patients.with_these_clinical_events(
         organ_transplant_codes, return_first_date_in_period=True, include_month=True,
+        return_expectations={"date": {"latest": "2020-02-29"}},
     ),
     # https://github.com/ebmdatalab/tpp-sql-notebook/issues/13
     dysplenia=patients.with_these_clinical_events(
         spleen_codes, return_first_date_in_period=True, include_month=True,
+        return_expectations={"date": {"latest": "2020-02-29"}},
     ),
     sickle_cell=patients.with_these_clinical_events(
         sickle_cell_codes, return_first_date_in_period=True, include_month=True,
+        return_expectations={"date": {"latest": "2020-02-29"}},
     ),
     # https://github.com/ebmdatalab/tpp-sql-notebook/issues/36
     aplastic_anaemia=patients.with_these_clinical_events(
         aplastic_codes, return_last_date_in_period=True, include_month=True,
+        return_expectations={"date": {"latest": "2020-02-29"}},
     ),
     hiv=patients.with_these_clinical_events(
         hiv_codes, return_first_date_in_period=True, include_month=True,
+        return_expectations={"date": {"latest": "2020-02-29"}},
     ),
     permanent_immunodeficiency=patients.with_these_clinical_events(
         permanent_immune_codes, return_first_date_in_period=True, include_month=True,
+        return_expectations={"date": {"latest": "2020-02-29"}},
     ),
     temporary_immunodeficiency=patients.with_these_clinical_events(
-        temp_immune_codes, return_last_date_in_period=True, include_month=True,
+        temp_immune_codes,
+        between=["2019-03-01", "2020-02-29"],
+        return_last_date_in_period=True,
+        include_month=True,
+        return_expectations={
+            "date": {"earliest": "2019-03-01", "latest": "2020-02-29"}
+        },
     ),
-    # https://github.com/ebmdatalab/tpp-sql-notebook/issues/23
-    # immunosuppressant_med=
+    
     # hypertension
     hypertension=patients.with_these_clinical_events(
         hypertension_codes, return_first_date_in_period=True, include_month=True,
@@ -447,15 +472,20 @@ study = StudyDefinition(
     # # https://github.com/ebmdatalab/tpp-sql-notebook/issues/49
     ra_sle_psoriasis=patients.with_these_clinical_events(
         ra_sle_psoriasis_codes, return_first_date_in_period=True, include_month=True,
+        return_expectations={"date": {"latest": "2020-02-29"}},
+
     ),
     # https://github.com/ebmdatalab/tpp-sql-notebook/issues/51
     gi_bleed_and_ulcer=patients.with_these_clinical_events(
-        gi_bleed_and_ulcer_codes, return_first_date_in_period=True, include_month=True
+        gi_bleed_and_ulcer_codes, return_first_date_in_period=True, include_month=True,
+        return_expectations = {"date": {"latest": "2020-02-29"}},
     ),
+
     # https://github.com/ebmdatalab/tpp-sql-notebook/issues/50
     inflammatory_bowel_disease=patients.with_these_clinical_events(
         inflammatory_bowel_disease_codes,
         return_first_date_in_period=True,
         include_month=True,
+        return_expectations={"date": {"latest": "2020-02-29"}},
     ),
 )
