@@ -241,7 +241,7 @@ study = StudyDefinition(
             "incidence": 1,
         },
     ),
-    
+
     # CONTINUOUS MEASURED COVARIATES
     bmi=patients.most_recent_bmi(
         on_or_after="2010-02-01",
