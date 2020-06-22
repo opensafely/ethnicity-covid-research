@@ -20,11 +20,13 @@ study = StudyDefinition(
         "rate": "uniform",
         "incidence": 0.2,
     },
-    # This line defines the study population
+
+    # STUDY POPULATION
     population=patients.registered_with_one_practice_between(
         "2019-02-01", "2020-02-01"
     ),
-    # Outcomes
+
+    # OUTCOMES
     icu_date_admitted=patients.admitted_to_icu(
         on_or_after="2020-02-01",
         include_day=True,
@@ -71,8 +73,9 @@ study = StudyDefinition(
         date_format="YYYY-MM-DD",
         return_expectations={"date": {"earliest": "2020-03-01"}},
     ),
-    # The rest of the lines define the covariates with associated GitHub issues
-    # https://github.com/ebmdatalab/tpp-sql-notebook/issues/33
+
+    ## DEMOGRAPHIC COVARIATES
+    # AGE
     age=patients.age_as_of(
         "2020-02-01",
         return_expectations={
@@ -80,14 +83,16 @@ study = StudyDefinition(
             "int": {"distribution": "population_ages"},
         },
     ),
-    # https://github.com/ebmdatalab/tpp-sql-notebook/issues/46
+
+    # SEX
     sex=patients.sex(
         return_expectations={
             "rate": "universal",
             "category": {"ratios": {"M": 0.49, "F": 0.51}},
         }
     ),
-    # https://github.com/ebmdatalab/tpp-sql-notebook/issues/52
+
+    # DEPRIVIATION
     imd=patients.address_as_of(
         "2020-02-01",
         returning="index_of_multiple_deprivation",
@@ -97,7 +102,8 @@ study = StudyDefinition(
             "category": {"ratios": {"100": 0.1, "200": 0.2, "300": 0.7}},
         },
     ),
-    # https://github.com/ebmdatalab/tpp-sql-notebook/issues/37
+
+    # RURAL OR URBAN LOCATION
     rural_urban=patients.address_as_of(
         "2020-02-01",
         returning="rural_urban_classification",
@@ -106,7 +112,8 @@ study = StudyDefinition(
             "category": {"ratios": {"rural": 0.1, "urban": 0.9}},
         },
     ),
-    # https://github.com/ebmdatalab/tpp-sql-notebook/issues/54
+
+    # GEOGRAPHIC REGION CALLED STP
     stp=patients.registered_practice_as_of(
         "2020-02-01",
         returning="stp_code",
@@ -128,7 +135,8 @@ study = StudyDefinition(
             },
         },
     ),
-    # region - one of NHS England 9 regions
+
+    # OTHER REGION
     region=patients.registered_practice_as_of(
         "2020-02-01",
         returning="nuts1_region_name",
@@ -148,6 +156,52 @@ study = StudyDefinition(
             },
         },
     ),
+
+    # ETHNICITY IN 16 CATEGORIES
+    ethnicity_16=patients.with_these_clinical_events(
+        ethnicity_codes_16,
+        returning="category",
+        find_last_match_in_period=True,
+        include_date_of_match=True,
+        return_expectations={
+            "category": {
+                "ratios": {
+                    "1": 0.5,
+                    "2": 0.1,
+                    "3": 0.05,
+                    "4": 0.05,
+                    "5": 0.05,
+                    "6": 0.05,
+                    "7": 0.05,
+                    "8": 0.05,
+                    "9": 0.02,
+                    "10": 0.02,
+                    "11": 0.01,
+                    "12": 0.01,
+                    "13": 0.01,
+                    "14": 0.01,
+                    "15": 0.01,
+                    "16": 0.01,
+                }
+            },
+            "incidence": 0.75,
+        },
+    ),
+
+    # ETHNICITY IN 6 CATEGORIES
+    ethnicity=patients.with_these_clinical_events(
+        ethnicity_codes,
+        returning="category",
+        find_last_match_in_period=True,
+        include_date_of_match=True,
+        return_expectations={
+            "category": {"ratios": {"1": 0.8, "5": 0.1, "3": 0.1}},
+            "incidence": 0.75,
+        },
+    ),
+
+    ## HOUSEHOLD INFORMATION
+    # CAREHOME STATUS
     care_home_type=patients.care_home_status_as_of(
         "2020-02-01",
         categorised_as={
@@ -169,7 +223,8 @@ study = StudyDefinition(
             "category": {"ratios": {"PC": 0.05, "PN": 0.05, "PS": 0.05, "U": 0.85,},},
         },
     ),
-    # https://github.com/ebmdatalab/tpp-sql-notebook/issues/10
+
+    # CONTINUOUS MEASURED COVARIATES
     bmi=patients.most_recent_bmi(
         on_or_after="2010-02-01",
         minimum_age_at_measurement=16,
@@ -181,7 +236,8 @@ study = StudyDefinition(
             "incidence": 0.95,
         },
     ),
-    # https://github.com/ebmdatalab/tpp-sql-notebook/issues/6
+
+    # COVARIATES
     smoking_status=patients.categorised_as(
         {
             "S": "most_recent_smoking_code = 'S'",
@@ -213,53 +269,15 @@ study = StudyDefinition(
         return_last_date_in_period=True,
         include_month=True,
     ),
-    # https://github.com/ebmdatalab/tpp-sql-notebook/issues/27
-    ethnicity_16=patients.with_these_clinical_events(
-        ethnicity_codes_16,
-        returning="category",
-        find_last_match_in_period=True,
-        include_date_of_match=True,
-        return_expectations={
-            "category": {
-                "ratios": {
-                    "1": 0.5,
-                    "2": 0.1,
-                    "3": 0.05,
-                    "4": 0.05,
-                    "5": 0.05,
-                    "6": 0.05,
-                    "7": 0.05,
-                    "8": 0.05,
-                    "9": 0.02,
-                    "10": 0.02,
-                    "11": 0.01,
-                    "12": 0.01,
-                    "13": 0.01,
-                    "14": 0.01,
-                    "15": 0.01,
-                    "16": 0.01,
-                }
-            },
-            "incidence": 0.75,
-        },
-    ),
-    ethnicity=patients.with_these_clinical_events(
-        ethnicity_codes,
-        returning="category",
-        find_last_match_in_period=True,
-        include_date_of_match=True,
-        return_expectations={
-            "category": {"ratios": {"1": 0.8, "5": 0.1, "3": 0.1}},
-            "incidence": 0.75,
-        },
-    ),
-    # https://github.com/ebmdatalab/tpp-sql-notebook/issues/21
+
+
     chronic_respiratory_disease=patients.with_these_clinical_events(
         chronic_respiratory_disease_codes,
         return_first_date_in_period=True,
         include_month=True,
+        return_expectations={"date": {"latest": "2020-02-29"}},
     ),
-    # https://github.com/ebmdatalab/tpp-sql-notebook/issues/55
+
     asthma=patients.categorised_as(
         {
             "0": "DEFAULT",
@@ -300,52 +318,104 @@ study = StudyDefinition(
             returning="number_of_matches_in_period",
         ),
     ),
-    # https://github.com/ebmdatalab/tpp-sql-notebook/issues/7
+
     chronic_cardiac_disease=patients.with_these_clinical_events(
         chronic_cardiac_disease_codes,
         return_first_date_in_period=True,
         include_month=True,
+        return_expectations={"date": {"latest": "2020-02-29"}},
     ),
-    # https://github.com/ebmdatalab/tpp-sql-notebook/issues/30
+
     diabetes=patients.with_these_clinical_events(
         diabetes_codes, return_first_date_in_period=True, include_month=True,
+        return_expectations={"date": {"latest": "2020-02-29"}},
     ),
-    # https://github.com/ebmdatalab/tpp-sql-notebook/issues/32
+
+    # CANCER - 3 TYPES
     lung_cancer=patients.with_these_clinical_events(
         lung_cancer_codes, return_first_date_in_period=True, include_month=True,
+        return_expectations={"date": {"latest": "2020-02-29"}},
     ),
     haem_cancer=patients.with_these_clinical_events(
         haem_cancer_codes, return_first_date_in_period=True, include_month=True,
+        return_expectations={"date": {"latest": "2020-02-29"}},
     ),
     other_cancer=patients.with_these_clinical_events(
         other_cancer_codes, return_first_date_in_period=True, include_month=True,
+        return_expectations={"date": {"latest": "2020-02-29"}},
     ),
+
+    # IMMUNOSUPPRESSION
     bone_marrow_transplant=patients.with_these_clinical_events(
         bone_marrow_transplant_codes,
         return_last_date_in_period=True,
         include_month=True,
+        return_expectations={"date": {"latest": "2020-02-29"}},
     ),
-    chemo_radio_therapy=patients.with_these_clinical_events(
-        chemo_radio_therapy_codes, return_last_date_in_period=True, include_month=True,
+
+    organ_transplant=patients.with_these_clinical_events(
+        organ_transplant_codes, return_first_date_in_period=True, include_month=True,
+        return_expectations={"date": {"latest": "2020-02-29"}},
     ),
-    # # https://github.com/ebmdatalab/tpp-sql-notebook/issues/12
+
+    dysplenia=patients.with_these_clinical_events(
+        spleen_codes, return_first_date_in_period=True, include_month=True,
+        return_expectations={"date": {"latest": "2020-02-29"}},
+    ),
+
+    sickle_cell=patients.with_these_clinical_events(
+        sickle_cell_codes, return_first_date_in_period=True, include_month=True,
+        return_expectations={"date": {"latest": "2020-02-29"}},
+    ),
+
+    aplastic_anaemia=patients.with_these_clinical_events(
+        aplastic_codes, return_last_date_in_period=True, include_month=True,
+        return_expectations={"date": {"latest": "2020-02-29"}},
+    ),
+
+    hiv=patients.with_these_clinical_events(
+        hiv_codes, return_first_date_in_period=True, include_month=True,
+        return_expectations={"date": {"latest": "2020-02-29"}},
+    ),
+
+    permanent_immunodeficiency=patients.with_these_clinical_events(
+        permanent_immune_codes, return_first_date_in_period=True, include_month=True,
+        return_expectations={"date": {"latest": "2020-02-29"}},
+    ),
+
+    temporary_immunodeficiency=patients.with_these_clinical_events(
+        temp_immune_codes,
+        between=["2019-03-01", "2020-02-29"], ## THIS IS RESTRICTED TO LAST YEAR
+        return_last_date_in_period=True,
+        include_month=True,
+        return_expectations={
+            "date": {"earliest": "2019-03-01", "latest": "2020-02-29"}
+        },
+    ),
+
     chronic_liver_disease=patients.with_these_clinical_events(
         chronic_liver_disease_codes,
         return_first_date_in_period=True,
         include_month=True,
+        return_expectations={"date": {"latest": "2020-02-29"}},
     ),
-    # # https://github.com/ebmdatalab/tpp-sql-notebook/issues/14
+
     other_neuro=patients.with_these_clinical_events(
         other_neuro, return_first_date_in_period=True, include_month=True,
+        return_expectations={"date": {"latest": "2020-02-29"}},
     ),
+
     stroke=patients.with_these_clinical_events(
         stroke, return_first_date_in_period=True, include_month=True,
+        return_expectations={"date": {"latest": "2020-02-29"}},
     ),
+
     dementia=patients.with_these_clinical_events(
         dementia, return_first_date_in_period=True, include_month=True,
+        return_expectations={"date": {"latest": "2020-02-29"}},
     ),
+
     # # Chronic kidney disease
-    # https://github.com/ebmdatalab/tpp-sql-notebook/issues/17
     creatinine=patients.with_these_clinical_events(
         creatinine_codes,
         find_last_match_in_period=True,
@@ -359,41 +429,18 @@ study = StudyDefinition(
             "incidence": 0.95,
         },
     ),
-    dialysis=patients.with_these_clinical_events(
+
+    # END STAGE RENAL DISEASE - DIALYSIS, TRANSPLANT OR END STAGE RENAL DISEASE
+    esrf=patients.with_these_clinical_events(
         dialysis_codes, return_first_date_in_period=True, include_month=True,
+        return_expectations={"date": {"latest": "2020-02-29"}},
     ),
-    # https://github.com/ebmdatalab/tpp-sql-notebook/issues/31
-    organ_transplant=patients.with_these_clinical_events(
-        organ_transplant_codes, return_first_date_in_period=True, include_month=True,
-    ),
-    # https://github.com/ebmdatalab/tpp-sql-notebook/issues/13
-    dysplenia=patients.with_these_clinical_events(
-        spleen_codes, return_first_date_in_period=True, include_month=True,
-    ),
-    sickle_cell=patients.with_these_clinical_events(
-        sickle_cell_codes, return_first_date_in_period=True, include_month=True,
-    ),
-    # https://github.com/ebmdatalab/tpp-sql-notebook/issues/36
-    aplastic_anaemia=patients.with_these_clinical_events(
-        aplastic_codes, return_last_date_in_period=True, include_month=True,
-    ),
-    hiv=patients.with_these_clinical_events(
-        hiv_codes, return_first_date_in_period=True, include_month=True,
-    ),
-    permanent_immunodeficiency=patients.with_these_clinical_events(
-        permanent_immune_codes, return_first_date_in_period=True, include_month=True,
-    ),
-    temporary_immunodeficiency=patients.with_these_clinical_events(
-        temp_immune_codes, return_last_date_in_period=True, include_month=True,
-    ),
-    # https://github.com/ebmdatalab/tpp-sql-notebook/issues/23
-    # immunosuppressant_med=
+
     # hypertension
     hypertension=patients.with_these_clinical_events(
         hypertension_codes, return_first_date_in_period=True, include_month=True,
     ),
     # Blood pressure
-    # https://github.com/ebmdatalab/tpp-sql-notebook/issues/35
     bp_sys=patients.mean_recorded_value(
         systolic_blood_pressure_codes,
         on_most_recent_day_of_measurement=True,
@@ -444,18 +491,22 @@ study = StudyDefinition(
             "incidence": 0.95,
         },
     ),
-    # # https://github.com/ebmdatalab/tpp-sql-notebook/issues/49
+
     ra_sle_psoriasis=patients.with_these_clinical_events(
         ra_sle_psoriasis_codes, return_first_date_in_period=True, include_month=True,
+        return_expectations={"date": {"latest": "2020-02-29"}},
+
     ),
-    # https://github.com/ebmdatalab/tpp-sql-notebook/issues/51
+
     gi_bleed_and_ulcer=patients.with_these_clinical_events(
-        gi_bleed_and_ulcer_codes, return_first_date_in_period=True, include_month=True
+        gi_bleed_and_ulcer_codes, return_first_date_in_period=True, include_month=True,
+        return_expectations = {"date": {"latest": "2020-02-29"}},
     ),
-    # https://github.com/ebmdatalab/tpp-sql-notebook/issues/50
+
     inflammatory_bowel_disease=patients.with_these_clinical_events(
         inflammatory_bowel_disease_codes,
         return_first_date_in_period=True,
         include_month=True,
+        return_expectations={"date": {"latest": "2020-02-29"}},
     ),
 )

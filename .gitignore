@@ -1,5 +1,15 @@
 *~
 model.log
-*/input.csv
+*/input*.csv
 __pycache__
 .python-version
+.idea
+analysis/*
+!*.do
+!*.ado
+!*.hlp
+!*.py
+!*.sthlp
+venv/
+.cache
+*.exe
