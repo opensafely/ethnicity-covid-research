@@ -595,6 +595,27 @@ study = StudyDefinition(
             "incidence": 0.30,
         },
     ),
+    
+    ### INSULIN USE
+    insulin=patients.with_these_medications(
+        insulin_med_codes,
+        between=["2019-11-01", "2020-02-29"],
+        return_last_date_in_period=True,
+        include_month=True,
+        return_expectations={
+            "date": {"earliest": "2019-11-01", "latest": "2020-02-29"}
+        },
+    ),
+    ### STATIN USE
+    statin=patients.with_these_medications(
+        statin_med_codes,
+        between=["2019-11-01", "2020-02-29"],
+        return_last_date_in_period=True,
+        include_month=True,
+        return_expectations={
+            "date": {"earliest": "2019-11-01", "latest": "2020-02-29"}
+        },
+    ),
 
 
 )
