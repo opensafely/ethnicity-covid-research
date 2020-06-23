@@ -1,5 +1,4 @@
 CTV3ID,CTV3PreferredTermDesc,CTV3Source
-14B4.,H/O: asthma,High_Level_SNOMED
 173A.,Exercise-induced asthma,CTV3Map_Code_And_Term
 173A.,Exercise-induced asthma,CTV3Map_Code_Only
 173A.,Exercise-induced asthma,QOF
@@ -97,8 +96,6 @@ H47y0,Detergent asthma,CTV3Map_Code_And_Term
 H47y0,Detergent asthma,QOF
 Ua1AX,Brittle asthma,CTV3Map_Code_And_Term
 Ua1AX,Brittle asthma,QOF
-X101t,Childhood asthma,CTV3Map_Code_Only
-X101t,Childhood asthma,QOF
 X101u,Late onset asthma,CTV3Map_Code_And_Term
 X101u,Late onset asthma,CTV3Map_Code_Only
 X101u,Late onset asthma,QOF

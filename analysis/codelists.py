@@ -71,8 +71,8 @@ chronic_respiratory_disease_codes = codelist_from_csv(
     column="CTV3ID",
 )
 
-asthma_codes = codelist_from_csv(
-    "codelists/opensafely-asthma-diagnosis.csv", system="ctv3", column="CTV3ID"
+current_asthma_codes = codelist_from_csv(
+    "codelists/opensafely-current-asthma.csv", system="ctv3", column="CTV3ID"
 )
 
 salbutamol_codes = codelist_from_csv(
@@ -112,16 +112,6 @@ haem_cancer_codes = codelist_from_csv(
 
 other_cancer_codes = codelist_from_csv(
     "codelists/opensafely-cancer-excluding-lung-and-haematological.csv",
-    system="ctv3",
-    column="CTV3ID",
-)
-
-bone_marrow_transplant_codes = codelist_from_csv(
-    "codelists/opensafely-bone-marrow-transplant.csv", system="ctv3", column="CTV3ID"
-)
-
-chemo_radio_therapy_codes = codelist_from_csv(
-    "codelists/opensafely-chemotherapy-or-radiotherapy-updated.csv",
     system="ctv3",
     column="CTV3ID",
 )
