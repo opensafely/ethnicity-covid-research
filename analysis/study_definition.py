@@ -377,47 +377,14 @@ study = StudyDefinition(
         return_expectations={"date": {"latest": "2020-02-29"}},
     ),
 
-    asthma=patients.categorised_as(
-        {
-            "0": "DEFAULT",
-            "1": """
-                (
-                  recent_asthma_code OR (
-                    asthma_code_ever AND NOT
-                    copd_code_ever
-                  )
-                ) AND (
-                  prednisolone_last_year = 0 OR 
-                  prednisolone_last_year > 4
-                )
-            """,
-            "2": """
-                (
-                  recent_asthma_code OR (
-                    asthma_code_ever AND NOT
-                    copd_code_ever
-                  )
-                ) AND
-                prednisolone_last_year > 0 AND
-                prednisolone_last_year < 5
-                
-            """,
-        },
-        return_expectations={"category": {"ratios": {"0": 0.8, "1": 0.1, "2": 0.1}},},
-        recent_asthma_code=patients.with_these_clinical_events(
-            asthma_codes, between=["2017-02-01", "2020-02-01"],
-        ),
-        asthma_code_ever=patients.with_these_clinical_events(asthma_codes),
-        copd_code_ever=patients.with_these_clinical_events(
-            chronic_respiratory_disease_codes
-        ),
-        prednisolone_last_year=patients.with_these_medications(
-            pred_codes,
-            between=["2019-02-01", "2020-02-01"],
-            returning="number_of_matches_in_period",
-        ),
+    asthma=patients.with_these_clinical_events(
+        current_asthma_codes,
+        on_or_before="2020-02-29",
+        return_first_date_in_period=True,
+        include_month=True,
+        return_expectations={"date": {"latest": "2020-02-29"}},
     ),
-
+    
     chronic_cardiac_disease=patients.with_these_clinical_events(
         chronic_cardiac_disease_codes,
         return_first_date_in_period=True,
