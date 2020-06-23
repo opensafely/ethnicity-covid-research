@@ -34,6 +34,13 @@ study = StudyDefinition(
     #     find_first_match_in_period=True,
     #     ),
 
+    covid_date_primarycare=patients.with_covid_in_primary_care(
+        on_or_after="2020-02-01",
+        include_day=True,
+        returning="date"
+        find_first_match_in_period=True,
+        )
+
     icu_date_admitted=patients.admitted_to_icu(
         on_or_after="2020-02-01",
         include_day=True,
