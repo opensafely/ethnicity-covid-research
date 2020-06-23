@@ -18,6 +18,7 @@ opensafely/haematological-cancer/2020-04-15
 opensafely/hiv/2020-04-24
 opensafely/hypertension/2020-04-28
 opensafely/inflammatory-bowel-disease/2020-04-07
+opensafely/insulin-medication/2020-04-26
 opensafely/lung-cancer/2020-04-15
 opensafely/other-neurological-conditions/2020-06-02
 opensafely/permanent-immunosuppresion/2020-06-02
@@ -38,4 +39,3 @@ opensafely/spironolactone/2020-05-19
 opensafely/thiazide-type-diuretic-medication/2020-05-19
 opensafely/combination-blood-pressure-medication/2020-05-19
 opensafely/statin-medication/2020-04-20
-opensafely/insulin-medication/2020-04-26
