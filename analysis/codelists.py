@@ -222,5 +222,14 @@ thiazide_type_diuretic_codes = codelist_from_csv(
     column="id",
 )
 
-insulin_medication_codes= codelist_from_csv(
-    "codelists/opensafely/insulin-medication.cvs", system="ctv3", column="CTV3ID"
+insulin_med_codes = codelist_from_csv(
+    "codelists/opensafely-insulin-medication.csv", 
+    system="snomed", 
+    column="id"
+)
+
+statin_med_codes = codelist_from_csv(
+    "codelists/opensafely-statin-medication.csv", 
+    system="snomed", 
+    column="id"
+)
