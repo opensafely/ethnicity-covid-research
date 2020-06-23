@@ -384,7 +384,7 @@ study = StudyDefinition(
         include_month=True,
         return_expectations={"date": {"latest": "2020-02-29"}},
     ),
-    
+
     chronic_cardiac_disease=patients.with_these_clinical_events(
         chronic_cardiac_disease_codes,
         return_first_date_in_period=True,
@@ -408,8 +408,7 @@ study = StudyDefinition(
 
     #### PERMANENT
     permanent_immunodeficiency=patients.with_these_clinical_events(
-        combine_codelists(aplastic_codes,
-                          hiv_codes,
+        combine_codelists(hiv_codes,
                           permanent_immune_codes,
                           sickle_cell_codes,
                           organ_transplant_codes,
@@ -424,7 +423,8 @@ study = StudyDefinition(
 
     ### TEMPROARY IMMUNE
     temporary_immunodeficiency=patients.with_these_clinical_events(
-        temp_immune_codes,
+        combine_codelists(aplastic_codes,
+                temp_immune_codes),
         between=["2019-03-01", "2020-02-29"], ## THIS IS RESTRICTED TO LAST YEAR
         return_last_date_in_period=True,
         include_month=True,
