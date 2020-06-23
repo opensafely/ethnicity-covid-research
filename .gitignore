@@ -13,3 +13,5 @@ analysis/*
 venv/
 .cache
 *.exe
+.Rhistory
+.DS_Store

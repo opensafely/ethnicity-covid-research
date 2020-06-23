@@ -27,6 +27,13 @@ study = StudyDefinition(
     ),
 
     # OUTCOMES
+    # icu_date_ventilation=patients.with_ventilation_recorded_in_icu(
+    #     on_or_after="2020-02-02",
+    #     include_day=True,
+    #     returning="date_of_ventilation",
+    #     find_first_match_in_period=True,
+    #     ),
+
     icu_date_admitted=patients.admitted_to_icu(
         on_or_after="2020-02-01",
         include_day=True,
@@ -509,4 +516,107 @@ study = StudyDefinition(
         include_month=True,
         return_expectations={"date": {"latest": "2020-02-29"}},
     ),
+     # MEDICATION COVARIATES
+    ace_inhibitors=patients.with_these_medications(
+        ace_codes,
+        between=["2019-09-01", "2020-02-29"],
+        returning="number_of_episodes",
+        return_expectations={
+            "int": {"distribution": "normal", "mean": 3, "stddev": 2},
+            "incidence": 0.30,
+        },
+    ),
+
+    alpha_blockers=patients.with_these_medications(
+        alpha_blocker_codes,
+        between=["2019-09-01", "2020-02-29"],
+        returning="number_of_episodes",
+        return_expectations={
+            "int": {"distribution": "normal", "mean": 3, "stddev": 2},
+            "incidence": 0.30,
+        },
+    ),
+
+    arbs=patients.with_these_medications(
+        arb_codes,
+        between=["2019-09-01", "2020-02-29"],
+        returning="number_of_episodes",
+        return_expectations={
+            "int": {"distribution": "normal", "mean": 3, "stddev": 2},
+            "incidence": 0.30,
+        },
+    ),
+
+    betablockers=patients.with_these_medications(
+        betablocker_codes,
+        between=["2019-09-01", "2020-02-29"],
+        returning="number_of_episodes",
+        return_expectations={
+            "int": {"distribution": "normal", "mean": 3, "stddev": 2},
+            "incidence": 0.30,
+        },
+    ),
+
+    calcium_channel_blockers=patients.with_these_medications(
+        calcium_channel_blockers_codes,
+        between=["2019-09-01", "2020-02-29"],
+        returning="number_of_episodes",
+        return_expectations={
+            "int": {"distribution": "normal", "mean": 3, "stddev": 2},
+            "incidence": 0.30,
+        },
+    ),
+
+    combination_bp_meds=patients.with_these_medications(
+        combination_bp_med_codes,
+        between=["2019-09-01", "2020-02-29"],
+        returning="number_of_episodes",
+        return_expectations={
+            "int": {"distribution": "normal", "mean": 3, "stddev": 2},
+            "incidence": 0.30,
+        },
+    ),
+
+    spironolactone=patients.with_these_medications(
+        spironolactone_codes,
+        between=["2019-09-01", "2020-02-29"],
+        returning="number_of_episodes",
+        return_expectations={
+            "int": {"distribution": "normal", "mean": 3, "stddev": 2},
+            "incidence": 0.30,
+        },
+    ),
+
+    thiazide_diuretics=patients.with_these_medications(
+        thiazide_type_diuretic_codes,
+        between=["2019-09-01", "2020-02-29"],
+        returning="number_of_episodes",
+        return_expectations={
+            "int": {"distribution": "normal", "mean": 3, "stddev": 2},
+            "incidence": 0.30,
+        },
+    ),
+    
+    ### INSULIN USE
+    insulin=patients.with_these_medications(
+        insulin_med_codes,
+        between=["2019-11-01", "2020-02-29"],
+        return_last_date_in_period=True,
+        include_month=True,
+        return_expectations={
+            "date": {"earliest": "2019-11-01", "latest": "2020-02-29"}
+        },
+    ),
+    ### STATIN USE
+    statin=patients.with_these_medications(
+        statin_med_codes,
+        between=["2019-11-01", "2020-02-29"],
+        return_last_date_in_period=True,
+        include_month=True,
+        return_expectations={
+            "date": {"earliest": "2019-11-01", "latest": "2020-02-29"}
+        },
+    ),
+
+
 )
