@@ -97,6 +97,7 @@ chronic_cardiac_disease_codes = codelist_from_csv(
     "codelists/opensafely-chronic-cardiac-disease.csv", system="ctv3", column="CTV3ID"
 )
 
+
 diabetes_codes = codelist_from_csv(
     "codelists/opensafely-diabetes.csv", system="ctv3", column="CTV3ID"
 )
@@ -171,3 +172,6 @@ diastolic_blood_pressure_codes = codelist(["246A."], system="ctv3")
 hypertension_codes = codelist_from_csv(
     "codelists/opensafely-hypertension.csv", system="ctv3", column="CTV3ID"
 )
+
+insulin_medication_codes= codelist_from_csv(
+    "codelists/opensafely/insulin-medication.cvs", system="ctv3", column="CTV3ID"
