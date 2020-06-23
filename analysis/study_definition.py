@@ -412,8 +412,7 @@ study = StudyDefinition(
                           permanent_immune_codes,
                           sickle_cell_codes,
                           organ_transplant_codes,
-                          spleen_codes,
-                          bone_marrow_transplant_codes)
+                          spleen_codes)
         ,
         on_or_before="2020-02-29",
         return_last_date_in_period=True,

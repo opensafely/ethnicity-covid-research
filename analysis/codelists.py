@@ -116,16 +116,6 @@ other_cancer_codes = codelist_from_csv(
     column="CTV3ID",
 )
 
-bone_marrow_transplant_codes = codelist_from_csv(
-    "codelists/opensafely-bone-marrow-transplant.csv", system="ctv3", column="CTV3ID"
-)
-
-chemo_radio_therapy_codes = codelist_from_csv(
-    "codelists/opensafely-chemotherapy-or-radiotherapy-updated.csv",
-    system="ctv3",
-    column="CTV3ID",
-)
-
 chronic_liver_disease_codes = codelist_from_csv(
     "codelists/opensafely-chronic-liver-disease.csv", system="ctv3", column="CTV3ID"
 )
