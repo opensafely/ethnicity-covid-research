@@ -4,11 +4,14 @@ from cohortextractor import (
     codelist_from_csv,
     codelist,
     filter_codes_by_category,
+    combine_codelists
 )
 
 
 ## CODE LISTS
-# All codelist are held within the codelist/ folder.
+# All codelist are held within the codelist/ folder and this imports them from
+# codelists.py file which imports from that folder
+
 from codelists import *
 
 ## STUDY POPULATION
@@ -231,6 +234,24 @@ study = StudyDefinition(
         },
     ),
 
+    household_id=patients.household_as_of(
+        "2020-02-01",
+        returning="pseudo_id",
+        return_expectations={
+            "int": {"distribution": "normal", "mean": 1000, "stddev": 200},
+            "incidence": 1,
+        },
+    ),
+
+    household_size=patients.household_as_of(
+        "2020-02-01",
+        returning="household_size",
+        return_expectations={
+            "int": {"distribution": "normal", "mean": 3, "stddev": 1},
+            "incidence": 1,
+        },
+    ),
+
     # CONTINUOUS MEASURED COVARIATES
     bmi=patients.most_recent_bmi(
         on_or_after="2010-02-01",
@@ -240,6 +261,77 @@ study = StudyDefinition(
         return_expectations={
             "date": {},
             "float": {"distribution": "normal", "mean": 35, "stddev": 10},
+            "incidence": 0.95,
+        },
+    ),
+
+    # Blood pressure
+    bp_sys=patients.mean_recorded_value(
+        systolic_blood_pressure_codes,
+        on_most_recent_day_of_measurement=True,
+        on_or_before="2020-02-01",
+        include_measurement_date=True,
+        include_month=True,
+        return_expectations={
+            "float": {"distribution": "normal", "mean": 80, "stddev": 10},
+            "date": {"latest": "2020-02-29"},
+            "incidence": 0.95,
+        },
+    ),
+
+    bp_dias=patients.mean_recorded_value(
+        diastolic_blood_pressure_codes,
+        on_most_recent_day_of_measurement=True,
+        on_or_before="2020-02-01",
+        include_measurement_date=True,
+        include_month=True,
+        return_expectations={
+            "float": {"distribution": "normal", "mean": 120, "stddev": 10},
+            "date": {"latest": "2020-02-29"},
+            "incidence": 0.95,
+        },
+    ),
+
+    ## HBA1C
+    hba1c_mmol_per_mol=patients.with_these_clinical_events(
+        hba1c_new_codes,
+        find_last_match_in_period=True,
+        on_or_before="2020-02-01",
+        returning="numeric_value",
+        include_date_of_match=True,
+        include_month=True,
+        return_expectations={
+            "date": {"latest": "2020-02-29"},
+            "float": {"distribution": "normal", "mean": 40.0, "stddev": 20},
+            "incidence": 0.95,
+        },
+    ),
+
+    hba1c_percentage=patients.with_these_clinical_events(
+        hba1c_old_codes,
+        find_last_match_in_period=True,
+        on_or_before="2020-02-01",
+        returning="numeric_value",
+        include_date_of_match=True,
+        include_month=True,
+        return_expectations={
+            "date": {"latest": "2020-02-29"},
+            "float": {"distribution": "normal", "mean": 5, "stddev": 2},
+            "incidence": 0.95,
+        },
+    ),
+
+    # # Creatinine
+    creatinine=patients.with_these_clinical_events(
+        creatinine_codes,
+        find_last_match_in_period=True,
+        on_or_before="2020-02-01",
+        returning="numeric_value",
+        include_date_of_match=True,
+        include_month=True,
+        return_expectations={
+            "float": {"distribution": "normal", "mean": 60.0, "stddev": 15},
+            "date": {"earliest": "2019-02-28", "latest": "2020-02-29"},
             "incidence": 0.95,
         },
     ),
@@ -339,57 +431,31 @@ study = StudyDefinition(
     ),
 
     # CANCER - 3 TYPES
-    lung_cancer=patients.with_these_clinical_events(
-        lung_cancer_codes, return_first_date_in_period=True, include_month=True,
-        return_expectations={"date": {"latest": "2020-02-29"}},
-    ),
-    haem_cancer=patients.with_these_clinical_events(
-        haem_cancer_codes, return_first_date_in_period=True, include_month=True,
-        return_expectations={"date": {"latest": "2020-02-29"}},
-    ),
-    other_cancer=patients.with_these_clinical_events(
-        other_cancer_codes, return_first_date_in_period=True, include_month=True,
+    cancer=patients.with_these_clinical_events(
+        combine_codelists(lung_cancer_codes,
+                          haem_cancer_codes,
+                          other_cancer_codes),
+        return_first_date_in_period=True, include_month=True,
         return_expectations={"date": {"latest": "2020-02-29"}},
     ),
 
-    # IMMUNOSUPPRESSION
-    bone_marrow_transplant=patients.with_these_clinical_events(
-        bone_marrow_transplant_codes,
+    #### PERMANENT
+    permanent_immunodeficiency=patients.with_these_clinical_events(
+        combine_codelists(aplastic_codes,
+                          hiv_codes,
+                          permanent_immune_codes,
+                          sickle_cell_codes,
+                          organ_transplant_codes,
+                          spleen_codes,
+                          bone_marrow_transplant_codes)
+        ,
+        on_or_before="2020-02-29",
         return_last_date_in_period=True,
         include_month=True,
         return_expectations={"date": {"latest": "2020-02-29"}},
     ),
 
-    organ_transplant=patients.with_these_clinical_events(
-        organ_transplant_codes, return_first_date_in_period=True, include_month=True,
-        return_expectations={"date": {"latest": "2020-02-29"}},
-    ),
-
-    dysplenia=patients.with_these_clinical_events(
-        spleen_codes, return_first_date_in_period=True, include_month=True,
-        return_expectations={"date": {"latest": "2020-02-29"}},
-    ),
-
-    sickle_cell=patients.with_these_clinical_events(
-        sickle_cell_codes, return_first_date_in_period=True, include_month=True,
-        return_expectations={"date": {"latest": "2020-02-29"}},
-    ),
-
-    aplastic_anaemia=patients.with_these_clinical_events(
-        aplastic_codes, return_last_date_in_period=True, include_month=True,
-        return_expectations={"date": {"latest": "2020-02-29"}},
-    ),
-
-    hiv=patients.with_these_clinical_events(
-        hiv_codes, return_first_date_in_period=True, include_month=True,
-        return_expectations={"date": {"latest": "2020-02-29"}},
-    ),
-
-    permanent_immunodeficiency=patients.with_these_clinical_events(
-        permanent_immune_codes, return_first_date_in_period=True, include_month=True,
-        return_expectations={"date": {"latest": "2020-02-29"}},
-    ),
-
+    ### TEMPROARY IMMUNE
     temporary_immunodeficiency=patients.with_these_clinical_events(
         temp_immune_codes,
         between=["2019-03-01", "2020-02-29"], ## THIS IS RESTRICTED TO LAST YEAR
@@ -422,21 +488,6 @@ study = StudyDefinition(
         return_expectations={"date": {"latest": "2020-02-29"}},
     ),
 
-    # # Chronic kidney disease
-    creatinine=patients.with_these_clinical_events(
-        creatinine_codes,
-        find_last_match_in_period=True,
-        on_or_before="2020-02-01",
-        returning="numeric_value",
-        include_date_of_match=True,
-        include_month=True,
-        return_expectations={
-            "float": {"distribution": "normal", "mean": 60.0, "stddev": 15},
-            "date": {"earliest": "2019-02-28", "latest": "2020-02-29"},
-            "incidence": 0.95,
-        },
-    ),
-
     # END STAGE RENAL DISEASE - DIALYSIS, TRANSPLANT OR END STAGE RENAL DISEASE
     esrf=patients.with_these_clinical_events(
         dialysis_codes, return_first_date_in_period=True, include_month=True,
@@ -447,57 +498,7 @@ study = StudyDefinition(
     hypertension=patients.with_these_clinical_events(
         hypertension_codes, return_first_date_in_period=True, include_month=True,
     ),
-    # Blood pressure
-    bp_sys=patients.mean_recorded_value(
-        systolic_blood_pressure_codes,
-        on_most_recent_day_of_measurement=True,
-        on_or_before="2020-02-01",
-        include_measurement_date=True,
-        include_month=True,
-        return_expectations={
-            "float": {"distribution": "normal", "mean": 80, "stddev": 10},
-            "date": {"latest": "2020-02-29"},
-            "incidence": 0.95,
-        },
-    ),
-    bp_dias=patients.mean_recorded_value(
-        diastolic_blood_pressure_codes,
-        on_most_recent_day_of_measurement=True,
-        on_or_before="2020-02-01",
-        include_measurement_date=True,
-        include_month=True,
-        return_expectations={
-            "float": {"distribution": "normal", "mean": 120, "stddev": 10},
-            "date": {"latest": "2020-02-29"},
-            "incidence": 0.95,
-        },
-    ),
-    hba1c_mmol_per_mol=patients.with_these_clinical_events(
-        hba1c_new_codes,
-        find_last_match_in_period=True,
-        on_or_before="2020-02-01",
-        returning="numeric_value",
-        include_date_of_match=True,
-        include_month=True,
-        return_expectations={
-            "date": {"latest": "2020-02-29"},
-            "float": {"distribution": "normal", "mean": 40.0, "stddev": 20},
-            "incidence": 0.95,
-        },
-    ),
-    hba1c_percentage=patients.with_these_clinical_events(
-        hba1c_old_codes,
-        find_last_match_in_period=True,
-        on_or_before="2020-02-01",
-        returning="numeric_value",
-        include_date_of_match=True,
-        include_month=True,
-        return_expectations={
-            "date": {"latest": "2020-02-29"},
-            "float": {"distribution": "normal", "mean": 5, "stddev": 2},
-            "incidence": 0.95,
-        },
-    ),
+
 
     ra_sle_psoriasis=patients.with_these_clinical_events(
         ra_sle_psoriasis_codes, return_first_date_in_period=True, include_month=True,
