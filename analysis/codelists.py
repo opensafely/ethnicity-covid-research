@@ -173,5 +173,54 @@ hypertension_codes = codelist_from_csv(
     "codelists/opensafely-hypertension.csv", system="ctv3", column="CTV3ID"
 )
 
+# MEDICATION CODELISTS
+ace_codes = codelist_from_csv(
+    "codelists/opensafely-ace-inhibitor-medications.csv",
+    system="snomed",
+    column="id",
+)
+
+alpha_blocker_codes = codelist_from_csv(
+    "codelists/opensafely-alpha-adrenoceptor-blocking-drugs.csv",
+    system="snomed",
+    column="id",
+)
+
+arb_codes = codelist_from_csv(
+    "codelists/opensafely-angiotensin-ii-receptor-blockers-arbs.csv",
+    system="snomed",
+    column="id",
+)
+
+betablocker_codes = codelist_from_csv(
+    "codelists/opensafely-beta-blocker-medications.csv",
+    system="snomed",
+    column="id",
+)
+
+calcium_channel_blockers_codes = codelist_from_csv(
+    "codelists/opensafely-calcium-channel-blockers.csv",
+    system="snomed",
+    column="id",
+)
+
+combination_bp_med_codes = codelist_from_csv(
+    "codelists/opensafely-combination-blood-pressure-medication.csv",
+    system="snomed",
+    column="id",
+)
+
+spironolactone_codes = codelist_from_csv(
+    "codelists/opensafely-spironolactone.csv",
+    system="snomed",
+    column="id",
+)
+
+thiazide_type_diuretic_codes = codelist_from_csv(
+    "codelists/opensafely-thiazide-type-diuretic-medication.csv",
+    system="snomed",
+    column="id",
+)
+
 insulin_medication_codes= codelist_from_csv(
     "codelists/opensafely/insulin-medication.cvs", system="ctv3", column="CTV3ID"
