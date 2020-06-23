@@ -29,3 +29,13 @@ opensafely/smoking-unclear/2020-04-29
 opensafely/solid-organ-transplantation/2020-04-10
 opensafely/stroke-updated/2020-06-02
 opensafely/temporary-immunosuppresion/2020-04-24
+opensafely/ace-inhibitor-medications/2020-05-19
+opensafely/alpha-adrenoceptor-blocking-drugs/2020-05-19
+opensafely/angiotensin-ii-receptor-blockers-arbs/2020-05-19
+opensafely/beta-blocker-medications/2020-05-19
+opensafely/calcium-channel-blockers/2020-05-19
+opensafely/spironolactone/2020-05-19
+opensafely/thiazide-type-diuretic-medication/2020-05-19
+opensafely/combination-blood-pressure-medication/2020-05-19
+opensafely/statin-medication/2020-04-20
+opensafely/insulin-medication/2020-04-26
