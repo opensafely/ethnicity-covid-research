@@ -39,3 +39,4 @@ opensafely/spironolactone/2020-05-19
 opensafely/thiazide-type-diuretic-medication/2020-05-19
 opensafely/combination-blood-pressure-medication/2020-05-19
 opensafely/statin-medication/2020-04-20
+opensafely/covid-identification-in-primary-care-case/2020-06-23
