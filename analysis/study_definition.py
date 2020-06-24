@@ -34,12 +34,61 @@ study = StudyDefinition(
     #     find_first_match_in_period=True,
     #     ),
 
-    covid_date_primarycare=patients.with_covid_in_primary_care(
-        on_or_after="2020-02-01",
-        include_day=True,
-        returning="date"
+    primary_care_case=patients.with_these_clinical_events(
+        covid_primary_care_case,
+        returning="date",
         find_first_match_in_period=True,
-        )
+        date_format="YYYY-MM-DD",
+        return_expectations={
+            "float": {"distribution": "normal", "mean": 20.0, "stddev": 10},
+            "date": {"earliest": "2019-02-28", "latest": "2020-02-29"},
+            "incidence": 0.15,
+        },
+    ),
+    primary_care_historic_case=patients.with_these_clinical_events(
+        covid_primary_care_historic_case,
+        returning="date",
+        find_first_match_in_period=True,
+        date_format="YYYY-MM-DD",
+        return_expectations={
+            "float": {"distribution": "normal", "mean": 20.0, "stddev": 10},
+            "date": {"earliest": "2019-02-28", "latest": "2020-02-29"},
+            "incidence": 0.1,
+        },
+    ),
+    primary_care_potential_historic_case=patients.with_these_clinical_events(
+        covid_primary_care_potential_historic_case,
+        returning="date",
+        find_first_match_in_period=True,
+        date_format="YYYY-MM-DD",
+        return_expectations={
+            "float": {"distribution": "normal", "mean": 20.0, "stddev": 10},
+            "date": {"earliest": "2019-02-28", "latest": "2020-02-29"},
+            "incidence": 0.05,
+        },
+    ),
+    primary_care_exposure=patients.with_these_clinical_events(
+        covid_primary_exposure,
+        returning="date",
+        find_first_match_in_period=True,
+        date_format="YYYY-MM-DD",
+        return_expectations={
+            "float": {"distribution": "normal", "mean": 20.0, "stddev": 10},
+            "date": {"earliest": "2019-02-28", "latest": "2020-02-29"},
+            "incidence": 0.15,
+        },
+    ),
+    primary_care_suspect_case=patients.with_these_clinical_events(
+        covid_primary_care_suspect_case,
+        returning="date",
+        find_first_match_in_period=True,
+        date_format="YYYY-MM-DD",
+        return_expectations={
+            "float": {"distribution": "normal", "mean": 20.0, "stddev": 10},
+            "date": {"earliest": "2019-02-28", "latest": "2020-02-29"},
+            "incidence": 0.35,
+        },
+    ),
 
     icu_date_admitted=patients.admitted_to_icu(
         on_or_after="2020-02-01",
