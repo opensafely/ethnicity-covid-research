@@ -441,29 +441,78 @@ study = StudyDefinition(
 
     diabetes=patients.categorised_as(
         {
-            "T1_DM": "most_recent_smoking_code = 'S'",
-            "T2_DM": """
-                 most_recent_smoking_code = 'E' OR (
-                   most_recent_smoking_code = 'N' AND ever_smoked
-                 )
-            """,
-            "UNKNOWN_DM": "most_recent_smoking_code = 'N' AND NOT ever_smoked",
+            "T1_DM":
+                """
+                        (type1_diabetes AND NOT
+                        type2_diabetes) 
+                    OR
+                        (((type1_diabetes AND type2_diabetes) OR 
+                        (type1_diabetes AND unknown_diabetes) OR
+                        (unknown_diabetes AND NOT type1_diabetes AND NOT type2_diabetes))
+                        AND 
+                        (insulin_lastyear_meds > 0 AND NOT
+                        oral_diabetes_meds > 0))
+                """,
+            "T2_DM":
+                """
+                        (type2_diabetes AND NOT
+                        type1_diabetes)
+                    OR
+                        (((type1_diabetes AND type2_diabetes) OR 
+                        (type2_diabetes AND unknown_diabetes) OR
+                        (unknown_diabetes AND NOT type1_diabetes AND NOT type2_diabetes))
+                        AND 
+                        (oral_diabetes_meds > 0 AND NOT
+                        insulin_lastyear_meds > 0))
+                """,
+            "UNKNOWN_DM":
+                """
+                        ((unknown_diabetes AND NOT type1_diabetes AND NOT type2_diabetes) AND NOT
+                        oral_diabetes_meds AND NOT
+                        insulin_lastyear_meds) 
+                    OR
+                        (unknown_diabetes AND NOT type1_diabetes AND NOT type2_diabetes) AND 
+                        oral_diabetes_meds AND 
+                        insulin_lastyear_meds
+                """,
             "NO_DM": "DEFAULT",
         },
-        return_expectations={
-            "category": {"ratios": {"T1_DM": 0.03, "T2_DM": 0.2, "UNKNOWN_DM": 0.02, "NO_DM": 0.75}}
-        },
-        most_recent_smoking_code=patients.with_these_clinical_events(
-            clear_smoking_codes,
-            find_last_match_in_period=True,
-            on_or_before="2020-02-01",
-            returning="category",
-        ),
-        ever_smoked=patients.with_these_clinical_events(
-            filter_codes_by_category(clear_smoking_codes, include=["S", "E"]),
-            on_or_before="2020-02-01",
-        ),
 
+        return_expectations={
+            "category": {"ratios": {"T1_DM": 0.03, "T2_DM": 0.2, "UNKNOWN_DM": 0.02, "NO_DM": 0.75}},
+            "rate" : "universal"
+
+        },
+
+        type1_diabetes=patients.with_these_clinical_events(
+            diabetes_t1_codes,
+            on_or_before="2020-02-01",
+            return_first_date_in_period=True,
+            include_month=True,
+        ),
+        type2_diabetes=patients.with_these_clinical_events(
+            diabetes_t2_codes,
+            on_or_before="2020-02-01",
+            return_first_date_in_period=True,
+            include_month=True,
+        ),
+        unknown_diabetes=patients.with_these_clinical_events(
+            diabetes_unknown_codes,
+            on_or_before="2020-02-01",
+            return_first_date_in_period=True,
+            include_month=True,
+        ),
+        oral_diabetes_meds=patients.with_these_medications(
+            ace_codes, ### THIS IS A PLACEHOLDER
+            between=["2019-09-01", "2020-02-29"],
+            returning="number_of_episodes",
+        ),
+        insulin_lastyear_meds=patients.with_these_medications(
+            insulin_med_codes,
+            between=["2019-09-01", "2020-02-29"],
+            returning="number_of_episodes",
+        ),
+    ),
 
     # CANCER - 3 TYPES
     cancer=patients.with_these_clinical_events(
