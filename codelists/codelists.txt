@@ -10,6 +10,7 @@ opensafely/chronic-cardiac-disease/2020-04-08
 opensafely/chronic-liver-disease/2020-06-02
 opensafely/chronic-respiratory-disease/2020-04-10
 opensafely/dementia/2020-04-22
+opensafely/diabetes/2020-04-15
 opensafely/chronic-kidney-disease/2020-04-14
 opensafely/ethnicity/2020-04-27
 opensafely/gi-bleed-or-ulcer/2020-04-08
@@ -43,8 +44,6 @@ opensafely/covid-identification-in-primary-care-exposure-to-disease/2020-06-23
 opensafely/covid-identification-in-primary-care-historic-case/2020-06-23
 opensafely/covid-identification-in-primary-care-potential-historic-case/2020-06-23
 opensafely/covid-identification-in-primary-care-suspect-case/2020-06-23
-opensafely/diabetes-unknown-type/2020-06-29
-opensafely/type-1-diabetes/2020-06-29
-opensafely/type-2-diabetes/2020-06-29
+
 
 

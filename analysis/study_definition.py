@@ -42,46 +42,55 @@ study = StudyDefinition(
         returning="date",
         find_first_match_in_period=True,
         date_format="YYYY-MM-DD",
-        return_expectations={"date": {"earliest" : "2020-03-01",
-                                      "latest": "2020-06-24"},
-                             "rate" : "exponential_increase"},
+        return_expectations={
+            "float": {"distribution": "normal", "mean": 20.0, "stddev": 10},
+            "date": {"earliest": "2019-02-28", "latest": "2020-02-29"},
+            "incidence": 0.15,
+        },
     ),
     primary_care_historic_case=patients.with_these_clinical_events(
         covid_primary_care_historic_case,
         returning="date",
         find_first_match_in_period=True,
         date_format="YYYY-MM-DD",
-        return_expectations={"date": {"earliest" : "2020-03-01",
-                                      "latest": "2020-06-24"},
-                             "rate" : "exponential_increase"},
+        return_expectations={
+            "float": {"distribution": "normal", "mean": 20.0, "stddev": 10},
+            "date": {"earliest": "2019-02-28", "latest": "2020-02-29"},
+            "incidence": 0.1,
+        },
     ),
-
     primary_care_potential_historic_case=patients.with_these_clinical_events(
         covid_primary_care_potential_historic_case,
         returning="date",
         find_first_match_in_period=True,
         date_format="YYYY-MM-DD",
-        return_expectations={"date": {"earliest" : "2020-03-01",
-                                      "latest": "2020-06-24"},
-                             "rate" : "exponential_increase"},
+        return_expectations={
+            "float": {"distribution": "normal", "mean": 20.0, "stddev": 10},
+            "date": {"earliest": "2019-02-28", "latest": "2020-02-29"},
+            "incidence": 0.05,
+        },
     ),
     primary_care_exposure=patients.with_these_clinical_events(
         covid_primary_exposure,
         returning="date",
         find_first_match_in_period=True,
         date_format="YYYY-MM-DD",
-        return_expectations={"date": {"earliest" : "2020-03-01",
-                                      "latest": "2020-06-24"},
-                             "rate" : "exponential_increase"},
+        return_expectations={
+            "float": {"distribution": "normal", "mean": 20.0, "stddev": 10},
+            "date": {"earliest": "2019-02-28", "latest": "2020-02-29"},
+            "incidence": 0.15,
+        },
     ),
     primary_care_suspect_case=patients.with_these_clinical_events(
         covid_primary_care_suspect_case,
         returning="date",
         find_first_match_in_period=True,
         date_format="YYYY-MM-DD",
-        return_expectations={"date": {"earliest" : "2020-03-01",
-                                      "latest": "2020-06-24"},
-                             "rate" : "exponential_increase"},
+        return_expectations={
+            "float": {"distribution": "normal", "mean": 20.0, "stddev": 10},
+            "date": {"earliest": "2019-02-28", "latest": "2020-02-29"},
+            "incidence": 0.35,
+        },
     ),
 
     icu_date_admitted=patients.admitted_to_icu(
@@ -439,79 +448,9 @@ study = StudyDefinition(
         return_expectations={"date": {"latest": "2020-02-29"}},
     ),
 
-    diabetes=patients.categorised_as(
-        {
-            "T1_DM":
-                """
-                        (type1_diabetes AND NOT
-                        type2_diabetes) 
-                    OR
-                        (((type1_diabetes AND type2_diabetes) OR 
-                        (type1_diabetes AND unknown_diabetes) OR
-                        (unknown_diabetes AND NOT type1_diabetes AND NOT type2_diabetes))
-                        AND 
-                        (insulin_lastyear_meds > 0 AND NOT
-                        oral_diabetes_meds > 0))
-                """,
-            "T2_DM":
-                """
-                        (type2_diabetes AND NOT
-                        type1_diabetes)
-                    OR
-                        (((type1_diabetes AND type2_diabetes) OR 
-                        (type2_diabetes AND unknown_diabetes) OR
-                        (unknown_diabetes AND NOT type1_diabetes AND NOT type2_diabetes))
-                        AND 
-                        (oral_diabetes_meds > 0 AND NOT
-                        insulin_lastyear_meds > 0))
-                """,
-            "UNKNOWN_DM":
-                """
-                        ((unknown_diabetes AND NOT type1_diabetes AND NOT type2_diabetes) AND NOT
-                        oral_diabetes_meds AND NOT
-                        insulin_lastyear_meds) 
-                    OR
-                        (unknown_diabetes AND NOT type1_diabetes AND NOT type2_diabetes) AND 
-                        oral_diabetes_meds AND 
-                        insulin_lastyear_meds
-                """,
-            "NO_DM": "DEFAULT",
-        },
-
-        return_expectations={
-            "category": {"ratios": {"T1_DM": 0.03, "T2_DM": 0.2, "UNKNOWN_DM": 0.02, "NO_DM": 0.75}},
-            "rate" : "universal"
-
-        },
-
-        type1_diabetes=patients.with_these_clinical_events(
-            diabetes_t1_codes,
-            on_or_before="2020-02-01",
-            return_first_date_in_period=True,
-            include_month=True,
-        ),
-        type2_diabetes=patients.with_these_clinical_events(
-            diabetes_t2_codes,
-            on_or_before="2020-02-01",
-            return_first_date_in_period=True,
-            include_month=True,
-        ),
-        unknown_diabetes=patients.with_these_clinical_events(
-            diabetes_unknown_codes,
-            on_or_before="2020-02-01",
-            return_first_date_in_period=True,
-            include_month=True,
-        ),
-        oral_diabetes_meds=patients.with_these_medications(
-            ace_codes, ### THIS IS A PLACEHOLDER
-            between=["2019-09-01", "2020-02-29"],
-            returning="number_of_episodes",
-        ),
-        insulin_lastyear_meds=patients.with_these_medications(
-            insulin_med_codes,
-            between=["2019-09-01", "2020-02-29"],
-            returning="number_of_episodes",
-        ),
+    diabetes=patients.with_these_clinical_events(
+        diabetes_codes, return_first_date_in_period=True, include_month=True,
+        return_expectations={"date": {"latest": "2020-02-29"}},
     ),
 
     # CANCER - 3 TYPES
