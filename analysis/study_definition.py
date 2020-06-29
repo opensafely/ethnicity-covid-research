@@ -505,12 +505,12 @@ study = StudyDefinition(
         oral_diabetes_meds=patients.with_these_medications(
             ace_codes, ### THIS IS A PLACEHOLDER
             between=["2019-09-01", "2020-02-29"],
-            returning="number_of_episodes",
+            returning="number_of_matches_in_period",
         ),
         insulin_lastyear_meds=patients.with_these_medications(
             insulin_med_codes,
             between=["2019-09-01", "2020-02-29"],
-            returning="number_of_episodes",
+            returning="number_of_matches_in_period",
         ),
     ),
 
@@ -604,7 +604,7 @@ study = StudyDefinition(
     ace_inhibitors=patients.with_these_medications(
         ace_codes,
         between=["2019-09-01", "2020-02-29"],
-        returning="number_of_episodes",
+        returning="number_of_matches_in_period",
         return_expectations={
             "int": {"distribution": "normal", "mean": 3, "stddev": 2},
             "incidence": 0.30,
@@ -614,7 +614,7 @@ study = StudyDefinition(
     alpha_blockers=patients.with_these_medications(
         alpha_blocker_codes,
         between=["2019-09-01", "2020-02-29"],
-        returning="number_of_episodes",
+        returning="number_of_matches_in_period",
         return_expectations={
             "int": {"distribution": "normal", "mean": 3, "stddev": 2},
             "incidence": 0.30,
@@ -624,7 +624,7 @@ study = StudyDefinition(
     arbs=patients.with_these_medications(
         arb_codes,
         between=["2019-09-01", "2020-02-29"],
-        returning="number_of_episodes",
+        returning="number_of_matches_in_period",
         return_expectations={
             "int": {"distribution": "normal", "mean": 3, "stddev": 2},
             "incidence": 0.30,
@@ -634,7 +634,7 @@ study = StudyDefinition(
     betablockers=patients.with_these_medications(
         betablocker_codes,
         between=["2019-09-01", "2020-02-29"],
-        returning="number_of_episodes",
+        returning="number_of_matches_in_period",
         return_expectations={
             "int": {"distribution": "normal", "mean": 3, "stddev": 2},
             "incidence": 0.30,
@@ -644,7 +644,7 @@ study = StudyDefinition(
     calcium_channel_blockers=patients.with_these_medications(
         calcium_channel_blockers_codes,
         between=["2019-09-01", "2020-02-29"],
-        returning="number_of_episodes",
+        returning="number_of_matches_in_period",
         return_expectations={
             "int": {"distribution": "normal", "mean": 3, "stddev": 2},
             "incidence": 0.30,
@@ -654,7 +654,7 @@ study = StudyDefinition(
     combination_bp_meds=patients.with_these_medications(
         combination_bp_med_codes,
         between=["2019-09-01", "2020-02-29"],
-        returning="number_of_episodes",
+        returning="number_of_matches_in_period",
         return_expectations={
             "int": {"distribution": "normal", "mean": 3, "stddev": 2},
             "incidence": 0.30,
@@ -664,7 +664,7 @@ study = StudyDefinition(
     spironolactone=patients.with_these_medications(
         spironolactone_codes,
         between=["2019-09-01", "2020-02-29"],
-        returning="number_of_episodes",
+        returning="number_of_matches_in_period",
         return_expectations={
             "int": {"distribution": "normal", "mean": 3, "stddev": 2},
             "incidence": 0.30,
@@ -674,7 +674,7 @@ study = StudyDefinition(
     thiazide_diuretics=patients.with_these_medications(
         thiazide_type_diuretic_codes,
         between=["2019-09-01", "2020-02-29"],
-        returning="number_of_episodes",
+        returning="number_of_matches_in_period",
         return_expectations={
             "int": {"distribution": "normal", "mean": 3, "stddev": 2},
             "incidence": 0.30,
