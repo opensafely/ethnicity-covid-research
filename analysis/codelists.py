@@ -127,8 +127,16 @@ chronic_cardiac_disease_codes = codelist_from_csv(
 )
 
 
-diabetes_codes = codelist_from_csv(
-    "codelists/opensafely-diabetes.csv", system="ctv3", column="CTV3ID"
+diabetes_t1_codes = codelist_from_csv(
+    "codelists/opensafely-type-1-diabetes.csv", system="ctv3", column="CTV3ID"
+)
+
+diabetes_t2_codes = codelist_from_csv(
+    "codelists/opensafely-type-2-diabetes.csv", system="ctv3", column="CTV3ID"
+)
+
+diabetes_unknown_codes = codelist_from_csv(
+    "codelists/opensafely-diabetes-unknown-type.csv", system="ctv3", column="CTV3ID"
 )
 
 lung_cancer_codes = codelist_from_csv(
