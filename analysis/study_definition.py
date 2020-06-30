@@ -29,14 +29,7 @@ study = StudyDefinition(
         "2019-02-01", "2020-02-01"
     ),
 
-    # OUTCOMES
-    # icu_date_ventilation=patients.with_ventilation_recorded_in_icu(
-    #     on_or_after="2020-02-02",
-    #     include_day=True,
-    #     returning="date_of_ventilation",
-    #     find_first_match_in_period=True,
-    #     ),
-
+    # OUTCOMES,
     primary_care_case=patients.with_these_clinical_events(
         covid_primary_care_case,
         returning="date",
@@ -84,18 +77,30 @@ study = StudyDefinition(
                              "rate" : "exponential_increase"},
     ),
 
+    # itu
+    # icu_ventilation=patients.admitted_to_icu(
+    #     on_or_after="2020-02-02",
+    #     ventilation=True,
+    #     returning="binary_flag",
+    #     find_first_match_in_period=True,
+    #     ),
+
     icu_date_admitted=patients.admitted_to_icu(
         on_or_after="2020-02-01",
         include_day=True,
         returning="date_admitted",
         find_first_match_in_period=True,
     ),
+
+    # cpns
     died_date_cpns=patients.with_death_recorded_in_cpns(
         on_or_before="2020-06-01",
         returning="date_of_death",
         include_month=True,
         include_day=True,
     ),
+
+    # ons
     died_ons_covid_flag_any=patients.with_these_codes_on_death_certificate(
         covid_codelist,
         on_or_before="2020-06-01",
