@@ -304,7 +304,7 @@ study = StudyDefinition(
         },
     ),
 
-### GP CONSULTATION RATE
+    ### GP CONSULTATION RATE
     gp_consult_count=patients.with_gp_consultations(
         between=["2019-03-01", "2020-02-29"],
         returning="number_of_matches_in_period",
@@ -317,7 +317,18 @@ study = StudyDefinition(
     has_consultation_history=patients.with_complete_gp_consultation_history_between(
         "2019-03-01", "2020-02-29", return_expectations={"incidence": 0.9},
     ),
-    
+
+    ### A&E CONSULTATION RATE
+    a_e_consult_count=patients.attended_emergency_care(
+        between=["2019-03-01", "2020-02-29"],
+        returning="number_of_matches_in_period",
+        return_expectations={
+            "int": {"distribution": "normal", "mean": 4, "stddev": 2},
+            "date": {"earliest": "2019-03-01", "latest": "2020-02-29"},
+            "incidence": 0.7,
+        },
+    ),
+
     # CONTINUOUS MEASURED COVARIATES
     bmi=patients.most_recent_bmi(
         on_or_after="2010-02-01",
