@@ -77,6 +77,16 @@ study = StudyDefinition(
                              "rate" : "exponential_increase"},
     ),
 
+    ### A&E attendence
+    a_e_consult_date=patients.attended_emergency_care(
+        between=["2019-03-01", "2020-02-29"],
+        returning="date_arrived",
+        date_format="YYYY-MM-DD",
+        return_expectations={"date": {"earliest": "2020-03-01",
+                                      "latest": "2020-06-24"},
+                             "rate": "exponential_increase"},
+    ),
+
     # itu
     # icu_ventilation=patients.admitted_to_icu(
     #     on_or_after="2020-02-02",
@@ -318,16 +328,7 @@ study = StudyDefinition(
         "2019-03-01", "2020-02-29", return_expectations={"incidence": 0.9},
     ),
 
-    ### A&E CONSULTATION RATE
-    a_e_consult_count=patients.attended_emergency_care(
-        between=["2019-03-01", "2020-02-29"],
-        returning="number_of_matches_in_period",
-        return_expectations={
-            "int": {"distribution": "normal", "mean": 4, "stddev": 2},
-            "date": {"earliest": "2019-03-01", "latest": "2020-02-29"},
-            "incidence": 0.7,
-        },
-    ),
+
 
     # CONTINUOUS MEASURED COVARIATES
     bmi=patients.most_recent_bmi(
