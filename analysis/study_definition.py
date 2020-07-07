@@ -535,9 +535,9 @@ study = StudyDefinition(
             return_first_date_in_period=True,
             include_month=True,
         ),
-        oral_diabetes_meds=patients.with_these_medications(
+        oad_lastyear_meds=patients.with_these_medications(
             ace_codes, ### THIS IS A PLACEHOLDER
-            between=["2019-09-01", "2020-02-29"],
+            between=["2019-02-01", "2020-02-29"],
             returning="number_of_matches_in_period",
         ),
         insulin_lastyear_meds=patients.with_these_medications(
