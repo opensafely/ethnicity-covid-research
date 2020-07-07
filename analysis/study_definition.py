@@ -547,6 +547,46 @@ study = StudyDefinition(
         ),
     ),
 
+    diabetes_exeter=patients.categorised_as(
+        {
+            "T1_DM":
+                """
+                        (insulin_last6mo>=2 AND t1dm_count/t2dm_count>=2) 
+                """,
+            "T2_DM":
+                """
+                        (insulin_last6mo<2)
+                        OR
+                        (insulin_last6mo>=2 AND t1dm_count/t2dm_count<2)
+                """,
+            "NO_DM": "DEFAULT",
+        },
+
+        return_expectations={
+            "category": {"ratios": {"T1_DM": 0.03, "T2_DM": 0.2, "NO_DM": 0.77}},
+            "rate" : "universal"
+
+        },
+
+        t1dm_count=patients.with_these_clinical_events(
+            diabetes_t1_codes,
+            on_or_before="2020-02-01",
+            returning="number_of_matches_in_period",
+        ),
+
+        t2dm_count=patients.with_these_clinical_events(
+            diabetes_t2_codes,
+            on_or_before="2020-02-01",
+            returning="number_of_matches_in_period",
+        ),
+            
+        insulin_last6mo=patients.with_these_medications(
+            insulin_med_codes,
+            between=["2019-09-01", "2020-02-29"],
+            returning="number_of_matches_in_period",
+        ),
+    ),
+
     # CANCER - 3 TYPES
     cancer=patients.with_these_clinical_events(
         combine_codelists(lung_cancer_codes,
