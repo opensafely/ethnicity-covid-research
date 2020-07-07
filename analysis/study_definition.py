@@ -91,12 +91,12 @@ study = StudyDefinition(
     icu_ventilation=patients.ventilated_in_icu(
     on_or_after="2020-02-01",
     returning="binary_flag"  
-    )
+    ),
 
     icu_date_ventilated=patients.ventilated_in_icu(
     on_or_after="2020-02-01",
     returning="icu_date_ventilated"
-    )
+    ),
 
     icu_date_admitted=patients.admitted_to_icu(
         on_or_after="2020-02-01",
