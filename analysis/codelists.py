@@ -139,6 +139,10 @@ diabetes_unknown_codes = codelist_from_csv(
     "codelists/opensafely-diabetes-unknown-type.csv", system="ctv3", column="CTV3ID"
 )
 
+diabetes_t1t2_codes_exeter = codelist_from_csv(
+        "codelsts/opensafely-diabetes-exeter-group.csv", system="readv2", column="readcode"
+)
+
 lung_cancer_codes = codelist_from_csv(
     "codelists/opensafely-lung-cancer.csv", system="ctv3", column="CTV3ID"
 )
