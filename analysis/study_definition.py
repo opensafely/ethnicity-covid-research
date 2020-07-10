@@ -553,7 +553,7 @@ study = StudyDefinition(
                 """
                         (insulin_last6mo < 2) AND ((t2dm_count>0))
                         OR
-                        ((insulin_last6mo >= 2) AND ((t1dm_count / t2dm_count) < 2))
+                        ((insulin_last6mo >= 2) AND ((t1dm_count / t2dm_count) < 2)) AND ((t2dm_count>0))
                 """,
             "NO_DM": "DEFAULT",
         },
