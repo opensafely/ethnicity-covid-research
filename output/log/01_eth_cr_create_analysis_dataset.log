@@ -1,8 +1,8 @@
 ----------------------------------------------------------------------------------------------------------------------------------------------
       name:  <unnamed>
-       log:  /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/log/01_eth_cr_create_analysis_dataset.smcl
+       log:  /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/log/01_eth_cr_create_analysis_dataset.log
   log type:  text
- opened on:  12 Jul 2020, 20:18:13
+ opened on:  12 Jul 2020, 21:00:58
 
 . 
 . 
@@ -1413,7 +1413,6 @@ DROP IF OUTCOMES OCCUR BEFORE INDEX
 . sort patient_id
 
 . save "$Tempdir/analysis_dataset.dta", replace
-(note: file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysis_dataset.dta not found)
 file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysis_dataset.dta saved
 
 . 
@@ -1447,7 +1446,6 @@ obs. time interval:  (stime_suspected[_n-1], stime_suspected]
                                                 at risk from t =         0
                                      earliest observed entry t =         0
                                           last observed exit t =       181
-(note: file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysis_dataset_STSET_suspected.dta not found)
 file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysis_dataset_STSET_suspected.dta saved
 
                 id:  patient_id
@@ -1469,7 +1467,6 @@ obs. time interval:  (stime_confirmed[_n-1], stime_confirmed]
                                                 at risk from t =         0
                                      earliest observed entry t =         0
                                           last observed exit t =       181
-(note: file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysis_dataset_STSET_confirmed.dta not found)
 file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysis_dataset_STSET_confirmed.dta saved
 
                 id:  patient_id
@@ -1491,7 +1488,6 @@ obs. time interval:  (stime_tested[_n-1], stime_tested]
                                                 at risk from t =         0
                                      earliest observed entry t =         0
                                           last observed exit t =       181
-(note: file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysis_dataset_STSET_tested.dta not found)
 file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysis_dataset_STSET_tested.dta saved
 
                 id:  patient_id
@@ -1513,7 +1509,6 @@ obs. time interval:  (stime_positivetest[_n-1], stime_positivetest]
                                                 at risk from t =         0
                                      earliest observed entry t =         0
                                           last observed exit t =       181
-(note: file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysis_dataset_STSET_positivetest.dta not found)
 file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysis_dataset_STSET_positivetest.dta saved
 
                 id:  patient_id
@@ -1535,7 +1530,6 @@ obs. time interval:  (stime_ae[_n-1], stime_ae]
                                                 at risk from t =         0
                                      earliest observed entry t =         0
                                           last observed exit t =       181
-(note: file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysis_dataset_STSET_ae.dta not found)
 file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysis_dataset_STSET_ae.dta saved
 
                 id:  patient_id
@@ -1557,7 +1551,6 @@ obs. time interval:  (stime_icu[_n-1], stime_icu]
                                                 at risk from t =         0
                                      earliest observed entry t =         0
                                           last observed exit t =       181
-(note: file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysis_dataset_STSET_icu.dta not found)
 file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysis_dataset_STSET_icu.dta saved
 
                 id:  patient_id
@@ -1579,7 +1572,6 @@ obs. time interval:  (stime_cpnsdeath[_n-1], stime_cpnsdeath]
                                                 at risk from t =         0
                                      earliest observed entry t =         0
                                           last observed exit t =       181
-(note: file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysis_dataset_STSET_cpnsdeath.dta not found)
 file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysis_dataset_STSET_cpnsdeath.dta saved
 
                 id:  patient_id
@@ -1601,7 +1593,6 @@ obs. time interval:  (stime_onsdeath[_n-1], stime_onsdeath]
                                                 at risk from t =         0
                                      earliest observed entry t =         0
                                           last observed exit t =       181
-(note: file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysis_dataset_STSET_onsdeath.dta not found)
 file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysis_dataset_STSET_onsdeath.dta saved
 
                 id:  patient_id
@@ -1623,7 +1614,6 @@ obs. time interval:  (stime_onscoviddeath[_n-1], stime_onscoviddeath]
                                                 at risk from t =         0
                                      earliest observed entry t =         0
                                           last observed exit t =       181
-(note: file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysis_dataset_STSET_onscoviddeath.dta not found)
 file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysis_dataset_STSET_onscoviddeath.dta saved
 
                 id:  patient_id
@@ -1645,14 +1635,13 @@ obs. time interval:  (stime_ons_noncoviddeath[_n-1], stime_ons_noncoviddeath]
                                                 at risk from t =         0
                                      earliest observed entry t =         0
                                           last observed exit t =       181
-(note: file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysis_dataset_STSET_ons_noncoviddeath.dta not found)
 file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysis_dataset_STSET_ons_noncoviddeath.dta saved
 
 .         
 . * Close log file 
 . log close
       name:  <unnamed>
-       log:  /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/log/01_eth_cr_create_analysis_dataset.smcl
+       log:  /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/log/01_eth_cr_create_analysis_dataset.log
   log type:  text
- closed on:  12 Jul 2020, 20:18:36
+ closed on:  12 Jul 2020, 21:01:21
 ----------------------------------------------------------------------------------------------------------------------------------------------

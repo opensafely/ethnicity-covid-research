@@ -18,7 +18,7 @@ OTHER OUTPUT: 			logfiles, printed to folder analysis/$logdir
 
 * Open a log file
 cap log close
-log using "$Logdir/01_eth_cr_create_analysis_dataset.smcl", replace t
+log using "$Logdir/01_eth_cr_create_analysis_dataset.log", replace t
 
 
 di "STARTING COUNT FROM IMPORT:"
