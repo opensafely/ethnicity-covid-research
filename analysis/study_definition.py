@@ -469,6 +469,18 @@ study = StudyDefinition(
         return_expectations={"date": {"latest": "2020-02-01"}},
     ),
 
+    t1dm_date=patients.with_these_clinical_events(
+            diabetes_t1_codes,
+            return_first_date_in_period=True, include_month=True,
+            return_expectations={"date": {"latest": "2020-02-01"}},
+    ),
+
+     t2dm_date=patients.with_these_clinical_events(
+            diabetes_t2_codes,
+            return_first_date_in_period=True, include_month=True,
+            return_expectations={"date": {"latest": "2020-02-01"}},
+    ),
+
     diabetes=patients.categorised_as(
         {
             "T1DM":
@@ -543,6 +555,8 @@ study = StudyDefinition(
             returning="number_of_matches_in_period",
         ),
     ),
+
+   
 
 #EXETER ALGORITHM USING OPENSAFELY CODELISTS
     diabetes_exeter_os=patients.categorised_as(
