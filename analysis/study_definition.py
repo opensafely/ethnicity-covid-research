@@ -258,6 +258,7 @@ study = StudyDefinition(
         },
     ),
 
+   
     # ETHNICITY IN 6 CATEGORIES
     ethnicity=patients.with_these_clinical_events(
         ethnicity_codes,
@@ -265,7 +266,7 @@ study = StudyDefinition(
         find_last_match_in_period=True,
         include_date_of_match=True,
         return_expectations={
-            "category": {"ratios": {"1": 0.87, "2": 0.06 "3": 0.03 "4":0.02 "5": 0.02}},
+            "category": {"ratios": {"1": 0.8, "5": 0.1, "3": 0.1}},
             "incidence": 0.75,
         },
     ),
