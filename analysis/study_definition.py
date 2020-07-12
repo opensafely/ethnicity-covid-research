@@ -607,13 +607,13 @@ study = StudyDefinition(
         },
 
         t1dm_count=patients.categorised_as(
-            "T1DM": "diabetes_t1t2_codes_exeter = '1'",
+            "T1DM_EX": "diabetes_t1t2_codes_exeter = '1'",
             on_or_before="2020-02-01",
             returning="number_of_matches_in_period",
         ),
 
         t2dm_count=patients.patients.categorised_as(
-            "T2DM": "diabetes_t1t2_codes_exeter = '2'",
+            "T2DM_EX": "diabetes_t1t2_codes_exeter = '2'",
             on_or_before="2020-02-01",
             returning="number_of_matches_in_period",
         ),
