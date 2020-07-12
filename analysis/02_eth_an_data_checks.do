@@ -21,7 +21,7 @@ capture log close
 log using $logdir/02_an_data_checks, replace t
 
 * Open Stata dataset
-use $tempdir/analysis_dataset, clear
+use "$Tempdir/analysis_dataset.dta", clear
 
 *run ssc install if not on local machine - server needs datacheck.ado file
 *ssc install datacheck 
@@ -85,15 +85,20 @@ datacheck inlist(smoke_nomiss, 1, 2, 3), nol
 
 foreach var of varlist  chronic_respiratory_disease 	///
 					chronic_cardiac_disease		///
+					cancer ///
+					perm_immunodef  ///
+					temp_immunodef  ///
 					chronic_liver_disease  		///
 					other_neuro 			///
 					stroke ///
 					dementia ///
+					hypertension	///
 					ra_sle_psoriasis				///
-					perm_immunodef  ///
-					temp_immunodef  ///
-					hypertension			 	///
-					cancer ///
+					gi_bleed_and_ulcer ///
+					inflammatory_bowel_disease ///					
+					insulin ///
+					statin ///
+					combination_bp_meds ///
 					{
 						summ `var'_date, format
 
@@ -170,56 +175,66 @@ tab ethnicity_16 imd, 		row
 
 
 * Relationships with age
-foreach var of varlist  asthma						///
-					chronic_respiratory_disease 	///
-					chronic_cardiac_disease		///
-					diabetes_type 						///
-					chronic_liver_disease  		///
-					other_neuro 			///
-					stroke ///
-					dementia ///
-					ra_sle_psoriasis				///
-					other_immuno 				///
-					cancer 						///
-					reduced_kidney_function_cat ///
-					hypertension		///	 	
+
+foreach var of varlist 	chronic_respiratory_disease ///
+						chronic_cardiac_disease  ///
+						cancer  ///
+						perm_immunodef  ///
+						temp_immunodef  ///
+						chronic_liver_disease  ///
+						other_neuro  ///
+						stroke			///
+						dementia ///
+						esrf  ///
+						hypertension  ///
+						asthma ///
+						ra_sle_psoriasis  ///
+						gi_bleed_and_ulcer ///
+						inflammatory_bowel_disease ///
+						diabetes_type ///
 					{
 						tab agegroup `var', row 
  }
 
 
  * Relationships with sex
-foreach var of varlist  asthma						///
-					chronic_respiratory_disease 	///
-					chronic_cardiac_disease		///
-					diabetes_type 						///
-					chronic_liver_disease  		///
-					other_neuro 			///
-					stroke ///
-					dementia ///
-					ra_sle_psoriasis				///
-					other_immuno 				///
-					cancer 						///
-					reduced_kidney_function_cat ///
-					hypertension		///	 	
+foreach var of varlist 	chronic_respiratory_disease ///
+						chronic_cardiac_disease  ///
+						cancer  ///
+						perm_immunodef  ///
+						temp_immunodef  ///
+						chronic_liver_disease  ///
+						other_neuro  ///
+						stroke			///
+						dementia ///
+						esrf  ///
+						hypertension  ///
+						asthma ///
+						ra_sle_psoriasis  ///
+						gi_bleed_and_ulcer ///
+						inflammatory_bowel_disease ///
+						diabetes_type ///
 					{
 						tab male `var', row 
 }
 
  * Relationships with smoking
-foreach var of varlist  asthma						///
-					chronic_respiratory_disease 	///
-					chronic_cardiac_disease		///
-					diabetes_type 						///
-					chronic_liver_disease  		///
-					other_neuro 			///
-					stroke ///
-					dementia ///
-					ra_sle_psoriasis				///
-					other_immuno 				///
-					cancer 						///
-					reduced_kidney_function_cat ///
-					hypertension		///	 	
+foreach var of varlist 	chronic_respiratory_disease ///
+						chronic_cardiac_disease  ///
+						cancer  ///
+						perm_immunodef  ///
+						temp_immunodef  ///
+						chronic_liver_disease  ///
+						other_neuro  ///
+						stroke			///
+						dementia ///
+						esrf  ///
+						hypertension  ///
+						asthma ///
+						ra_sle_psoriasis  ///
+						gi_bleed_and_ulcer ///
+						inflammatory_bowel_disease ///
+						diabetes_type ///
 					{	
 					tab smoke `var', row 
 }

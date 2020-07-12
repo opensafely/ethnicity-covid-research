@@ -226,9 +226,12 @@ foreach var of varlist 	chronic_respiratory_disease ///
 						hypertension  ///
 						asthma ///
 						ra_sle_psoriasis  ///
+						gi_bleed_and_ulcer ///
+						inflammatory_bowel_disease ///
 						diabetes ///
 						type1_diabetes ///
 						type2_diabetes ///
+						unknown_diabetes ///
 						bmi_date_measured   ///
 						bp_sys_date_measured   ///
 						bp_dias_date_measured   ///
@@ -236,6 +239,16 @@ foreach var of varlist 	chronic_respiratory_disease ///
 						hba1c_mmol_per_mol_date  ///
 						hba1c_percentage_date ///
 						smoking_status_date ///
+						insulin ///
+						statin ///
+						ace_inhibitors ///
+						arbs ///
+						alpha_blockers ///
+						betablockers ///
+						calcium_channel_blockers ///
+						combination_bp_meds ///
+						spironolactone  ///
+						thiazide_diuretics ///						
 						{
 							
 		capture confirm string variable `var'
@@ -273,12 +286,17 @@ foreach var of varlist 	chronic_respiratory_disease ///
 						temp_immunodef  ///
 						chronic_liver_disease  ///
 						other_neuro  ///
-						stroke ///
-						dementia				///
+						stroke			///
+						dementia ///
 						esrf  ///
-						asthma ///
 						hypertension  ///
+						asthma ///
 						ra_sle_psoriasis  ///
+						gi_bleed_and_ulcer ///
+						inflammatory_bowel_disease ///
+						type1_diabetes ///
+						type2_diabetes ///
+						unknown_diabetes ///
 						bmi_measured_date   ///
 						bp_sys_date_measured   ///
 						bp_dias_date_measured   ///
@@ -286,6 +304,16 @@ foreach var of varlist 	chronic_respiratory_disease ///
 						hba1c_mmol_per_mol_date  ///
 						hba1c_percentage_date ///
 						smoking_status_date ///
+						insulin ///
+						statin ///
+						ace_inhibitors ///
+						arbs ///
+						alpha_blockers ///
+						betablockers ///
+						calcium_channel_blockers ///
+						combination_bp_meds ///
+						spironolactone  ///
+						thiazide_diuretics ///						
 						{
 						
 	/* date ranges are applied in python, so presence of date indicates presence of 
@@ -293,9 +321,9 @@ foreach var of varlist 	chronic_respiratory_disease ///
 	local newvar =  substr("`var'", 1, length("`var'") - 5)
 	gen `newvar' = (`var'!=. )
 	order `newvar', after(`var')
+	tab `newvar'
 	
 }
-
 
 
 /*  Body Mass Index  */
@@ -402,7 +430,7 @@ label values smoke_nomiss smoke
 /*  Cancer */
 label define cancer 1 "Never" 2 "Last year" 3 "2-5 years ago" 4 "5+ years"
 
-* Haematological malignancies
+* malignancies
 gen     cancer_cat = 4 if inrange(cancer_date, d(1/1/1900), d(1/2/2015))
 replace cancer_cat = 3 if inrange(cancer_date, d(1/2/2015), d(1/2/2019))
 replace cancer_cat = 2 if inrange(cancer_date, d(1/2/2019), d(1/2/2020))
@@ -668,9 +696,13 @@ label var age1 						"Age spline 1"
 label var age2 						"Age spline 2"
 label var age3 						"Age spline 3"
 lab var hh_total					"calculated No of ppl in household"
+lab var region						"Region of England"
+lab var rural_urban					"Rural-Urban Indicator"
+lab var care_home_type				"Care home type"
 
 * Comorbidities of interest 
 label var asthma						"Asthma category"
+lab var asthmacat						"Asthma detailed categories"
 label var egfr_cat						"Calculated eGFR"
 label var hypertension				    "Diagnosed hypertension"
 label var chronic_respiratory_disease 	"Chronic Respiratory Diseases"
@@ -687,7 +719,14 @@ label var ra_sle_psoriasis				"Autoimmune disease"
 lab var egfr							"eGFR"
 lab var perm_immunodef  				"Permanent immunosuppression"
 lab var temp_immunodef  				"Temporary immunosuppression"
+lab var gi_bleed_and_ulcer				"GI Bleed and ulcer"
+label var inflammatory_bowel_disease	"inflammatory bowel disease"
+lab var  bphigh 							"non-missing indicator of known high blood pressure"
+lab var bpcat 								"Blood pressure four levels, non-missing"
+lab var htdiag_or_highbp 					"High blood pressure or hypertension diagnosis"
+lab var esrf 							"end stage renal failure"
 
+lab var asthma_date 					"Diagnosed Asthma Date"
 label var hypertension_date			   		"Diagnosed hypertension Date"
 label var chronic_respiratory_disease_date 	"Other Respiratory Diseases Date"
 label var chronic_cardiac_disease_date		"Other Heart Diseases Date"
@@ -700,9 +739,32 @@ label var dementia_date						"DDementia date"
 label var ra_sle_psoriasis_date 			"Autoimmune disease  Date"
 lab var perm_immunodef_date  				"Permanent immunosuppression date"
 lab var temp_immunodef_date   				"Temporary immunosuppression date"
-lab var  bphigh 							"non-missing indicator of known high blood pressure"
-lab var bpcat 								"Blood pressure four levels, non-missing"
-lab var htdiag_or_highbp 					"High blood pressure or hypertension diagnosis"
+lab var gi_bleed_and_ulcer_date				"GI Bleed and ulcer date"
+label var inflammatory_bowel_disease_date	"inflammatory bowel disease date"
+lab var esrf_date "end stage renal failure"
+
+*medications
+lab var statin								"Statin in last 6 months"
+lab var insulin								"Insulin in last 6 months"
+lab var ace_inhibitors 						"ACE in last 6 months"
+lab var alpha_blockers 						"Alpha blocker in last 6 months"
+lab var arbs 								"ARB in last 6 months"
+lab var betablockers 						"Beta blocker in last 6 months"
+lab var calcium_channel_blockers 			"CCB in last 6 months"
+lab var combination_bp_meds 				"BP med in last 6 months"
+lab var spironolactone 						"Spironolactone in last 6 months"
+lab var thiazide_diuretics					"TZD in last 6 months"
+
+lab var statin_date								"Statin in last 6 months"
+lab var insulin_date								"Insulin in last 6 months"
+lab var ace_inhibitors_date 						"ACE in last 6 months"
+lab var alpha_blockers_date 						"Alpha blocker in last 6 months"
+lab var arbs_date 								"ARB in last 6 months"
+lab var betablockers_date 						"Beta blocker in last 6 months"
+lab var calcium_channel_blockers_date 			"CCB in last 6 months"
+lab var combination_bp_meds_date 				"BP med in last 6 months"
+lab var spironolactone_date 						"Spironolactone in last 6 months"
+lab var thiazide_diuretics_date					"TZD in last 6 months"
 
 * Outcomes and follow-up
 label var enter_date					"Date of study entry"
