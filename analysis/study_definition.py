@@ -470,19 +470,26 @@ study = StudyDefinition(
         return_expectations={"date": {"latest": "2020-02-01"}},
     ),
 
-    t1dm_date=patients.with_these_clinical_events(
-            diabetes_t1_codes,
-            return_first_date_in_period=True, include_month=True,
-            return_expectations={"date": {"latest": "2020-02-01"}},
+    type1_diabetes=patients.with_these_clinical_events(
+        diabetes_t1_codes,
+        on_or_before="2020-02-01",
+        return_first_date_in_period=True,
+        include_month=True,
+    ),
+    type2_diabetes=patients.with_these_clinical_events(
+        diabetes_t2_codes,
+        on_or_before="2020-02-01",
+        return_first_date_in_period=True,
+        include_month=True,
+    ),
+    unknown_diabetes=patients.with_these_clinical_events(
+        diabetes_unknown_codes,
+        on_or_before="2020-02-01",
+        return_first_date_in_period=True,
+        include_month=True,
     ),
 
-     t2dm_date=patients.with_these_clinical_events(
-            diabetes_t2_codes,
-            return_first_date_in_period=True, include_month=True,
-            return_expectations={"date": {"latest": "2020-02-01"}},
-    ),
-
-    diabetes=patients.categorised_as(
+    diabetes_type=patients.categorised_as(
         {
             "T1DM":
                 """
@@ -527,24 +534,7 @@ study = StudyDefinition(
 
         },
 
-        type1_diabetes=patients.with_these_clinical_events(
-            diabetes_t1_codes,
-            on_or_before="2020-02-01",
-            return_first_date_in_period=True,
-            include_month=True,
-        ),
-        type2_diabetes=patients.with_these_clinical_events(
-            diabetes_t2_codes,
-            on_or_before="2020-02-01",
-            return_first_date_in_period=True,
-            include_month=True,
-        ),
-        unknown_diabetes=patients.with_these_clinical_events(
-            diabetes_unknown_codes,
-            on_or_before="2020-02-01",
-            return_first_date_in_period=True,
-            include_month=True,
-        ),
+ 
         oad_lastyear_meds=patients.with_these_medications(
             ace_codes, ### THIS IS A PLACEHOLDER
             between=["2019-02-01", "2020-02-01"],

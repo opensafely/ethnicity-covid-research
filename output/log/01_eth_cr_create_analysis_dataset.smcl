@@ -1,0 +1,1658 @@
+----------------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/log/01_eth_cr_create_analysis_dataset.smcl
+  log type:  text
+ opened on:  12 Jul 2020, 20:18:13
+
+. 
+. 
+. di "STARTING COUNT FROM IMPORT:"
+STARTING COUNT FROM IMPORT:
+
+. cou
+  100,000
+
+. 
+. 
+. **************************   INPUT REQUIRED   *********************************
+. 
+. * Censoring dates for each outcome (largely, last date outcome data available)
+. global tppcensor                        = "31/07/2020"  //primary care suspected and confirmed covid
+
+. global sgsscensor                       = "31/07/2020"  //testing data
+
+. global ecdscensor                       = "31/07/2020"  //A&E admission
+
+. global inarccensor                      = "31/07/2020"  //ICU admission and ventilation
+
+. global cpnscensor                       = "31/07/2020"  //in-hospital death
+
+. global onscensor                        = "31/07/2020"  //all death
+
+. 
+. *Start dates
+. global indexdate                        = "01/02/2020"
+
+. 
+. 
+. *******************************************************************************
+. 
+. 
+. 
+. /* CREATE VARIABLES===========================================================*/
+. 
+. /* DEMOGRAPHICS */ 
+. 
+. * Ethnicity (5 category)
+. replace ethnicity = . if ethnicity==.
+(0 real changes made)
+
+. label define ethnicity  1 "White"                                       ///
+>                                                 2 "Mixed"                                       ///
+>                                                 3 "Asian or Asian British"      ///
+>                                                 4 "Black"                                       ///
+>                                                 5 "Other"                                       
+
+.                                                 
+. label values ethnicity ethnicity
+
+. tab ethnicity
+
+             ethnicity |      Freq.     Percent        Cum.
+-----------------------+-----------------------------------
+                 White |     59,893       79.86       79.86
+Asian or Asian British |      7,622       10.16       90.02
+                 Other |      7,485        9.98      100.00
+-----------------------+-----------------------------------
+                 Total |     75,000      100.00
+
+. 
+. * Ethnicity (16 category)
+. replace ethnicity_16 = . if ethnicity==.
+(18,773 real changes made, 18,773 to missing)
+
+. label define ethnicity_16                                                                       ///
+>                                                 1 "British or Mixed British"            ///
+>                                                 2 "Irish"                                                       ///
+>                                                 3 "Other White"                                         ///
+>                                                 4 "White + Black Caribbean"             ///
+>                                                 5 "White + Black African"                       ///
+>                                                 6 "White + Asian"                                       ///
+>                                                 7 "Other mixed"                                         ///
+>                                                 8 "Indian or British Indian"            ///
+>                                                 9 "Pakistani or British Pakistani"      ///
+>                                                 10 "Bangladeshi or British Bangladeshi" ///
+>                                                 11 "Other Asian"                                        ///
+>                                                 12 "Caribbean"                                          ///
+>                                                 13 "African"                                            ///
+>                                                 14 "Other Black"                                        ///
+>                                                 15 "Chinese"                                            ///
+>                                                 16 "Other"                                                      
+
+.                                                 
+. label values ethnicity_16 ethnicity_16
+
+. tab ethnicity_16,m
+
+                      ethnicity_16 |      Freq.     Percent        Cum.
+-----------------------------------+-----------------------------------
+          British or Mixed British |     27,978       27.98       27.98
+                             Irish |      5,702        5.70       33.68
+                       Other White |      2,851        2.85       36.53
+           White + Black Caribbean |      2,789        2.79       39.32
+             White + Black African |      2,791        2.79       42.11
+                     White + Asian |      2,860        2.86       44.97
+                       Other mixed |      2,875        2.88       47.85
+          Indian or British Indian |      2,753        2.75       50.60
+    Pakistani or British Pakistani |      1,094        1.09       51.69
+Bangladeshi or British Bangladeshi |      1,160        1.16       52.85
+                       Other Asian |        569        0.57       53.42
+                         Caribbean |        576        0.58       54.00
+                           African |        553        0.55       54.55
+                       Other Black |        554        0.55       55.10
+                           Chinese |        569        0.57       55.67
+                             Other |        553        0.55       56.23
+                                 . |     43,773       43.77      100.00
+-----------------------------------+-----------------------------------
+                             Total |    100,000      100.00
+
+. 
+. 
+. * Ethnicity (16 category grouped further)
+. * Generate a version of the full breakdown with mixed in one group
+. gen eth16_small = ethnicity_16
+(43,773 missing values generated)
+
+. recode eth16_small 4/7 = 4
+(eth16_small: 8526 changes made)
+
+. recode eth16_small 11 = 16
+(eth16_small: 569 changes made)
+
+. recode eth16_small 14 = 16
+(eth16_small: 554 changes made)
+
+. 
+. label define eth16_small        ///
+>                                                 1 "British or Mixed British" ///
+>                                                 2 "Irish" ///
+>                                                 3 "Other White" ///
+>                                                 4 "All mixed" ///
+>                                                 8 "Indian" ///
+>                                                 9 "Pakistani" ///
+>                                                 10 "Bangladeshi" ///                                    
+>                                                 12 "Caribbean" ///
+>                                                 13 "African" ///
+>                                                 15 "Chinese" ///
+>                                                 16 "All Other" ///
+>                                                 .u "Unknown"  
+
+. label values eth16_small eth16_small
+
+. 
+. 
+. * STP 
+. rename stp stp_old
+
+. bysort stp_old: gen stp = 1 if _n==1
+(99,990 missing values generated)
+
+. replace stp = sum(stp)
+(99,999 real changes made)
+
+. drop stp_old
+
+. 
+. /*  IMD  */
+. * Group into 5 groups
+. rename imd imd_o
+
+. egen imd = cut(imd_o), group(5) icodes
+
+. 
+. * add one to create groups 1 - 5 
+. replace imd = imd + 1
+(100,000 real changes made)
+
+. 
+. * - 1 is missing, should be excluded from population 
+. replace imd = .u if imd_o == -1
+(0 real changes made)
+
+. drop imd_o
+
+. 
+. * Reverse the order (so high is more deprived)
+. recode imd 5 = 1 4 = 2 3 = 3 2 = 4 1 = 5 .u = .u
+(imd: 100000 changes made)
+
+. 
+. label define imd 1 "1 least deprived" 2 "2" 3 "3" 4 "4" 5 "5 most deprived" .u "Unknown"
+
+. label values imd imd 
+
+. 
+. /*  Age variables  */ 
+. 
+. * Create categorised age 
+. recode age      0/17.9999=0 ///
+>                         18/29.9999 = 1 /// 
+>                     30/39.9999 = 2 /// 
+>                         40/49.9999 = 3 ///
+>                         50/59.9999 = 4 ///
+>                         60/69.9999 = 5 ///
+>                         70/79.9999 = 6 ///
+>                         80/max = 7, gen(agegroup) 
+(98821 differences between age and agegroup)
+
+. 
+. label define agegroup   0 "0-<18" ///
+>                                                 1 "18-<30" ///
+>                                                 2 "30-<40" ///
+>                                                 3 "40-<50" ///
+>                                                 4 "50-<60" ///
+>                                                 5 "60-<70" ///
+>                                                 6 "70-<80" ///
+>                                                 7 "80+"
+
+.                                                 
+. label values agegroup agegroup
+
+. 
+. 
+. 
+. 
+. 
+. 
+. **************************** HOUSEHOLD VARS*******************************************
+. 
+. 
+. *Total number people in household (to check hh size)
+. bysort hh_id: gen hh_total=_N
+
+. 
+. 
+. ****************************
+. *  Create required cohort  *
+. ****************************
+. 
+. /* DROP ALL KIDS, AS HH COMPOSITION VARS ARE NOW MADE */
+. noi di "DROPPING AGE<18:" 
+DROPPING AGE<18:
+
+. drop if age<18
+(21,413 observations deleted)
+
+. 
+. 
+. * Age: Exclude those with implausible ages
+. assert age<.
+
+. noi di "DROPPING AGE<105:" 
+DROPPING AGE<105:
+
+. drop if age>105
+(23 observations deleted)
+
+. 
+. * Sex: Exclude categories other than M and F
+. assert inlist(sex, "M", "F", "I", "U")
+
+. noi di "DROPPING GENDER NOT M/F:" 
+DROPPING GENDER NOT M/F:
+
+. drop if inlist(sex, "I", "U")
+(0 observations deleted)
+
+. 
+. 
+. gen male = 1 if sex == "M"
+(40,218 missing values generated)
+
+. replace male = 0 if sex == "F"
+(40,218 real changes made)
+
+. 
+. 
+. 
+. * Create binary age (for age stratification)
+. recode age min/65.999999999 = 0 ///
+>            66/max = 1, gen(age66)
+(78564 differences between age and age66)
+
+. 
+. * Check there are no missing ages
+. assert age < .
+
+. assert agegroup < .
+
+. assert age66 < .
+
+. 
+. * Create restricted cubic splines for age
+. mkspline age = age, cubic nknots(4)
+
+. 
+. 
+. /* CONVERT STRINGS TO DATE====================================================*/
+. /* Comorb dates dates are given with month only, so adding day 
+> 15 to enable  them to be processed as dates                       */
+. 
+. *cr date for diabetes based on adjudicated type
+. gen diabetes=type1_diabetes if diabetes_type=="T1DM"
+(78,114 missing values generated)
+
+. replace diabetes=type2_diabetes if diabetes_type=="T2DM"
+(3,042 real changes made)
+
+. replace diabetes=unknown_diabetes if diabetes_type=="UNKNOWN_DM"
+(310 real changes made)
+
+. 
+. 
+. 
+. foreach var of varlist  chronic_respiratory_disease ///
+>                                                 chronic_cardiac_disease  ///
+>                                                 cancer  ///
+>                                                 permanent_immunodeficiency  ///
+>                                                 temporary_immunodeficiency  ///
+>                                                 chronic_liver_disease  ///
+>                                                 other_neuro  ///
+>                                                 stroke                  ///
+>                                                 dementia ///
+>                                                 esrf  ///
+>                                                 hypertension  ///
+>                                                 asthma ///
+>                                                 ra_sle_psoriasis  ///
+>                                                 diabetes ///
+>                                                 type1_diabetes ///
+>                                                 type2_diabetes ///
+>                                                 bmi_date_measured   ///
+>                                                 bp_sys_date_measured   ///
+>                                                 bp_dias_date_measured   ///
+>                                                 creatinine_date  ///
+>                                                 hba1c_mmol_per_mol_date  ///
+>                                                 hba1c_percentage_date ///
+>                                                 smoking_status_date ///
+>                                                 {
+  2.                                                         
+.                 capture confirm string variable `var'
+  3.                 if _rc!=0 {
+  4.                         cap assert `var'==.
+  5.                         rename `var' `var'_date
+  6.                 }
+  7.         
+.                 else {
+  8.                                 replace `var' = `var' + "-15"
+  9.                                 rename `var' `var'_dstr
+ 10.                                 replace `var'_dstr = " " if `var'_dstr == "-15"
+ 11.                                 gen `var'_date = date(`var'_dstr, "YMD") 
+ 12.                                 order `var'_date, after(`var'_dstr)
+ 13.                                 drop `var'_dstr
+ 14.                 }
+ 15.         
+.         format `var'_date %td
+ 16. }
+variable chronic_respiratory_disease was str7 now str10
+(78,564 real changes made)
+(62,877 real changes made)
+(62,877 missing values generated)
+variable chronic_cardiac_disease was str7 now str10
+(78,564 real changes made)
+(62,898 real changes made)
+(62,898 missing values generated)
+variable cancer was str7 now str10
+(78,564 real changes made)
+(62,845 real changes made)
+(62,845 missing values generated)
+variable permanent_immunodeficiency was str7 now str10
+(78,564 real changes made)
+(62,913 real changes made)
+(62,913 missing values generated)
+variable temporary_immunodeficiency was str7 now str10
+(78,564 real changes made)
+(62,834 real changes made)
+(62,834 missing values generated)
+variable chronic_liver_disease was str7 now str10
+(78,564 real changes made)
+(62,905 real changes made)
+(62,905 missing values generated)
+variable other_neuro was str7 now str10
+(78,564 real changes made)
+(62,859 real changes made)
+(62,859 missing values generated)
+variable stroke was str7 now str10
+(78,564 real changes made)
+(62,837 real changes made)
+(62,837 missing values generated)
+variable dementia was str7 now str10
+(78,564 real changes made)
+(62,877 real changes made)
+(62,877 missing values generated)
+variable esrf was str7 now str10
+(78,564 real changes made)
+(62,846 real changes made)
+(62,846 missing values generated)
+variable hypertension was str7 now str10
+(78,564 real changes made)
+(62,878 real changes made)
+(62,878 missing values generated)
+variable asthma was str7 now str10
+(78,564 real changes made)
+(62,740 real changes made)
+(62,740 missing values generated)
+variable ra_sle_psoriasis was str7 now str10
+(78,564 real changes made)
+(62,832 real changes made)
+(62,832 missing values generated)
+variable diabetes was str7 now str10
+(78,564 real changes made)
+(74,762 real changes made)
+(74,762 missing values generated)
+variable type1_diabetes was str7 now str10
+(78,564 real changes made)
+(62,996 real changes made)
+(62,996 missing values generated)
+variable type2_diabetes was str7 now str10
+(78,564 real changes made)
+(63,020 real changes made)
+(63,020 missing values generated)
+variable bmi_date_measured was str7 now str10
+(78,564 real changes made)
+(3,937 real changes made)
+(3,937 missing values generated)
+variable bp_sys_date_measured was str7 now str10
+(78,564 real changes made)
+(3,946 real changes made)
+(3,946 missing values generated)
+variable bp_dias_date_measured was str7 now str10
+(78,564 real changes made)
+(3,942 real changes made)
+(3,942 missing values generated)
+variable creatinine_date was str7 now str10
+(78,564 real changes made)
+(3,978 real changes made)
+(3,978 missing values generated)
+variable hba1c_mmol_per_mol_date was str7 now str10
+(78,564 real changes made)
+(3,942 real changes made)
+(3,942 missing values generated)
+variable hba1c_percentage_date was str7 now str10
+(78,564 real changes made)
+(3,950 real changes made)
+(3,950 missing values generated)
+variable smoking_status_date was str7 now str10
+(78,564 real changes made)
+(62,912 real changes made)
+(62,912 missing values generated)
+
+. 
+. * Note - outcome dates are handled separtely below 
+. 
+. * Some names too long for loops below, shorten
+. rename permanent_immunodeficiency_date  perm_immunodef_date
+
+. rename temporary_immunodeficiency_date  temp_immunodef_date
+
+. rename bmi_date_measured_date                   bmi_measured_date
+
+. 
+. /* CREATE BINARY VARIABLES====================================================*/
+. *  Make indicator variables for all conditions where relevant 
+. 
+. foreach var of varlist  chronic_respiratory_disease ///
+>                                                 chronic_cardiac_disease  ///
+>                                                 cancer  ///
+>                                                 perm_immunodef  ///
+>                                                 temp_immunodef  ///
+>                                                 chronic_liver_disease  ///
+>                                                 other_neuro  ///
+>                                                 stroke ///
+>                                                 dementia                                ///
+>                                                 esrf  ///
+>                                                 asthma ///
+>                                                 hypertension  ///
+>                                                 ra_sle_psoriasis  ///
+>                                                 bmi_measured_date   ///
+>                                                 bp_sys_date_measured   ///
+>                                                 bp_dias_date_measured   ///
+>                                                 creatinine_date  ///
+>                                                 hba1c_mmol_per_mol_date  ///
+>                                                 hba1c_percentage_date ///
+>                                                 smoking_status_date ///
+>                                                 {
+  2.                                                 
+.         /* date ranges are applied in python, so presence of date indicates presence of 
+>           disease in the correct time frame */ 
+.         local newvar =  substr("`var'", 1, length("`var'") - 5)
+  3.         gen `newvar' = (`var'!=. )
+  4.         order `newvar', after(`var')
+  5.         
+. }
+
+. 
+. 
+. 
+. /*  Body Mass Index  */
+. * NB: watch for missingness
+. 
+. * Recode strange values 
+. replace bmi = . if bmi == 0 
+(0 real changes made)
+
+. replace bmi = . if !inrange(bmi, 15, 50)
+(6,694 real changes made, 6,694 to missing)
+
+. 
+. * Restrict to within 10 years of index and aged > 16 
+. gen bmi_time = (date("$indexdate", "DMY") - bmi_measured_date)/365.25
+(3,937 missing values generated)
+
+. gen bmi_age = age - bmi_time
+(3,937 missing values generated)
+
+. 
+. replace bmi = . if bmi_age < 16 
+(25,890 real changes made, 25,890 to missing)
+
+. replace bmi = . if bmi_time > 10 & bmi_time != . 
+(28,498 real changes made, 28,498 to missing)
+
+. 
+. * Set to missing if no date, and vice versa 
+. replace bmi = . if bmi_measured_date == . 
+(0 real changes made)
+
+. replace bmi_measured_date = . if bmi == . 
+(61,082 real changes made, 61,082 to missing)
+
+. replace bmi_measured = . if bmi == . 
+(65,019 real changes made, 65,019 to missing)
+
+. 
+. * BMI (NB: watch for missingness)
+. gen     bmicat = .
+(78,564 missing values generated)
+
+. recode  bmicat . = 1 if bmi<18.5
+(bmicat: 447 changes made)
+
+. recode  bmicat . = 2 if bmi<25
+(bmicat: 1630 changes made)
+
+. recode  bmicat . = 3 if bmi<30
+(bmicat: 2225 changes made)
+
+. recode  bmicat . = 4 if bmi<35
+(bmicat: 2861 changes made)
+
+. recode  bmicat . = 5 if bmi<40
+(bmicat: 2857 changes made)
+
+. recode  bmicat . = 6 if bmi<.
+(bmicat: 3525 changes made)
+
+. replace bmicat = .u if bmi>=.
+(65,019 real changes made, 65,019 to missing)
+
+. 
+. label define bmicat 1 "Underweight (<18.5)"     ///
+>                                         2 "Normal (18.5-24.9)"          ///
+>                                         3 "Overweight (25-29.9)"        ///
+>                                         4 "Obese I (30-34.9)"           ///
+>                                         5 "Obese II (35-39.9)"          ///
+>                                         6 "Obese III (40+)"                     ///
+>                                         .u "Unknown (.u)"
+
+. label values bmicat bmicat
+
+. 
+. * Create more granular categorisation
+. recode bmicat 1/3 .u = 1 4=2 5=3 6=4, gen(obese4cat)
+(78117 differences between bmicat and obese4cat)
+
+. 
+. label define obese4cat  1 "No record of obesity"        ///
+>                                                 2 "Obese I (30-34.9)"           ///
+>                                                 3 "Obese II (35-39.9)"          ///
+>                                                 4 "Obese III (40+)"             
+
+. label values obese4cat obese4cat
+
+. order obese4cat, after(bmicat)
+
+. 
+. 
+. 
+. **generate BMI categories for south asians
+. *https://www.nice.org.uk/guidance/ph46/chapter/1-Recommendations#recommendation-2-bmi-assessment-multi-component-interventions-and-best-prac
+> tice-standards
+. 
+. gen bmicat_sa=bmicat
+(65,019 missing values generated)
+
+. replace bmicat_sa = 2 if bmi>=18.5 & bmi <23 & ethnicity  ==3
+(0 real changes made)
+
+. replace bmicat_sa = 3 if bmi>=23 & bmi < 27.5 & ethnicity ==3
+(48 real changes made)
+
+. replace bmicat_sa = 4 if bmi>=27.5 & bmi < 35 & ethnicity ==3
+(80 real changes made)
+
+. tab bmicat_sa
+
+  bmicat_sa |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          1 |        447        3.30        3.30
+          2 |      1,582       11.68       14.98
+          3 |      2,193       16.19       31.17
+          4 |      2,941       21.71       52.88
+          5 |      2,857       21.09       73.98
+          6 |      3,525       26.02      100.00
+------------+-----------------------------------
+      Total |     13,545      100.00
+
+. 
+. label define bmicat_sa 1 "Underweight (<18.5)"  ///
+>                                         2 "Normal (18.5-24.9 / 22.9)"           ///
+>                                         3 "Overweight (25-29.9 / 23-27.4)"      ///
+>                                         4 "Obese I (30-34.9 / 27.4-34.9)"               ///
+>                                         5 "Obese II (35-39.9)"          ///
+>                                         6 "Obese III (40+)"                     ///
+>                                         .u "Unknown (.u)"
+
+. label values bmicat bmicat
+
+. 
+. * Create more granular categorisation
+. recode bmicat_sa 1/3 .u = 1 4=2 5=3 6=4, gen(obese4cat_sa)
+(78117 differences between bmicat_sa and obese4cat_sa)
+
+. 
+. label define obese4cat_sa       1 "No record of obesity"        ///
+>                                                 2 "Obese I (30-34.9 / 27.5-34.9)"               ///
+>                                                 3 "Obese II (35-39.9)"          ///
+>                                                 4 "Obese III (40+)"             
+
+. label values obese4cat_sa obese4cat_sa
+
+. order obese4cat_sa, after(bmicat_sa)
+
+. 
+. 
+. /*  Smoking  */
+. 
+. * Smoking 
+. label define smoke 1 "Never" 2 "Former" 3 "Current" .u "Unknown (.u)"
+
+. 
+. gen     smoke = 1  if smoking_status == "N"
+(75,427 missing values generated)
+
+. replace smoke = 2  if smoking_status == "E"
+(1,537 real changes made)
+
+. replace smoke = 3  if smoking_status == "S"
+(9,404 real changes made)
+
+. replace smoke = .u if smoking_status == "M"
+(1,566 real changes made, 1,566 to missing)
+
+. replace smoke = .u if smoking_status == "" 
+(62,920 real changes made, 62,920 to missing)
+
+. 
+. label values smoke smoke
+
+. drop smoking_status
+
+. 
+. * Create non-missing 3-category variable for current smoking
+. * Assumes missing smoking is never smoking 
+. recode smoke .u = 1, gen(smoke_nomiss)
+(64486 differences between smoke and smoke_nomiss)
+
+. order smoke_nomiss, after(smoke)
+
+. label values smoke_nomiss smoke
+
+. 
+. /* CLINICAL COMORBIDITIES */ 
+. 
+. /*  Cancer */
+. label define cancer 1 "Never" 2 "Last year" 3 "2-5 years ago" 4 "5+ years"
+
+. 
+. * Haematological malignancies
+. gen     cancer_cat = 4 if inrange(cancer_date, d(1/1/1900), d(1/2/2015))
+(64,420 missing values generated)
+
+. replace cancer_cat = 3 if inrange(cancer_date, d(1/2/2015), d(1/2/2019))
+(1,275 real changes made)
+
+. replace cancer_cat = 2 if inrange(cancer_date, d(1/2/2019), d(1/2/2020))
+(299 real changes made)
+
+. recode  cancer_cat . = 1
+(cancer_cat: 62846 changes made)
+
+. label values cancer_cat cancer
+
+. 
+. 
+. 
+. 
+. /*  Immunosuppression  */
+. 
+. * Immunosuppressed:
+. * Permanent immunodeficiency ever, OR 
+. * Temporary immunodeficiency  last year
+. gen temp1  = 1 if perm_immunodef_date!=.
+(62,913 missing values generated)
+
+. gen temp2  = inrange(temp_immunodef_date, (date("$indexdate", "DMY") - 365), date("$indexdate", "DMY"))
+
+. 
+. egen other_immuno = rowmax(temp1 temp2)
+
+. drop temp1 temp2 
+
+. order other_immuno, after(temp_immunodef)
+
+. 
+. /*  Blood pressure   */
+. 
+. * Categorise
+. gen     bpcat = 1 if bp_sys < 120 &  bp_dias < 80
+(78,560 missing values generated)
+
+. replace bpcat = 2 if inrange(bp_sys, 120, 130) & bp_dias<80
+(0 real changes made)
+
+. replace bpcat = 3 if inrange(bp_sys, 130, 140) | inrange(bp_dias, 80, 90)
+(103 real changes made)
+
+. replace bpcat = 4 if (bp_sys>=140 & bp_sys<.) | (bp_dias>=90 & bp_dias<.) 
+(74,515 real changes made)
+
+. replace bpcat = .u if bp_sys>=. | bp_dias>=. | bp_sys==0 | bp_dias==0
+(7,686 real changes made, 7,686 to missing)
+
+. 
+. label define bpcat 1 "Normal" 2 "Elevated" 3 "High, stage I"    ///
+>                                         4 "High, stage II" .u "Unknown"
+
+. label values bpcat bpcat
+
+. 
+. recode bpcat .u=1, gen(bpcat_nomiss)
+(7686 differences between bpcat and bpcat_nomiss)
+
+. label values bpcat_nomiss bpcat
+
+. 
+. * Create non-missing indicator of known high blood pressure
+. gen bphigh = (bpcat==4)
+
+. 
+. /*  Hypertension  */
+. 
+. gen htdiag_or_highbp = bphigh
+
+. recode htdiag_or_highbp 0 = 1 if hypertension==1 
+(htdiag_or_highbp: 1510 changes made)
+
+. 
+. 
+. ************
+. *   eGFR   *
+. ************
+. 
+. * Set implausible creatinine values to missing (Note: zero changed to missing)
+. replace creatinine = . if !inrange(creatinine, 20, 3000) 
+(294 real changes made, 294 to missing)
+
+.         
+. * Divide by 88.4 (to convert umol/l to mg/dl)
+. gen SCr_adj = creatinine/88.4
+(4,272 missing values generated)
+
+. 
+. gen min=.
+(78,564 missing values generated)
+
+. replace min = SCr_adj/0.7 if male==0
+(38,056 real changes made)
+
+. replace min = SCr_adj/0.9 if male==1
+(36,236 real changes made)
+
+. replace min = min^-0.329  if male==0
+(38,056 real changes made)
+
+. replace min = min^-0.411  if male==1
+(36,236 real changes made)
+
+. replace min = 1 if min<1
+(20,615 real changes made)
+
+. 
+. gen max=.
+(78,564 missing values generated)
+
+. replace max=SCr_adj/0.7 if male==0
+(38,056 real changes made)
+
+. replace max=SCr_adj/0.9 if male==1
+(36,236 real changes made)
+
+. replace max=max^-1.209
+(74,292 real changes made)
+
+. replace max=1 if max>1
+(57,949 real changes made)
+
+. 
+. gen egfr=min*max*141
+(4,272 missing values generated)
+
+. replace egfr=egfr*(0.993^age)
+(74,292 real changes made)
+
+. replace egfr=egfr*1.018 if male==0
+(38,056 real changes made)
+
+. label var egfr "egfr calculated using CKD-EPI formula with no eth"
+
+. 
+. * Categorise into ckd stages
+. egen egfr_cat = cut(egfr), at(0, 15, 30, 45, 60, 5000)
+(4,272 missing values generated)
+
+. recode egfr_cat 0=5 15=4 30=3 45=2 60=0, generate(ckd)
+(74292 differences between egfr_cat and ckd)
+
+. * 0 = "No CKD"  2 "stage 3a" 3 "stage 3b" 4 "stage 4" 5 "stage 5"
+. label define ckd 0 "No CKD" 1 "CKD"
+
+. label values ckd ckd
+
+. *label var ckd "CKD stage calc without eth"
+. 
+. * Convert into CKD group
+. *recode ckd 2/5=1, gen(chronic_kidney_disease)
+. *replace chronic_kidney_disease = 0 if creatinine==. 
+.         
+. recode ckd 0=1 2/3=2 4/5=3, gen(reduced_kidney_function_cat)
+(73363 differences between ckd and reduced_kidney_function_cat)
+
+. replace reduced_kidney_function_cat = 1 if creatinine==. 
+(4,272 real changes made)
+
+. label define reduced_kidney_function_catlab ///
+>         1 "None" 2 "Stage 3a/3b egfr 30-60      " 3 "Stage 4/5 egfr<30"
+
+. label values reduced_kidney_function_cat reduced_kidney_function_catlab 
+
+. lab var  reduced "Reduced kidney function"
+
+. 
+. /* Hb1AC */
+. 
+. /*  Diabetes severity  */
+. 
+. * Set zero or negative to missing
+. replace hba1c_percentage   = . if hba1c_percentage <= 0
+(492 real changes made, 492 to missing)
+
+. replace hba1c_mmol_per_mol = . if hba1c_mmol_per_mol <= 0
+(1,698 real changes made, 1,698 to missing)
+
+. 
+. /* Express  HbA1c as percentage  */ 
+. 
+. * Express all values as perecentage 
+. noi summ hba1c_percentage hba1c_mmol_per_mol 
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+hba1c_per~ge |     74,122    5.036332    1.951417   1.27e-06   14.50479
+hba1c_mmol~l |     72,924    41.15227    18.73046   .0003963   129.2528
+
+. gen     hba1c_pct = hba1c_percentage 
+(4,442 missing values generated)
+
+. replace hba1c_pct = (hba1c_mmol_per_mol/10.929)+2.15 if hba1c_mmol_per_mol<. 
+(72,924 real changes made)
+
+. 
+. * Valid % range between 0-20  
+. replace hba1c_pct = . if !inrange(hba1c_pct, 0, 20) 
+(0 real changes made)
+
+. replace hba1c_pct = round(hba1c_pct, 0.1)
+(78,249 real changes made)
+
+. 
+. /* Categorise hba1c and diabetes  */
+. 
+. * Group hba1c
+. gen     hba1ccat = 0 if hba1c_pct <  6.5
+(28,709 missing values generated)
+
+. replace hba1ccat = 1 if hba1c_pct >= 6.5  & hba1c_pct < 7.5
+(14,097 real changes made)
+
+. replace hba1ccat = 2 if hba1c_pct >= 7.5  & hba1c_pct < 8
+(4,989 real changes made)
+
+. replace hba1ccat = 3 if hba1c_pct >= 8    & hba1c_pct < 9
+(5,988 real changes made)
+
+. replace hba1ccat = 4 if hba1c_pct >= 9    & hba1c_pct !=.
+(3,322 real changes made)
+
+. label define hba1ccat 0 "<6.5%" 1">=6.5-7.4" 2">=7.5-7.9" 3">=8-8.9" 4">=9"
+
+. label values hba1ccat hba1ccat
+
+. tab hba1ccat
+
+   hba1ccat |      Freq.     Percent        Cum.
+------------+-----------------------------------
+      <6.5% |     49,855       63.71       63.71
+  >=6.5-7.4 |     14,097       18.02       81.73
+  >=7.5-7.9 |      4,989        6.38       88.10
+    >=8-8.9 |      5,988        7.65       95.75
+        >=9 |      3,322        4.25      100.00
+------------+-----------------------------------
+      Total |     78,251      100.00
+
+. 
+. gen hba1c75=0 if hba1c_pct<7.5
+(14,612 missing values generated)
+
+. replace hba1c75=1 if hba1c_pct>7.5 & hba1c_pct!=.
+(13,212 real changes made)
+
+. label define hba1c75 0"<7.5" 1">=7.5"
+
+. 
+. /*  Asthma  */
+. * Asthma  (coded: 0 No, 1 Yes no OCS, 2 Yes with OCS)
+. rename asthma asthmacat
+
+. recode asthmacat 0=1 1=2 2=3
+(asthmacat: 78564 changes made)
+
+. label define asthmacat 1 "No" 2 "Yes, no OCS" 3 "Yes with OCS"
+
+. label values asthmacat asthmacat
+
+. 
+. gen asthma = (asthmacat==2|asthmacat==3)
+
+. 
+. 
+. /* OUTCOME AND SURVIVAL TIME==================================================*/
+. 
+. /*  Cohort entry and censor dates  */
+. * Date of cohort entry, 1 Mar 2020
+. gen enter_date = date("$indexdate", "DMY")
+
+. 
+. * Date of study end (typically: last date of outcome data available)
+. gen tppcensor_date              = date("$tppcensor",    "DMY")
+
+. gen sgsscensor_date             = date("$sgsscensor",   "DMY")
+
+. gen  ecdscensor_date                    = date("$ecdscensor",   "DMY")
+
+. gen inarccensor_date                    = date("$inarccensor",  "DMY")
+
+. gen cpnscensor_date                             = date("$cpnscensor",   "DMY")
+
+. gen onscensor_date                      = date("$onscensor",    "DMY")
+
+. 
+. 
+.         
+. /****   Outcome definitions   ****/
+. ren primary_care_suspect_case   suspected_date
+
+. ren primary_care_case                   confirmed_date
+
+. ren first_tested_for_covid              tested_date
+
+. ren first_positive_test_date    positivetest_date
+
+. ren a_e_consult_date                    ae_date
+
+. ren icu_date_admitted                   icu_date
+
+. *ren icu_date_ventilated        ventilation_date
+. ren died_date_cpns                              cpnsdeath_date
+
+. ren died_date_ons                               onsdeath_date
+
+. 
+. * Date of Covid death in ONS
+. gen onscoviddeath_date = onsdeath_date if died_ons_covid_flag_any == 1
+(75,404 missing values generated)
+
+. 
+. * Date of non-COVID death in ONS 
+. * If missing date of death resulting died_date will also be missing
+. gen ons_noncoviddeath_date = onsdeath_date if died_ons_covid_flag_any != 1 
+(66,063 missing values generated)
+
+. 
+. /* CONVERT STRINGS TO DATE====================================================*/
+. * Recode to dates from the strings 
+. foreach var of varlist  suspected_date ///
+>                                                 confirmed_date ///
+>                                                 tested_date ///
+>                                                 positivetest_date ///   
+>                                                 ae_date /// 
+>                                                 icu_date ///    ventilation_date ///
+>                                                 cpnsdeath_date  ///
+>                                                 onsdeath_date ///
+>                                                 onscoviddeath_date ///
+>                                                 ons_noncoviddeath_date ///                                              
+>                                 {
+  2.                                                 
+.         confirm string variable `var'
+  3.         rename `var' `var'_dstr
+  4.         gen `var' = date(`var'_dstr, "YMD")
+  5.         drop `var'_dstr
+  6.         format `var' %td 
+  7. 
+. }
+(62,898 missing values generated)
+(62,826 missing values generated)
+(62,860 missing values generated)
+(62,902 missing values generated)
+(62,871 missing values generated)
+(78,432 missing values generated)
+(62,786 missing values generated)
+(62,903 missing values generated)
+(75,404 missing values generated)
+(66,063 missing values generated)
+
+. 
+. 
+. 
+. format *date* %td
+
+. 
+. * Binary indicators for outcomes
+. local p"suspected confirmed tested positivetest ae icu ventilation cpnsdeath onsdeath onscoviddeath ons_noncoviddeath" 
+
+. foreach i of local p {
+  2.                 gen `i'=0
+  3.                 cap replace  `i'=1 if `i'_date < .
+  4.                 tab `i'
+  5. }
+
+  suspected |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |     62,898       80.06       80.06
+          1 |     15,666       19.94      100.00
+------------+-----------------------------------
+      Total |     78,564      100.00
+
+  confirmed |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |     62,826       79.97       79.97
+          1 |     15,738       20.03      100.00
+------------+-----------------------------------
+      Total |     78,564      100.00
+
+     tested |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |     62,860       80.01       80.01
+          1 |     15,704       19.99      100.00
+------------+-----------------------------------
+      Total |     78,564      100.00
+
+positivetes |
+          t |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |     62,902       80.06       80.06
+          1 |     15,662       19.94      100.00
+------------+-----------------------------------
+      Total |     78,564      100.00
+
+         ae |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |     62,871       80.03       80.03
+          1 |     15,693       19.97      100.00
+------------+-----------------------------------
+      Total |     78,564      100.00
+
+        icu |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |     78,432       99.83       99.83
+          1 |        132        0.17      100.00
+------------+-----------------------------------
+      Total |     78,564      100.00
+
+ventilation |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |     78,564      100.00      100.00
+------------+-----------------------------------
+      Total |     78,564      100.00
+
+  cpnsdeath |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |     62,786       79.92       79.92
+          1 |     15,778       20.08      100.00
+------------+-----------------------------------
+      Total |     78,564      100.00
+
+   onsdeath |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |     62,903       80.07       80.07
+          1 |     15,661       19.93      100.00
+------------+-----------------------------------
+      Total |     78,564      100.00
+
+onscoviddea |
+         th |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |     75,404       95.98       95.98
+          1 |      3,160        4.02      100.00
+------------+-----------------------------------
+      Total |     78,564      100.00
+
+ons_noncovi |
+     ddeath |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |     66,063       84.09       84.09
+          1 |     12,501       15.91      100.00
+------------+-----------------------------------
+      Total |     78,564      100.00
+
+. 
+. 
+. /**** Create survival times  ****/
+. * For looping later, name must be stime_binary_outcome_name
+. 
+. * Survival time = last followup date (first: end study, death, or that outcome)
+. gen stime_suspected = min(tppcensor_date, onsdeath_date, suspected_date)
+
+. gen stime_confirmed = min(tppcensor_date, onsdeath_date, confirmed_date)
+
+. gen stime_tested = min(sgsscensor_date, onsdeath_date, tested_date)
+
+. gen stime_positivetest = min(sgsscensor_date, onsdeath_date, positivetest_date)
+
+. gen stime_ae = min(ecdscensor_date, onsdeath_date, ae_date)
+
+. gen stime_icu = min(inarccensor_date, onsdeath_date, icu_date)
+
+. gen stime_ventilation = min(inarccensor_date, onsdeath_date) //*ventilation_date)
+
+. gen stime_cpnsdeath = min(cpnscensor_date, cpnsdeath_date)
+
+. gen stime_onsdeath = min(onscensor_date, onsdeath_date )
+
+. gen stime_onscoviddeath = min(onscensor_date, onscoviddeath_date )
+
+. gen stime_ons_noncoviddeath = min(onscensor_date, ons_noncoviddeath_date )
+
+. 
+. /* If outcome was after censoring occurred, set to zero
+> replace covid_death_itu         = 0 if (date_covid_death_itu    > onscoviddeathcensor_date) 
+> replace covid_tpp_prob_or_susp = 0 if (date_covid_tpp_prob_or_susp > onscoviddeathcensor_date)
+> replace covid_tpp_prob = 0 if (date_covid_tpp_prob > onscoviddeathcensor_date)
+> */
+. 
+. * Format date variables
+. format  stime* %td 
+
+. 
+. 
+. /* LABEL VARIABLES============================================================*/
+. *  Label variables you are intending to keep, drop the rest 
+. 
+. *HH variable
+. label var  hh_size "Number people in household"
+
+. label var  hh_id "Household ID"
+
+. 
+. 
+. * Demographics
+. label var patient_id                            "Patient ID"
+
+. label var age                                           "Age (years)"
+
+. label var agegroup                                      "Grouped age"
+
+. label var age66                                         "66 years and older"
+
+. label var sex                                           "Sex"
+
+. label var male                                          "Male"
+
+. label var bmi                                           "Body Mass Index (BMI, kg/m2)"
+
+. label var bmicat                                        "BMI"
+
+. label var bmicat_sa                                     "BMI with SA categories"
+
+. label var bmi_measured_date             "Body Mass Index (BMI, kg/m2), date measured"
+
+. label var obese4cat                                     "Obesity (4 categories)"
+
+. label var obese4cat_sa                          "Obesity with SA categories"
+
+. label var smoke                                         "Smoking status"
+
+. label var smoke_nomiss                          "Smoking status (missing set to non)"
+
+. label var imd                                           "Index of Multiple Deprivation (IMD)"
+
+. label var ethnicity                                     "Eth 5 categories"
+
+. label var ethnicity_16                          "Eth 16 categories"
+
+. label var eth16_small                           "Eth 16 collapsed"
+
+. label var stp                                           "Sustainability and Transformation Partnership"
+
+. label var age1                                          "Age spline 1"
+
+. label var age2                                          "Age spline 2"
+
+. label var age3                                          "Age spline 3"
+
+. lab var hh_total                                        "calculated No of ppl in household"
+
+. 
+. * Comorbidities of interest 
+. label var asthma                                                "Asthma category"
+
+. label var egfr_cat                                              "Calculated eGFR"
+
+. label var hypertension                              "Diagnosed hypertension"
+
+. label var chronic_respiratory_disease   "Chronic Respiratory Diseases"
+
+. label var chronic_cardiac_disease               "Chronic Cardiac Diseases"
+
+. label var diabetes_type                                         "Diabetes by type"
+
+. label var diabetes_exeter_os                    "Diabetes exeter type"
+
+. label var cancer                                                "Cancer"
+
+. label var other_immuno                                  "Immunosuppressed (combination algorithm)"
+
+. label var chronic_liver_disease                 "Chronic liver disease"
+
+. label var other_neuro                                   "Neurological disease"                  
+
+. label var stroke                                            "Stroke"
+
+. lab var dementia                                                "Dementia"                                                      
+
+. label var ra_sle_psoriasis                              "Autoimmune disease"
+
+. lab var egfr                                                    "eGFR"
+
+. lab var perm_immunodef                                  "Permanent immunosuppression"
+
+. lab var temp_immunodef                                  "Temporary immunosuppression"
+
+. 
+. label var hypertension_date                                     "Diagnosed hypertension Date"
+
+. label var chronic_respiratory_disease_date      "Other Respiratory Diseases Date"
+
+. label var chronic_cardiac_disease_date          "Other Heart Diseases Date"
+
+. label var diabetes_date                                         "Diabetes Date"
+
+. label var cancer_date                                           "Cancer Date"
+
+. label var chronic_liver_disease_date            "Chronic liver disease Date"
+
+. label var other_neuro_date                                      "Neurological disease  Date"
+
+. label var stroke_date                                   "Stroke date"           
+
+. label var dementia_date                                         "DDementia date"                                        
+
+. label var ra_sle_psoriasis_date                         "Autoimmune disease  Date"
+
+. lab var perm_immunodef_date                             "Permanent immunosuppression date"
+
+. lab var temp_immunodef_date                             "Temporary immunosuppression date"
+
+. lab var  bphigh                                                         "non-missing indicator of known high blood pressure"
+
+. lab var bpcat                                                           "Blood pressure four levels, non-missing"
+
+. lab var htdiag_or_highbp                                        "High blood pressure or hypertension diagnosis"
+
+. 
+. * Outcomes and follow-up
+. label var enter_date                                    "Date of study entry"
+
+. 
+. label var tppcensor                                             "Date of admin censoring for covid TPP cases"
+
+. label var sgsscensor                                    "Date of admin censoring for SGSS testing data"
+
+. label var ecdscensor                                    "Date of admin censoring for A&E attendance"
+
+. label var inarccensor                                   "Date of admin censoring for ITU admissions and ventilation events"
+
+. label var onscensor                                             "Date of admin censoring for ONS deaths"
+
+. label var cpnscensor                                    "Date of admin censoring for CPNS deaths"
+
+. 
+. label var suspected_date                                "Failure/censoring indicator for outcome: suspected case"
+
+. label var confirmed_date                                "Failure/censoring indicator for outcome: covid confirmed case"
+
+. label var tested_date                                   "Failure/censoring indicator for outcome: SGSS test performed"
+
+. label var positivetest_date                             "Failure/censoring indicator for outcome: SGSS test positive"
+
+. label var ae_date                                               "Failure/censoring indicator for outcome: A&E Attendance"
+
+. label var icu_date                                              "Failure/censoring indicator for outcome: ICU Admission"
+
+. *label var ventilation_date                             "Failure/censoring indicator for outcome: ICU Ventilation"
+. label var cpnsdeath_date                                "Failure/censoring indicator for outcome: CPNS death"
+
+. label var onsdeath_date                                 "Failure/censoring indicator for outcome: ONS death any cause"
+
+. label var onscoviddeath_date                    "Failure/censoring indicator for outcome: ONS COVID death"
+
+. label var ons_noncoviddeath_date                "Failure/censoring indicator for outcome: ONS non-COVID death"
+
+. 
+. * Survival times
+. label var stime_suspected                               "Survival time (date); outcome suspected case"
+
+. label var stime_confirmed                               "Survival time (date); outcome confirmed case"
+
+. label var stime_tested                                  "Survival time (date); outcome SGSS test performed"
+
+. label var stime_positivetest                    "Survival time (date); outcome SGSS test positive"
+
+. label var stime_ae                                              "Survival time (date); outcome A&E Attendance"
+
+. label var stime_icu                                     "Survival time (date); outcome ICU Admission"
+
+. label var stime_ventilation                             "Survival time (date); outcome ICU Ventilation"
+
+. label var stime_cpnsdeath                               "Survival time (date); outcome CPNS death"
+
+. label var stime_onsdeath                                "Survival time (date); outcome ONS death any cause"
+
+. label var stime_onscoviddeath                   "Survival time (date); outcome ONS COVID death"
+
+. label var stime_ons_noncoviddeath               "Survival time (date); outcome ONS non-COVID death"
+
+. 
+. 
+. /* TIDY DATA==================================================================*/
+. *  Drop variables that are not needed (those not labelled)
+. ds, not(varlabel)
+primary_c~se  bp_dias_da~e  crea~ne_date  unknown_di~s  died_ons_c~y  bp_sys        arbs          bmi_age       hba1c75       ventilation
+primary_c~re  bp_dias_da~d  smoki~e_date  esrf_date     died_ons_c~g  bp_dias       betablockers  cancer_cat    suspected     cpnsdeath
+ethni~6_date  ~l_date_date  smoki~s_date  esrf          rural_urban   hba1c_mmol~l  calcium_ch~s  SCr_adj       confirmed     onsdeath
+ethni~y_date  hba1c~l_date  asthma_date   gi_bleed_a~r  region        hba1c_per~ge  combinatio~s  min           tested        onscovidde~h
+bmi_measured  hba1c_perc..  asthmacat     inflammato~e  care_home_~e  creatinine    spironolac~e  max           positivetest  ons_noncov~h
+bp_sys_dat~e  hba1~ge_date  type1_diab~e  insulin       gp_consult~t  ace_inhibi~s  thiazide_d~s  hba1c_pct     ae
+bp_sys_dat~d  crea~te_date  type2_diab~e  statin        has_consul~y  alpha_bloc~s  bmi_time      hba1ccat      icu
+
+. drop `r(varlist)'
+
+.         
+. 
+. /* APPLY INCLUSION/EXCLUIONS==================================================*/ 
+. 
+. 
+. 
+. noi di "DROP AGE >110:"
+DROP AGE >110:
+
+. drop if age > 110 & age != .
+(0 observations deleted)
+
+. 
+. noi di "DROP IF DIED BEFORE INDEX"
+DROP IF DIED BEFORE INDEX
+
+. drop if onsdeath_date <= date("$indexdate", "DMY")
+(15,518 observations deleted)
+
+. 
+. noi di "DROP IF OUTCOMES OCCUR BEFORE INDEX"
+DROP IF OUTCOMES OCCUR BEFORE INDEX
+
+. 
+. local p"suspected confirmed tested positivetest ae icu ventilation cpnsdeath onsdeath onscoviddeath ons_noncoviddeath" 
+
+. foreach i of local p {
+  2.         cap drop if `i'_date <= date("$indexdate", "DMY") 
+  3. }
+
+.         
+. ***************
+. *  Save data  *
+. ***************
+. sort patient_id
+
+. save "$Tempdir/analysis_dataset.dta", replace
+(note: file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysis_dataset.dta not found)
+file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysis_dataset.dta saved
+
+. 
+. **save a version set on each outcome
+. local p"suspected confirmed tested positivetest ae icu cpnsdeath onsdeath onscoviddeath ons_noncoviddeath" //ventilation
+
+. foreach i of local p {
+  2.         use "$Tempdir/analysis_dataset.dta", clear
+  3. 
+.         stset stime_`i', fail(`i')                              ///
+>         id(patient_id) enter(enter_date) origin(enter_date)
+  4.         save "$Tempdir/analysis_dataset_STSET_`i'.dta", replace
+  5. }       
+
+                id:  patient_id
+     failure event:  suspected_date != 0 & suspected_date < .
+obs. time interval:  (stime_suspected[_n-1], stime_suspected]
+ enter on or after:  time enter_date
+ exit on or before:  failure
+    t for analysis:  (time-origin)
+            origin:  time enter_date
+
+------------------------------------------------------------------------------
+     50,444  total observations
+          0  exclusions
+------------------------------------------------------------------------------
+     50,444  observations remaining, representing
+     50,444  subjects
+     10,033  failures in single-failure-per-subject data
+  9,054,506  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =         0
+                                          last observed exit t =       181
+(note: file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysis_dataset_STSET_suspected.dta not found)
+file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysis_dataset_STSET_suspected.dta saved
+
+                id:  patient_id
+     failure event:  confirmed_date != 0 & confirmed_date < .
+obs. time interval:  (stime_confirmed[_n-1], stime_confirmed]
+ enter on or after:  time enter_date
+ exit on or before:  failure
+    t for analysis:  (time-origin)
+            origin:  time enter_date
+
+------------------------------------------------------------------------------
+     50,444  total observations
+          0  exclusions
+------------------------------------------------------------------------------
+     50,444  observations remaining, representing
+     50,444  subjects
+     10,143  failures in single-failure-per-subject data
+  9,055,809  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =         0
+                                          last observed exit t =       181
+(note: file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysis_dataset_STSET_confirmed.dta not found)
+file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysis_dataset_STSET_confirmed.dta saved
+
+                id:  patient_id
+     failure event:  tested_date != 0 & tested_date < .
+obs. time interval:  (stime_tested[_n-1], stime_tested]
+ enter on or after:  time enter_date
+ exit on or before:  failure
+    t for analysis:  (time-origin)
+            origin:  time enter_date
+
+------------------------------------------------------------------------------
+     50,444  total observations
+          0  exclusions
+------------------------------------------------------------------------------
+     50,444  observations remaining, representing
+     50,444  subjects
+     10,163  failures in single-failure-per-subject data
+  8,107,797  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =         0
+                                          last observed exit t =       181
+(note: file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysis_dataset_STSET_tested.dta not found)
+file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysis_dataset_STSET_tested.dta saved
+
+                id:  patient_id
+     failure event:  positivetest_date != 0 & positivetest_date < .
+obs. time interval:  (stime_positivetest[_n-1], stime_positivetest]
+ enter on or after:  time enter_date
+ exit on or before:  failure
+    t for analysis:  (time-origin)
+            origin:  time enter_date
+
+------------------------------------------------------------------------------
+     50,444  total observations
+          0  exclusions
+------------------------------------------------------------------------------
+     50,444  observations remaining, representing
+     50,444  subjects
+      9,957  failures in single-failure-per-subject data
+  8,124,832  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =         0
+                                          last observed exit t =       181
+(note: file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysis_dataset_STSET_positivetest.dta not found)
+file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysis_dataset_STSET_positivetest.dta saved
+
+                id:  patient_id
+     failure event:  ae_date != 0 & ae_date < .
+obs. time interval:  (stime_ae[_n-1], stime_ae]
+ enter on or after:  time enter_date
+ exit on or before:  failure
+    t for analysis:  (time-origin)
+            origin:  time enter_date
+
+------------------------------------------------------------------------------
+     50,444  total observations
+          0  exclusions
+------------------------------------------------------------------------------
+     50,444  observations remaining, representing
+     50,444  subjects
+     10,045  failures in single-failure-per-subject data
+  9,054,307  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =         0
+                                          last observed exit t =       181
+(note: file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysis_dataset_STSET_ae.dta not found)
+file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysis_dataset_STSET_ae.dta saved
+
+                id:  patient_id
+     failure event:  icu_date != 0 & icu_date < .
+obs. time interval:  (stime_icu[_n-1], stime_icu]
+ enter on or after:  time enter_date
+ exit on or before:  failure
+    t for analysis:  (time-origin)
+            origin:  time enter_date
+
+------------------------------------------------------------------------------
+     50,444  total observations
+          0  exclusions
+------------------------------------------------------------------------------
+     50,444  observations remaining, representing
+     50,444  subjects
+         94  failures in single-failure-per-subject data
+  9,109,655  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =         0
+                                          last observed exit t =       181
+(note: file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysis_dataset_STSET_icu.dta not found)
+file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysis_dataset_STSET_icu.dta saved
+
+                id:  patient_id
+     failure event:  cpnsdeath_date != 0 & cpnsdeath_date < .
+obs. time interval:  (stime_cpnsdeath[_n-1], stime_cpnsdeath]
+ enter on or after:  time enter_date
+ exit on or before:  failure
+    t for analysis:  (time-origin)
+            origin:  time enter_date
+
+------------------------------------------------------------------------------
+     50,444  total observations
+          0  exclusions
+------------------------------------------------------------------------------
+     50,444  observations remaining, representing
+     50,444  subjects
+         72  failures in single-failure-per-subject data
+  9,121,217  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =         0
+                                          last observed exit t =       181
+(note: file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysis_dataset_STSET_cpnsdeath.dta not found)
+file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysis_dataset_STSET_cpnsdeath.dta saved
+
+                id:  patient_id
+     failure event:  onsdeath_date != 0 & onsdeath_date < .
+obs. time interval:  (stime_onsdeath[_n-1], stime_onsdeath]
+ enter on or after:  time enter_date
+ exit on or before:  failure
+    t for analysis:  (time-origin)
+            origin:  time enter_date
+
+------------------------------------------------------------------------------
+     50,444  total observations
+          0  exclusions
+------------------------------------------------------------------------------
+     50,444  observations remaining, representing
+     50,444  subjects
+        113  failures in single-failure-per-subject data
+  9,118,927  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =         0
+                                          last observed exit t =       181
+(note: file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysis_dataset_STSET_onsdeath.dta not found)
+file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysis_dataset_STSET_onsdeath.dta saved
+
+                id:  patient_id
+     failure event:  onscoviddeath_date != 0 & onscoviddeath_date < .
+obs. time interval:  (stime_onscoviddeath[_n-1], stime_onscoviddeath]
+ enter on or after:  time enter_date
+ exit on or before:  failure
+    t for analysis:  (time-origin)
+            origin:  time enter_date
+
+------------------------------------------------------------------------------
+     50,444  total observations
+          0  exclusions
+------------------------------------------------------------------------------
+     50,444  observations remaining, representing
+     50,444  subjects
+         20  failures in single-failure-per-subject data
+  9,128,065  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =         0
+                                          last observed exit t =       181
+(note: file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysis_dataset_STSET_onscoviddeath.dta not found)
+file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysis_dataset_STSET_onscoviddeath.dta saved
+
+                id:  patient_id
+     failure event:  ons_noncoviddeath_date != 0 & ons_noncoviddeath_date < .
+obs. time interval:  (stime_ons_noncoviddeath[_n-1], stime_ons_noncoviddeath]
+ enter on or after:  time enter_date
+ exit on or before:  failure
+    t for analysis:  (time-origin)
+            origin:  time enter_date
+
+------------------------------------------------------------------------------
+     50,444  total observations
+          0  exclusions
+------------------------------------------------------------------------------
+     50,444  observations remaining, representing
+     50,444  subjects
+         93  failures in single-failure-per-subject data
+  9,121,226  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =         0
+                                          last observed exit t =       181
+(note: file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysis_dataset_STSET_ons_noncoviddeath.dta not found)
+file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysis_dataset_STSET_ons_noncoviddeath.dta saved
+
+.         
+. * Close log file 
+. log close
+      name:  <unnamed>
+       log:  /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/log/01_eth_cr_create_analysis_dataset.smcl
+  log type:  text
+ closed on:  12 Jul 2020, 20:18:36
+----------------------------------------------------------------------------------------------------------------------------------------------

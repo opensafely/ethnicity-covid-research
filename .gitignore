@@ -15,3 +15,4 @@ venv/
 *.exe
 .Rhistory
 .DS_Store
+*.dta
