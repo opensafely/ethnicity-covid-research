@@ -470,7 +470,7 @@ study = StudyDefinition(
 
     diabetes=patients.categorised_as(
         {
-            "T1_DM":
+            "T1DM":
                 """
                         (type1_diabetes AND NOT
                         type2_diabetes) 
@@ -482,7 +482,7 @@ study = StudyDefinition(
                         (insulin_lastyear_meds > 0 AND NOT
                         oad_lastyear_meds > 0))
                 """,
-            "T2_DM":
+            "T2DM":
                 """
                         (type2_diabetes AND NOT
                         type1_diabetes)
@@ -508,7 +508,7 @@ study = StudyDefinition(
         },
 
         return_expectations={
-            "category": {"ratios": {"T1_DM": 0.03, "T2_DM": 0.2, "UNKNOWN_DM": 0.02, "NO_DM": 0.75}},
+            "category": {"ratios": {"T1DM": 0.03, "T2DM": 0.2, "UNKNOWN_DM": 0.02, "NO_DM": 0.75}},
             "rate" : "universal"
 
         },
@@ -543,13 +543,14 @@ study = StudyDefinition(
         ),
     ),
 
-    diabetes_exeter=patients.categorised_as(
+#EXETER ALGORITHM USING OPENSAFELY CODELISTS
+    diabetes_exeter_os=patients.categorised_as(
         {
-            "T1_DM":
+            "T1DM_EX_OS":
                 """
                         ((insulin_last6mo >= 2) AND ((t1dm_count / t2dm_count) >= 2))
                 """,
-            "T2_DM":
+            "T2DM_EX_OS":
                 """
                         (insulin_last6mo < 2) AND ((t2dm_count>0))
                         OR
@@ -582,6 +583,48 @@ study = StudyDefinition(
             returning="number_of_matches_in_period",
         ),
     ),
+
+#EXETER ALGORITHM USING EXETER CODELISTS
+    diabetes_exeter=patients.categorised_as(
+        {
+            "T1DM_EX":
+                """
+                        ((insulin_last6mo >= 2) AND ((t1dm_count / t2dm_count) >= 2))
+                """,
+            "T2DM_EX":
+                """
+                        (insulin_last6mo < 2) AND ((t2dm_count>0))
+                        OR
+                        ((insulin_last6mo >= 2) AND ((t1dm_count / t2dm_count) < 2)) AND ((t2dm_count>0))
+                """,
+            "NO_DM": "DEFAULT",
+        },
+
+        return_expectations={
+            "category": {"ratios": {"T1_DM": 0.02, "T2_DM": 0.4, "NO_DM": 0.78}},
+            "rate" : "universal"
+
+        },
+
+        t1dm_count=patients.categorised_as(
+            "T1DM": "diabetes_t1t2_codes_exeter = '1'",
+            on_or_before="2020-02-01",
+            returning="number_of_matches_in_period",
+        ),
+
+        t2dm_count=patients.patients.categorised_as(
+            "T2DM": "diabetes_t1t2_codes_exeter = '2'",
+            on_or_before="2020-02-01",
+            returning="number_of_matches_in_period",
+        ),
+            
+        insulin_last6mo=patients.with_these_medications(
+            insulin_med_codes,
+            between=["2019-09-01", "2020-02-29"],
+            returning="number_of_matches_in_period",
+        ),
+    ),
+
 
     # CANCER - 3 TYPES
     cancer=patients.with_these_clinical_events(
