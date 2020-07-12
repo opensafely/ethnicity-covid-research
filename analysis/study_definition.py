@@ -86,6 +86,7 @@ study = StudyDefinition(
         return_expectations={"date": {"earliest": "2020-02-01",
                                       "latest": "2020-08-24"},
                              "rate": "exponential_increase"},
+    ),
 
     # ICU attendance and ventilation
     # icu_date_ventilated=patients.ventilated_in_icu(
@@ -575,7 +576,7 @@ study = StudyDefinition(
         },
 
         return_expectations={
-            "category": {"ratios": {"T1_DM": 0.03, "T2_DM": 0.2, "NO_DM": 0.77}},
+            "category": {"ratios": {"T1DM_EX_OS": 0.03, "T2DM_EX_OS": 0.2, "NO_DM": 0.77}},
             "rate" : "universal"
 
         },
