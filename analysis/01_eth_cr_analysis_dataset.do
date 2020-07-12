@@ -602,10 +602,10 @@ foreach var of varlist 	suspected_date ///
 format *date* %td
 
 * Binary indicators for outcomes
-local p"suspected confirmed tested positivetest ae icu ventilation cpnsdeath onsdeath onscoviddeath ons_noncoviddeath" 
+local p"suspected confirmed tested positivetest ae icu  cpnsdeath onsdeath onscoviddeath ons_noncoviddeath" //ventilation
 foreach i of local p {
 		gen `i'=0
-		cap replace  `i'=1 if `i'_date < .
+		replace  `i'=1 if `i'_date < .
 		tab `i'
 }
 
@@ -739,6 +739,18 @@ label var stime_onsdeath 				"Survival time (date); outcome ONS death any cause"
 label var stime_onscoviddeath			"Survival time (date); outcome ONS COVID death"
 label var stime_ons_noncoviddeath		"Survival time (date); outcome ONS non-COVID death"
 
+* binary indicators
+label var suspected 				"outcome suspected case"
+label var confirmed 				"outcome confirmed case"
+label var tested 					"outcome SGSS test performed"
+label var positivetest 				"outcome SGSS test positive"
+label var ae 						"outcome A&E Attendance"
+label var icu 						"outcome ICU Admission"
+*label var ventilation				"outcome ICU Ventilation"
+label var cpnsdeath 				"outcome CPNS death"
+label var onsdeath 					"outcome ONS death any cause"
+label var onscoviddeath				"outcome ONS COVID death"
+label var ons_noncoviddeath			"outcome ONS non-COVID death"
 
 /* TIDY DATA==================================================================*/
 *  Drop variables that are not needed (those not labelled)

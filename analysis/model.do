@@ -38,3 +38,8 @@ do "01_eth_cr_analysis_dataset.do"
 
 *  Checks 
 do "02_eth_an_data_checks.do"
+
+
+/*  Descriptives
+do "03_eth_an_descriptive_tables.do"
+do "04_eth_ an_descriptive_plots.do"

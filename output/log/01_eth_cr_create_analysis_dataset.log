@@ -1,8 +1,9 @@
-----------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------
       name:  <unnamed>
-       log:  /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/log/01_eth_cr_create_analysis_dataset.log
+       log:  /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/log/01_e
+> th_cr_create_analysis_dataset.log
   log type:  text
- opened on:  12 Jul 2020, 21:00:58
+ opened on:  12 Jul 2020, 21:28:04
 
 . 
 . 
@@ -17,13 +18,15 @@ STARTING COUNT FROM IMPORT:
 . **************************   INPUT REQUIRED   *********************************
 . 
 . * Censoring dates for each outcome (largely, last date outcome data available)
-. global tppcensor                        = "31/07/2020"  //primary care suspected and confirmed covid
+. global tppcensor                        = "31/07/2020"  //primary care suspected and 
+> confirmed covid
 
 . global sgsscensor                       = "31/07/2020"  //testing data
 
 . global ecdscensor                       = "31/07/2020"  //A&E admission
 
-. global inarccensor                      = "31/07/2020"  //ICU admission and ventilation
+. global inarccensor                      = "31/07/2020"  //ICU admission and ventilati
+> on
 
 . global cpnscensor                       = "31/07/2020"  //in-hospital death
 
@@ -48,10 +51,13 @@ STARTING COUNT FROM IMPORT:
 (0 real changes made)
 
 . label define ethnicity  1 "White"                                       ///
->                                                 2 "Mixed"                                       ///
+>                                                 2 "Mixed"                            
+>            ///
 >                                                 3 "Asian or Asian British"      ///
->                                                 4 "Black"                                       ///
->                                                 5 "Other"                                       
+>                                                 4 "Black"                            
+>            ///
+>                                                 5 "Other"                            
+>            
 
 .                                                 
 . label values ethnicity ethnicity
@@ -71,23 +77,40 @@ Asian or Asian British |      7,622       10.16       90.02
 . replace ethnicity_16 = . if ethnicity==.
 (18,773 real changes made, 18,773 to missing)
 
-. label define ethnicity_16                                                                       ///
->                                                 1 "British or Mixed British"            ///
->                                                 2 "Irish"                                                       ///
->                                                 3 "Other White"                                         ///
->                                                 4 "White + Black Caribbean"             ///
->                                                 5 "White + Black African"                       ///
->                                                 6 "White + Asian"                                       ///
->                                                 7 "Other mixed"                                         ///
->                                                 8 "Indian or British Indian"            ///
->                                                 9 "Pakistani or British Pakistani"      ///
->                                                 10 "Bangladeshi or British Bangladeshi" ///
->                                                 11 "Other Asian"                                        ///
->                                                 12 "Caribbean"                                          ///
->                                                 13 "African"                                            ///
->                                                 14 "Other Black"                                        ///
->                                                 15 "Chinese"                                            ///
->                                                 16 "Other"                                                      
+. label define ethnicity_16                                                            
+>            ///
+>                                                 1 "British or Mixed British"         
+>    ///
+>                                                 2 "Irish"                            
+>                            ///
+>                                                 3 "Other White"                      
+>                    ///
+>                                                 4 "White + Black Caribbean"          
+>    ///
+>                                                 5 "White + Black African"            
+>            ///
+>                                                 6 "White + Asian"                    
+>                    ///
+>                                                 7 "Other mixed"                      
+>                    ///
+>                                                 8 "Indian or British Indian"         
+>    ///
+>                                                 9 "Pakistani or British Pakistani"   
+>    ///
+>                                                 10 "Bangladeshi or British Bangladesh
+> i" ///
+>                                                 11 "Other Asian"                     
+>                    ///
+>                                                 12 "Caribbean"                       
+>                    ///
+>                                                 13 "African"                         
+>                    ///
+>                                                 14 "Other Black"                     
+>                    ///
+>                                                 15 "Chinese"                         
+>                    ///
+>                                                 16 "Other"                           
+>                            
 
 .                                                 
 . label values ethnicity_16 ethnicity_16
@@ -140,7 +163,8 @@ Bangladeshi or British Bangladeshi |      1,160        1.16       52.85
 >                                                 4 "All mixed" ///
 >                                                 8 "Indian" ///
 >                                                 9 "Pakistani" ///
->                                                 10 "Bangladeshi" ///                                    
+>                                                 10 "Bangladeshi" ///                 
+>                    
 >                                                 12 "Caribbean" ///
 >                                                 13 "African" ///
 >                                                 15 "Chinese" ///
@@ -187,7 +211,8 @@ Bangladeshi or British Bangladeshi |      1,160        1.16       52.85
 (imd: 100000 changes made)
 
 . 
-. label define imd 1 "1 least deprived" 2 "2" 3 "3" 4 "4" 5 "5 most deprived" .u "Unknown"
+. label define imd 1 "1 least deprived" 2 "2" 3 "3" 4 "4" 5 "5 most deprived" .u "Unkno
+> wn"
 
 . label values imd imd 
 
@@ -224,7 +249,8 @@ Bangladeshi or British Bangladeshi |      1,160        1.16       52.85
 . 
 . 
 . 
-. **************************** HOUSEHOLD VARS*******************************************
+. **************************** HOUSEHOLD VARS******************************************
+> *
 . 
 . 
 . *Total number people in household (to check hh size)
@@ -468,7 +494,8 @@ variable smoking_status_date was str7 now str10
 >                                                 chronic_liver_disease  ///
 >                                                 other_neuro  ///
 >                                                 stroke ///
->                                                 dementia                                ///
+>                                                 dementia                             
+>    ///
 >                                                 esrf  ///
 >                                                 asthma ///
 >                                                 hypertension  ///
@@ -482,7 +509,8 @@ variable smoking_status_date was str7 now str10
 >                                                 smoking_status_date ///
 >                                                 {
   2.                                                 
-.         /* date ranges are applied in python, so presence of date indicates presence of 
+.         /* date ranges are applied in python, so presence of date indicates presence 
+> of 
 >           disease in the correct time frame */ 
 .         local newvar =  substr("`var'", 1, length("`var'") - 5)
   3.         gen `newvar' = (`var'!=. )
@@ -585,8 +613,8 @@ variable smoking_status_date was str7 now str10
 . 
 . 
 . **generate BMI categories for south asians
-. *https://www.nice.org.uk/guidance/ph46/chapter/1-Recommendations#recommendation-2-bmi-assessment-multi-component-interventions-and-best-prac
-> tice-standards
+. *https://www.nice.org.uk/guidance/ph46/chapter/1-Recommendations#recommendation-2-bmi
+> -assessment-multi-component-interventions-and-best-practice-standards
 . 
 . gen bmicat_sa=bmicat
 (65,019 missing values generated)
@@ -617,7 +645,8 @@ variable smoking_status_date was str7 now str10
 . label define bmicat_sa 1 "Underweight (<18.5)"  ///
 >                                         2 "Normal (18.5-24.9 / 22.9)"           ///
 >                                         3 "Overweight (25-29.9 / 23-27.4)"      ///
->                                         4 "Obese I (30-34.9 / 27.4-34.9)"               ///
+>                                         4 "Obese I (30-34.9 / 27.4-34.9)"            
+>    ///
 >                                         5 "Obese II (35-39.9)"          ///
 >                                         6 "Obese III (40+)"                     ///
 >                                         .u "Unknown (.u)"
@@ -631,7 +660,8 @@ variable smoking_status_date was str7 now str10
 
 . 
 . label define obese4cat_sa       1 "No record of obesity"        ///
->                                                 2 "Obese I (30-34.9 / 27.5-34.9)"               ///
+>                                                 2 "Obese I (30-34.9 / 27.5-34.9)"    
+>            ///
 >                                                 3 "Obese II (35-39.9)"          ///
 >                                                 4 "Obese III (40+)"             
 
@@ -711,7 +741,8 @@ variable smoking_status_date was str7 now str10
 . gen temp1  = 1 if perm_immunodef_date!=.
 (62,913 missing values generated)
 
-. gen temp2  = inrange(temp_immunodef_date, (date("$indexdate", "DMY") - 365), date("$indexdate", "DMY"))
+. gen temp2  = inrange(temp_immunodef_date, (date("$indexdate", "DMY") - 365), date("$i
+> ndexdate", "DMY"))
 
 . 
 . egen other_immuno = rowmax(temp1 temp2)
@@ -1019,7 +1050,8 @@ hba1c_mmol~l |     72,924    41.15227    18.73046   .0003963   129.2528
 >                                                 cpnsdeath_date  ///
 >                                                 onsdeath_date ///
 >                                                 onscoviddeath_date ///
->                                                 ons_noncoviddeath_date ///                                              
+>                                                 ons_noncoviddeath_date ///           
+>                                    
 >                                 {
   2.                                                 
 .         confirm string variable `var'
@@ -1047,13 +1079,15 @@ hba1c_mmol~l |     72,924    41.15227    18.73046   .0003963   129.2528
 
 . 
 . * Binary indicators for outcomes
-. local p"suspected confirmed tested positivetest ae icu ventilation cpnsdeath onsdeath onscoviddeath ons_noncoviddeath" 
+. local p"suspected confirmed tested positivetest ae icu  cpnsdeath onsdeath onscovidde
+> ath ons_noncoviddeath" //ventilation
 
 . foreach i of local p {
   2.                 gen `i'=0
-  3.                 cap replace  `i'=1 if `i'_date < .
+  3.                 replace  `i'=1 if `i'_date < .
   4.                 tab `i'
   5. }
+(15,666 real changes made)
 
   suspected |      Freq.     Percent        Cum.
 ------------+-----------------------------------
@@ -1061,6 +1095,7 @@ hba1c_mmol~l |     72,924    41.15227    18.73046   .0003963   129.2528
           1 |     15,666       19.94      100.00
 ------------+-----------------------------------
       Total |     78,564      100.00
+(15,738 real changes made)
 
   confirmed |      Freq.     Percent        Cum.
 ------------+-----------------------------------
@@ -1068,6 +1103,7 @@ hba1c_mmol~l |     72,924    41.15227    18.73046   .0003963   129.2528
           1 |     15,738       20.03      100.00
 ------------+-----------------------------------
       Total |     78,564      100.00
+(15,704 real changes made)
 
      tested |      Freq.     Percent        Cum.
 ------------+-----------------------------------
@@ -1075,6 +1111,7 @@ hba1c_mmol~l |     72,924    41.15227    18.73046   .0003963   129.2528
           1 |     15,704       19.99      100.00
 ------------+-----------------------------------
       Total |     78,564      100.00
+(15,662 real changes made)
 
 positivetes |
           t |      Freq.     Percent        Cum.
@@ -1083,6 +1120,7 @@ positivetes |
           1 |     15,662       19.94      100.00
 ------------+-----------------------------------
       Total |     78,564      100.00
+(15,693 real changes made)
 
          ae |      Freq.     Percent        Cum.
 ------------+-----------------------------------
@@ -1090,6 +1128,7 @@ positivetes |
           1 |     15,693       19.97      100.00
 ------------+-----------------------------------
       Total |     78,564      100.00
+(132 real changes made)
 
         icu |      Freq.     Percent        Cum.
 ------------+-----------------------------------
@@ -1097,12 +1136,7 @@ positivetes |
           1 |        132        0.17      100.00
 ------------+-----------------------------------
       Total |     78,564      100.00
-
-ventilation |      Freq.     Percent        Cum.
-------------+-----------------------------------
-          0 |     78,564      100.00      100.00
-------------+-----------------------------------
-      Total |     78,564      100.00
+(15,778 real changes made)
 
   cpnsdeath |      Freq.     Percent        Cum.
 ------------+-----------------------------------
@@ -1110,6 +1144,7 @@ ventilation |      Freq.     Percent        Cum.
           1 |     15,778       20.08      100.00
 ------------+-----------------------------------
       Total |     78,564      100.00
+(15,661 real changes made)
 
    onsdeath |      Freq.     Percent        Cum.
 ------------+-----------------------------------
@@ -1117,6 +1152,7 @@ ventilation |      Freq.     Percent        Cum.
           1 |     15,661       19.93      100.00
 ------------+-----------------------------------
       Total |     78,564      100.00
+(3,160 real changes made)
 
 onscoviddea |
          th |      Freq.     Percent        Cum.
@@ -1125,6 +1161,7 @@ onscoviddea |
           1 |      3,160        4.02      100.00
 ------------+-----------------------------------
       Total |     78,564      100.00
+(12,501 real changes made)
 
 ons_noncovi |
      ddeath |      Freq.     Percent        Cum.
@@ -1164,8 +1201,10 @@ ons_noncovi |
 
 . 
 . /* If outcome was after censoring occurred, set to zero
-> replace covid_death_itu         = 0 if (date_covid_death_itu    > onscoviddeathcensor_date) 
-> replace covid_tpp_prob_or_susp = 0 if (date_covid_tpp_prob_or_susp > onscoviddeathcensor_date)
+> replace covid_death_itu         = 0 if (date_covid_death_itu    > onscoviddeathcensor
+> _date) 
+> replace covid_tpp_prob_or_susp = 0 if (date_covid_tpp_prob_or_susp > onscoviddeathcen
+> sor_date)
 > replace covid_tpp_prob = 0 if (date_covid_tpp_prob > onscoviddeathcensor_date)
 > */
 . 
@@ -1197,7 +1236,8 @@ ons_noncovi |
 
 . label var male                                          "Male"
 
-. label var bmi                                           "Body Mass Index (BMI, kg/m2)"
+. label var bmi                                           "Body Mass Index (BMI, kg/m2)
+> "
 
 . label var bmicat                                        "BMI"
 
@@ -1213,7 +1253,8 @@ ons_noncovi |
 
 . label var smoke_nomiss                          "Smoking status (missing set to non)"
 
-. label var imd                                           "Index of Multiple Deprivation (IMD)"
+. label var imd                                           "Index of Multiple Deprivatio
+> n (IMD)"
 
 . label var ethnicity                                     "Eth 5 categories"
 
@@ -1221,7 +1262,8 @@ ons_noncovi |
 
 . label var eth16_small                           "Eth 16 collapsed"
 
-. label var stp                                           "Sustainability and Transformation Partnership"
+. label var stp                                           "Sustainability and Transform
+> ation Partnership"
 
 . label var age1                                          "Age spline 1"
 
@@ -1229,7 +1271,8 @@ ons_noncovi |
 
 . label var age3                                          "Age spline 3"
 
-. lab var hh_total                                        "calculated No of ppl in household"
+. lab var hh_total                                        "calculated No of ppl in hous
+> ehold"
 
 . 
 . * Comorbidities of interest 
@@ -1249,15 +1292,18 @@ ons_noncovi |
 
 . label var cancer                                                "Cancer"
 
-. label var other_immuno                                  "Immunosuppressed (combination algorithm)"
+. label var other_immuno                                  "Immunosuppressed (combinatio
+> n algorithm)"
 
 . label var chronic_liver_disease                 "Chronic liver disease"
 
-. label var other_neuro                                   "Neurological disease"                  
+. label var other_neuro                                   "Neurological disease"       
+>            
 
 . label var stroke                                            "Stroke"
 
-. lab var dementia                                                "Dementia"                                                      
+. lab var dementia                                                "Dementia"           
+>                                            
 
 . label var ra_sle_psoriasis                              "Autoimmune disease"
 
@@ -1268,7 +1314,8 @@ ons_noncovi |
 . lab var temp_immunodef                                  "Temporary immunosuppression"
 
 . 
-. label var hypertension_date                                     "Diagnosed hypertension Date"
+. label var hypertension_date                                     "Diagnosed hypertensi
+> on Date"
 
 . label var chronic_respiratory_disease_date      "Other Respiratory Diseases Date"
 
@@ -1280,99 +1327,159 @@ ons_noncovi |
 
 . label var chronic_liver_disease_date            "Chronic liver disease Date"
 
-. label var other_neuro_date                                      "Neurological disease  Date"
+. label var other_neuro_date                                      "Neurological disease
+>   Date"
 
 . label var stroke_date                                   "Stroke date"           
 
-. label var dementia_date                                         "DDementia date"                                        
+. label var dementia_date                                         "DDementia date"     
+>                                    
 
 . label var ra_sle_psoriasis_date                         "Autoimmune disease  Date"
 
-. lab var perm_immunodef_date                             "Permanent immunosuppression date"
+. lab var perm_immunodef_date                             "Permanent immunosuppression 
+> date"
 
-. lab var temp_immunodef_date                             "Temporary immunosuppression date"
+. lab var temp_immunodef_date                             "Temporary immunosuppression 
+> date"
 
-. lab var  bphigh                                                         "non-missing indicator of known high blood pressure"
+. lab var  bphigh                                                         "non-missing 
+> indicator of known high blood pressure"
 
-. lab var bpcat                                                           "Blood pressure four levels, non-missing"
+. lab var bpcat                                                           "Blood pressu
+> re four levels, non-missing"
 
-. lab var htdiag_or_highbp                                        "High blood pressure or hypertension diagnosis"
+. lab var htdiag_or_highbp                                        "High blood pressure 
+> or hypertension diagnosis"
 
 . 
 . * Outcomes and follow-up
 . label var enter_date                                    "Date of study entry"
 
 . 
-. label var tppcensor                                             "Date of admin censoring for covid TPP cases"
+. label var tppcensor                                             "Date of admin censor
+> ing for covid TPP cases"
 
-. label var sgsscensor                                    "Date of admin censoring for SGSS testing data"
+. label var sgsscensor                                    "Date of admin censoring for 
+> SGSS testing data"
 
-. label var ecdscensor                                    "Date of admin censoring for A&E attendance"
+. label var ecdscensor                                    "Date of admin censoring for 
+> A&E attendance"
 
-. label var inarccensor                                   "Date of admin censoring for ITU admissions and ventilation events"
+. label var inarccensor                                   "Date of admin censoring for 
+> ITU admissions and ventilation events"
 
-. label var onscensor                                             "Date of admin censoring for ONS deaths"
+. label var onscensor                                             "Date of admin censor
+> ing for ONS deaths"
 
-. label var cpnscensor                                    "Date of admin censoring for CPNS deaths"
+. label var cpnscensor                                    "Date of admin censoring for 
+> CPNS deaths"
 
 . 
-. label var suspected_date                                "Failure/censoring indicator for outcome: suspected case"
+. label var suspected_date                                "Failure/censoring indicator 
+> for outcome: suspected case"
 
-. label var confirmed_date                                "Failure/censoring indicator for outcome: covid confirmed case"
+. label var confirmed_date                                "Failure/censoring indicator 
+> for outcome: covid confirmed case"
 
-. label var tested_date                                   "Failure/censoring indicator for outcome: SGSS test performed"
+. label var tested_date                                   "Failure/censoring indicator 
+> for outcome: SGSS test performed"
 
-. label var positivetest_date                             "Failure/censoring indicator for outcome: SGSS test positive"
+. label var positivetest_date                             "Failure/censoring indicator 
+> for outcome: SGSS test positive"
 
-. label var ae_date                                               "Failure/censoring indicator for outcome: A&E Attendance"
+. label var ae_date                                               "Failure/censoring in
+> dicator for outcome: A&E Attendance"
 
-. label var icu_date                                              "Failure/censoring indicator for outcome: ICU Admission"
+. label var icu_date                                              "Failure/censoring in
+> dicator for outcome: ICU Admission"
 
-. *label var ventilation_date                             "Failure/censoring indicator for outcome: ICU Ventilation"
-. label var cpnsdeath_date                                "Failure/censoring indicator for outcome: CPNS death"
+. *label var ventilation_date                             "Failure/censoring indicator 
+> for outcome: ICU Ventilation"
+. label var cpnsdeath_date                                "Failure/censoring indicator 
+> for outcome: CPNS death"
 
-. label var onsdeath_date                                 "Failure/censoring indicator for outcome: ONS death any cause"
+. label var onsdeath_date                                 "Failure/censoring indicator 
+> for outcome: ONS death any cause"
 
-. label var onscoviddeath_date                    "Failure/censoring indicator for outcome: ONS COVID death"
+. label var onscoviddeath_date                    "Failure/censoring indicator for outc
+> ome: ONS COVID death"
 
-. label var ons_noncoviddeath_date                "Failure/censoring indicator for outcome: ONS non-COVID death"
+. label var ons_noncoviddeath_date                "Failure/censoring indicator for outc
+> ome: ONS non-COVID death"
 
 . 
 . * Survival times
-. label var stime_suspected                               "Survival time (date); outcome suspected case"
+. label var stime_suspected                               "Survival time (date); outcom
+> e suspected case"
 
-. label var stime_confirmed                               "Survival time (date); outcome confirmed case"
+. label var stime_confirmed                               "Survival time (date); outcom
+> e confirmed case"
 
-. label var stime_tested                                  "Survival time (date); outcome SGSS test performed"
+. label var stime_tested                                  "Survival time (date); outcom
+> e SGSS test performed"
 
-. label var stime_positivetest                    "Survival time (date); outcome SGSS test positive"
+. label var stime_positivetest                    "Survival time (date); outcome SGSS t
+> est positive"
 
-. label var stime_ae                                              "Survival time (date); outcome A&E Attendance"
+. label var stime_ae                                              "Survival time (date)
+> ; outcome A&E Attendance"
 
-. label var stime_icu                                     "Survival time (date); outcome ICU Admission"
+. label var stime_icu                                     "Survival time (date); outcom
+> e ICU Admission"
 
-. label var stime_ventilation                             "Survival time (date); outcome ICU Ventilation"
+. label var stime_ventilation                             "Survival time (date); outcom
+> e ICU Ventilation"
 
-. label var stime_cpnsdeath                               "Survival time (date); outcome CPNS death"
+. label var stime_cpnsdeath                               "Survival time (date); outcom
+> e CPNS death"
 
-. label var stime_onsdeath                                "Survival time (date); outcome ONS death any cause"
+. label var stime_onsdeath                                "Survival time (date); outcom
+> e ONS death any cause"
 
-. label var stime_onscoviddeath                   "Survival time (date); outcome ONS COVID death"
+. label var stime_onscoviddeath                   "Survival time (date); outcome ONS CO
+> VID death"
 
-. label var stime_ons_noncoviddeath               "Survival time (date); outcome ONS non-COVID death"
+. label var stime_ons_noncoviddeath               "Survival time (date); outcome ONS no
+> n-COVID death"
 
 . 
+. * binary indicators
+. label var suspected                             "outcome suspected case"
+
+. label var confirmed                             "outcome confirmed case"
+
+. label var tested                                        "outcome SGSS test performed"
+
+. label var positivetest                          "outcome SGSS test positive"
+
+. label var ae                                            "outcome A&E Attendance"
+
+. label var icu                                           "outcome ICU Admission"
+
+. *label var ventilation                          "outcome ICU Ventilation"
+. label var cpnsdeath                             "outcome CPNS death"
+
+. label var onsdeath                                      "outcome ONS death any cause"
+
+. label var onscoviddeath                         "outcome ONS COVID death"
+
+. label var ons_noncoviddeath                     "outcome ONS non-COVID death"
+
 . 
 . /* TIDY DATA==================================================================*/
 . *  Drop variables that are not needed (those not labelled)
 . ds, not(varlabel)
-primary_c~se  bp_dias_da~e  crea~ne_date  unknown_di~s  died_ons_c~y  bp_sys        arbs          bmi_age       hba1c75       ventilation
-primary_c~re  bp_dias_da~d  smoki~e_date  esrf_date     died_ons_c~g  bp_dias       betablockers  cancer_cat    suspected     cpnsdeath
-ethni~6_date  ~l_date_date  smoki~s_date  esrf          rural_urban   hba1c_mmol~l  calcium_ch~s  SCr_adj       confirmed     onsdeath
-ethni~y_date  hba1c~l_date  asthma_date   gi_bleed_a~r  region        hba1c_per~ge  combinatio~s  min           tested        onscovidde~h
-bmi_measured  hba1c_perc..  asthmacat     inflammato~e  care_home_~e  creatinine    spironolac~e  max           positivetest  ons_noncov~h
-bp_sys_dat~e  hba1~ge_date  type1_diab~e  insulin       gp_consult~t  ace_inhibi~s  thiazide_d~s  hba1c_pct     ae
-bp_sys_dat~d  crea~te_date  type2_diab~e  statin        has_consul~y  alpha_bloc~s  bmi_time      hba1ccat      icu
+primary_c~se  hba1c~l_date  type2_diab~e  rural_urban   ace_inhibi~s  cancer_cat
+primary_c~re  hba1c_perc..  unknown_di~s  region        alpha_bloc~s  SCr_adj
+ethni~6_date  hba1~ge_date  esrf_date     care_home_~e  arbs          min
+ethni~y_date  crea~te_date  esrf          gp_consult~t  betablockers  max
+bmi_measured  crea~ne_date  gi_bleed_a~r  has_consul~y  calcium_ch~s  hba1c_pct
+bp_sys_dat~e  smoki~e_date  inflammato~e  bp_sys        combinatio~s  hba1ccat
+bp_sys_dat~d  smoki~s_date  insulin       bp_dias       spironolac~e  hba1c75
+bp_dias_da~e  asthma_date   statin        hba1c_mmol~l  thiazide_d~s
+bp_dias_da~d  asthmacat     died_ons_c~y  hba1c_per~ge  bmi_time
+~l_date_date  type1_diab~e  died_ons_c~g  creatinine    bmi_age
 
 . drop `r(varlist)'
 
@@ -1400,7 +1507,8 @@ DROP IF DIED BEFORE INDEX
 DROP IF OUTCOMES OCCUR BEFORE INDEX
 
 . 
-. local p"suspected confirmed tested positivetest ae icu ventilation cpnsdeath onsdeath onscoviddeath ons_noncoviddeath" 
+. local p"suspected confirmed tested positivetest ae icu ventilation cpnsdeath onsdeath
+>  onscoviddeath ons_noncoviddeath" 
 
 . foreach i of local p {
   2.         cap drop if `i'_date <= date("$indexdate", "DMY") 
@@ -1413,11 +1521,13 @@ DROP IF OUTCOMES OCCUR BEFORE INDEX
 . sort patient_id
 
 . save "$Tempdir/analysis_dataset.dta", replace
-file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysis_dataset.dta saved
+file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysi
+> s_dataset.dta saved
 
 . 
 . **save a version set on each outcome
-. local p"suspected confirmed tested positivetest ae icu cpnsdeath onsdeath onscoviddeath ons_noncoviddeath" //ventilation
+. local p"suspected confirmed tested positivetest ae icu cpnsdeath onsdeath onscoviddea
+> th ons_noncoviddeath" //ventilation
 
 . foreach i of local p {
   2.         use "$Tempdir/analysis_dataset.dta", clear
@@ -1428,7 +1538,7 @@ file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/
   5. }       
 
                 id:  patient_id
-     failure event:  suspected_date != 0 & suspected_date < .
+     failure event:  suspected != 0 & suspected < .
 obs. time interval:  (stime_suspected[_n-1], stime_suspected]
  enter on or after:  time enter_date
  exit on or before:  failure
@@ -1446,10 +1556,11 @@ obs. time interval:  (stime_suspected[_n-1], stime_suspected]
                                                 at risk from t =         0
                                      earliest observed entry t =         0
                                           last observed exit t =       181
-file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysis_dataset_STSET_suspected.dta saved
+file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysi
+> s_dataset_STSET_suspected.dta saved
 
                 id:  patient_id
-     failure event:  confirmed_date != 0 & confirmed_date < .
+     failure event:  confirmed != 0 & confirmed < .
 obs. time interval:  (stime_confirmed[_n-1], stime_confirmed]
  enter on or after:  time enter_date
  exit on or before:  failure
@@ -1467,10 +1578,11 @@ obs. time interval:  (stime_confirmed[_n-1], stime_confirmed]
                                                 at risk from t =         0
                                      earliest observed entry t =         0
                                           last observed exit t =       181
-file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysis_dataset_STSET_confirmed.dta saved
+file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysi
+> s_dataset_STSET_confirmed.dta saved
 
                 id:  patient_id
-     failure event:  tested_date != 0 & tested_date < .
+     failure event:  tested != 0 & tested < .
 obs. time interval:  (stime_tested[_n-1], stime_tested]
  enter on or after:  time enter_date
  exit on or before:  failure
@@ -1488,10 +1600,11 @@ obs. time interval:  (stime_tested[_n-1], stime_tested]
                                                 at risk from t =         0
                                      earliest observed entry t =         0
                                           last observed exit t =       181
-file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysis_dataset_STSET_tested.dta saved
+file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysi
+> s_dataset_STSET_tested.dta saved
 
                 id:  patient_id
-     failure event:  positivetest_date != 0 & positivetest_date < .
+     failure event:  positivetest != 0 & positivetest < .
 obs. time interval:  (stime_positivetest[_n-1], stime_positivetest]
  enter on or after:  time enter_date
  exit on or before:  failure
@@ -1509,10 +1622,11 @@ obs. time interval:  (stime_positivetest[_n-1], stime_positivetest]
                                                 at risk from t =         0
                                      earliest observed entry t =         0
                                           last observed exit t =       181
-file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysis_dataset_STSET_positivetest.dta saved
+file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysi
+> s_dataset_STSET_positivetest.dta saved
 
                 id:  patient_id
-     failure event:  ae_date != 0 & ae_date < .
+     failure event:  ae != 0 & ae < .
 obs. time interval:  (stime_ae[_n-1], stime_ae]
  enter on or after:  time enter_date
  exit on or before:  failure
@@ -1530,10 +1644,11 @@ obs. time interval:  (stime_ae[_n-1], stime_ae]
                                                 at risk from t =         0
                                      earliest observed entry t =         0
                                           last observed exit t =       181
-file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysis_dataset_STSET_ae.dta saved
+file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysi
+> s_dataset_STSET_ae.dta saved
 
                 id:  patient_id
-     failure event:  icu_date != 0 & icu_date < .
+     failure event:  icu != 0 & icu < .
 obs. time interval:  (stime_icu[_n-1], stime_icu]
  enter on or after:  time enter_date
  exit on or before:  failure
@@ -1551,10 +1666,11 @@ obs. time interval:  (stime_icu[_n-1], stime_icu]
                                                 at risk from t =         0
                                      earliest observed entry t =         0
                                           last observed exit t =       181
-file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysis_dataset_STSET_icu.dta saved
+file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysi
+> s_dataset_STSET_icu.dta saved
 
                 id:  patient_id
-     failure event:  cpnsdeath_date != 0 & cpnsdeath_date < .
+     failure event:  cpnsdeath != 0 & cpnsdeath < .
 obs. time interval:  (stime_cpnsdeath[_n-1], stime_cpnsdeath]
  enter on or after:  time enter_date
  exit on or before:  failure
@@ -1572,10 +1688,11 @@ obs. time interval:  (stime_cpnsdeath[_n-1], stime_cpnsdeath]
                                                 at risk from t =         0
                                      earliest observed entry t =         0
                                           last observed exit t =       181
-file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysis_dataset_STSET_cpnsdeath.dta saved
+file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysi
+> s_dataset_STSET_cpnsdeath.dta saved
 
                 id:  patient_id
-     failure event:  onsdeath_date != 0 & onsdeath_date < .
+     failure event:  onsdeath != 0 & onsdeath < .
 obs. time interval:  (stime_onsdeath[_n-1], stime_onsdeath]
  enter on or after:  time enter_date
  exit on or before:  failure
@@ -1593,10 +1710,11 @@ obs. time interval:  (stime_onsdeath[_n-1], stime_onsdeath]
                                                 at risk from t =         0
                                      earliest observed entry t =         0
                                           last observed exit t =       181
-file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysis_dataset_STSET_onsdeath.dta saved
+file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysi
+> s_dataset_STSET_onsdeath.dta saved
 
                 id:  patient_id
-     failure event:  onscoviddeath_date != 0 & onscoviddeath_date < .
+     failure event:  onscoviddeath != 0 & onscoviddeath < .
 obs. time interval:  (stime_onscoviddeath[_n-1], stime_onscoviddeath]
  enter on or after:  time enter_date
  exit on or before:  failure
@@ -1614,10 +1732,11 @@ obs. time interval:  (stime_onscoviddeath[_n-1], stime_onscoviddeath]
                                                 at risk from t =         0
                                      earliest observed entry t =         0
                                           last observed exit t =       181
-file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysis_dataset_STSET_onscoviddeath.dta saved
+file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysi
+> s_dataset_STSET_onscoviddeath.dta saved
 
                 id:  patient_id
-     failure event:  ons_noncoviddeath_date != 0 & ons_noncoviddeath_date < .
+     failure event:  ons_noncoviddeath != 0 & ons_noncoviddeath < .
 obs. time interval:  (stime_ons_noncoviddeath[_n-1], stime_ons_noncoviddeath]
  enter on or after:  time enter_date
  exit on or before:  failure
@@ -1635,13 +1754,15 @@ obs. time interval:  (stime_ons_noncoviddeath[_n-1], stime_ons_noncoviddeath]
                                                 at risk from t =         0
                                      earliest observed entry t =         0
                                           last observed exit t =       181
-file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysis_dataset_STSET_ons_noncoviddeath.dta saved
+file /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/tempdata/analysi
+> s_dataset_STSET_ons_noncoviddeath.dta saved
 
 .         
 . * Close log file 
 . log close
       name:  <unnamed>
-       log:  /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/log/01_eth_cr_create_analysis_dataset.log
+       log:  /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/output/log/01_e
+> th_cr_create_analysis_dataset.log
   log type:  text
- closed on:  12 Jul 2020, 21:01:21
-----------------------------------------------------------------------------------------------------------------------------------------------
+ closed on:  12 Jul 2020, 21:28:34
+---------------------------------------------------------------------------------------
