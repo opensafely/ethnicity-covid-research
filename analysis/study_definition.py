@@ -78,12 +78,14 @@ study = StudyDefinition(
     ),
 
     ### A&E attendence
-    ae_date_admitted=patients.attended_emergency_care(
+    a_e_consult_date=patients.attended_emergency_care(
         on_or_after="2020-02-01",
-        include_day=True,
-        returning="date_admitted",
+        returning="date_arrived",
+        date_format="YYYY-MM-DD",
         find_first_match_in_period=True,
-    ),
+        return_expectations={"date": {"earliest": "2020-02-01",
+                                      "latest": "2020-06-24"},
+                             "rate": "exponential_increase"},
 
     # ICU attendance and ventilation
     # icu_date_ventilated=patients.ventilated_in_icu(
