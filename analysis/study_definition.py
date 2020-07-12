@@ -594,7 +594,7 @@ study = StudyDefinition(
             
         insulin_last6mo=patients.with_these_medications(
             insulin_med_codes,
-            between=["2019-09-01", "2020-02-01"],
+            between=["2019-08-01", "2020-02-01"],
             returning="number_of_matches_in_period",
         ),
     ),
@@ -635,7 +635,7 @@ study = StudyDefinition(
 #            
 #        insulin_last6mo=patients.with_these_medications(
 #            insulin_med_codes,
-#            between=["2019-09-01", "2020-02-01"],
+#            between=["2019-08-01", "2020-02-01"],
 #            returning="number_of_matches_in_period",
 #        ),
 #    ),
@@ -822,11 +822,11 @@ study = StudyDefinition(
     ### STATIN USE
     statin=patients.with_these_medications(
         statin_med_codes,
-        between=["2019-08-01", "2020-02-01"],
+        between=["2019-11-01", "2020-02-29"],
         return_last_date_in_period=True,
         include_month=True,
         return_expectations={
-            "date": {"earliest": "2019-08-01", "latest": "2020-02-01"}
+            "date": {"earliest": "2019-11-01", "latest": "2020-02-29"}
         },
     ),
 
