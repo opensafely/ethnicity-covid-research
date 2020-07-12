@@ -586,45 +586,45 @@ study = StudyDefinition(
     ),
 
 #EXETER ALGORITHM USING EXETER CODELISTS
-    diabetes_exeter=patients.categorised_as(
-        {
-            "T1DM_EX":
-                """
-                        ((insulin_last6mo >= 2) AND ((t1dm_count / t2dm_count) >= 2))
-                """,
-            "T2DM_EX":
-                """
-                        (insulin_last6mo < 2) AND ((t2dm_count>0))
-                        OR
-                        ((insulin_last6mo >= 2) AND ((t1dm_count / t2dm_count) < 2)) AND ((t2dm_count>0))
-                """,
-            "NO_DM": "DEFAULT",
-        },
-
-        return_expectations={
-            "category": {"ratios": {"T1_DM": 0.02, "T2_DM": 0.4, "NO_DM": 0.78}},
-            "rate" : "universal"
-
-        },
-
-        t1dm_count=patients.categorised_as(
-            "T1DM_EX": "diabetes_t1t2_codes_exeter = '1'",
-            on_or_before="2020-02-01",
-            returning="number_of_matches_in_period",
-        ),
-
-        t2dm_count=patients.patients.categorised_as(
-            "T2DM_EX": "diabetes_t1t2_codes_exeter = '2'",
-            on_or_before="2020-02-01",
-            returning="number_of_matches_in_period",
-        ),
-            
-        insulin_last6mo=patients.with_these_medications(
-            insulin_med_codes,
-            between=["2019-09-01", "2020-02-01"],
-            returning="number_of_matches_in_period",
-        ),
-    ),
+#    diabetes_exeter=patients.categorised_as(
+#        {
+#            "T1DM_EX":
+#                """
+#                        ((insulin_last6mo >= 2) AND ((t1dm_count / t2dm_count) >= 2))
+#                """,
+#            "T2DM_EX":
+#                """
+#                        (insulin_last6mo < 2) AND ((t2dm_count>0))
+#                        OR
+#                        ((insulin_last6mo >= 2) AND ((t1dm_count / t2dm_count) < 2)) AND ((t2dm_count>0))
+#                """,
+#            "NO_DM": "DEFAULT",
+#        },
+#
+#        return_expectations={
+#            "category": {"ratios": {"T1_DM": 0.02, "T2_DM": 0.4, "NO_DM": 0.78}},
+#            "rate" : "universal"
+#
+#        },
+#
+#        t1dm_count=patients.categorised_as(
+#            "T1DM_EX": "diabetes_t1t2_codes_exeter = '1'",
+#            on_or_before="2020-02-01",
+#            returning="number_of_matches_in_period",
+#        ),
+#
+#        t2dm_count=patients.patients.categorised_as(
+#            "T2DM_EX": "diabetes_t1t2_codes_exeter = '2'",
+#            on_or_before="2020-02-01",
+#            returning="number_of_matches_in_period",
+#        ),
+#            
+#        insulin_last6mo=patients.with_these_medications(
+#            insulin_med_codes,
+#            between=["2019-09-01", "2020-02-01"],
+#            returning="number_of_matches_in_period",
+#        ),
+#    ),
 
 
     # CANCER - 3 TYPES
