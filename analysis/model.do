@@ -1,6 +1,6 @@
 import delimited `c(pwd)'/output/input.csv, clear
 
-
+numlabel, add
 
 *set filepaths
 global Projectdir `c(pwd)'
@@ -41,4 +41,4 @@ do "$Dodir/02_eth_an_data_checks.do"
 
 *  Descriptives
 do "$Dodir/03_eth_an_descriptive_tables.do"
-*do "$Dodir/04_eth_an_descriptive_plots.do"
+do "$Dodir/04_eth_an_descriptive_plots.do"

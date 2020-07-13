@@ -84,26 +84,34 @@ tab ethnicity_16,m
 
 * Ethnicity (16 category grouped further)
 * Generate a version of the full breakdown with mixed in one group
-gen eth16_small = ethnicity_16
-recode eth16_small 4/7 = 4
-recode eth16_small 11 = 16
-recode eth16_small 14 = 16
+gen eth16 = ethnicity_16
+recode eth16 4/7 = 99
+recode eth16 11 = 16
+recode eth16 14 = 16
+recode eth16 8 = 4
+recode eth16 9 = 5
+recode eth16 10 = 6
+recode eth16 12 = 7
+recode eth16 13 = 8
+recode eth16 15 = 9
+recode eth16 16 = 11
+recode eth16 99 = 10
 
-label define eth16_small 	///
+
+label define eth16 	///
 						1 "British or Mixed British" ///
 						2 "Irish" ///
 						3 "Other White" ///
-						4 "All mixed" ///
-						8 "Indian" ///
-						9 "Pakistani" ///
-						10 "Bangladeshi" ///					
-						12 "Caribbean" ///
-						13 "African" ///
-						15 "Chinese" ///
-						16 "All Other" ///
+						4 "Indian" ///
+						5 "Pakistani" ///
+						6 "Bangladeshi" ///					
+						7 "Caribbean" ///
+						8 "African" ///
+						9 "Chinese" ///
+						10 "All mixed" ///
+						11 "All Other" ///
 						.u "Unknown"  
-label values eth16_small eth16_small
-
+label values eth16 eth16
 
 * STP 
 rename stp stp_old
@@ -186,7 +194,9 @@ drop if inlist(sex, "I", "U")
 
 gen male = 1 if sex == "M"
 replace male = 0 if sex == "F"
-
+label define male 0"Female" 1"Male"
+label values male male
+tab male
 
 
 * Create binary age (for age stratification)
@@ -686,7 +696,7 @@ label var smoke_nomiss	 			"Smoking status (missing set to non)"
 label var imd 						"Index of Multiple Deprivation (IMD)"
 label var ethnicity					"Eth 5 categories"
 label var ethnicity_16				"Eth 16 categories"
-label var eth16_small				"Eth 16 collapsed"
+label var eth16				"Eth 16 collapsed"
 label var stp 						"Sustainability and Transformation Partnership"
 label var age1 						"Age spline 1"
 label var age2 						"Age spline 2"
