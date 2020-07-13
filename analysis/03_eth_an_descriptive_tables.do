@@ -34,6 +34,13 @@ use $tempdir/analysis_dataset, clear
 
 
 * Demographics
+tab ethnicity
+tab ethnicity, m
+tab ethnicity_16
+tab ethnicity_16, m
+
+tab ethnicity ethnicity_16, m
+
 summ age
 tab agegroup
 tab male
@@ -67,13 +74,10 @@ tab esrf
 tab hypertension
 tab reduced_kidney_function_cat
 tab ra_sle_psoriasis
-tab gi_bleed_and_ulcer
-tab inflammatory_bowel_disease
 
 tab imd 
 tab imd, m
-tab ethnicity
-tab ethnicity, m
+
 
 tab stp
 tab region

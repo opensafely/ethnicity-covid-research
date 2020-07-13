@@ -34,21 +34,21 @@ use "$Tempdir/analysis_dataset.dta", clear
 
 * DATA STRUCTURE: Confirm one row per patient 
 duplicates tag patient_id, generate(dup_check)
-assert dup_check == 0 
+cap assert dup_check == 0 
 drop dup_check
 
 * INCLUSION 1: >=18 and <=110 at 1 Feb 2020 
-assert age < .
-assert age >= 18 
-assert age <= 110
+cap assert age < .
+cap assert age >= 18 
+cap assert age <= 110
  
 * INCLUSION 2: M or F gender at 1 Feb 2020 
-assert inlist(sex, "M", "F")
+cap assert inlist(sex, "M", "F")
 
 * EXCLUDE 1:  MISSING IMD
-assert inlist(imd, 1, 2, 3, 4, 5)
+cap assert inlist(imd, 1, 2, 3, 4, 5)
 
-/*
+
 /* EXPECTED VALUES============================================================*/ 
 
 *HH
@@ -80,7 +80,7 @@ datacheck inlist(ethnicity_16, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15
 datacheck inlist(smoke, 1, 2, 3, .u), nol
 datacheck inlist(smoke_nomiss, 1, 2, 3), nol 
 
-*/
+
 * Check date ranges for all comorbidities - keep in mind they'll all be 15th of the month!
 
 foreach var of varlist  chronic_respiratory_disease 	///
@@ -189,8 +189,6 @@ foreach var of varlist 	chronic_respiratory_disease ///
 						hypertension  ///
 						asthma ///
 						ra_sle_psoriasis  ///
-						gi_bleed_and_ulcer ///
-						inflammatory_bowel_disease ///
 						diabetes_type ///
 					{
 						tab agegroup `var', row 
@@ -211,8 +209,6 @@ foreach var of varlist 	chronic_respiratory_disease ///
 						hypertension  ///
 						asthma ///
 						ra_sle_psoriasis  ///
-						gi_bleed_and_ulcer ///
-						inflammatory_bowel_disease ///
 						diabetes_type ///
 					{
 						tab male `var', row 
@@ -232,8 +228,6 @@ foreach var of varlist 	chronic_respiratory_disease ///
 						hypertension  ///
 						asthma ///
 						ra_sle_psoriasis  ///
-						gi_bleed_and_ulcer ///
-						inflammatory_bowel_disease ///
 						diabetes_type ///
 					{	
 					tab smoke `var', row 

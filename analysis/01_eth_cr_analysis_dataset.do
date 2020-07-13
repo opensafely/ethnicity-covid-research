@@ -174,12 +174,12 @@ drop if age<18
 
 
 * Age: Exclude those with implausible ages
-assert age<.
+cap assert age<.
 noi di "DROPPING AGE<105:" 
 drop if age>105
 
 * Sex: Exclude categories other than M and F
-assert inlist(sex, "M", "F", "I", "U")
+cap assert inlist(sex, "M", "F", "I", "U")
 noi di "DROPPING GENDER NOT M/F:" 
 drop if inlist(sex, "I", "U")
 
@@ -194,9 +194,9 @@ recode age min/65.999999999 = 0 ///
            66/max = 1, gen(age66)
 
 * Check there are no missing ages
-assert age < .
-assert agegroup < .
-assert age66 < .
+cap assert age < .
+cap assert agegroup < .
+cap assert age66 < .
 
 * Create restricted cubic splines for age
 mkspline age = age, cubic nknots(4)
@@ -226,8 +226,6 @@ foreach var of varlist 	chronic_respiratory_disease ///
 						hypertension  ///
 						asthma ///
 						ra_sle_psoriasis  ///
-						gi_bleed_and_ulcer ///
-						inflammatory_bowel_disease ///
 						diabetes ///
 						type1_diabetes ///
 						type2_diabetes ///
@@ -292,8 +290,6 @@ foreach var of varlist 	chronic_respiratory_disease ///
 						hypertension  ///
 						asthma ///
 						ra_sle_psoriasis  ///
-						gi_bleed_and_ulcer ///
-						inflammatory_bowel_disease ///
 						type1_diabetes ///
 						type2_diabetes ///
 						unknown_diabetes ///
@@ -719,8 +715,6 @@ label var ra_sle_psoriasis				"Autoimmune disease"
 lab var egfr							"eGFR"
 lab var perm_immunodef  				"Permanent immunosuppression"
 lab var temp_immunodef  				"Temporary immunosuppression"
-lab var gi_bleed_and_ulcer				"GI Bleed and ulcer"
-label var inflammatory_bowel_disease	"inflammatory bowel disease"
 lab var  bphigh 							"non-missing indicator of known high blood pressure"
 lab var bpcat 								"Blood pressure four levels, non-missing"
 lab var htdiag_or_highbp 					"High blood pressure or hypertension diagnosis"
@@ -739,9 +733,7 @@ label var dementia_date						"DDementia date"
 label var ra_sle_psoriasis_date 			"Autoimmune disease  Date"
 lab var perm_immunodef_date  				"Permanent immunosuppression date"
 lab var temp_immunodef_date   				"Temporary immunosuppression date"
-lab var gi_bleed_and_ulcer_date				"GI Bleed and ulcer date"
-label var inflammatory_bowel_disease_date	"inflammatory bowel disease date"
-lab var esrf_date "end stage renal failure"
+lab var esrf_date 							"end stage renal failure"
 
 *medications
 lab var statin								"Statin in last 6 months"
