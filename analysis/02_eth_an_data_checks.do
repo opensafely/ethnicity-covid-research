@@ -27,7 +27,7 @@ use "$Tempdir/analysis_dataset.dta", clear
 *ssc install datacheck 
 
 *Duplicate patient check
-datacheck _n==1, by(patient_id) nol
+*datacheck _n==1, by(patient_id) nol
 
 
 /* CHECK INCLUSION AND EXCLUSION CRITERIA=====================================*/ 
@@ -48,7 +48,7 @@ assert inlist(sex, "M", "F")
 * EXCLUDE 1:  MISSING IMD
 assert inlist(imd, 1, 2, 3, 4, 5)
 
-
+/*
 /* EXPECTED VALUES============================================================*/ 
 
 *HH
@@ -80,7 +80,7 @@ datacheck inlist(ethnicity_16, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15
 datacheck inlist(smoke, 1, 2, 3, .u), nol
 datacheck inlist(smoke_nomiss, 1, 2, 3), nol 
 
-
+*/
 * Check date ranges for all comorbidities - keep in mind they'll all be 15th of the month!
 
 foreach var of varlist  chronic_respiratory_disease 	///
