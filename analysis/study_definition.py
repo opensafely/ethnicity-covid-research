@@ -512,8 +512,7 @@ study = StudyDefinition(
                         (type2_diabetes AND unknown_diabetes) OR
                         (unknown_diabetes AND NOT type1_diabetes AND NOT type2_diabetes))
                         AND 
-                        (oad_lastyear_meds > 0 AND NOT
-                        insulin_lastyear_meds > 0))
+                        (oad_lastyear_meds > 0))
                 """,
             "UNKNOWN_DM":
                 """
@@ -522,8 +521,8 @@ study = StudyDefinition(
                         insulin_lastyear_meds) 
                     OR
                         (unknown_diabetes AND NOT type1_diabetes AND NOT type2_diabetes) AND 
-                        oad_lastyear_meds AND 
-                        insulin_lastyear_meds
+                        oad_lastyear_meds > 0 OR 
+                        insulin_lastyear_meds > 0
                 """,
             "NO_DM": "DEFAULT",
         },
