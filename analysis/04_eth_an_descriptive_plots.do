@@ -77,7 +77,9 @@ sts graph if ethnicity==`i', 				///
 	xlabel(0 "1 Feb 20" 29 "1 Mar 20" 				///
 	60 "1 Apr 20" 91 "1 May 20" 122 "1 Jun 20"		///
 	152 "1 Jul 20")									///
-	saving($Tabfigdir/kmplot_eth5_`i', replace)
+	saving($Tabfigdir/km_eth5_`i', replace)
+	graph export "$Tabfigdir/km_eth5_`j'.svg", as(svg) replace
+
 restore
 }
 
@@ -87,8 +89,9 @@ graph combine "$Tabfigdir/kmplot_eth5_1"	/// white
 		"$Tabfigdir/kmplot_eth5_4"			/// black
 		"$Tabfigdir/kmplot_eth5_2"			/// mixed
 		"$Tabfigdir/kmplot_eth5_5",			/// other	
-		t1(" ") l1title("Cumulative probability" "of `j'", size(medsmall))
-graph export "output/km_eth16_`j'.svg", as(svg) replace
+		t1(" ") l1title("Cumulative probability" "of `j'", size(medsmall)) ///
+		saving ($Tabfigdir/km_eth16_`j', replace)
+graph export "$Tabfigdir/km_eth16_`j'.svg", as(svg) replace
 
 
 * KM plot by 16 level ethnic group and age
@@ -131,7 +134,7 @@ grc1leg "$Tabfigdir/kmplot_eth1_age"				///
 		"$Tabfigdir/kmplot_eth10_age"				///
 		"$Tabfigdir/kmplot_eth11_age",				///
 		t1(" ") l1title("Cumulative probability of `j' by ethnic group and age ", size(medsmall))
-graph export "output/km_`j'_eth16_age.svg", as(svg) replace
+graph export "$Tabfigdir/km_`j'_eth16_age.svg", as(svg) replace
 
 
 * KM plot by 16 level ethnic group and sex
@@ -168,7 +171,7 @@ grc1leg "$Tabfigdir/kmplot_eth1_sex"				///
 		"$Tabfigdir/kmplot_eth10_sex"				///
 		"$Tabfigdir/kmplot_eth11_sex",				///
 		t1(" ") l1title("Cumulative probability of `j' by ethnic group and sex", size(medsmall))
-graph export "output/km_`j'_eth16_sex.svg", as(svg) replace
+graph export "$Tabfigdir/km_`j'_eth16_sex.svg", as(svg) replace
 
 	
 
