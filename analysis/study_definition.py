@@ -54,27 +54,22 @@ study = StudyDefinition(
         returning="date",
         find_first_match_in_period=True,
         date_format="YYYY-MM-DD",
-        return_expectations={"date": {"earliest" : "2020-02-01",
-                                      "latest": "2020-08-24"},
-                             "rate" : "exponential_increase"},
+        return_expectations={"rate" : "exponential_increase"},
     ),
     primary_care_exposure=patients.with_these_clinical_events(
         covid_primary_exposure,
         returning="date",
         find_first_match_in_period=True,
         date_format="YYYY-MM-DD",
-        return_expectations={"date": {"earliest" : "2020-02-01",
-                                      "latest": "2020-08-24"},
-                             "rate" : "exponential_increase"},
+        return_expectations={"rate" : "exponential_increase"},
     ),
     primary_care_suspect_case=patients.with_these_clinical_events(
         covid_primary_care_suspect_case,
         returning="date",
         find_first_match_in_period=True,
         date_format="YYYY-MM-DD",
-        return_expectations={"date": {"earliest" : "2020-02-01",
-                                      "latest": "2020-08-24"},
-                             "rate" : "exponential_increase"},
+        return_expectations={"rate" : "exponential_increase"},
+
     ),
 
     ### A&E attendence
@@ -83,9 +78,6 @@ study = StudyDefinition(
         returning="date_arrived",
         date_format="YYYY-MM-DD",
         find_first_match_in_period=True,
-        return_expectations={"date": {"earliest": "2020-02-01",
-                                      "latest": "2020-08-24"},
-                             "rate": "exponential_increase"},
     ),
 
     # ICU attendance and ventilation
@@ -112,13 +104,13 @@ study = StudyDefinition(
     # ons
     died_ons_covid_flag_any=patients.with_these_codes_on_death_certificate(
         covid_codelist,
-        on_or_before="2020-06-01",
+        on_or_before="2020-08-01",
         match_only_underlying_cause=False,
         return_expectations={"date": {"earliest": "2020-02-01"}},
     ),
     died_ons_covid_flag_underlying=patients.with_these_codes_on_death_certificate(
         covid_codelist,
-        on_or_before="2020-06-01",
+        on_or_before="2020-08-01",
         match_only_underlying_cause=True,
         return_expectations={"date": {"earliest": "2020-02-01"}},
     ),
@@ -134,7 +126,6 @@ study = StudyDefinition(
         find_first_match_in_period=True,
         returning="date",
         date_format="YYYY-MM-DD",
-        return_expectations={"date": {"earliest": "2020-02-01"}},
     ),
     first_positive_test_date=patients.with_test_result_in_sgss(
         pathogen="SARS-CoV-2",
@@ -142,7 +133,6 @@ study = StudyDefinition(
         find_first_match_in_period=True,
         returning="date",
         date_format="YYYY-MM-DD",
-        return_expectations={"date": {"earliest": "2020-02-01"}},
     ),
 
     ## DEMOGRAPHIC COVARIATES
