@@ -15,7 +15,9 @@ di "$Tempdir"
 global Tabfigdir "$Outdir/tabfig" 
 di "$Tabfigdir"
 
-adopath + "$Dodir/extra_ados"
+cd  "`c(pwd)'/analysis"
+
+adopath + "./extra_ados"
 
 ***********************HOUSE-KEEPING*******************************************
 * Create directories required 
