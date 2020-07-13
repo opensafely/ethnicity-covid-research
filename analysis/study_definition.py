@@ -228,7 +228,7 @@ study = StudyDefinition(
         },
     ),
 
-    # ETHNICITY IN 16 CATEGORIES
+    #ETHNICITY IN 16 CATEGORIES
     ethnicity_16=patients.with_these_clinical_events(
         ethnicity_codes_16,
         returning="category",
@@ -707,17 +707,7 @@ study = StudyDefinition(
 
     ),
 
-    gi_bleed_and_ulcer=patients.with_these_clinical_events(
-        gi_bleed_and_ulcer_codes, return_first_date_in_period=True, include_month=True,
-        return_expectations = {"date": {"latest": "2020-02-01"}},
-    ),
 
-    inflammatory_bowel_disease=patients.with_these_clinical_events(
-        inflammatory_bowel_disease_codes,
-        return_first_date_in_period=True,
-        include_month=True,
-        return_expectations={"date": {"latest": "2020-02-01"}},
-    ),
      # MEDICATION COVARIATES
     ace_inhibitors=patients.with_these_medications(
         ace_codes,
