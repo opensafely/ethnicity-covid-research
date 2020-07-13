@@ -29,9 +29,6 @@ global outdir  	  "$Outdir"
 global logdir     "$Logdir"
 global tempdir    "$Tempdir"
 
-
-
-
 *  Pre-analysis data manipulation  
 do "$Dodir/01_eth_cr_analysis_dataset.do"
  
@@ -42,3 +39,4 @@ do "$Dodir/02_eth_an_data_checks.do"
 *  Descriptives
 do "$Dodir/03_eth_an_descriptive_tables.do"
 do "$Dodir/04_eth_an_descriptive_plots.do"
+*do "$Dodir/05_eth_an_descriptive_tables.do"
