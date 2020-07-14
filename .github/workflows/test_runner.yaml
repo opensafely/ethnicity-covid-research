@@ -23,7 +23,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install opensafely-cohort-extractor==0.1.29
+        pip install opensafely-cohort-extractor
     - name: Docker Login
       uses: azure/docker-login@v1
       with:
