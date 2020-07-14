@@ -105,7 +105,7 @@ graph export "$Tabfigdir/km_`j'_eth16_age.svg", as(svg) replace
 
 * KM plot by 16 level ethnic group and sex
 forvalues i=1/11 {		
-	sts graph if eth16==`i', title("eth`i'") 				///
+	cap sts graph if eth16==`i', title("eth`i'") 				///
 	failure by(male)										///
 	xtitle("Days since 1 Feb 2020", size(small))						///
 	yscale(range(0, 0.008)) 						///
@@ -125,7 +125,7 @@ forvalues i=1/11 {
 
 
 * KM plot by ethnicity and sex
-graph combine "$Tabfigdir/kmplot_eth1_sex"				///
+cap graph combine "$Tabfigdir/kmplot_eth1_sex"				///
 		"$Tabfigdir/kmplot_eth2_sex"				///
 		"$Tabfigdir/kmplot_eth3_sex"				///
 		"$Tabfigdir/kmplot_eth4_sex"				///
