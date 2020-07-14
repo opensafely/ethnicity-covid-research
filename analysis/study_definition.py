@@ -81,10 +81,10 @@ study = StudyDefinition(
     ),
 
     # ICU attendance and ventilation
-    # icu_date_ventilated=patients.ventilated_in_icu(
-    # on_or_after="2020-02-01",
-    # returning="icu_date_ventilated"
-    # ),
+    icu_date_ventilated=patients.ventilated_in_icu(
+    on_or_after="2020-02-01",
+    returning="icu_date_ventilated"
+    ),
 
     icu_date_admitted=patients.admitted_to_icu(
         on_or_after="2020-02-01",
@@ -487,7 +487,7 @@ study = StudyDefinition(
                         type2_diabetes) 
                     OR
                         (((type1_diabetes AND type2_diabetes) OR 
-                        (type1_diabetes AND unknown_diabetes) OR
+                        (type1_diabetes AND unknown_diabetes AND NOT type2_diabetes) OR
                         (unknown_diabetes AND NOT type1_diabetes AND NOT type2_diabetes))
                         AND 
                         (insulin_lastyear_meds > 0 AND NOT
@@ -499,7 +499,7 @@ study = StudyDefinition(
                         type1_diabetes)
                     OR
                         (((type1_diabetes AND type2_diabetes) OR 
-                        (type2_diabetes AND unknown_diabetes) OR
+                        (type2_diabetes AND unknown_diabetes AND NOT type1_diabetes) OR
                         (unknown_diabetes AND NOT type1_diabetes AND NOT type2_diabetes))
                         AND 
                         (oad_lastyear_meds > 0))
@@ -509,10 +509,7 @@ study = StudyDefinition(
                         ((unknown_diabetes AND NOT type1_diabetes AND NOT type2_diabetes) AND NOT
                         oad_lastyear_meds AND NOT
                         insulin_lastyear_meds) 
-                    OR
-                        (unknown_diabetes AND NOT type1_diabetes AND NOT type2_diabetes) AND 
-                        oad_lastyear_meds > 0 OR 
-                        insulin_lastyear_meds > 0
+                   
                 """,
             "NO_DM": "DEFAULT",
         },
