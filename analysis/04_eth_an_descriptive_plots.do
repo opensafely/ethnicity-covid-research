@@ -62,7 +62,7 @@ sts graph, 				///
 
 * KM plot by 16 level ethnic group and age
 forvalues i=1/11 {		
-sts graph if eth16==`i', title("eth `i'") 			///
+cap sts graph if eth16==`i', title("eth `i'") 			///
 	failure by(agegroup) 							///
 	xtitle("Days since 1 Feb 2020", size(small))	///
 	yscale(range(0, 0.008)) 						///
