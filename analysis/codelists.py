@@ -62,20 +62,6 @@ dementia = codelist_from_csv(
     "codelists/opensafely-dementia.csv", system="ctv3", column="CTV3ID"
 )
 
-clear_smoking_codes = codelist_from_csv(
-    "codelists/opensafely-smoking-clear.csv",
-    system="ctv3",
-    column="CTV3Code",
-    category_column="Category",
-)
-
-unclear_smoking_codes = codelist_from_csv(
-    "codelists/opensafely-smoking-unclear.csv",
-    system="ctv3",
-    column="CTV3Code",
-    category_column="Category",
-)
-
 other_neuro = codelist_from_csv(
     "codelists/opensafely-other-neurological-conditions.csv",
     system="ctv3",
@@ -100,7 +86,7 @@ chronic_respiratory_disease_codes = codelist_from_csv(
     column="CTV3ID",
 )
 
-current_asthma_codes = codelist_from_csv(
+asthma_codes = codelist_from_csv(
     "codelists/opensafely-current-asthma.csv", system="ctv3", column="CTV3ID"
 )
 
@@ -139,6 +125,26 @@ diabetes_unknown_codes = codelist_from_csv(
     "codelists/opensafely-diabetes-unknown-type.csv", system="ctv3", column="CTV3ID"
 )
 
+diabetes_t1t2_codes_exeter = codelist_from_csv(
+        "codelists/opensafely-diabetes-exeter-group.csv", 
+        system="ctv3", 
+        column="CTV3ID",
+        category_column="Category",
+)
+
+clear_smoking_codes = codelist_from_csv(
+    "codelists/opensafely-smoking-clear.csv",
+    system="ctv3",
+    column="CTV3Code",
+    category_column="Category",
+)
+
+unclear_smoking_codes = codelist_from_csv(
+    "codelists/opensafely-smoking-unclear.csv",
+    system="ctv3",
+    column="CTV3Code",
+    category_column="Category",
+)
 lung_cancer_codes = codelist_from_csv(
     "codelists/opensafely-lung-cancer.csv", system="ctv3", column="CTV3ID"
 )

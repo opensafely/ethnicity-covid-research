@@ -1,0 +1,69 @@
+CTV3ID,ctvterm,Category
+C1010,Type 1 diabetes mellitus with ketoacidosis,1
+C1011,Type 2 diabetes mellitus with ketoacidosis,2
+C1030,Type 1 diabetes mellitus with ketoacidotic coma,1
+C1031,Type 2 diabetes mellitus with ketoacidotic coma,2
+C1080,Type 1 diabetes mellitus with renal complications,1
+C1081,Type 1 diabetes mellitus with ophthalmic complications,1
+C1082,Type 1 diabetes mellitus with neurological complications,1
+C1083,Type 1 diabetes mellitus with multiple complications,1
+C1085,Type 1 diabetes mellitus with ulcer,1
+C1086,Type 1 diabetes mellitus with gangrene,1
+C1087,Type 1 diabetes mellitus with retinopathy,1
+C1088,Type 1 diabetes mellitus - poor control,1
+C109.,Type 2 diabetes mellitus,2
+C1090,Type 2 diabetes mellitus with renal complications,2
+C1091,Type 2 diabetes mellitus with ophthalmic complications,2
+C1092,Type 2 diabetes mellitus with neurological complications,2
+C1093,Type 2 diabetes mellitus with multiple complications,2
+C1094,Type 2 diabetes mellitus with ulcer,2
+C1095,Type 2 diabetes mellitus with gangrene,2
+C1096,Type 2 diabetes mellitus with retinopathy,2
+C1097,Type 2 diabetes mellitus - poor control,2
+X40J4,Type 1 diabetes mellitus,1
+X40J5,Type 2 diabetes mellitus,2
+X40J6,Insulin treated Type 2 diabetes mellitus,2
+XM19i,[EDTA] Diabetes Type I (insulin dependent) associated with renal failure,1
+XM19j,[EDTA] Diabetes Type II (non-insulin-dependent) associated with renal failure,2
+Xa2h9,Dietary advice for type I diabetes,1
+Xa2hA,Dietary advice for type II diabetes,2
+Xa4g7,Unstable type 1 diabetes mellitus,1
+XaELP,Type 1 diabetes mellitus without complication,1
+XaELQ,Type 2 diabetes mellitus without complication,2
+XaEnn,Type 1 diabetes mellitus with mononeuropathy,1
+XaEno,Type 1 diabetes mellitus with polyneuropathy,1
+XaEnp,Type 2 diabetes mellitus with mononeuropathy,2
+XaEnq,Type 2 diabetes mellitus with polyneuropathy,2
+XaF04,Type 1 diabetes mellitus with nephropathy,1
+XaF05,Type 2 diabetes mellitus with nephropathy,2
+XaFWG,Type 1 diabetes mellitus with hypoglycaemic coma,1
+XaFWI,Type 2 diabetes mellitus with hypoglycaemic coma,2
+XaFm8,Type 1 diabetes mellitus with diabetic cataract,1
+XaFmA,Type 2 diabetes mellitus with diabetic cataract,2
+XaFmK,Type 1 diabetes mellitus with peripheral angiopathy,1
+XaFmL,Type 1 diabetes mellitus with arthropathy,1
+XaFmM,Type 1 diabetes mellitus with neuropathic arthropathy,1
+XaFn7,Type 2 diabetes mellitus with peripheral angiopathy,2
+XaFn8,Type 2 diabetes mellitus with arthropathy,2
+XaFn9,Type 2 diabetes mellitus with neuropathic arthropathy,2
+XaIfG,Type 2 diabetes on insulin,2
+XaIfI,Type 2 diabetes on diet only,2
+XaIrf,Hyperosmolar non-ketotic state in type 2 diabetes mellitus,2
+XaIzM,Type 1 diabetes mellitus with persistent proteinuria,1
+XaIzN,Type 1 diabetes mellitus with persistent microalbuminuria,1
+XaIzQ,Type 2 diabetes mellitus with persistent proteinuria,2
+XaIzR,Type 2 diabetes mellitus with persistent microalbuminuria,2
+XaJQp,Type 2 diabetes mellitus with exudative maculopathy,2
+XaJSr,Type 1 diabetes mellitus with exudative maculopathy,1
+XaKyW,Type 1 diabetes mellitus with gastroparesis,1
+XaKyX,Type 2 diabetes mellitus with gastroparesis,2
+XaMhJ,Diabetes type 1 review,1
+XaMhK,Diabetes type 2 review,2
+XaX3p,Type 1 diabetic dietary review,1
+XaX3q,Type 2 diabetic dietary review,2
+XaX49,Referral to type 1 diabetes structured education programme,1
+XaXZR,H/O: diabetes mellitus type 2,2
+XaXZv,H/O: diabetes mellitus type 1,1
+Xaage,Type 1 diabetes mellitus in remission,1
+Xaagf,Type 2 diabetes mellitus in remission,2
+XafjT,ED-DMT1 - Eating disorder-diabetes mellitus type 1,1
