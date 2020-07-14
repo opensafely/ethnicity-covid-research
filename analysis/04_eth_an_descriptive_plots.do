@@ -22,7 +22,7 @@
 *	Stata routines needed:	grc1leg	
 *
 ********************************************************************************/
-*ssc install grc1leg
+ssc install grc1leg
 
 
 local var"suspected confirmed tested positivetest ae icu cpnsdeath onsdeath onscoviddeath ons_noncoviddeath" //ventilation
