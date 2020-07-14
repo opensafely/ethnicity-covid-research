@@ -47,5 +47,7 @@ opensafely/diabetes-unknown-type/2020-06-29
 opensafely/type-1-diabetes/2020-06-29
 opensafely/type-2-diabetes/2020-06-29
 opensafely/diabetes-exeter-group/2020-07-06
+opensafely/asthma-oral-prednisolone-medication/2020-04-27
+
 
 
