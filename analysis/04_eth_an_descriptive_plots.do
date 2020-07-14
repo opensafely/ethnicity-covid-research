@@ -88,7 +88,7 @@ cap sts graph if eth16==`i', title("eth `i'") 			///
 
 
 * KM plot by ethnicity and age
-graph combine "$Tabfigdir/kmplot_eth1_age"				///
+cap graph combine "$Tabfigdir/kmplot_eth1_age"				///
 		"$Tabfigdir/kmplot_eth2_age"				///
 		"$Tabfigdir/kmplot_eth3_age"				///
 		"$Tabfigdir/kmplot_eth4_age"				///
