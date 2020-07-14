@@ -19,10 +19,10 @@
 *  
 ********************************************************************************
 *	
-*	Stata routines needed:	grc1leg	
+*	Stata routines needed:	graph combine	
 *
 ********************************************************************************/
-ssc install grc1leg
+*ssc install graph combine
 
 
 local var"suspected confirmed tested positivetest ae icu cpnsdeath onsdeath onscoviddeath ons_noncoviddeath" //ventilation
@@ -91,7 +91,7 @@ sts graph if eth16==`i', title("eth `i'") 			///
 
 
 * KM plot by ethnicity and age
-grc1leg "$Tabfigdir/kmplot_eth1_age"				///
+graph combine "$Tabfigdir/kmplot_eth1_age"				///
 		"$Tabfigdir/kmplot_eth2_age"				///
 		"$Tabfigdir/kmplot_eth3_age"				///
 		"$Tabfigdir/kmplot_eth4_age"				///
@@ -128,7 +128,7 @@ forvalues i=1/11 {
 
 
 * KM plot by ethnicity and sex
-grc1leg "$Tabfigdir/kmplot_eth1_sex"				///
+graph combine "$Tabfigdir/kmplot_eth1_sex"				///
 		"$Tabfigdir/kmplot_eth2_sex"				///
 		"$Tabfigdir/kmplot_eth3_sex"				///
 		"$Tabfigdir/kmplot_eth4_sex"				///
@@ -147,12 +147,12 @@ graph export "$Tabfigdir/km_`j'_eth16_sex.svg", as(svg) replace
 	
 	
 	
-* Delete unneeded graphs
+/* Delete unneeded graphs
 forvalues i=1/11 {		
 		erase "$Tabfigdir/kmplot_eth`i'_age.gph"
 		erase "$Tabfigdir/kmplot_eth`i'_sex.gph"
 }
-
+*/
 } //end outcomes
 
 
