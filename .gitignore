@@ -10,9 +10,13 @@ analysis/*
 !*.hlp
 !*.py
 !*.sthlp
+!*.ado t
 venv/
 .cache
 *.exe
 .Rhistory
 .DS_Store
 *.dta
+output/*
+.idea/
+
