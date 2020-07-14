@@ -96,6 +96,7 @@ foreach var of varlist  chronic_respiratory_disease 	///
 					ra_sle_psoriasis				///
 					insulin ///
 					statin ///
+					asthma ///
 					combination_bp_meds ///
 					{
 						summ `var'_date, format

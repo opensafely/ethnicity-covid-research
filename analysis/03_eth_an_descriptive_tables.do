@@ -85,35 +85,17 @@ tab rural_urban
 
 
 * Outcomes
-tab suspected
-tab confirmed
-tab tested
-tab positivetest
-
-tab ae
-tab icu
-
-tab onsdeath
-tab onscoviddeath
-tab ons_noncoviddeath
-tab cpnsdeath
+foreach i of global outcomes {
+	tab  `i'
+}
 
 
 **********************************
 *  Number (%) with each outcome  *
 **********************************
 
-foreach outvar of varlist 	onsdeath ///
-							onscoviddeath ///
-							ons_noncoviddeath ///
-							cpnsdeath ///
-							ae  ///
-							icu ///
-							suspected ///
-							confirmed ///
-							tested ///
-							positivetest ///
-							{
+foreach outvar of global outcomes {
+							
 	* Demographics
 	tab agegroup 							`outvar', col
 	tab male 								`outvar', col

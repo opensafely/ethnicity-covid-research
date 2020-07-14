@@ -34,13 +34,14 @@ global logdir     "$Logdir"
 global tempdir    "$Tempdir"
 
 * Set globals for  outcomes
-global outcomes " icu cpnsdeath onsdeath onscoviddeath ons_noncoviddeath" // suspected confirmed tested positivetest ae
+global outcomes "tested positivetest icu cpnsdeath onsdeath onscoviddeath ons_noncoviddeath" 
+
+*suspected confirmed ae
 
 *ventilation is yes/no so outcome will be odds not risk
 
 *  Pre-analysis data manipulation  
 do "$Dodir/01_eth_cr_analysis_dataset.do"
- 
 *  Checks 
 do "$Dodir/02_eth_an_data_checks.do"
 

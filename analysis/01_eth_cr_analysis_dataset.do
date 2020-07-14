@@ -28,12 +28,16 @@ cou
 **************************   INPUT REQUIRED   *********************************
 
 * Censoring dates for each outcome (largely, last date outcome data available)
-global tppcensor			= "31/07/2020"	//primary care suspected and confirmed covid
-global sgsscensor			= "31/07/2020"	//testing data
-global ecdscensor	 		= "31/07/2020"	//A&E admission
-global inarccensor		 	= "31/07/2020"	//ICU admission and ventilation
-global cpnscensor 			= "31/07/2020"	//in-hospital death
-global onscensor 			= "31/07/2020"	//all death
+global suspected_censor			= "31/07/2020"	//TPP censor date
+global confirmed_censor			= "31/07/2020"	//TPP censor date
+global tested_censor				= "31/07/2020"	//testing data
+global positivetest_censor		= "31/07/2020"	//testing data
+global ae_censor	 				= "31/07/2020"	//A&E admission
+global icu_censor		 		= "31/07/2020"	//ICU admission 
+global cpnsdeath_censor			= "31/07/2020"	//in-hospital death
+global onsdeath_censor 			= "31/07/2020"	//all death
+global onscoviddeath_censor 		= "31/07/2020"	//all death covid related
+global ons_noncoviddeath_censor 	= "31/07/2020"	//all death noncovid related
 
 *Start dates
 global indexdate 			= "01/02/2020"
@@ -593,12 +597,9 @@ gen asthma = (asthmacat==2|asthmacat==3)
 gen enter_date = date("$indexdate", "DMY")
 
 * Date of study end (typically: last date of outcome data available)
-gen tppcensor_date    	    	= date("$tppcensor", 	"DMY")
-gen sgsscensor_date 	    	= date("$sgsscensor", 	"DMY")
-gen  ecdscensor_date			= date("$ecdscensor", 	"DMY")
-gen inarccensor_date  			= date("$inarccensor", 	"DMY")
-gen cpnscensor_date				= date("$cpnscensor", 	"DMY")
-gen onscensor_date 	    		= date("$onscensor", 	"DMY")
+foreach i of global outcomes {
+	gen `i'_censor_date    	    	= date("$`i'censor", 	"DMY")
+}
 
 
 	
@@ -609,7 +610,6 @@ ren first_tested_for_covid		tested_date
 ren first_positive_test_date	positivetest_date
 ren a_e_consult_date 			ae_date
 ren icu_date_admitted			icu_date
-*ren icu_date_ventilated        ventilation_date
 ren died_date_cpns				cpnsdeath_date
 ren died_date_ons				onsdeath_date
 
@@ -620,35 +620,20 @@ gen onscoviddeath_date = onsdeath_date if died_ons_covid_flag_any == 1
 * If missing date of death resulting died_date will also be missing
 gen ons_noncoviddeath_date = onsdeath_date if died_ons_covid_flag_any != 1 
 
-/* CONVERT STRINGS TO DATE====================================================*/
+
+/* CONVERT STRINGS TO DATE FOR OUTCOME VARIABLES =============================*/
 * Recode to dates from the strings 
-foreach var of varlist 	suspected_date ///
-						confirmed_date ///
-						tested_date ///
-						positivetest_date /// 	
-						ae_date /// 
-						icu_date /// 	ventilation_date ///
-						cpnsdeath_date 	///
-						onsdeath_date ///
-						onscoviddeath_date ///
-						ons_noncoviddeath_date ///						
-				{
-						
-	confirm string variable `var'
-	rename `var' `var'_dstr
-	gen `var' = date(`var'_dstr, "YMD")
+foreach var of global outcomes {
+	confirm string variable `var'_date
+	rename `var'_date `var'_dstr
+	gen `var'_date = date(`var'_dstr, "YMD")
 	drop `var'_dstr
-	format `var' %td 
+	format `var'_date %td 
 
 }
 
-
-
-format *date* %td
-
 * Binary indicators for outcomes
-local p"suspected confirmed tested positivetest ae icu  cpnsdeath onsdeath onscoviddeath ons_noncoviddeath" //ventilation
-foreach i of local p {
+foreach i of global outcomes {
 		gen `i'=0
 		replace  `i'=1 if `i'_date < .
 		tab `i'
@@ -659,23 +644,10 @@ foreach i of local p {
 * For looping later, name must be stime_binary_outcome_name
 
 * Survival time = last followup date (first: end study, death, or that outcome)
-gen stime_suspected = min(tppcensor_date, onsdeath_date, suspected_date)
-gen stime_confirmed = min(tppcensor_date, onsdeath_date, confirmed_date)
-gen stime_tested = min(sgsscensor_date, onsdeath_date, tested_date)
-gen stime_positivetest = min(sgsscensor_date, onsdeath_date, positivetest_date)
-gen stime_ae = min(ecdscensor_date, onsdeath_date, ae_date)
-gen stime_icu = min(inarccensor_date, onsdeath_date, icu_date)
-gen stime_ventilation = min(inarccensor_date, onsdeath_date) //*ventilation_date)
-gen stime_cpnsdeath = min(cpnscensor_date, cpnsdeath_date)
-gen stime_onsdeath = min(onscensor_date, onsdeath_date )
-gen stime_onscoviddeath = min(onscensor_date, onscoviddeath_date )
-gen stime_ons_noncoviddeath = min(onscensor_date, ons_noncoviddeath_date )
-
-/* If outcome was after censoring occurred, set to zero
-replace covid_death_itu 	= 0 if (date_covid_death_itu	> onscoviddeathcensor_date) 
-replace covid_tpp_prob_or_susp = 0 if (date_covid_tpp_prob_or_susp > onscoviddeathcensor_date)
-replace covid_tpp_prob = 0 if (date_covid_tpp_prob > onscoviddeathcensor_date)
-*/
+*Ventilation does not have a survival time because it is a yes/no flag
+foreach i of global outcomes {
+	gen stime_`i' = min(`i'_censor_date, onsdeath_date, `i'_date)
+}
 
 * Format date variables
 format  stime* %td 
@@ -781,51 +753,27 @@ lab var thiazide_diuretics_date					"TZD in last 6 months"
 
 * Outcomes and follow-up
 label var enter_date					"Date of study entry"
-
-label var tppcensor				 		"Date of admin censoring for covid TPP cases"
-label var sgsscensor				 	"Date of admin censoring for SGSS testing data"
-label var ecdscensor			 		"Date of admin censoring for A&E attendance"
-label var inarccensor				 	"Date of admin censoring for ITU admissions and ventilation events"
-label var onscensor				 		"Date of admin censoring for ONS deaths"
-label var cpnscensor					"Date of admin censoring for CPNS deaths"
-
-label var suspected_date				"Failure/censoring indicator for outcome: suspected case"
-label var confirmed_date				"Failure/censoring indicator for outcome: covid confirmed case"
-label var tested_date					"Failure/censoring indicator for outcome: SGSS test performed"
-label var positivetest_date				"Failure/censoring indicator for outcome: SGSS test positive"
-label var ae_date						"Failure/censoring indicator for outcome: A&E Attendance"
-label var icu_date						"Failure/censoring indicator for outcome: ICU Admission"
-*label var ventilation_date				"Failure/censoring indicator for outcome: ICU Ventilation"
-label var cpnsdeath_date				"Failure/censoring indicator for outcome: CPNS death"
-label var onsdeath_date					"Failure/censoring indicator for outcome: ONS death any cause"
-label var onscoviddeath_date			"Failure/censoring indicator for outcome: ONS COVID death"
-label var ons_noncoviddeath_date		"Failure/censoring indicator for outcome: ONS non-COVID death"
+foreach i of global outcomes {
+	label var `i'_censor_date		 "Date of admin censoring for covid TPP cases"
+}
+*Outcome dates
+foreach i of global outcomes {
+	label var `i'_date					"Failure date: outcome `i'"
+	d `i'_date
+}
 
 * Survival times
-label var stime_suspected 				"Survival time (date); outcome suspected case"
-label var stime_confirmed 				"Survival time (date); outcome confirmed case"
-label var stime_tested 					"Survival time (date); outcome SGSS test performed"
-label var stime_positivetest 			"Survival time (date); outcome SGSS test positive"
-label var stime_ae 						"Survival time (date); outcome A&E Attendance"
-label var stime_icu 					"Survival time (date); outcome ICU Admission"
-label var stime_ventilation				"Survival time (date); outcome ICU Ventilation"
-label var stime_cpnsdeath 				"Survival time (date); outcome CPNS death"
-label var stime_onsdeath 				"Survival time (date); outcome ONS death any cause"
-label var stime_onscoviddeath			"Survival time (date); outcome ONS COVID death"
-label var stime_ons_noncoviddeath		"Survival time (date); outcome ONS non-COVID death"
+foreach i of global outcomes {
+	lab var stime_`i' 					"Survival time (date);outcome `i'"
+	d stime_`i'
+}
 
-* binary indicators
-label var suspected 				"outcome suspected case"
-label var confirmed 				"outcome confirmed case"
-label var tested 					"outcome SGSS test performed"
-label var positivetest 				"outcome SGSS test positive"
-label var ae 						"outcome A&E Attendance"
-label var icu 						"outcome ICU Admission"
-*label var ventilation				"outcome ICU Ventilation"
-label var cpnsdeath 				"outcome CPNS death"
-label var onsdeath 					"outcome ONS death any cause"
-label var onscoviddeath				"outcome ONS COVID death"
-label var ons_noncoviddeath			"outcome ONS non-COVID death"
+* binary outcome indicators
+foreach i of global outcomes {
+	lab var `i' 					"outcome `i'"
+	tab `i'
+}
+label var was_ventilated_flag		"outcome: ICU Ventilation"
 
 /* TIDY DATA==================================================================*/
 *  Drop variables that are not needed (those not labelled)
