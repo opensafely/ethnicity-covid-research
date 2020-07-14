@@ -91,6 +91,10 @@ study = StudyDefinition(
         include_day=True,
         returning="date_admitted",
         find_first_match_in_period=True,
+        return_expectations={"date": {"earliest" : "2020-02-01",
+        "latest": "2020-08-24"},
+        "rate" : "exponential_increase"},
+
     ),
 
     # cpns

@@ -112,9 +112,7 @@ foreach comorb in $varlist {
 	
 }
 
-* Outcome dates
-local p"suspected confirmed tested positivetest ae icu  cpnsdeath onsdeath onscoviddeath ons_noncoviddeath" //ventilation
-foreach i of local p {
+foreach i of global outcomes {
 	 summ `i'_date, format
 }
 
@@ -138,9 +136,9 @@ tab agegroup age66, m
 tab smoke smoke_nomiss, m
 
 * Diabetes
-tab diabetes_type
-tab diabetes_exeter_os
-tab diabetes_type diabetes_exeter_os, row col
+tab dm_type
+tab dm_type_exeter_os
+tab dm_type dm_type_exeter_os, row col
 
 * CKD
 tab reduced egfr_cat, m
@@ -171,6 +169,43 @@ tab ethnicity_16 imd, 		row
 
 
 
+ * Relationships with ethnicity
+foreach var of varlist 	chronic_respiratory_disease ///
+						chronic_cardiac_disease  ///
+						cancer  ///
+						perm_immunodef  ///
+						temp_immunodef  ///
+						chronic_liver_disease  ///
+						other_neuro  ///
+						stroke			///
+						dementia ///
+						esrf  ///
+						hypertension  ///
+						asthma ///
+						ra_sle_psoriasis  ///
+						dm_type ///
+					{	
+					tab ethnicity `var', row 
+}
+
+foreach var of varlist 	chronic_respiratory_disease ///
+						chronic_cardiac_disease  ///
+						cancer  ///
+						perm_immunodef  ///
+						temp_immunodef  ///
+						chronic_liver_disease  ///
+						other_neuro  ///
+						stroke			///
+						dementia ///
+						esrf  ///
+						hypertension  ///
+						asthma ///
+						ra_sle_psoriasis  ///
+						dm_type ///
+					{	
+					tab eth16 `var', row 
+}
+
 
 * Relationships with age
 
@@ -187,7 +222,7 @@ foreach var of varlist 	chronic_respiratory_disease ///
 						hypertension  ///
 						asthma ///
 						ra_sle_psoriasis  ///
-						diabetes_type ///
+						dm_type ///
 					{
 						tab agegroup `var', row 
  }
@@ -207,7 +242,7 @@ foreach var of varlist 	chronic_respiratory_disease ///
 						hypertension  ///
 						asthma ///
 						ra_sle_psoriasis  ///
-						diabetes_type ///
+						dm_type ///
 					{
 						tab male `var', row 
 }
@@ -226,17 +261,11 @@ foreach var of varlist 	chronic_respiratory_disease ///
 						hypertension  ///
 						asthma ///
 						ra_sle_psoriasis  ///
-						diabetes_type ///
+						dm_type ///
 					{	
 					tab smoke `var', row 
 }
 
 
-/* SENSE CHECK OUTCOMES=======================================================*/
-
-local p"suspected confirmed tested positivetest ae icu  cpnsdeath onscoviddeath ons_noncoviddeath" //ventilation
-foreach i of local p {
-	tab onsdeath `i', row col
-}
 * Close log file 
 log close

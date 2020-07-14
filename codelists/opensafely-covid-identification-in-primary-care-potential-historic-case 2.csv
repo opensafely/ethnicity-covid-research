@@ -1,0 +1,15 @@
+CTV3ID,CTV3PreferredTermDesc
+Y210f,Measurement of severe acute respiratory syndrome coronavirus 2 antibody (procedure)
+Y240e,Point of care measurement of severe acute respiratory syndrome coronavirus 2 antibody (procedure)
+Y23ea,SARS-CoV-2 (severe acute respiratory syndrome coronavirus 2) IgG detection result negative
+Y23ee,SARS-CoV-2 (severe acute respiratory syndrome coronavirus 2) IgM detection result negative
+Y23f8,SARS-CoV-2 (severe acute respiratory syndrome coronavirus 2) IgG detection result unknown
+Y23f3,SARS-CoV-2 (severe acute respiratory syndrome coronavirus 2) IgM detection result unknown
+Y247c,Severe acute respiratory syndrome coronavirus 2 immunoglobulin A not detected (finding)
+Y23e7,SARS-CoV-2 (severe acute respiratory syndrome coronavirus 2) immunity status equivocal
+Y23eb,SARS-CoV-2 (severe acute respiratory syndrome coronavirus 2) IgG detection result equivocal
+Y23ef,SARS-CoV-2 (severe acute respiratory syndrome coronavirus 2) IgM detection result equivocal
+Y23e8,SARS-CoV-2 (severe acute respiratory syndrome coronavirus 2) immunity status unknown
+Y247b,Severe acute respiratory syndrome coronavirus 2 immunoglobulin A detection result unknown (finding)
+Y23e6,Does not have immunity to SARS-CoV-2 (severe acute respiratory syndrome coronavirus 2)
+Y247a,Severe acute respiratory syndrome coronavirus 2 immunoglobulin A detection result equivocal (finding)

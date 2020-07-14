@@ -24,10 +24,7 @@
 ********************************************************************************/
 *ssc install graph combine
 
-
-local var"suspected confirmed tested positivetest ae icu cpnsdeath onsdeath onscoviddeath ons_noncoviddeath" //ventilation
-
-foreach j of local var { //start outcomes
+foreach j of global outcomes {
 use "$Tempdir/analysis_dataset_STSET_`j'.dta", clear
 
 
@@ -153,6 +150,7 @@ forvalues i=1/11 {
 		erase "$Tabfigdir/kmplot_eth`i'_sex.gph"
 }
 */
+
 } //end outcomes
 
 

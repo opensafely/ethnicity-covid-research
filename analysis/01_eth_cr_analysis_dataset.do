@@ -221,7 +221,7 @@ gen diabetes=type1_diabetes if diabetes_type=="T1DM"
 replace diabetes=type2_diabetes if diabetes_type=="T2DM"
 replace diabetes=unknown_diabetes if diabetes_type=="UNKNOWN_DM"
 
-
+drop type1_diabetes type2_diabetes unknown_diabetes
 
 foreach var of varlist 	chronic_respiratory_disease ///
 						chronic_cardiac_disease  ///
@@ -237,9 +237,6 @@ foreach var of varlist 	chronic_respiratory_disease ///
 						asthma ///
 						ra_sle_psoriasis  ///
 						diabetes ///
-						type1_diabetes ///
-						type2_diabetes ///
-						unknown_diabetes ///
 						bmi_date_measured   ///
 						bp_sys_date_measured   ///
 						bp_dias_date_measured   ///
@@ -300,9 +297,6 @@ foreach var of varlist 	chronic_respiratory_disease ///
 						hypertension  ///
 						asthma ///
 						ra_sle_psoriasis  ///
-						type1_diabetes ///
-						type2_diabetes ///
-						unknown_diabetes ///
 						bmi_measured_date   ///
 						bp_sys_date_measured   ///
 						bp_dias_date_measured   ///
@@ -481,6 +475,23 @@ gen bphigh = (bpcat==4)
 
 gen htdiag_or_highbp = bphigh
 recode htdiag_or_highbp 0 = 1 if hypertension==1 
+
+
+/* Diabetes type */
+gen dm_type=1 if diabetes_type=="T1DM"
+replace dm_type=2 if diabetes_type=="T2DM"
+replace dm_type=3 if diabetes_type=="UNKNOWN_DM"
+replace dm_type=0 if diabetes_type=="NO_DM"
+
+tab dm_type diabetes_type
+label define dm_type 0"No DM" 1"T1DM" 2"T2DM" 3"UNKNOWN_DM"
+label values dm_type dm_type
+
+*Open safely diabetes codes with exeter algorithm
+gen dm_type_exeter_os=1 if diabetes_exeter_os=="T1DM_EX_OS"
+replace dm_type_exeter_os=2 if diabetes_exeter_os=="T2DM_EX_OS"
+replace dm_type_exeter_os=0 if diabetes_exeter_os=="NO_DM"
+label values  dm_type_exeter_os dm_type
 
 
 ************
@@ -713,8 +724,8 @@ label var egfr_cat						"Calculated eGFR"
 label var hypertension				    "Diagnosed hypertension"
 label var chronic_respiratory_disease 	"Chronic Respiratory Diseases"
 label var chronic_cardiac_disease 		"Chronic Cardiac Diseases"
-label var diabetes_type						"Diabetes by type"
-label var diabetes_exeter_os			"Diabetes exeter type"
+label var dm_type						"Diabetes by type"
+label var dm_type_exeter_os				"Diabetes exeter type - OS codelist"
 label var cancer						"Cancer"
 label var other_immuno					"Immunosuppressed (combination algorithm)"
 label var chronic_liver_disease 		"Chronic liver disease"
@@ -846,8 +857,8 @@ sort patient_id
 save "$Tempdir/analysis_dataset.dta", replace
 
 **save a version set on each outcome
-local p"suspected confirmed tested positivetest ae icu cpnsdeath onsdeath onscoviddeath ons_noncoviddeath" //ventilation
-foreach i of local p {
+
+foreach i of global outcomes {
 	use "$Tempdir/analysis_dataset.dta", clear
 
 	stset stime_`i', fail(`i') 				///

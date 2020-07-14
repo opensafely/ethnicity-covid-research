@@ -19,6 +19,8 @@ cd  "`c(pwd)'/analysis"
 
 adopath + "./extra_ados"
 
+cd  "$Projectdir"
+
 ***********************HOUSE-KEEPING*******************************************
 * Create directories required 
 
@@ -30,6 +32,10 @@ capture mkdir "$Outdir/tabfig"
 global outdir  	  "$Outdir" 
 global logdir     "$Logdir"
 global tempdir    "$Tempdir"
+
+* Set globals for  outcomes
+global outcomes " icu cpnsdeath onsdeath onscoviddeath ons_noncoviddeath" // suspected confirmed tested positivetest ae ventilation
+
 
 *  Pre-analysis data manipulation  
 do "$Dodir/01_eth_cr_analysis_dataset.do"

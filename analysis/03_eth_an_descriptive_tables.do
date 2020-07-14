@@ -64,7 +64,7 @@ tab asthma
 tab chronic_cardiac_disease
 tab cancer
 tab chronic_liver_disease
-tab diabetes_type
+tab dm_type
 tab perm_immunodef
 tab temp_immunodef
 tab other_neuro
@@ -130,8 +130,8 @@ foreach outvar of varlist 	onsdeath ///
 	tab asthma 								`outvar', col
 	tab asthmacat							`outvar', col
 	tab chronic_cardiac_disease 			`outvar', col
-	tab diabetes_type						`outvar', col
-	tab diabetes_exeter_os					`outvar', col
+	tab dm_type								`outvar', col
+	tab dm_type_exeter_os					`outvar', col
 	tab cancer								`outvar', col
 	tab chronic_liver_disease 				`outvar', col
 	tab stroke 								`outvar', col
@@ -149,9 +149,9 @@ foreach outvar of varlist 	onsdeath ///
 ********************************************
 *  Cumulative incidence of EACH OUTCOME *
 ********************************************
-local p"suspected confirmed tested positivetest ae icu cpnsdeath onsdeath onscoviddeath ons_noncoviddeath" //ventilation
-foreach i of local p {
+foreach i of global outcomes {
 	use "$Tempdir/analysis_dataset_STSET_`i'.dta", clear
+	tab `i'
 	sts list , at(0 80) by(agegroup male) fail
 }
 
