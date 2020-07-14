@@ -783,21 +783,19 @@ drop `r(varlist)'
 
 /* APPLY INCLUSION/EXCLUIONS==================================================*/ 
 
-
+count
 
 noi di "DROP AGE >110:"
 drop if age > 110 & age != .
 
+count
+
 noi di "DROP IF DIED BEFORE INDEX"
 drop if onsdeath_date <= date("$indexdate", "DMY")
+drop if cpnsdeath_date <= date("$indexdate", "DMY")
 
-noi di "DROP IF OUTCOMES OCCUR BEFORE INDEX"
+count 
 
-local p"suspected confirmed tested positivetest ae icu ventilation cpnsdeath onsdeath onscoviddeath ons_noncoviddeath" 
-foreach i of local p {
-	cap drop if `i'_date <= date("$indexdate", "DMY") 
-}
-	
 ***************
 *  Save data  *
 ***************
@@ -808,8 +806,10 @@ save "$Tempdir/analysis_dataset.dta", replace
 
 foreach i of global outcomes {
 	use "$Tempdir/analysis_dataset.dta", clear
+	
+	drop if `i'_date <= date("$indexdate", "DMY") 
 
-	stset stime_`i', fail(`i') 				///
+	stset stime_`i', fail(`i') 				///	
 	id(patient_id) enter(enter_date) origin(enter_date)
 	save "$Tempdir/analysis_dataset_STSET_`i'.dta", replace
 }	
