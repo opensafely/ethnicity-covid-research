@@ -81,10 +81,10 @@ study = StudyDefinition(
     ),
 
     # ICU attendance and ventilation
-    icu_date_ventilated=patients.ventilated_in_icu(
-    on_or_after="2020-02-01",
-    returning="icu_date_ventilated"
-    ),
+    #icu_date_ventilated=patients.ventilated_in_icu(
+    #on_or_after="2020-02-01",
+    #returning="icu_date_ventilated"
+    #),
 
     icu_date_admitted=patients.admitted_to_icu(
         on_or_after="2020-02-01",
@@ -479,7 +479,8 @@ study = StudyDefinition(
         include_month=True,
     ),
 
-    diabetes_type=patients.categorised_as(
+ 
+     diabetes_type=patients.categorised_as(
         {
             "T1DM":
                 """
@@ -577,47 +578,48 @@ study = StudyDefinition(
     ),
 
 #EXETER ALGORITHM USING EXETER CODELISTS
-#    diabetes_exeter=patients.categorised_as(
-#        {
-#            "T1DM_EX":
-#                """
-#                        ((insulin_last6mo >= 2) AND ((t1dm_count / t2dm_count) >= 2))
-#                """,
-#            "T2DM_EX":
-#                """
-#                        (insulin_last6mo < 2) AND ((t2dm_count>0))
-#                        OR
-#                        ((insulin_last6mo >= 2) AND ((t1dm_count / t2dm_count) < 2)) AND ((t2dm_count>0))
-#                """,
-#            "NO_DM": "DEFAULT",
-#        },
-#
-#        return_expectations={
-#            "category": {"ratios": {"T1_DM": 0.02, "T2_DM": 0.4, "NO_DM": 0.78}},
-#            "rate" : "universal"
-#
-#        },
-#
-#        t1dm_count=patients.categorised_as(
-#            "T1DM_EX": "diabetes_t1t2_codes_exeter = '1'",
-#            on_or_before="2020-02-01",
-#            returning="number_of_matches_in_period",
-#        ),
-#
-#        t2dm_count=patients.patients.categorised_as(
-#            "T2DM_EX": "diabetes_t1t2_codes_exeter = '2'",
-#            on_or_before="2020-02-01",
-#            returning="number_of_matches_in_period",
-#        ),
-#            
-#        insulin_last6mo=patients.with_these_medications(
-#            insulin_med_codes,
-#            between=["2019-08-01", "2020-02-01"],
-#            returning="number_of_matches_in_period",
-#        ),
-#    ),
+    diabetes_exeter=patients.categorised_as(
+        {
+            "T1DM_EX":
+                """
+                        ((insulin_last6mo_ex >= 2) AND ((t1dm_count_ex / t2dm_count_ex) >= 2))
+                """,
+            "T2DM_EX":
+                """
+                        (insulin_last6mo_ex < 2) AND ((t2dm_count_ex>0))
+                        OR
+                        ((insulin_last6mo_ex >= 2) AND ((t1dm_count_ex / t2dm_count_ex) < 2)) AND ((t2dm_count_ex>0))
+                """,
+           "NO_DM": "DEFAULT",
+        },
+
+        return_expectations={
+            "category": {"ratios": {"T1DM_EX": 0.1, "T2DM_EX": 0.2, "NO_DM": 0.7}},
+            "rate" : "universal"
+
+        },
+
+        t1dm_count_ex=patients.with_these_clinical_events(
+            filter_codes_by_category(diabetes_t1t2_codes_exeter, include=["1"]),
+            on_or_before="2020-02-01",
+            returning="number_of_matches_in_period",
+        ),
+
+        t2dm_count_ex=patients.with_these_clinical_events(
+            filter_codes_by_category(diabetes_t1t2_codes_exeter, include=["2"]),
+            on_or_before="2020-02-01",
+            returning="number_of_matches_in_period",
+        ),
+            
+        insulin_last6mo_ex=patients.with_these_medications(
+            insulin_med_codes,
+            between=["2019-08-01", "2020-02-01"],
+            returning="number_of_matches_in_period",
+        ),
+    ),
 
 
+    
     # CANCER - 3 TYPES
     cancer=patients.with_these_clinical_events(
         combine_codelists(lung_cancer_codes,
