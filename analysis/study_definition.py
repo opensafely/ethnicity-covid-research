@@ -482,6 +482,7 @@ study = StudyDefinition(
                 
             """,
         },
+        return_expectations={"category": {"ratios": {"0": 0.8, "1": 0.1, "2": 0.1}},},
         recent_asthma_code=patients.with_these_clinical_events(
             asthma_codes, between=["2017-02-01", "2020-02-01"],
         ),
@@ -495,7 +496,6 @@ study = StudyDefinition(
             returning="number_of_matches_in_period",
         ),
     ),
-
     chronic_cardiac_disease=patients.with_these_clinical_events(
         chronic_cardiac_disease_codes,
         return_first_date_in_period=True,

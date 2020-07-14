@@ -86,7 +86,7 @@ chronic_respiratory_disease_codes = codelist_from_csv(
     column="CTV3ID",
 )
 
-current_asthma_codes = codelist_from_csv(
+asthma_codes = codelist_from_csv(
     "codelists/opensafely-current-asthma.csv", system="ctv3", column="CTV3ID"
 )
 
