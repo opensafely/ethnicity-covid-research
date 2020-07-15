@@ -25,8 +25,15 @@ study = StudyDefinition(
     },
 
     # STUDY POPULATION
-    population=patients.registered_with_one_practice_between(
+   population=patients.registered_with_one_practice_between(
         "2019-02-01", "2020-02-01"
+   ),
+
+    dereg_date=patients.date_deregistered_from_all_supported_practices(
+        on_or_before="2020-12-01", 
+        date_format="YYYY-MM",
+        return_expectations={"date": {"earliest": "2020-02-01"}},
+
     ),
 
     # OUTCOMES,
@@ -35,18 +42,14 @@ study = StudyDefinition(
         returning="date",
         find_first_match_in_period=True,
         date_format="YYYY-MM-DD",
-        return_expectations={"date": {"earliest" : "2020-02-01",
-                                      "latest": "2020-08-24"},
-                             "rate" : "exponential_increase"},
+        return_expectations={"rate" : "exponential_increase"},
     ),
     primary_care_historic_case=patients.with_these_clinical_events(
         covid_primary_care_historic_case,
         returning="date",
-        find_first_match_in_period=True,
         date_format="YYYY-MM-DD",
-        return_expectations={"date": {"earliest" : "2020-02-01",
-                                      "latest": "2020-08-24"},
-                             "rate" : "exponential_increase"},
+        find_first_match_in_period=True,
+        return_expectations={"rate" : "exponential_increase"},
     ),
 
     primary_care_potential_historic_case=patients.with_these_clinical_events(
@@ -66,8 +69,8 @@ study = StudyDefinition(
     primary_care_suspect_case=patients.with_these_clinical_events(
         covid_primary_care_suspect_case,
         returning="date",
-        find_first_match_in_period=True,
         date_format="YYYY-MM-DD",
+        find_first_match_in_period=True,
         return_expectations={"rate" : "exponential_increase"},
 
     ),
@@ -78,6 +81,8 @@ study = StudyDefinition(
         returning="date_arrived",
         date_format="YYYY-MM-DD",
         find_first_match_in_period=True,
+        return_expectations={"date": {"earliest" : "2020-02-01"},
+        "rate" : "exponential_increase"},
     ),
 
     # ICU attendance and ventilation
@@ -104,7 +109,7 @@ study = StudyDefinition(
 
     # cpns
     died_date_cpns=patients.with_death_recorded_in_cpns(
-        on_or_before="2020-06-01",
+        on_or_before="2020-08-01",
         returning="date_of_death",
         include_month=True,
         include_day=True,
@@ -583,13 +588,13 @@ study = StudyDefinition(
         {
             "T1DM_EX_OS":
                 """
-                        ((insulin_last6mo >= 2) AND ((t1dm_count / t2dm_count) >= 2))
+                        ((insulin_last6mo >= 2) AND ((t1dm_count >= t2dm_count * 2))
                 """,
             "T2DM_EX_OS":
                 """
                         (insulin_last6mo < 2) AND ((t2dm_count>0))
                         OR
-                        ((insulin_last6mo >= 2) AND ((t1dm_count / t2dm_count) < 2)) AND ((t2dm_count>0))
+                        ((insulin_last6mo >= 2) AND ((t1dm_count < t2dm_count * 2)) AND ((t2dm_count>0))
                 """,
             "NO_DM": "DEFAULT",
         },
@@ -624,15 +629,15 @@ study = StudyDefinition(
         {
             "T1DM_EX":
                 """
-                        ((insulin_last6mo_ex >= 2) AND ((t1dm_count_ex / t2dm_count_ex) >= 2))
+                        ((insulin_last6mo >= 2) AND ((t1dm_count_ex >= t2dm_count_ex * 2))
                 """,
             "T2DM_EX":
                 """
-                        (insulin_last6mo_ex < 2) AND ((t2dm_count_ex>0))
+                        (insulin_last6mo < 2) AND ((t2dm_count_ex>0))
                         OR
-                        ((insulin_last6mo_ex >= 2) AND ((t1dm_count_ex / t2dm_count_ex) < 2)) AND ((t2dm_count_ex>0))
+                        ((insulin_last6mo >= 2) AND ((t1dm_count_ex < t2dm_count_ex * 2)) AND ((t2dm_count_ex>0))
                 """,
-           "NO_DM": "DEFAULT",
+            "NO_DM": "DEFAULT",
         },
 
         return_expectations={

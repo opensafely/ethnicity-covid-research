@@ -30,17 +30,34 @@ cou
 * Censoring dates for each outcome (largely, last date outcome data available)
 global suspected_censor			= "31/07/2020"	//TPP censor date
 global confirmed_censor			= "31/07/2020"	//TPP censor date
-global tested_censor				= "31/07/2020"	//testing data
+global tested_censor			= "31/07/2020"	//testing data
 global positivetest_censor		= "31/07/2020"	//testing data
-global ae_censor	 				= "31/07/2020"	//A&E admission
+global ae_censor	 			= "31/07/2020"	//A&E admission
 global icu_censor		 		= "31/07/2020"	//ICU admission 
 global cpnsdeath_censor			= "31/07/2020"	//in-hospital death
 global onsdeath_censor 			= "31/07/2020"	//all death
 global onscoviddeath_censor 		= "31/07/2020"	//all death covid related
 global ons_noncoviddeath_censor 	= "31/07/2020"	//all death noncovid related
 
+
+foreach i of global outcomes {
+	di "`i'" " $`i'_censor"
+}
+
 *Start dates
 global indexdate 			= "01/02/2020"
+
+
+/*  Cohort entry and censor dates  */
+* Date of cohort entry, 1 Mar 2020
+gen enter_date = date("$indexdate", "DMY")
+
+* Date of study end (typically: last date of outcome data available)
+
+foreach i of global outcomes {
+	gen `i'_censor_date    	    	= date("$`i'_censor", 	"DMY")
+	summ   `i'_censor_date 
+}
 
 
 *******************************************************************************
@@ -61,6 +78,27 @@ label define ethnicity 	1 "White"  					///
 						
 label values ethnicity ethnicity
 tab ethnicity
+
+ *re-order ethnicity
+ gen eth5=1 if ethnicity==1
+ replace eth5=2 if ethnicity==3
+ replace eth5=3 if ethnicity==4
+ replace eth5=4 if ethnicity==2
+ replace eth5=5 if ethnicity==5
+ replace eth5=.u if ethnicity==.
+
+ label define eth5	 	1 "White"  					///
+						2 "South Asian"				///						
+						3 "Black"  					///
+						4 "Mixed"	///
+						5 "Other"					///
+						.u "Unknown"				///
+					
+
+label values eth5 eth5
+tab eth5, m
+
+
 
 * Ethnicity (16 category)
 replace ethnicity_16 = . if ethnicity==.
@@ -589,18 +627,11 @@ label values asthmacat asthmacat
 
 gen asthma = (asthmacat==2|asthmacat==3)
 
+**care home
+encode care_home_type, gen(carehome)
+drop care_home_type
 
 /* OUTCOME AND SURVIVAL TIME==================================================*/
-
-/*  Cohort entry and censor dates  */
-* Date of cohort entry, 1 Mar 2020
-gen enter_date = date("$indexdate", "DMY")
-
-* Date of study end (typically: last date of outcome data available)
-foreach i of global outcomes {
-	gen `i'_censor_date    	    	= date("$`i'censor", 	"DMY")
-}
-
 
 	
 /****   Outcome definitions   ****/
@@ -632,6 +663,11 @@ foreach var of global outcomes {
 
 }
 
+rename dereg_date dereg_dstr
+	gen dereg_date = date(dereg_dstr, "YMD")
+	drop dereg_dstr
+	format dereg_date %td 
+
 * Binary indicators for outcomes
 foreach i of global outcomes {
 		gen `i'=0
@@ -643,15 +679,14 @@ foreach i of global outcomes {
 /**** Create survival times  ****/
 * For looping later, name must be stime_binary_outcome_name
 
-* Survival time = last followup date (first: end study, death, or that outcome)
+* Survival time = last followup date (first: deregistration date, end study, death, or that outcome)
 *Ventilation does not have a survival time because it is a yes/no flag
 foreach i of global outcomes {
-	gen stime_`i' = min(`i'_censor_date, onsdeath_date, `i'_date)
+	gen stime_`i' = min(`i'_censor_date, onsdeath_date, `i'_date, dereg_date)
 }
 
 * Format date variables
 format  stime* %td 
-
 
 /* LABEL VARIABLES============================================================*/
 *  Label variables you are intending to keep, drop the rest 
@@ -677,9 +712,9 @@ label var obese4cat_sa				"Obesity with SA categories"
 label var smoke		 				"Smoking status"
 label var smoke_nomiss	 			"Smoking status (missing set to non)"
 label var imd 						"Index of Multiple Deprivation (IMD)"
-label var ethnicity					"Eth 5 categories"
+label var eth5						"Eth 5 categories"
 label var ethnicity_16				"Eth 16 categories"
-label var eth16				"Eth 16 collapsed"
+label var eth16						"Eth 16 collapsed"
 label var stp 						"Sustainability and Transformation Partnership"
 label var age1 						"Age spline 1"
 label var age2 						"Age spline 2"
@@ -687,7 +722,9 @@ label var age3 						"Age spline 3"
 lab var hh_total					"calculated No of ppl in household"
 lab var region						"Region of England"
 lab var rural_urban					"Rural-Urban Indicator"
-lab var care_home_type				"Care home type"
+lab var carehome					"Care home type"
+lab var hba1c_mmol_per_mol			"HbA1c mmo/mol"
+lab var hba1c_percentage			"HbA1c %"
 
 * Comorbidities of interest 
 label var asthma						"Asthma category"
@@ -727,6 +764,8 @@ label var ra_sle_psoriasis_date 			"Autoimmune disease  Date"
 lab var perm_immunodef_date  				"Permanent immunosuppression date"
 lab var temp_immunodef_date   				"Temporary immunosuppression date"
 lab var esrf_date 							"end stage renal failure"
+lab var hba1c_mmol_per_mol_date				"HbA1c mmo/mol_date"
+lab var hba1c_percentage_date				"HbA1c % date"
 
 *medications
 lab var statin								"Statin in last 6 months"
@@ -783,21 +822,19 @@ drop `r(varlist)'
 
 /* APPLY INCLUSION/EXCLUIONS==================================================*/ 
 
-
+count
 
 noi di "DROP AGE >110:"
 drop if age > 110 & age != .
 
+count
+
 noi di "DROP IF DIED BEFORE INDEX"
 drop if onsdeath_date <= date("$indexdate", "DMY")
+drop if cpnsdeath_date <= date("$indexdate", "DMY")
 
-noi di "DROP IF OUTCOMES OCCUR BEFORE INDEX"
+count 
 
-local p"suspected confirmed tested positivetest ae icu ventilation cpnsdeath onsdeath onscoviddeath ons_noncoviddeath" 
-foreach i of local p {
-	cap drop if `i'_date <= date("$indexdate", "DMY") 
-}
-	
 ***************
 *  Save data  *
 ***************
@@ -808,8 +845,10 @@ save "$Tempdir/analysis_dataset.dta", replace
 
 foreach i of global outcomes {
 	use "$Tempdir/analysis_dataset.dta", clear
+	
+	drop if `i'_date <= date("$indexdate", "DMY") 
 
-	stset stime_`i', fail(`i') 				///
+	stset stime_`i', fail(`i') 				///	
 	id(patient_id) enter(enter_date) origin(enter_date)
 	save "$Tempdir/analysis_dataset_STSET_`i'.dta", replace
 }	
