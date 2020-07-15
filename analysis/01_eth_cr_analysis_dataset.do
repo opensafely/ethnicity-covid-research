@@ -589,6 +589,9 @@ label values asthmacat asthmacat
 
 gen asthma = (asthmacat==2|asthmacat==3)
 
+**care home
+encode care_home_type, gen(carehome)
+drop care_home_type
 
 /* OUTCOME AND SURVIVAL TIME==================================================*/
 
@@ -687,7 +690,9 @@ label var age3 						"Age spline 3"
 lab var hh_total					"calculated No of ppl in household"
 lab var region						"Region of England"
 lab var rural_urban					"Rural-Urban Indicator"
-lab var care_home_type				"Care home type"
+lab var carehome					"Care home type"
+lab var hba1c_mmol_per_mol			"HbA1c mmo/mol"
+lab var hba1c_percentage			"HbA1c %"
 
 * Comorbidities of interest 
 label var asthma						"Asthma category"
@@ -727,6 +732,8 @@ label var ra_sle_psoriasis_date 			"Autoimmune disease  Date"
 lab var perm_immunodef_date  				"Permanent immunosuppression date"
 lab var temp_immunodef_date   				"Temporary immunosuppression date"
 lab var esrf_date 							"end stage renal failure"
+lab var hba1c_mmol_per_mol_date				"HbA1c mmo/mol_date"
+lab var hba1c_percentage_date				"HbA1c % date"
 
 *medications
 lab var statin								"Statin in last 6 months"
