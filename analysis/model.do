@@ -42,11 +42,13 @@ global outcomes "tested positivetest icu cpnsdeath onsdeath onscoviddeath ons_no
 
 *  Pre-analysis data manipulation  
 do "$Dodir/01_eth_cr_analysis_dataset.do"
+
 *  Checks 
 do "$Dodir/02_eth_an_data_checks.do"
 
 
 *  Descriptives
 do "$Dodir/03_eth_an_descriptive_tables.do"
-do "$Dodir/04_eth_an_descriptive_plots.do"
-*do "$Dodir/05_eth_an_descriptive_tables.do"
+*do "$Dodir/04_eth_an_descriptive_plots.do"
+do "$Dodir/05a_eth_table1_descriptives_eth16.do"
+do "$Dodir/05b_eth_table1_descriptives_eth5.do"

@@ -79,6 +79,27 @@ label define ethnicity 	1 "White"  					///
 label values ethnicity ethnicity
 tab ethnicity
 
+ *re-order ethnicity
+ gen eth5=1 if ethnicity==1
+ replace eth5=2 if ethnicity==3
+ replace eth5=3 if ethnicity==4
+ replace eth5=4 if ethnicity==2
+ replace eth5=5 if ethnicity==5
+ replace eth5=.u if ethnicity==.
+
+ label define eth5	 	1 "White"  					///
+						2 "South Asian"				///						
+						3 "Black"  					///
+						4 "Mixed"	///
+						5 "Other"					///
+						.u "Unknown"				///
+					
+
+label values eth5 eth5
+tab eth5, m
+
+
+
 * Ethnicity (16 category)
 replace ethnicity_16 = . if ethnicity==.
 label define ethnicity_16 									///
@@ -691,9 +712,9 @@ label var obese4cat_sa				"Obesity with SA categories"
 label var smoke		 				"Smoking status"
 label var smoke_nomiss	 			"Smoking status (missing set to non)"
 label var imd 						"Index of Multiple Deprivation (IMD)"
-label var ethnicity					"Eth 5 categories"
+label var eth5						"Eth 5 categories"
 label var ethnicity_16				"Eth 16 categories"
-label var eth16				"Eth 16 collapsed"
+label var eth16						"Eth 16 collapsed"
 label var stp 						"Sustainability and Transformation Partnership"
 label var age1 						"Age spline 1"
 label var age2 						"Age spline 2"
