@@ -588,13 +588,13 @@ study = StudyDefinition(
         {
             "T1DM_EX_OS":
                 """
-                        ((insulin_last6mo >= 2) AND ((t1dm_count / t2dm_count) >= 2))
+                        ((insulin_last6mo >= 2) AND ((t1dm_count >= t2dm_count * 2))
                 """,
             "T2DM_EX_OS":
                 """
                         (insulin_last6mo < 2) AND ((t2dm_count>0))
                         OR
-                        ((insulin_last6mo >= 2) AND ((t1dm_count / t2dm_count) < 2)) AND ((t2dm_count>0))
+                        ((insulin_last6mo >= 2) AND ((t1dm_count < t2dm_count * 2)) AND ((t2dm_count>0))
                 """,
             "NO_DM": "DEFAULT",
         },
@@ -629,15 +629,15 @@ study = StudyDefinition(
         {
             "T1DM_EX":
                 """
-                        ((insulin_last6mo_ex >= 2) AND ((t1dm_count_ex / t2dm_count_ex) >= 2))
+                        ((insulin_last6mo >= 2) AND ((t1dm_count >= t2dm_count * 2))
                 """,
             "T2DM_EX":
                 """
-                        (insulin_last6mo_ex < 2) AND ((t2dm_count_ex>0))
+                        (insulin_last6mo < 2) AND ((t2dm_count>0))
                         OR
-                        ((insulin_last6mo_ex >= 2) AND ((t1dm_count_ex / t2dm_count_ex) < 2)) AND ((t2dm_count_ex>0))
+                        ((insulin_last6mo >= 2) AND ((t1dm_count < t2dm_count * 2)) AND ((t2dm_count>0))
                 """,
-           "NO_DM": "DEFAULT",
+            "NO_DM": "DEFAULT",
         },
 
         return_expectations={
