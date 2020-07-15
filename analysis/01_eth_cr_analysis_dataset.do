@@ -646,10 +646,10 @@ foreach i of global outcomes {
 /**** Create survival times  ****/
 * For looping later, name must be stime_binary_outcome_name
 
-* Survival time = last followup date (first: end study, death, or that outcome)
+* Survival time = last followup date (first: deregistration date, end study, death, or that outcome)
 *Ventilation does not have a survival time because it is a yes/no flag
 foreach i of global outcomes {
-	gen stime_`i' = min(`i'_censor_date, onsdeath_date, `i'_date)
+	gen stime_`i' = min(`i'_censor_date, onsdeath_date, `i'_date, dereg_date)
 }
 
 * Format date variables
