@@ -29,10 +29,12 @@ study = StudyDefinition(
         "2019-02-01", "2020-02-01"
    ),
 
-    #dereg_date=patients.date_deregistered_from_all_supported_practices(
-    #   on_or_before="2020-08-01", 
-    #   date_format="YYYY-MM",
-    #),
+    dereg_date=patients.date_deregistered_from_all_supported_practices(
+        on_or_before="2020-12-01", 
+        date_format="YYYY-MM",
+        return_expectations={"date": {"earliest": "2020-02-01"}},
+
+    ),
 
     # OUTCOMES,
     primary_care_case=patients.with_these_clinical_events(
