@@ -30,17 +30,34 @@ cou
 * Censoring dates for each outcome (largely, last date outcome data available)
 global suspected_censor			= "31/07/2020"	//TPP censor date
 global confirmed_censor			= "31/07/2020"	//TPP censor date
-global tested_censor				= "31/07/2020"	//testing data
+global tested_censor			= "31/07/2020"	//testing data
 global positivetest_censor		= "31/07/2020"	//testing data
-global ae_censor	 				= "31/07/2020"	//A&E admission
+global ae_censor	 			= "31/07/2020"	//A&E admission
 global icu_censor		 		= "31/07/2020"	//ICU admission 
 global cpnsdeath_censor			= "31/07/2020"	//in-hospital death
 global onsdeath_censor 			= "31/07/2020"	//all death
 global onscoviddeath_censor 		= "31/07/2020"	//all death covid related
 global ons_noncoviddeath_censor 	= "31/07/2020"	//all death noncovid related
 
+
+foreach i of global outcomes {
+	di "`i'" " $`i'_censor"
+}
+
 *Start dates
 global indexdate 			= "01/02/2020"
+
+
+/*  Cohort entry and censor dates  */
+* Date of cohort entry, 1 Mar 2020
+gen enter_date = date("$indexdate", "DMY")
+
+* Date of study end (typically: last date of outcome data available)
+
+foreach i of global outcomes {
+	gen `i'_censor_date    	    	= date("$`i'_censor", 	"DMY")
+	summ   `i'_censor_date 
+}
 
 
 *******************************************************************************
@@ -595,16 +612,6 @@ drop care_home_type
 
 /* OUTCOME AND SURVIVAL TIME==================================================*/
 
-/*  Cohort entry and censor dates  */
-* Date of cohort entry, 1 Mar 2020
-gen enter_date = date("$indexdate", "DMY")
-
-* Date of study end (typically: last date of outcome data available)
-foreach i of global outcomes {
-	gen `i'_censor_date    	    	= date("$`i'censor", 	"DMY")
-}
-
-
 	
 /****   Outcome definitions   ****/
 ren primary_care_suspect_case	suspected_date
@@ -635,6 +642,11 @@ foreach var of global outcomes {
 
 }
 
+rename dereg_date dereg_dstr
+	gen dereg_date = date(dereg_dstr, "YMD")
+	drop dereg_dstr
+	format dereg_date %td 
+
 * Binary indicators for outcomes
 foreach i of global outcomes {
 		gen `i'=0
@@ -654,7 +666,6 @@ foreach i of global outcomes {
 
 * Format date variables
 format  stime* %td 
-
 
 /* LABEL VARIABLES============================================================*/
 *  Label variables you are intending to keep, drop the rest 
