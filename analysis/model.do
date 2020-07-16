@@ -53,6 +53,6 @@ do "$Dodir/05a_eth_table1_descriptives_eth16.do"
 do "$Dodir/05b_eth_table1_descriptives_eth5.do"
 
 *multivariable complete case analysis
-qui do "$Dodir/06a_eth_an_multivariable_eth16.do"
+do "$Dodir/06a_eth_an_multivariable_eth16.do"
 do "$Dodir/06b_eth_an_multivariable_eth5.do"
 
