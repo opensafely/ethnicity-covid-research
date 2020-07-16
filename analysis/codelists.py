@@ -266,3 +266,9 @@ statin_med_codes = codelist_from_csv(
     system="snomed", 
     column="id"
 )
+
+oad_med_codes = codelist_from_csv(
+    "opensafely/antidiabetic-drugs/2020-07-16",
+    system"dmandd",
+    column="id"
+)
