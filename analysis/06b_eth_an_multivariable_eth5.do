@@ -40,19 +40,19 @@ tab eth5 `i', missing row
 
 /* Univariable model */ 
 
-stcox i.eth5 
-estimates save "$Tempdir/crude_`i'", replace 
+cap stcox i.eth5 
+cap estimates save "$Tempdir/crude_`i'", replace 
 
 /* Multivariable models */ 
 
 * Age and Gender 
 * Age fit as spline in first instance, categorical below 
 
-stcox i.eth5 i.male age1 age2 age3 i.imd, strata(stp)
-estimates save "$Tempdir/model1_`i'", replace 
+cap stcox i.eth5 i.male age1 age2 age3 i.imd, strata(stp)
+cap estimates save "$Tempdir/model1_`i'", replace 
 
 * Age, Gender and Comorbidities  
-stcox i.eth5 i.male age1 age2 age3 	i.imd							///
+cap stcox i.eth5 i.male age1 age2 age3 	i.imd							///
 										bmi							///
 										gp_consult_count			///
 										i.smoke_nomiss				///
@@ -72,9 +72,9 @@ stcox i.eth5 i.male age1 age2 age3 	i.imd							///
 										i.other_immuno		 		///
 										i.ra_sle_psoriasis, strata(stp)				
 										
-estimates save "$Tempdir/model2_`i'", replace 
+cap estimates save "$Tempdir/model2_`i'", replace 
 
-stcox i.eth5 i.male age1 age2 age3 i.imd hh_size					///
+cap stcox i.eth5 i.male age1 age2 age3 i.imd hh_size					///
 										bmi							///
 										gp_consult_count			///
 										i.smoke_nomiss				///
@@ -94,7 +94,7 @@ stcox i.eth5 i.male age1 age2 age3 i.imd hh_size					///
 										i.other_immuno		 		///
 										i.ra_sle_psoriasis, strata(stp)				
 										
-estimates save "$Tempdir/model3_`i'", replace
+cap estimates save "$Tempdir/model3_`i'", replace
 
 /* Print table================================================================*/ 
 *  Print the results for the main model 
