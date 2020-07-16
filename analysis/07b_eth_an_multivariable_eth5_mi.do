@@ -55,17 +55,17 @@ mi	stset stime_`i', fail(`i') 	id(patient_id) enter(enter_date) origin(enter_dat
 
 /* Univariable model */ 
 
-mi estimate, dots saving("$Tempdir/crude_`i'", replace) eform: stcox i.eth5 
+cap mi estimate, dots saving("$Tempdir/crude_`i'", replace) eform: stcox i.eth5 
 
 /* Multivariable models */ 
 
 * Age and Gender 
 * Age fit as spline 
 
-mi estimate, dots saving("$Tempdir/model1_`i'", replace) eform: stcox i.eth5 i.male age1 age2 age3 i.imd, strata(stp)
+cap mi estimate, dots saving("$Tempdir/model1_`i'", replace) eform: stcox i.eth5 i.male age1 age2 age3 i.imd, strata(stp)
 
 * Age, Gender and Comorbidities  
-mi estimate, dots saving("$Tempdir/model2_`i'", replace) eform: stcox i.eth5 i.male age1 age2 age3 	i.imd							///
+cap mi estimate, dots saving("$Tempdir/model2_`i'", replace) eform: stcox i.eth5 i.male age1 age2 age3 	i.imd							///
 										bmi							///
 										gp_consult_count			///
 										i.smoke_nomiss				///
@@ -86,7 +86,7 @@ mi estimate, dots saving("$Tempdir/model2_`i'", replace) eform: stcox i.eth5 i.m
 										i.ra_sle_psoriasis, strata(stp)				
 										
 
-mi estimate, dots saving("$Tempdir/model3_`i'", replace) eform: stcox i.eth5 i.male age1 age2 age3 i.imd hh_size					///
+cap mi estimate, dots saving("$Tempdir/model3_`i'", replace) eform: stcox i.eth5 i.male age1 age2 age3 i.imd hh_size					///
 										bmi							///
 										gp_consult_count			///
 										i.smoke_nomiss				///
