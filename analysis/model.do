@@ -57,7 +57,8 @@ do "$Dodir/06a_eth_an_multivariable_eth16.do"
 do "$Dodir/06b_eth_an_multivariable_eth5.do"
 
 *multivariable analysis - imputed ethnicity
-qui do "$Dodir/07b_eth_an_multivariable_eth5_mi.do"
+do "$Dodir/07b_eth_an_multivariable_eth16_mi.do"
+do "$Dodir/07b_eth_an_multivariable_eth5_mi.do"
 
 *multivariable analysis - in those with infection
 

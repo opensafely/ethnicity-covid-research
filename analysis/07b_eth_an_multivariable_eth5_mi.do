@@ -44,7 +44,12 @@ mi register imputed eth5
 mi impute ologit eth5, add(20) rseed(2232)
 
 *check imputed datasets
-*mi xeq 0 1 20: tab eth5     
+mi xeq 0 1 20: tab eth5 
+
+*mi stset
+mi	stset stime_`i', fail(`i') 	id(patient_id) enter(enter_date) origin(enter_date)
+
+    
  
 /* Main Model=================================================================*/
 
@@ -55,7 +60,7 @@ mi estimate, dots saving("$Tempdir/crude_`i'", replace) eform: stcox i.eth5
 /* Multivariable models */ 
 
 * Age and Gender 
-* Age fit as spline in first instance, categorical below 
+* Age fit as spline 
 
 mi estimate, dots saving("$Tempdir/model1_`i'", replace) eform: stcox i.eth5 i.male age1 age2 age3 i.imd, strata(stp)
 

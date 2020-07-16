@@ -1,6 +1,6 @@
 /*==============================================================================
-DO FILE NAME:			06a_an_models_nsaid
-PROJECT:				NSAID in COVID-19 
+DO FILE NAME:			06a_eth_an_multivariable_eth16
+PROJECT:				Ethnicity and COVID
 AUTHOR:					R Mathur (modified from A wong and A Schultze)
 DATE: 					15 July 2020					
 DESCRIPTION OF FILE:	program 06 
@@ -10,8 +10,8 @@ DATASETS USED:			data in memory ($tempdir/analysis_dataset_STSET_outcome)
 
 DATASETS CREATED: 		none
 OTHER OUTPUT: 			logfiles, printed to folder analysis/$logdir
-						table2, printed to analysis/$outdir
-							
+						table2, printed to $Tabfigdir
+						complete case analysis	
 ==============================================================================*/
 
 * Open a log file
@@ -21,7 +21,7 @@ log using $logdir\06a_eth_an_multivariable_eth16, replace
 
 cap file close tablecontent
 file open tablecontent using $Tabfigdir/table2_eth16.txt, write text replace
-file write tablecontent ("Table 2: Association between ethnicity in five categories and COVID-19 outcomes - Complete Case Analysis") _n
+file write tablecontent ("Table 2: Association between ethnicity in 16 categories and COVID-19 outcomes - Complete Case Analysis") _n
 file write tablecontent _tab ("Number of events") _tab ("Total person-weeks") _tab ("Rate per 1,000") _tab ("Crude") _tab _tab ("Age/Sex/IMD Adjusted") _tab _tab 	("+ co-morbidities") _tab _tab 	("+ household size)") _tab _tab _n
 file write tablecontent _tab _tab _tab _tab   ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _n
 
