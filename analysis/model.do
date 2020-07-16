@@ -42,7 +42,7 @@ global outcomes "tested positivetest icu cpnsdeath onsdeath onscoviddeath ons_no
 *  Pre-analysis data manipulation  
 do "$Dodir/01_eth_cr_analysis_dataset.do"
 
-  Checks 
+*Checks 
 do "$Dodir/02_eth_an_data_checks.do"
 
 
