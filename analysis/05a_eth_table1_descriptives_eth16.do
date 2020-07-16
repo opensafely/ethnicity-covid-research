@@ -142,7 +142,6 @@ syntax, variable(varname)
 	local lab: variable label `variable'
 	file write tablecontent ("`lab'") _n 
 
-
 	qui summarize `variable', d
 	file write tablecontent ("Mean (SD)") _tab 
 	file write tablecontent  %3.1f (r(mean)) (" (") %3.1f (r(sd)) (")") _tab

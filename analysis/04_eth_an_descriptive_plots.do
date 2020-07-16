@@ -144,12 +144,12 @@ graph export "$Tabfigdir/km_`j'_eth16_sex.svg", as(svg) replace
 	
 	
 	
-/* Delete unneeded graphs
+* Delete unneeded graphs
 forvalues i=1/11 {		
 		erase "$Tabfigdir/kmplot_eth`i'_age.gph"
 		erase "$Tabfigdir/kmplot_eth`i'_sex.gph"
 }
-*/
+
 
 } //end outcomes
 
