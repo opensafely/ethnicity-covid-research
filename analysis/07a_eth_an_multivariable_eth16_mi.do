@@ -39,7 +39,7 @@ mi set mlong
 mi register imputed eth16
 
 *mi impute the dataset
-mi impute mlogit eth16, add(20) rseed(2232)
+mi impute mlogit eth16, add(10) rseed(2232)
 
 *mi stset
 mi	stset stime_`i', fail(`i') 	id(patient_id) enter(enter_date) origin(enter_date)

@@ -39,7 +39,7 @@ mi set mlong
 mi register imputed eth5
 
 *mi impute the dataset
-mi impute mlogit eth5, add(20) rseed(2232)
+mi impute mlogit eth5, add(10) rseed(2232)
 
 *check imputed datasets
 mi xeq 0 1 20: tab eth5 
