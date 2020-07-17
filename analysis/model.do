@@ -34,7 +34,7 @@ global tempdir    "$Tempdir"
 
 
 * Set globals for  outcomes
-global outcomes "tested positivetest icu cpnsdeath onsdeath onscoviddeath ons_noncoviddeath" 
+global outcomes " onscoviddeath ons_noncoviddeath" /// tested positivetest icu cpnsdeath onsdeath
 
 *Create analysis dataset
 do "$Dodir/01_eth_cr_analysis_dataset.do"
@@ -53,7 +53,7 @@ do "$Dodir/05b_eth_table1_descriptives_eth5.do"
 *multivariable analysis - complete case 
 do "$Dodir/06a_eth_an_multivariable_eth16.do" 
 do "$Dodir/06b_eth_an_multivariable_eth5.do" 
-
+stop
 *multivariable analysis - imputed ethnicity
 do "$Dodir/07a_eth_an_multivariable_eth16_mi.do"
 do "$Dodir/07b_eth_an_multivariable_eth5_mi.do"

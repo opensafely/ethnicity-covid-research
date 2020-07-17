@@ -46,7 +46,7 @@ cap estimates save "$Tempdir/crude_`i'", replace
 /* Multivariable models */ 
 
 * Age and Gender 
-* Age fit as spline in first instance, categorical below 
+* Age fit as spline
 
 cap stcox i.eth16 i.male age1 age2 age3 i.imd, strata(stp)
 cap estimates save "$Tempdir/model1_`i'", replace 
@@ -163,6 +163,7 @@ file close tablecontent
 * Close log file 
 log close
 
+/*
 insheet using "$Tabfigdir/table2_eth16.txt", clear
 save "$Tabfigdir/table2_eth16.dta", replace
 
