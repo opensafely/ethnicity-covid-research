@@ -1,6 +1,6 @@
 /*==============================================================================
-DO FILE NAME:			06a_an_models_nsaid
-PROJECT:				NSAID in COVID-19 
+DO FILE NAME:			06b_eth_an_multivariable_eth5
+PROJECT:				Ethnicity and COVID
 AUTHOR:					R Mathur (modified from A wong and A Schultze)
 DATE: 					15 July 2020					
 DESCRIPTION OF FILE:	program 06 

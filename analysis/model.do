@@ -32,19 +32,15 @@ global outdir  	  "$Outdir"
 global logdir     "$Logdir"
 global tempdir    "$Tempdir"
 
+
 * Set globals for  outcomes
 global outcomes "tested positivetest icu cpnsdeath onsdeath onscoviddeath ons_noncoviddeath" 
 
-*suspected confirmed ae
-
-*ventilation is yes/no so outcome will be odds not risk
-
-*  Pre-analysis data manipulation  
+*Create analysis dataset
 do "$Dodir/01_eth_cr_analysis_dataset.do"
 
 *Checks 
 do "$Dodir/02_eth_an_data_checks.do"
-
 
 *  Descriptives
 do "$Dodir/03_eth_an_descriptive_tables.do"
@@ -52,9 +48,15 @@ do "$Dodir/04_eth_an_descriptive_plots.do"
 do "$Dodir/05a_eth_table1_descriptives_eth16.do"
 do "$Dodir/05b_eth_table1_descriptives_eth5.do"
 
+*rates - crude, age, and age-sex stratified
+
+**********************************************
+*Do multivariable analyses in parallel*
+**********************************************
+
 *multivariable analysis - complete case 
-do "$Dodir/06a_eth_an_multivariable_eth16.do"
-do "$Dodir/06b_eth_an_multivariable_eth5.do"
+do "$Dodir/06a_eth_an_multivariable_eth16.do" `outcome'
+do "$Dodir/06b_eth_an_multivariable_eth5.do" `outcome'
 
 *multivariable analysis - imputed ethnicity
 do "$Dodir/07a_eth_an_multivariable_eth16_mi.do"
