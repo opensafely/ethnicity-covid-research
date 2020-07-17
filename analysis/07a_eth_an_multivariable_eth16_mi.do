@@ -17,8 +17,6 @@ https://stats.idre.ucla.edu/stata/seminars/mi_in_stata_pt1_new/
 ==============================================================================*/
 
 * Open a log file
-ssc install ice
-
 cap log close
 log using $logdir\07a_eth_an_multivariable_eth16_mi, replace 
 
@@ -41,7 +39,7 @@ mi set mlong
 mi register imputed eth16
 
 *mi impute the dataset
-mi impute ologit eth16, add(20) rseed(2232)
+mi impute mlogit eth16, add(20) rseed(2232)
 
 *mi stset
 mi	stset stime_`i', fail(`i') 	id(patient_id) enter(enter_date) origin(enter_date)

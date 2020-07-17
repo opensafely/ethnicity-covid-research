@@ -17,8 +17,6 @@ https://stats.idre.ucla.edu/stata/seminars/mi_in_stata_pt1_new/
 ==============================================================================*/
 
 * Open a log file
-ssc install ice
-
 cap log close
 log using $logdir\07b_eth_an_multivariable_eth5_mi, replace 
 
@@ -41,7 +39,7 @@ mi set mlong
 mi register imputed eth5
 
 *mi impute the dataset
-mi impute ologit eth5, add(20) rseed(2232)
+mi impute mlogit eth5, add(20) rseed(2232)
 
 *check imputed datasets
 mi xeq 0 1 20: tab eth5 

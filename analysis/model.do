@@ -50,13 +50,9 @@ do "$Dodir/05b_eth_table1_descriptives_eth5.do"
 
 *rates - crude, age, and age-sex stratified
 
-**********************************************
-*Do multivariable analyses in parallel*
-**********************************************
-
 *multivariable analysis - complete case 
-do "$Dodir/06a_eth_an_multivariable_eth16.do" `outcome'
-do "$Dodir/06b_eth_an_multivariable_eth5.do" `outcome'
+do "$Dodir/06a_eth_an_multivariable_eth16.do" 
+do "$Dodir/06b_eth_an_multivariable_eth5.do" 
 
 *multivariable analysis - imputed ethnicity
 do "$Dodir/07a_eth_an_multivariable_eth16_mi.do"
