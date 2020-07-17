@@ -125,7 +125,7 @@ local lab5: label eth5 5
 	
 * Subsequent ethnic groups
 forvalues eth=2/5 {
-
+	
 	count if eth5 == `eth' & `i' == 1
 	local event = r(N)
 	su total_follow_up if eth5 == `eth'
@@ -133,19 +133,19 @@ forvalues eth=2/5 {
 	local rate = 1000*(`event'/`person_week')
 	file write tablecontent  ("`lab`eth''") _tab   (`event') _tab %10.0f (`person_week') _tab %3.2f (`rate') _tab  
 	cap estimates use "$Tempdir/crude_`i'" 
-	lincom `eth'.eth5, eform
+	cap lincom `eth'.eth5, eform
 	file write tablecontent  %4.2f (r(estimate)) _tab %4.2f (r(lb)) (" - ") %4.2f (r(ub)) _tab 
 	cap estimates clear
 	cap estimates use "$Tempdir/model1_`i'" 
-	lincom `eth'.eth5, eform
+	cap lincom `eth'.eth5, eform
 	file write tablecontent  %4.2f (r(estimate)) _tab %4.2f (r(lb)) (" - ") %4.2f (r(ub)) _tab 
 	cap estimates clear
 	cap estimates use "$Tempdir/model2_`i'" 
-	lincom `eth'.eth5, eform
+	cap lincom `eth'.eth5, eform
 	file write tablecontent  %4.2f (r(estimate)) _tab %4.2f (r(lb)) (" - ") %4.2f (r(ub)) _tab 
 	cap estimates clear
 	cap estimates use "$Tempdir/model3_`i'" 
-	lincom `eth'.eth5, eform
+	cap lincom `eth'.eth5, eform
 	file write tablecontent  %4.2f (r(estimate)) _tab %4.2f (r(lb)) (" - ") %4.2f (r(ub)) _n
 }  //end ethnic group
 
