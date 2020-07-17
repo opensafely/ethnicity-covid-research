@@ -44,9 +44,6 @@ mi impute mlogit eth16, add(10) rseed(2232)
 *mi stset
 mi	stset stime_`i', fail(`i') 	id(patient_id) enter(enter_date) origin(enter_date)
 
-
-*check imputed datasets
-mi xeq 0 1 20: tab eth16     
  
 /* Main Model=================================================================*/
 

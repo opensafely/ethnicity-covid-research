@@ -41,8 +41,6 @@ mi register imputed eth5
 *mi impute the dataset
 mi impute mlogit eth5, add(10) rseed(2232)
 
-*check imputed datasets
-mi xeq 0 1 20: tab eth5 
 
 *mi stset
 mi	stset stime_`i', fail(`i') 	id(patient_id) enter(enter_date) origin(enter_date)
