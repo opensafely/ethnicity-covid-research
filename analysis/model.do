@@ -53,7 +53,7 @@ do "$Dodir/05b_eth_table1_descriptives_eth5.do"
 *multivariable analysis - complete case 
 do "$Dodir/06a_eth_an_multivariable_eth16.do" 
 do "$Dodir/06b_eth_an_multivariable_eth5.do" 
-stop
+
 *multivariable analysis - imputed ethnicity
 do "$Dodir/07a_eth_an_multivariable_eth16_mi.do"
 do "$Dodir/07b_eth_an_multivariable_eth5_mi.do"
