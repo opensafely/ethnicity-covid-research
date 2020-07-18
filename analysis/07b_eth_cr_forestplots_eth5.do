@@ -10,10 +10,10 @@ DATASETS CREATED: 		parmest output from 06a_eth_an_multivariable_eth5
 OTHER OUTPUT: 			forestplot for eth5 complete case analysis
 ==============================================================================*/
 clear
-
+capture {
 * Open a log file
 cap log close
-log using $logdir\08b_eth_cr_forestplots_eth5, replace 
+log using $logdir\07b_eth_cr_forestplots_eth5, replace 
 
 foreach i of global outcomes {
 		describe using "$Tempdir/model1_`i'_eth5.dta"
@@ -94,5 +94,6 @@ cap metan estimate min95 max95 if model=="model3" ///
 	saving("$Tabfigdir\Forestplot_alloutcomes_eth5_cc.gph", replace)
 	graph export "$Tabfigdir\Forestplot_alloutcomes_eth5_cc.svg", replace  
 
+} //end capture
 *close log file
 log close

@@ -14,20 +14,21 @@ clear
 cap log close
 log using $logdir\07b_eth_cr_forestplots_eth16, replace 
 
+capture {
 
 foreach i of global outcomes {
-		describe using "$Tempdir/model1_`i'_eth16.dta"
-        if r(N) > 0 local hr "`hr' "$Tempdir/model1_`i'_eth16.dta" "
+		cap describe using "$Tempdir/model1_`i'_eth16.dta"
+       cap if r(N) > 0 local hr "`hr' "$Tempdir/model1_`i'_eth16.dta" "
 }
 
 foreach i of global outcomes {
-		describe using "$Tempdir/model2_`i'_eth16.dta"
-        if r(N) > 0 local hr "`hr' "$Tempdir/model2_`i'_eth16.dta" "
+		cap describe using "$Tempdir/model2_`i'_eth16.dta"
+       cap if r(N) > 0 local hr "`hr' "$Tempdir/model2_`i'_eth16.dta" "
 }
 
 foreach i of global outcomes {
-		describe using "$Tempdir/model3_`i'_eth16.dta"
-        if r(N) > 0 local hr "`hr' "$Tempdir/model3_`i'_eth16.dta" "
+	cap	describe using "$Tempdir/model3_`i'_eth16.dta"
+     cap   if r(N) > 0 local hr "`hr' "$Tempdir/model3_`i'_eth16.dta" "
 }
 
 dsconcat `hr'
@@ -95,6 +96,10 @@ cap metan estimate min95 max95 if model=="model3" ///
 	t2title("complete case analysis", size(small)) ///
 	graphregion(margin(zero)) ///
 	saving("$Tabfigdir\Forestplot_alloutcomes_eth16_cc.gph", replace)
-	graph export "$Tabfigdir\Forestplot_alloutcomes_eth16_cc.svg", replace  
+	graph export "$Tabfigdir\Forestplot_alloutcomes_eth16_cc.svg", replace 
+	
+	} //end capture
+
 	
 log close
+
