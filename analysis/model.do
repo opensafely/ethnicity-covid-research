@@ -16,7 +16,7 @@ di "$Tabfigdir"
 
 cd  "`c(pwd)'/analysis"
 
-adopath + "$Dodir/extra_ados"
+adopath + "$Dodir"
 
 cd  "$Projectdir"
 
