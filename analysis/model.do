@@ -16,7 +16,7 @@ di "$Tabfigdir"
 
 cd  "`c(pwd)'/analysis"
 
-adopath + "./extra_ados"
+adopath + "$Dodir/extra_ados"
 
 cd  "$Projectdir"
 
@@ -52,11 +52,16 @@ do "$Dodir/05b_eth_table1_descriptives_eth5.do"
 
 *multivariable analysis - complete case 
 do "$Dodir/06a_eth_an_multivariable_eth16.do" 
-do "$Dodir/06b_eth_an_multivariable_eth5.do" 
+do "$Dodir/06b_eth_an_multivariable_eth5.do"
+
+*Forest plots for complete case analysis
+do "$Dodir/07a_eth_cr_forestplots_eth16.do" 
+do "$Dodir/07b_eth_cr_forestplots_eth5.do" 
+
 
 *multivariable analysis - imputed ethnicity
-do "$Dodir/07a_eth_an_multivariable_eth16_mi.do"
-do "$Dodir/07b_eth_an_multivariable_eth5_mi.do"
+do "$Dodir/08a_eth_an_multivariable_eth16_mi.do"
+do "$Dodir/08b_eth_an_multivariable_eth5_mi.do"
 
 *multivariable analysis - in those with infection
 

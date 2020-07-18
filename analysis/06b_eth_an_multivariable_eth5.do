@@ -41,17 +41,19 @@ tab eth5 `i', missing row
 /* Univariable model */ 
 
 cap stcox i.eth5 
-cap estimates save "$Tempdir/crude_`i'", replace 
+cap estimates save "$Tempdir/crude_`i'_eth5", replace 
+cap parmest, label eform format(estimate p lb ub) saving("$Tempdir/crude_`i'_eth5", replace) idstr("crude_`i'_eth5") 
 
 /* Multivariable models */ 
 
-* Age and Gender 
+* Age, Gender, IMD
 * Age fit as spline in first instance, categorical below 
 
 cap stcox i.eth5 i.male age1 age2 age3 i.imd, strata(stp)
-cap estimates save "$Tempdir/model1_`i'", replace 
+cap estimates save "$Tempdir/model1_`i'_eth5", replace 
+cap parmest, label eform format(estimate p lb ub) saving("$Tempdir/model1_`i'_eth5", replace) idstr("model1_`i'_eth5") 
 
-* Age, Gender and Comorbidities  
+* Age, Gender, IMD and Comorbidities  
 cap stcox i.eth5 i.male age1 age2 age3 	i.imd							///
 										bmi							///
 										gp_consult_count			///
@@ -72,7 +74,10 @@ cap stcox i.eth5 i.male age1 age2 age3 	i.imd							///
 										i.other_immuno		 		///
 										i.ra_sle_psoriasis, strata(stp)				
 										
-cap estimates save "$Tempdir/model2_`i'", replace 
+cap estimates save "$Tempdir/model2_`i'_eth5", replace 
+cap parmest, label eform format(estimate p lb ub) saving("$Tempdir/model2_`i'_eth5", replace) idstr("model2_`i'_eth5") 
+
+* Age, Gender, IMD and Comorbidities and household size
 
 cap stcox i.eth5 i.male age1 age2 age3 i.imd hh_size					///
 										bmi							///
@@ -94,7 +99,8 @@ cap stcox i.eth5 i.male age1 age2 age3 i.imd hh_size					///
 										i.other_immuno		 		///
 										i.ra_sle_psoriasis, strata(stp)				
 										
-cap estimates save "$Tempdir/model3_`i'", replace
+cap estimates save "$Tempdir/model3_`i'_eth5", replace
+cap parmest, label eform format(estimate p lb ub) saving("$Tempdir/model3_`i'_eth5", replace) idstr("model3_`i'_eth5") 
 
 /* Print table================================================================*/ 
 *  Print the results for the main model 
@@ -132,19 +138,19 @@ forvalues eth=2/5 {
 	local person_week = r(mean)/7
 	local rate = 1000*(`event'/`person_week')
 	file write tablecontent  ("`lab`eth''") _tab   (`event') _tab %10.0f (`person_week') _tab %3.2f (`rate') _tab  
-	cap estimates use "$Tempdir/crude_`i'" 
+	cap estimates use "$Tempdir/crude_`i'_eth5" 
 	cap lincom `eth'.eth5, eform
 	file write tablecontent  %4.2f (r(estimate)) _tab %4.2f (r(lb)) (" - ") %4.2f (r(ub)) _tab 
 	cap estimates clear
-	cap estimates use "$Tempdir/model1_`i'" 
+	cap estimates use "$Tempdir/model1_`i'_eth5" 
 	cap lincom `eth'.eth5, eform
 	file write tablecontent  %4.2f (r(estimate)) _tab %4.2f (r(lb)) (" - ") %4.2f (r(ub)) _tab 
 	cap estimates clear
-	cap estimates use "$Tempdir/model2_`i'" 
+	cap estimates use "$Tempdir/model2_`i'_eth5" 
 	cap lincom `eth'.eth5, eform
 	file write tablecontent  %4.2f (r(estimate)) _tab %4.2f (r(lb)) (" - ") %4.2f (r(ub)) _tab 
 	cap estimates clear
-	cap estimates use "$Tempdir/model3_`i'" 
+	cap estimates use "$Tempdir/model3_`i'_eth5" 
 	cap lincom `eth'.eth5, eform
 	file write tablecontent  %4.2f (r(estimate)) _tab %4.2f (r(lb)) (" - ") %4.2f (r(ub)) _n
 }  //end ethnic group
@@ -157,7 +163,7 @@ file close tablecontent
 * Close log file 
 log close
 
-/*
+
 insheet using "$Tabfigdir/table2_eth5.txt", clear
 save "$Tabfigdir/table2_eth5.dta", replace
 
