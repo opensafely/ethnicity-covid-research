@@ -10,15 +10,27 @@ DATASETS CREATED: 		parmest output from 06a_eth_an_multivariable_eth16
 OTHER OUTPUT: 			forestplot for eth16 complete case analysis
 ==============================================================================*/
 clear
+* Open a log file
+cap log close
+log using $logdir\08b_eth_cr_forestplots_eth16, replace 
+
 
 foreach i of global outcomes {
-cap local hr "`hr' "$Tempdir/model1_`i'_eth16.dta" "
-cap local hr "`hr' "$Tempdir/model2_`i'_eth16.dta" "
-cap local hr "`hr' "$Tempdir/model3_`i'_eth16.dta" "
+		describe using "$Tempdir/model1_`i'_eth16.dta"
+        if r(N) > 0 local hr "`hr' "$Tempdir/model1_`i'_eth16.dta" "
 }
 
+foreach i of global outcomes {
+		describe using "$Tempdir/model2_`i'_eth16.dta"
+        if r(N) > 0 local hr "`hr' "$Tempdir/model2_`i'_eth16.dta" "
+}
 
-cap dsconcat `hr'
+foreach i of global outcomes {
+		describe using "$Tempdir/model3_`i'_eth16.dta"
+        if r(N) > 0 local hr "`hr' "$Tempdir/model3_`i'_eth16.dta" "
+}
+
+dsconcat `hr'
 duplicates drop
 
 split idstr, p(_)
@@ -85,3 +97,4 @@ cap metan estimate min95 max95 if model=="model3" ///
 	saving("$Tabfigdir\Forestplot_alloutcomes_eth16_cc.gph", replace)
 	graph export "$Tabfigdir\Forestplot_alloutcomes_eth16_cc.svg", replace  
 	
+log close

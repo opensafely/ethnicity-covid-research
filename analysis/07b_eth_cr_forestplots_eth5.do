@@ -16,9 +16,18 @@ cap log close
 log using $logdir\08b_eth_cr_forestplots_eth5, replace 
 
 foreach i of global outcomes {
-cap local hr "`hr' "$Tempdir/model1_`i'_eth5.dta" "
-cap local hr "`hr' "$Tempdir/model2_`i'_eth5.dta" "
-cap local hr "`hr' "$Tempdir/model3_`i'_eth5.dta" "
+		describe using "$Tempdir/model1_`i'_eth5.dta"
+        if r(N) > 0 local hr "`hr' "$Tempdir/model1_`i'_eth5.dta" "
+}
+
+foreach i of global outcomes {
+		describe using "$Tempdir/model2_`i'_eth5.dta"
+        if r(N) > 0 local hr "`hr' "$Tempdir/model2_`i'_eth5.dta" "
+}
+
+foreach i of global outcomes {
+		describe using "$Tempdir/model3_`i'_eth5.dta"
+        if r(N) > 0 local hr "`hr' "$Tempdir/model3_`i'_eth5.dta" "
 }
 
 cap dsconcat `hr'
