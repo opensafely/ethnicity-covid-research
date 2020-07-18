@@ -34,7 +34,7 @@ use "$Tempdir/analysis_dataset_STSET_`j'.dta", clear
 
 
 * KM plot by high level ethnic groups
-sts graph, 				///
+cap  sts graph, 				///
 	title("`j' eth5") 								///
 	failure by(ethnicity) 						///
 	xtitle("Days since 1 Feb 2020", size(small))						///
@@ -45,9 +45,10 @@ sts graph, 				///
 	60 "1 Apr 20" 91 "1 May 20" 122 "1 Jun 20"		///
 	152 "1 Jul 20")									///
 	saving($Tabfigdir/kmplot_eth5_`j', replace)
+cap graph export "$Tabfigdir/kmplot_eth5_`j'", as(svg) replace
 
 * KM plot by 16  ethnic groups
-sts graph, 				///
+cap sts graph, 				///
 	title("`j' eth16") 								///
 	failure by(eth16) 						///
 	xtitle("Days since 1 Feb 2020", size(small))						///
@@ -58,6 +59,7 @@ sts graph, 				///
 	60 "1 Apr 20" 91 "1 May 20" 122 "1 Jun 20"		///
 	152 "1 Jul 20")									///
 	saving($Tabfigdir/kmplot_eth16_`j', replace)
+cap graph export "$Tabfigdir/kmplot_eth16_`j'", as(svg) replace
 
 
 * KM plot by 16 level ethnic group and age
@@ -100,7 +102,7 @@ cap graph combine "$Tabfigdir/kmplot_eth1_age"				///
 		"$Tabfigdir/kmplot_eth10_age"				///
 		"$Tabfigdir/kmplot_eth11_age",				///
 		t1(" ") l1title("Cumulative probability of `j' by ethnic group and age ", size(medsmall))
-graph export "$Tabfigdir/km_`j'_eth16_age.svg", as(svg) replace
+cap graph export "$Tabfigdir/km_`j'_eth16_age.svg", as(svg) replace
 
 
 * KM plot by 16 level ethnic group and sex
@@ -137,7 +139,7 @@ cap graph combine "$Tabfigdir/kmplot_eth1_sex"				///
 		"$Tabfigdir/kmplot_eth10_sex"				///
 		"$Tabfigdir/kmplot_eth11_sex",				///
 		t1(" ") l1title("Cumulative probability of `j' by ethnic group and sex", size(medsmall))
-graph export "$Tabfigdir/km_`j'_eth16_sex.svg", as(svg) replace
+cap graph export "$Tabfigdir/km_`j'_eth16_sex.svg", as(svg) replace
 
 	
 
@@ -146,8 +148,8 @@ graph export "$Tabfigdir/km_`j'_eth16_sex.svg", as(svg) replace
 	
 * Delete unneeded graphs
 forvalues i=1/11 {		
-		erase "$Tabfigdir/kmplot_eth`i'_age.gph"
-		erase "$Tabfigdir/kmplot_eth`i'_sex.gph"
+		cap erase "$Tabfigdir/kmplot_eth`i'_age.gph"
+		cap erase "$Tabfigdir/kmplot_eth`i'_sex.gph"
 }
 
 

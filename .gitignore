@@ -4,7 +4,6 @@ model.log
 __pycache__
 .python-version
 .idea
-analysis/*
 !*.do
 !*.ado
 !*.hlp

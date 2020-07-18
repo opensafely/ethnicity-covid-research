@@ -32,7 +32,6 @@ log using $Logdir/05_eth_table1_descriptives, replace t
 
 * Open Stata dataset
 use $Tempdir/analysis_dataset, clear
-numlabel, add
 
   *give missing ethnicity a value
  label list eth16

@@ -85,14 +85,13 @@ tab ethnicity
  replace eth5=3 if ethnicity==4
  replace eth5=4 if ethnicity==2
  replace eth5=5 if ethnicity==5
- replace eth5=.u if ethnicity==.
+ replace eth5=. if ethnicity==.
 
  label define eth5	 	1 "White"  					///
 						2 "South Asian"				///						
 						3 "Black"  					///
 						4 "Mixed"	///
 						5 "Other"					///
-						.u "Unknown"				///
 					
 
 label values eth5 eth5
@@ -136,8 +135,11 @@ recode eth16 10 = 6
 recode eth16 12 = 7
 recode eth16 13 = 8
 recode eth16 15 = 9
-recode eth16 16 = 11
 recode eth16 99 = 10
+recode eth16 16 = 11
+
+
+
 
 
 label define eth16 	///
@@ -151,9 +153,10 @@ label define eth16 	///
 						8 "African" ///
 						9 "Chinese" ///
 						10 "All mixed" ///
-						11 "All Other" ///
-						.u "Unknown"  
+						11 "All Other" 
 label values eth16 eth16
+tab eth16,m
+
 
 * STP 
 rename stp stp_old

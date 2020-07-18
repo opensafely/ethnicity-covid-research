@@ -1,6 +1,6 @@
 /*==============================================================================
-DO FILE NAME:			06a_an_models_nsaid
-PROJECT:				NSAID in COVID-19 
+DO FILE NAME:			06b_eth_an_multivariable_eth5
+PROJECT:				Ethnicity and COVID
 AUTHOR:					R Mathur (modified from A wong and A Schultze)
 DATE: 					15 July 2020					
 DESCRIPTION OF FILE:	program 06 
@@ -40,19 +40,21 @@ tab eth5 `i', missing row
 
 /* Univariable model */ 
 
-stcox i.eth5 
-estimates save "$Tempdir/crude_`i'", replace 
+cap stcox i.eth5 
+cap estimates save "$Tempdir/crude_`i'_eth5", replace 
+cap parmest, label eform format(estimate p lb ub) saving("$Tempdir/crude_`i'_eth5", replace) idstr("crude_`i'_eth5") 
 
 /* Multivariable models */ 
 
-* Age and Gender 
+* Age, Gender, IMD
 * Age fit as spline in first instance, categorical below 
 
-stcox i.eth5 i.male age1 age2 age3 i.imd, strata(stp)
-estimates save "$Tempdir/model1_`i'", replace 
+cap stcox i.eth5 i.male age1 age2 age3 i.imd, strata(stp)
+cap estimates save "$Tempdir/model1_`i'_eth5", replace 
+cap parmest, label eform format(estimate p lb ub) saving("$Tempdir/model1_`i'_eth5", replace) idstr("model1_`i'_eth5") 
 
-* Age, Gender and Comorbidities  
-stcox i.eth5 i.male age1 age2 age3 	i.imd							///
+* Age, Gender, IMD and Comorbidities  
+cap stcox i.eth5 i.male age1 age2 age3 	i.imd							///
 										bmi							///
 										gp_consult_count			///
 										i.smoke_nomiss				///
@@ -72,9 +74,12 @@ stcox i.eth5 i.male age1 age2 age3 	i.imd							///
 										i.other_immuno		 		///
 										i.ra_sle_psoriasis, strata(stp)				
 										
-estimates save "$Tempdir/model2_`i'", replace 
+cap estimates save "$Tempdir/model2_`i'_eth5", replace 
+cap parmest, label eform format(estimate p lb ub) saving("$Tempdir/model2_`i'_eth5", replace) idstr("model2_`i'_eth5") 
 
-stcox i.eth5 i.male age1 age2 age3 i.imd hh_size					///
+* Age, Gender, IMD and Comorbidities and household size
+
+cap stcox i.eth5 i.male age1 age2 age3 i.imd hh_size					///
 										bmi							///
 										gp_consult_count			///
 										i.smoke_nomiss				///
@@ -94,7 +99,8 @@ stcox i.eth5 i.male age1 age2 age3 i.imd hh_size					///
 										i.other_immuno		 		///
 										i.ra_sle_psoriasis, strata(stp)				
 										
-estimates save "$Tempdir/model3_`i'", replace
+cap estimates save "$Tempdir/model3_`i'_eth5", replace
+cap parmest, label eform format(estimate p lb ub) saving("$Tempdir/model3_`i'_eth5", replace) idstr("model3_`i'_eth5") 
 
 /* Print table================================================================*/ 
 *  Print the results for the main model 
@@ -125,27 +131,27 @@ local lab5: label eth5 5
 	
 * Subsequent ethnic groups
 forvalues eth=2/5 {
-
+	
 	count if eth5 == `eth' & `i' == 1
 	local event = r(N)
 	su total_follow_up if eth5 == `eth'
 	local person_week = r(mean)/7
 	local rate = 1000*(`event'/`person_week')
 	file write tablecontent  ("`lab`eth''") _tab   (`event') _tab %10.0f (`person_week') _tab %3.2f (`rate') _tab  
-	estimates use "$Tempdir/crude_`i'" 
-	lincom `eth'.eth5, eform
+	cap estimates use "$Tempdir/crude_`i'_eth5" 
+	cap lincom `eth'.eth5, eform
 	file write tablecontent  %4.2f (r(estimate)) _tab %4.2f (r(lb)) (" - ") %4.2f (r(ub)) _tab 
-	estimates clear
-	estimates use "$Tempdir/model1_`i'" 
-	lincom `eth'.eth5, eform
+	cap estimates clear
+	cap estimates use "$Tempdir/model1_`i'_eth5" 
+	cap lincom `eth'.eth5, eform
 	file write tablecontent  %4.2f (r(estimate)) _tab %4.2f (r(lb)) (" - ") %4.2f (r(ub)) _tab 
-	estimates clear
-	estimates use "$Tempdir/model2_`i'" 
-	lincom `eth'.eth5, eform
+	cap estimates clear
+	cap estimates use "$Tempdir/model2_`i'_eth5" 
+	cap lincom `eth'.eth5, eform
 	file write tablecontent  %4.2f (r(estimate)) _tab %4.2f (r(lb)) (" - ") %4.2f (r(ub)) _tab 
-	estimates clear
-	estimates use "$Tempdir/model3_`i'" 
-	lincom `eth'.eth5, eform
+	cap estimates clear
+	cap estimates use "$Tempdir/model3_`i'_eth5" 
+	cap lincom `eth'.eth5, eform
 	file write tablecontent  %4.2f (r(estimate)) _tab %4.2f (r(lb)) (" - ") %4.2f (r(ub)) _n
 }  //end ethnic group
 
@@ -156,6 +162,7 @@ file close tablecontent
 
 * Close log file 
 log close
+
 
 insheet using "$Tabfigdir/table2_eth5.txt", clear
 save "$Tabfigdir/table2_eth5.dta", replace

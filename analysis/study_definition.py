@@ -570,7 +570,7 @@ study = StudyDefinition(
 
  
         oad_lastyear_meds=patients.with_these_medications(
-            ace_codes, ### THIS IS A PLACEHOLDER
+            oad_med_codes, 
             between=["2019-02-01", "2020-02-01"],
             returning="number_of_matches_in_period",
         ),
