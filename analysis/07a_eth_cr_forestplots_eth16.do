@@ -12,7 +12,7 @@ OTHER OUTPUT: 			forestplot for eth16 complete case analysis
 clear
 * Open a log file
 cap log close
-log using $logdir\08b_eth_cr_forestplots_eth16, replace 
+log using $logdir\07b_eth_cr_forestplots_eth16, replace 
 
 
 foreach i of global outcomes {
