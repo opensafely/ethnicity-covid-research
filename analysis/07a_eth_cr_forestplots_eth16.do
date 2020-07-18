@@ -9,6 +9,7 @@ DESCRIPTION OF FILE:	program 08
 DATASETS CREATED: 		parmest output from 06a_eth_an_multivariable_eth16
 OTHER OUTPUT: 			forestplot for eth16 complete case analysis
 ==============================================================================*/
+clear
 
 foreach i of global outcomes {
 local hr "`hr' "$Tempdir/model1_`i'_eth16.dta" "
@@ -17,7 +18,8 @@ local hr "`hr' "$Tempdir/model3_`i'_eth16.dta" "
 }
 
 
-dsconcat `hr'
+append using `hr'
+duplicates drop
 
 split idstr, p(_)
 drop idstr

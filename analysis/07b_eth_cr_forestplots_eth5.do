@@ -9,6 +9,7 @@ DESCRIPTION OF FILE:	program 08
 DATASETS CREATED: 		parmest output from 06a_eth_an_multivariable_eth5
 OTHER OUTPUT: 			forestplot for eth5 complete case analysis
 ==============================================================================*/
+clear
 
 * Open a log file
 cap log close
@@ -21,7 +22,8 @@ local hr "`hr' "$Tempdir/model3_`i'_eth5.dta" "
 }
 
 
-dsconcat `hr'
+append using `hr'
+duplicates drop
 
 split idstr, p(_)
 drop idstr
