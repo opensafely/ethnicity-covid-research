@@ -18,7 +18,7 @@ local hr "`hr' "$Tempdir/model3_`i'_eth16.dta" "
 }
 
 
-cap append using `hr'
+dsconcat using `hr'
 duplicates drop
 
 split idstr, p(_)

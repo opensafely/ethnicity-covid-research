@@ -17,6 +17,8 @@ di "$Tabfigdir"
 cd  "`c(pwd)'/analysis"
 
 adopath + "$Dodir"
+sysdir
+sysdir set PLUS "$Dodir"
 
 cd  "$Projectdir"
 
