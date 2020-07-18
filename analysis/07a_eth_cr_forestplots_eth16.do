@@ -12,9 +12,9 @@ OTHER OUTPUT: 			forestplot for eth16 complete case analysis
 clear
 
 foreach i of global outcomes {
-local hr "`hr' "$Tempdir/model1_`i'_eth16.dta" "
-local hr "`hr' "$Tempdir/model2_`i'_eth16.dta" "
-local hr "`hr' "$Tempdir/model3_`i'_eth16.dta" "
+cap local hr "`hr' "$Tempdir/model1_`i'_eth16.dta" "
+cap local hr "`hr' "$Tempdir/model2_`i'_eth16.dta" "
+cap local hr "`hr' "$Tempdir/model3_`i'_eth16.dta" "
 }
 
 
