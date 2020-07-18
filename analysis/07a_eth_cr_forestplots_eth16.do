@@ -18,7 +18,7 @@ local hr "`hr' "$Tempdir/model3_`i'_eth16.dta" "
 }
 
 
-dsconcat `hr'
+cap dsconcat `hr'
 duplicates drop
 
 split idstr, p(_)
@@ -65,7 +65,7 @@ replace model="" if eth16!=1
 
 *Create one graph per outcome
 foreach i of global outcomes {
-metan estimate min95 max95 if outcome=="`i'" ///
+cap metan estimate min95 max95 if outcome=="`i'" ///
  , effect(HR) null(1) lcols(model eth16) by(outcome) dp(2) ///
 	nowt nosubgroup  nooverall nobox graphregion(color(white)) scheme(sj)  	///
 	title("`i'", size(medsmall)) ///
@@ -76,7 +76,7 @@ metan estimate min95 max95 if outcome=="`i'" ///
 } //end outcomes
 
 *Create one graph for all fully adjusted outcomes
-metan estimate min95 max95 if model=="model3" ///
+cap metan estimate min95 max95 if model=="model3" ///
  , effect(HR) null(1) lcols(outcome eth16) dp(2) ///
 	nowt  nooverall nobox graphregion(color(white)) scheme(sj)  	///
 	title("fully adjusted eth16'", size(medsmall)) ///

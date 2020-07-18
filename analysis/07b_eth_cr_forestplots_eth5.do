@@ -21,7 +21,7 @@ local hr "`hr' "$Tempdir/model2_`i'_eth5.dta" "
 local hr "`hr' "$Tempdir/model3_`i'_eth5.dta" "
 }
 
-dsconcat `hr'
+cap dsconcat `hr'
 duplicates drop
 
 split idstr, p(_)
@@ -65,7 +65,7 @@ save "$Tempdir/HR_forestplot_eth5_cc.dta", replace
 
 *Create one graph per outcome
 foreach i of global outcomes {
-metan estimate min95 max95 if outcome=="`i'" ///
+cap metan estimate min95 max95 if outcome=="`i'" ///
  , effect(HR) null(1) lcols(model eth5) by(outcome) dp(2) ///
 	nowt nosubgroup  nooverall nobox graphregion(color(white)) scheme(sj)  	///
 	title("`i'", size(medsmall)) ///
@@ -76,7 +76,7 @@ metan estimate min95 max95 if outcome=="`i'" ///
 } //end outcomes
 
 *Create one graph for all fully adjusted outcomes
-metan estimate min95 max95 if model=="model3" ///
+cap metan estimate min95 max95 if model=="model3" ///
  , effect(HR) null(1) lcols(outcome eth5) dp(2) ///
 	nowt  nooverall nobox graphregion(color(white)) scheme(sj)  	///
 	title("fully adjusted eth5'", size(medsmall)) ///
