@@ -18,7 +18,7 @@ local hr "`hr' "$Tempdir/model3_`i'_eth16.dta" "
 }
 
 
-append using `hr'
+cap append using `hr'
 duplicates drop
 
 split idstr, p(_)
@@ -84,3 +84,4 @@ metan estimate min95 max95 if model=="model3" ///
 	graphregion(margin(zero)) ///
 	saving("$Tabfigdir\Forestplot_alloutcomes_eth16_cc.gph", replace)
 	graph export "$Tabfigdir\Forestplot_alloutcomes_eth16_cc.svg", replace  
+	

@@ -22,7 +22,7 @@ local hr "`hr' "$Tempdir/model3_`i'_eth5.dta" "
 }
 
 
-append using `hr'
+cap append using `hr'
 duplicates drop
 
 split idstr, p(_)
