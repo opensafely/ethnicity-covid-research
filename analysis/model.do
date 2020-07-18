@@ -54,9 +54,24 @@ do "$Dodir/05b_eth_table1_descriptives_eth5.do"
 do "$Dodir/06a_eth_an_multivariable_eth16.do" 
 do "$Dodir/06b_eth_an_multivariable_eth5.do" 
 
+
+/******************************************
+CAN RUN IN PARALLEL AFTER DO FILE 01
+*******************************************/
 *multivariable analysis - imputed ethnicity
-do "$Dodir/07a_eth_an_multivariable_eth16_mi.do"
-do "$Dodir/07b_eth_an_multivariable_eth5_mi.do"
+
+foreach i of any tested positivetest icu cpnsdeath onsdeath onscoviddeath ons_noncoviddeath {
+do "$Dodir/07a_eth_an_multivariable_eth16_mi.do" `i'
+}
+
+do "$Dodir/07c_eth_cr_tables_eth16_mi.do"
+
+foreach i of any tested positivetest icu cpnsdeath onsdeath onscoviddeath ons_noncoviddeath {
+do "$Dodir/07b_eth_an_multivariable_eth5_mi.do" `i'
+}
+
+do "$Dodir/07d_eth_cr_tables_eth5_mi.do"
+
 
 *multivariable analysis - in those with infection
 
