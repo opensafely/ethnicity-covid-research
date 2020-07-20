@@ -586,17 +586,15 @@ study = StudyDefinition(
 #EXETER ALGORITHM USING OPENSAFELY CODELISTS
     diabetes_exeter_os=patients.categorised_as(
         {
-            "T1DM_EX_OS":
-                """
-                        ((insulin_last6mo >= 2) AND ((t1dm_count >= t2dm_count * 2))
-                """,
-            "T2DM_EX_OS":
-                """
-                        (insulin_last6mo < 2) AND ((t2dm_count>0))
-                        OR
-                        ((insulin_last6mo >= 2) AND ((t1dm_count < t2dm_count * 2)) AND ((t2dm_count>0))
-                """,
-            "NO_DM": "DEFAULT",
+            "T1DM_EX_OS": """
+        insulin_last6mo >= 2 AND t1dm_count >= t2dm_count * 2
+        """,
+        "T2DM_EX_OS": """
+        (insulin_last6mo < 2 AND t2dm_count > 0)
+        OR
+        (insulin_last6mo >= 2 AND t1dm_count < t2dm_count * 2 AND t2dm_count > 0)
+        """,
+        "NO_DM": "DEFAULT",
         },
 
         return_expectations={
@@ -627,18 +625,17 @@ study = StudyDefinition(
 #EXETER ALGORITHM USING EXETER CODELISTS
     diabetes_exeter=patients.categorised_as(
         {
-            "T1DM_EX":
-                """
-                        ((insulin_last6mo >= 2) AND ((t1dm_count_ex >= t2dm_count_ex * 2))
-                """,
-            "T2DM_EX":
-                """
-                        (insulin_last6mo < 2) AND ((t2dm_count_ex>0))
-                        OR
-                        ((insulin_last6mo >= 2) AND ((t1dm_count_ex < t2dm_count_ex * 2)) AND ((t2dm_count_ex>0))
-                """,
-            "NO_DM": "DEFAULT",
+            "T1DM_EX": """
+        insulin_last6mo >= 2 AND t1dm_count_ex >= t2dm_count_ex * 2
+        """,
+        "T2DM_EX": """
+        (insulin_last6mo < 2 AND t2dm_count_ex > 0)
+        OR
+        (insulin_last6mo >= 2 AND t1dm_count_ex < t2dm_count_ex * 2 AND t2dm_count_ex > 0)
+        """,
+        "NO_DM": "DEFAULT",
         },
+
 
         return_expectations={
             "category": {"ratios": {"T1DM_EX": 0.1, "T2DM_EX": 0.2, "NO_DM": 0.7}},
