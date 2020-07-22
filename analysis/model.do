@@ -1,4 +1,4 @@
-import delimited `c(pwd)'/output/input.csv, clear
+import delimited `c(pwd)'/output/new-input.csv, clear
 
 
 *set filepaths

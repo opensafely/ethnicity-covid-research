@@ -24,7 +24,7 @@ log using $logdir/02_an_data_checks, replace t
 use "$Tempdir/analysis_dataset.dta", clear
 
 *run ssc install if not on local machine - server needs datacheck.ado file
-ssc install datacheck 
+*ssc install datacheck 
 
 *Duplicate patient check
 datacheck _n==1, by(patient_id) nol
