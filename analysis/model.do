@@ -47,10 +47,9 @@ do "$Dodir/02_eth_an_data_checks.do"
 *  Descriptives
 do "$Dodir/03_eth_an_descriptive_tables.do"
 do "$Dodir/04_eth_an_descriptive_plots.do"
+
 do "$Dodir/05a_eth_table1_descriptives_eth16.do"
 do "$Dodir/05b_eth_table1_descriptives_eth5.do"
-
-*rates - crude, age, and age-sex stratified
 
 *multivariable analysis - complete case 
 do "$Dodir/06a_eth_an_multivariable_eth16.do" 
@@ -64,6 +63,9 @@ do "$Dodir/07b_eth_cr_forestplots_eth5.do"
 do "$Dodir/09a_eth_an_ventilation_eth16"
 do "$Dodir/09b_eth_an_ventilation_eth5"
 
+*rates - crude, age, and age-sex stratified
+
+
 /*multivariable analysis - imputed ethnicity
 do "$Dodir/08a_eth_an_multivariable_eth16_mi.do"
 do "$Dodir/08b_eth_an_multivariable_eth5_mi.do"
@@ -71,10 +73,8 @@ do "$Dodir/08b_eth_an_multivariable_eth5_mi.do"
 *multivariable analysis - in those with infection
 
 
-*in those with infection (admitted to ICU)
 
 
-*Household exploration
 
 
 *Exploratory analyses
