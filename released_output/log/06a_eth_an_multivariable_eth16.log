@@ -1,0 +1,2975 @@
+-------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  E:\analyses\ethnicity-covid-research/output/log\06a_eth_an_multiva
+> riable_eth16.log
+  log type:  text
+ opened on:  22 Jul 2020, 21:39:01
+
+. 
+. cap file close tablecontent
+
+. file open tablecontent using $Tabfigdir/table2_eth16.txt, write text replace
+
+. file write tablecontent ("Table 2: Association between ethnicity in 16 catego
+> ries and COVID-19 outcomes - Complete Case Analysis") _n
+
+. file write tablecontent _tab ("Number of events") _tab ("Total person-weeks")
+>  _tab ("Rate per 1,000") _tab ("Crude") _tab _tab ("Age/Sex/IMD Adjusted") _t
+> ab _tab       ("+ co-morbidities") _tab _tab  ("+ household size)") _tab _tab
+>  _n
+
+. file write tablecontent _tab _tab _tab _tab   ("HR") _tab ("95% CI") _tab ("H
+> R") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _
+> n
+
+. 
+. 
+. 
+. foreach i of global outcomes {
+  2. * Open Stata dataset
+. use "$Tempdir/analysis_dataset_STSET_`i'.dta", clear
+  3. 
+. /* Sense check outcomes======================================================
+> =*/ 
+. 
+. tab eth16 `i', missing row
+  4. 
+. 
+. /* Main Model================================================================
+> =*/
+. 
+. /* Univariable model */ 
+. 
+. stcox i.eth16 
+  5. estimates save "$Tempdir/crude_`i'_eth16", replace 
+  6. parmest, label eform format(estimate p lb ub) saving("$Tempdir/crude_`i'_e
+> th16", replace) idstr("crude_`i'_eth16") 
+  7. 
+. /* Multivariable models */ 
+. 
+. * Age, Gender, IMD
+. * Age fit as spline
+. 
+. stcox i.eth16 i.male age1 age2 age3 i.imd, strata(stp)
+  8. estimates save "$Tempdir/model1_`i'_eth16", replace 
+  9. parmest, label eform format(estimate p lb ub) saving("$Tempdir/model1_`i'_
+> eth16", replace) idstr("model1_`i'_eth16") 
+ 10. 
+. 
+. * Age, Gender, IMD and Comorbidities  
+. stcox i.eth16 i.male age1 age2 age3     i.imd                                
+>                    ///
+>                                                                              
+>    bmi                                                     ///
+>                                                                              
+>    gp_consult_count                        ///
+>                                                                              
+>    i.smoke_nomiss                          ///
+>                                                                              
+>    i.htdiag_or_highbp                      ///     
+>                                                                              
+>    i.asthma                                        ///
+>                                                                              
+>    i.chronic_cardiac_disease       ///
+>                                                                              
+>    i.dm_type                                       ///     
+>                                                                              
+>    i.cancer                    ///
+>                                                                              
+>    i.chronic_liver_disease         ///
+>                                                                              
+>    i.stroke                                        ///
+>                                                                              
+>    i.dementia                                      ///
+>                                                                              
+>    i.other_neuro                           ///
+>                                                                              
+>    i.ckd                                           ///
+>                                                                              
+>    i.esrf                                          ///
+>                                                                              
+>    i.perm_immunodef                        ///
+>                                                                              
+>    i.temp_immunodef                        ///
+>                                                                              
+>    i.other_immuno                          ///
+>                                                                              
+>    i.ra_sle_psoriasis, strata(stp)                         
+ 11.                                                                           
+>       
+. estimates save "$Tempdir/model2_`i'_eth16", replace 
+ 12. parmest, label eform format(estimate p lb ub) saving("$Tempdir/model2_`i'_
+> eth16", replace) idstr("model2_`i'_eth16") 
+ 13. 
+. * Age, Gender, IMD and Comorbidities  and household size
+. 
+. stcox i.eth16 i.male age1 age2 age3 i.imd hh_size                            
+>            ///
+>                                                                              
+>    bmi                                                     ///
+>                                                                              
+>    gp_consult_count                        ///
+>                                                                              
+>    i.smoke_nomiss                          ///
+>                                                                              
+>    i.htdiag_or_highbp                      ///     
+>                                                                              
+>    i.asthma                                        ///
+>                                                                              
+>    i.chronic_cardiac_disease       ///
+>                                                                              
+>    i.dm_type                                       ///     
+>                                                                              
+>    i.cancer                    ///
+>                                                                              
+>    i.chronic_liver_disease         ///
+>                                                                              
+>    i.stroke                                        ///
+>                                                                              
+>    i.dementia                                      ///
+>                                                                              
+>    i.other_neuro                           ///
+>                                                                              
+>    i.ckd                                           ///
+>                                                                              
+>    i.esrf                                          ///
+>                                                                              
+>    i.perm_immunodef                        ///
+>                                                                              
+>    i.temp_immunodef                        ///
+>                                                                              
+>    i.other_immuno                          ///
+>                                                                              
+>    i.ra_sle_psoriasis, strata(stp)                         
+ 14.                                                                           
+>       
+. estimates save "$Tempdir/model3_`i'_eth16", replace
+ 15. parmest, label eform format(estimate p lb ub) saving("$Tempdir/model3_`i'_
+> eth16", replace) idstr("model3_`i'_eth16") 
+ 16. 
+. /* Print table===============================================================
+> =*/ 
+. *  Print the results for the main model 
+. 
+. 
+. * Column headings 
+. file write tablecontent ("Outcome: `i'") _n
+ 17. 
+. * Row headings 
+. local lab1: label eth16 1
+ 18. local lab2: label eth16 2
+ 19. local lab3: label eth16 3
+ 20. local lab4: label eth16 4
+ 21. local lab5: label eth16 5
+ 22. local lab6: label eth16 6
+ 23. local lab7: label eth16 7
+ 24. local lab8: label eth16 8
+ 25. local lab9: label eth16 9
+ 26. local lab10: label eth16 10
+ 27. local lab11: label eth16 11
+ 28. 
+. /* Counts */
+.  
+. * First row, eth16 = 1 (White British) reference cat
+.         count if eth16 == 1 & `i' == 1
+ 29.         local event = r(N)
+ 30.     bysort eth16: egen total_follow_up = total(_t)
+ 31.         su total_follow_up if eth16 == 1
+ 32.         local person_week = r(mean)/7
+ 33.         local rate = 1000*(`event'/`person_week')
+ 34.         
+.         file write tablecontent  ("`lab1'") _tab (`event') _tab %10.0f (`pers
+> on_week') _tab %3.2f (`rate') _tab
+ 35.         file write tablecontent ("1.00 (ref)") _tab _tab ("1.00 (ref)") _t
+> ab _tab ("1.00 (ref)")  _tab _tab ("1.00 (ref)") _n
+ 36.         
+. * Subsequent ethnic groups
+. forvalues eth=2/11 {
+ 37. 
+.         count if eth16 == `eth' & `i' == 1
+ 38.         local event = r(N)
+ 39.         su total_follow_up if eth16 == `eth'
+ 40.         local person_week = r(mean)/7
+ 41.         local rate = 1000*(`event'/`person_week')
+ 42.         file write tablecontent  ("`lab`eth''") _tab   (`event') _tab %10.
+> 0f (`person_week') _tab %3.2f (`rate') _tab  
+ 43.         cap estimates use "$Tempdir/crude_`i'_eth16" 
+ 44.         cap cap lincom `eth'.eth16, eform
+ 45.         file write tablecontent  %4.2f (r(estimate)) _tab %4.2f (r(lb)) ("
+>  - ") %4.2f (r(ub)) _tab 
+ 46.         cap estimates clear
+ 47.         cap estimates use "$Tempdir/model1_`i'_eth16" 
+ 48.         cap cap lincom `eth'.eth16, eform
+ 49.         file write tablecontent  %4.2f (r(estimate)) _tab %4.2f (r(lb)) ("
+>  - ") %4.2f (r(ub)) _tab 
+ 50.         cap estimates clear
+ 51.         cap estimates use "$Tempdir/model2_`i'_eth16" 
+ 52.         cap cap lincom `eth'.eth16, eform
+ 53.         file write tablecontent  %4.2f (r(estimate)) _tab %4.2f (r(lb)) ("
+>  - ") %4.2f (r(ub)) _tab 
+ 54.         cap estimates clear
+ 55.         cap estimates use "$Tempdir/model3_`i'_eth16" 
+ 56.         cap cap lincom `eth'.eth16, eform
+ 57.         file write tablecontent  %4.2f (r(estimate)) _tab %4.2f (r(lb)) ("
+>  - ") %4.2f (r(ub)) _n
+ 58. }  //end ethnic group
+ 59. 
+. 
+. } //end outcomes
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+                      |    outcome tested
+     Eth 16 collapsed |         0          1 |     Total
+----------------------+----------------------+----------
+British or Mixed Brit | 9,100,821    446,083 | 9,546,904 
+                      |     95.33       4.67 |    100.00 
+----------------------+----------------------+----------
+                Irish |    74,973      4,027 |    79,000 
+                      |     94.90       5.10 |    100.00 
+----------------------+----------------------+----------
+          Other White | 1,305,348     42,248 | 1,347,596 
+                      |     96.86       3.14 |    100.00 
+----------------------+----------------------+----------
+               Indian |   412,971     21,462 |   434,433 
+                      |     95.06       4.94 |    100.00 
+----------------------+----------------------+----------
+            Pakistani |   290,404     12,176 |   302,580 
+                      |     95.98       4.02 |    100.00 
+----------------------+----------------------+----------
+          Bangladeshi |    67,965      2,187 |    70,152 
+                      |     96.88       3.12 |    100.00 
+----------------------+----------------------+----------
+            Caribbean |    79,182      3,829 |    83,011 
+                      |     95.39       4.61 |    100.00 
+----------------------+----------------------+----------
+              African |   183,797      8,097 |   191,894 
+                      |     95.78       4.22 |    100.00 
+----------------------+----------------------+----------
+              Chinese |   103,619      1,643 |   105,262 
+                      |     98.44       1.56 |    100.00 
+----------------------+----------------------+----------
+            All mixed |   164,781      6,842 |   171,623 
+                      |     96.01       3.99 |    100.00 
+----------------------+----------------------+----------
+            All Other |   490,735     20,175 |   510,910 
+                      |     96.05       3.95 |    100.00 
+----------------------+----------------------+----------
+                    . | 4,407,890    178,434 | 4,586,324 
+                      |     96.11       3.89 |    100.00 
+----------------------+----------------------+----------
+                Total |16,682,486    747,203 |17,429,689 
+                      |     95.71       4.29 |    100.00 
+
+         failure _d:  tested
+   analysis time _t:  (stime_tested-origin)
+             origin:  time enter_date
+  enter on or after:  time enter_date
+                 id:  patient_id
+
+Iteration 0:   log likelihood = -9295607.5
+Iteration 1:   log likelihood = -9290216.4
+Iteration 2:   log likelihood =   -9290010
+Iteration 3:   log likelihood =   -9290006
+Iteration 4:   log likelihood =   -9290006
+Refining estimates:
+Iteration 0:   log likelihood =   -9290006
+
+Cox regression -- Breslow method for ties
+
+No. of subjects =   12,843,365                  Number of obs    =  12,843,365
+No. of failures =      568,769
+Time at risk    =   2282931656
+                                                LR chi2(10)      =    11203.09
+Log likelihood  =     -9290006                  Prob > chi2      =      0.0000
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       eth16 |
+      Irish  |   1.095853   .0173465     5.78   0.000     1.062376    1.130385
+Other White  |   .6642422   .0033812   -80.37   0.000     .6576481    .6709025
+     Indian  |    1.05428   .0073676     7.56   0.000     1.039939     1.06882
+  Pakistani  |   .8544334   .0078483   -17.13   0.000     .8391887     .869955
+Bangladeshi  |   .6595876   .0141387   -19.41   0.000     .6324502    .6878893
+  Caribbean  |   .9885023   .0160432    -0.71   0.476      .957553    1.020452
+    African  |   .8998512   .0100905    -9.41   0.000     .8802898    .9198472
+    Chinese  |   .3280984   .0081093   -45.09   0.000     .3125833    .3443837
+  All mixed  |   .8483472   .0103345   -13.50   0.000      .828332    .8688461
+  All Other  |   .8411089   .0060541   -24.04   0.000     .8293264    .8530589
+------------------------------------------------------------------------------
+file E:\analyses\ethnicity-covid-research/output/tempdata/crude_tested_eth16.st
+> er saved
+(note: file E:\analyses\ethnicity-covid-research/output/tempdata/crude_tested_e
+> th16.dta not found)
+file E:\analyses\ethnicity-covid-research/output/tempdata/crude_tested_eth16.dt
+> a saved
+
+         failure _d:  tested
+   analysis time _t:  (stime_tested-origin)
+             origin:  time enter_date
+  enter on or after:  time enter_date
+                 id:  patient_id
+
+Iteration 0:   log likelihood = -7388153.1
+Iteration 1:   log likelihood = -7351872.1
+Iteration 2:   log likelihood = -7343112.6
+Iteration 3:   log likelihood = -7342986.7
+Iteration 4:   log likelihood = -7342986.7
+Refining estimates:
+Iteration 0:   log likelihood = -7342986.7
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects =   12,729,478                  Number of obs    =  12,729,478
+No. of failures =      562,881
+Time at risk    =   2262719135
+                                                LR chi2(18)      =    90332.79
+Log likelihood  =   -7342986.7                  Prob > chi2      =      0.0000
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       eth16 |
+      Irish  |   1.075819   .0171552     4.58   0.000     1.042716    1.109974
+Other White  |   .7229307   .0038519   -60.89   0.000     .7154205    .7305198
+     Indian  |   1.086833   .0080851    11.19   0.000     1.071102    1.102796
+  Pakistani  |   .9788671   .0093266    -2.24   0.025     .9607569    .9973187
+Bangladeshi  |   .7260314   .0157089   -14.80   0.000     .6958862    .7574825
+  Caribbean  |   .9983255   .0164568    -0.10   0.919     .9665863    1.031107
+    African  |   1.010627   .0116221     0.92   0.358     .9881025    1.033664
+    Chinese  |   .3812495   .0095439   -38.52   0.000     .3629953    .4004217
+  All mixed  |   .9724622   .0120531    -2.25   0.024     .9491232    .9963752
+  All Other  |   .9500339   .0071529    -6.81   0.000     .9361174    .9641573
+             |
+        male |
+       Male  |   .7374557    .002009  -111.79   0.000     .7335286    .7414038
+        age1 |    1.03359    .000451    75.72   0.000     1.032706    1.034474
+        age2 |   .8844322   .0012085   -89.88   0.000     .8820669     .886804
+        age3 |   1.508558   .0056594   109.60   0.000     1.497507    1.519691
+             |
+         imd |
+          2  |   1.047338   .0045206    10.72   0.000     1.038515    1.056236
+          3  |   1.094868   .0047405    20.93   0.000     1.085617    1.104199
+          4  |   1.177593   .0051091    37.68   0.000     1.167622    1.187649
+5 most de..  |   1.241302   .0056448    47.53   0.000     1.230287    1.252415
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+file E:\analyses\ethnicity-covid-research/output/tempdata/model1_tested_eth16.s
+> ter saved
+(note: file E:\analyses\ethnicity-covid-research/output/tempdata/model1_tested_
+> eth16.dta not found)
+file E:\analyses\ethnicity-covid-research/output/tempdata/model1_tested_eth16.d
+> ta saved
+
+         failure _d:  tested
+   analysis time _t:  (stime_tested-origin)
+             origin:  time enter_date
+  enter on or after:  time enter_date
+                 id:  patient_id
+
+note: 1.asthma omitted because of collinearity
+Iteration 0:   log likelihood = -5807210.1
+Iteration 1:   log likelihood = -5768410.9
+Iteration 2:   log likelihood = -5743031.3
+Iteration 3:   log likelihood = -5738771.1
+Iteration 4:   log likelihood = -5738267.8
+Iteration 5:   log likelihood =   -5738253
+Iteration 6:   log likelihood = -5738252.9
+Refining estimates:
+Iteration 0:   log likelihood = -5738252.9
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects =    8,830,727                  Number of obs    =   8,830,727
+No. of failures =      455,070
+Time at risk    =   1564347371
+                                                LR chi2(41)      =   137914.41
+Log likelihood  =   -5738252.9                  Prob > chi2      =      0.0000
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       eth16 |
+      Irish  |   1.097073   .0193205     5.26   0.000     1.059852    1.135602
+Other White  |    .867308    .005397   -22.88   0.000     .8567944    .8779506
+     Indian  |   1.099104   .0094023    11.05   0.000     1.080829    1.117687
+  Pakistani  |   .9037487   .0097131    -9.42   0.000     .8849105    .9229879
+Bangladeshi  |   .6637158   .0163819   -16.61   0.000     .6323721    .6966131
+  Caribbean  |   .9859812   .0176321    -0.79   0.430     .9520215    1.021152
+    African  |   1.092443   .0146863     6.58   0.000     1.064035    1.121611
+    Chinese  |   .6145741   .0193839   -15.43   0.000     .5777328    .6537648
+  All mixed  |   1.031996   .0149735     2.17   0.030     1.003062    1.061765
+  All Other  |    1.03369   .0091069     3.76   0.000     1.015994    1.051694
+             |
+        male |
+       Male  |   .8127463   .0025391   -66.37   0.000     .8077851    .8177381
+        age1 |   1.019161   .0005938    32.58   0.000     1.017998    1.020326
+        age2 |   .8922207   .0015435   -65.92   0.000     .8892006    .8952511
+        age3 |   1.452356   .0067633    80.14   0.000     1.439161    1.465673
+             |
+         imd |
+          2  |   1.036086   .0049899     7.36   0.000     1.026352    1.045913
+          3  |   1.073512    .005195    14.66   0.000     1.063378    1.083742
+          4  |    1.13655   .0055349    26.28   0.000     1.125754     1.14745
+5 most de..  |   1.170685   .0060173    30.66   0.000     1.158951    1.182538
+             |
+         bmi |   1.001376   .0002728     5.05   0.000     1.000842    1.001911
+gp_consult~t |   1.011578   .0000543   214.47   0.000     1.011472    1.011685
+             |
+smoke_nomiss |
+     Former  |   1.074374   .0036193    21.30   0.000     1.067303    1.081491
+    Current  |   1.066306   .0049341    13.87   0.000     1.056679    1.076021
+             |
+1.htdiag_o~p |    .998272   .0035962    -0.48   0.631     .9912483    1.005345
+    1.asthma |          1  (omitted)
+1.~c_disease |   1.483476   .0067123    87.16   0.000     1.470378     1.49669
+             |
+     dm_type |
+       T1DM  |   1.412675   .0205139    23.79   0.000     1.373036    1.453459
+       T2DM  |   1.157277   .0053951    31.33   0.000     1.146751    1.167899
+ UNKNOWN_DM  |   1.035192   .0085923     4.17   0.000     1.018488     1.05217
+             |
+    1.cancer |   1.690831   .0077942   113.94   0.000     1.675624    1.706177
+1.~r_disease |   1.869825   .0218651    53.52   0.000     1.827457    1.913174
+    1.stroke |   1.596676   .0100532    74.32   0.000     1.577093    1.616502
+  1.dementia |   2.829026   .0339271    86.72   0.000     2.763305    2.896309
+1.other_ne~o |   1.755911   .0164988    59.92   0.000      1.72387    1.788548
+             |
+         ckd |
+          2  |   1.071623   .0064273    11.53   0.000     1.059099    1.084294
+          3  |    1.30252    .010587    32.52   0.000     1.281934    1.323436
+          4  |   1.702552    .021716    41.72   0.000     1.660517    1.745651
+          5  |   3.748462   .0830135    59.67   0.000     3.589239    3.914748
+             |
+      1.esrf |   2.070396   .0461339    32.66   0.000     1.981922    2.162821
+1.perm_imm~f |   .8907661   .1032937    -1.00   0.319     .7096724    1.118071
+1.temp_imm~f |   1.762938   .1843662     5.42   0.000     1.436214    2.163988
+1.other_im~o |   1.283562   .1485209     2.16   0.031     1.023115    1.610309
+1.ra_sle_p~s |   1.066664   .0061317    11.23   0.000     1.054713    1.078749
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+file E:\analyses\ethnicity-covid-research/output/tempdata/model2_tested_eth16.s
+> ter saved
+(note: file E:\analyses\ethnicity-covid-research/output/tempdata/model2_tested_
+> eth16.dta not found)
+file E:\analyses\ethnicity-covid-research/output/tempdata/model2_tested_eth16.d
+> ta saved
+
+         failure _d:  tested
+   analysis time _t:  (stime_tested-origin)
+             origin:  time enter_date
+  enter on or after:  time enter_date
+                 id:  patient_id
+
+note: 1.asthma omitted because of collinearity
+Iteration 0:   log likelihood = -5807210.1
+Iteration 1:   log likelihood =   -5768305
+Iteration 2:   log likelihood = -5742292.4
+Iteration 3:   log likelihood =   -5737937
+Iteration 4:   log likelihood = -5737427.5
+Iteration 5:   log likelihood = -5737412.6
+Iteration 6:   log likelihood = -5737412.6
+Refining estimates:
+Iteration 0:   log likelihood = -5737412.6
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects =    8,830,727                  Number of obs    =   8,830,727
+No. of failures =      455,070
+Time at risk    =   1564347371
+                                                LR chi2(42)      =   139595.08
+Log likelihood  =   -5737412.6                  Prob > chi2      =      0.0000
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       eth16 |
+      Irish  |   1.094897   .0192822     5.15   0.000      1.05775    1.133349
+Other White  |   .8622618   .0053744   -23.78   0.000     .8517923      .87286
+     Indian  |   1.095558   .0093717    10.67   0.000     1.077343    1.114081
+  Pakistani  |   .9018482    .009693    -9.61   0.000      .883049    .9210476
+Bangladeshi  |   .6620134   .0163401   -16.71   0.000     .6307498    .6948266
+  Caribbean  |    .984715   .0176096    -0.86   0.389     .9507988    1.019841
+    African  |   1.089219   .0146431     6.36   0.000     1.060894      1.1183
+    Chinese  |   .6030055   .0190223   -16.03   0.000     .5668517    .6414651
+  All mixed  |   1.028897   .0149288     1.96   0.050     1.000049    1.058576
+  All Other  |   1.030404    .009078     3.40   0.001     1.012764    1.048351
+             |
+        male |
+       Male  |   .8114583   .0025353   -66.87   0.000     .8065044    .8164427
+        age1 |   1.020247   .0005945    34.40   0.000     1.019082    1.021413
+        age2 |   .8902786   .0015396   -67.21   0.000     .8872662    .8933012
+        age3 |    1.45941   .0067927    81.22   0.000     1.446157    1.472784
+             |
+         imd |
+          2  |   1.034907   .0049843     7.12   0.000     1.025184    1.044722
+          3  |   1.074485   .0051999    14.85   0.000     1.064342    1.084725
+          4  |   1.138698   .0055459    26.67   0.000      1.12788     1.14962
+5 most de..  |   1.172908   .0060294    31.03   0.000      1.16115    1.184785
+             |
+     hh_size |   1.001444   .0000235    61.50   0.000     1.001398     1.00149
+         bmi |   1.001487   .0002728     5.46   0.000     1.000953    1.002022
+gp_consult~t |   1.011583   .0000542   214.91   0.000     1.011477    1.011689
+             |
+smoke_nomiss |
+     Former  |   1.075698   .0036248    21.65   0.000     1.068617    1.082826
+    Current  |   1.067585   .0049406    14.13   0.000     1.057946    1.077312
+             |
+1.htdiag_o~p |    .998455   .0035968    -0.43   0.668     .9914302    1.005529
+    1.asthma |          1  (omitted)
+1.~c_disease |   1.483407   .0067118    87.16   0.000      1.47031    1.496621
+             |
+     dm_type |
+       T1DM  |   1.414332   .0205382    23.87   0.000     1.374645    1.455164
+       T2DM  |   1.157026   .0053938    31.29   0.000     1.146503    1.167646
+ UNKNOWN_DM  |   1.034683   .0085882     4.11   0.000     1.017987    1.051654
+             |
+    1.cancer |   1.691378   .0077963   114.01   0.000     1.676167    1.706728
+1.~r_disease |   1.869861   .0218655    53.52   0.000     1.827493    1.913212
+    1.stroke |   1.595325    .010045    74.18   0.000     1.575758    1.615134
+  1.dementia |   2.803996   .0336315    85.96   0.000     2.738848    2.870693
+1.other_ne~o |   1.755038    .016491    59.86   0.000     1.723012    1.787659
+             |
+         ckd |
+          2  |   1.071468   .0064265    11.51   0.000     1.058946    1.084138
+          3  |   1.301627     .01058    32.43   0.000     1.281055     1.32253
+          4  |   1.700949   .0216956    41.65   0.000     1.658953    1.744007
+          5  |   3.746449   .0829619    59.65   0.000     3.587325    3.912632
+             |
+      1.esrf |   2.072117   .0461705    32.70   0.000     1.983572    2.164615
+1.perm_imm~f |   .8952409   .1038112    -0.95   0.340     .7132397    1.123684
+1.temp_imm~f |    1.77234   .1853539     5.47   0.000     1.443867    2.175539
+1.other_im~o |    1.27821   .1479045     2.12   0.034     1.018844    1.603602
+1.ra_sle_p~s |   1.066601   .0061315    11.22   0.000     1.054651    1.078687
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+file E:\analyses\ethnicity-covid-research/output/tempdata/model3_tested_eth16.s
+> ter saved
+(note: file E:\analyses\ethnicity-covid-research/output/tempdata/model3_tested_
+> eth16.dta not found)
+file E:\analyses\ethnicity-covid-research/output/tempdata/model3_tested_eth16.d
+> ta saved
+  446,083
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |  9,546,904    1.69e+09           0   1.69e+09   1.69e+09
+  4,027
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |     79,000    1.40e+07           0   1.40e+07   1.40e+07
+  42,248
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |  1,347,596    2.41e+08           0   2.41e+08   2.41e+08
+  21,462
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |    434,433    7.72e+07           0   7.72e+07   7.72e+07
+  12,176
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |    302,580    5.40e+07           0   5.40e+07   5.40e+07
+  2,187
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |     70,152    1.26e+07           0   1.26e+07   1.26e+07
+  3,829
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |     83,011    1.47e+07           0   1.47e+07   1.47e+07
+  8,097
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |    191,894    3.42e+07           0   3.42e+07   3.42e+07
+  1,643
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |    105,262    1.89e+07           0   1.89e+07   1.89e+07
+  6,842
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |    171,623    3.06e+07           0   3.06e+07   3.06e+07
+  20,175
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |    510,910    9.10e+07           0   9.10e+07   9.10e+07
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+                      | outcome positivetest
+     Eth 16 collapsed |         0          1 |     Total
+----------------------+----------------------+----------
+British or Mixed Brit | 9,507,557     39,364 | 9,546,921 
+                      |     99.59       0.41 |    100.00 
+----------------------+----------------------+----------
+                Irish |    78,617        383 |    79,000 
+                      |     99.52       0.48 |    100.00 
+----------------------+----------------------+----------
+          Other White | 1,343,049      4,548 | 1,347,597 
+                      |     99.66       0.34 |    100.00 
+----------------------+----------------------+----------
+               Indian |   430,873      3,560 |   434,433 
+                      |     99.18       0.82 |    100.00 
+----------------------+----------------------+----------
+            Pakistani |   299,937      2,644 |   302,581 
+                      |     99.13       0.87 |    100.00 
+----------------------+----------------------+----------
+          Bangladeshi |    69,844        308 |    70,152 
+                      |     99.56       0.44 |    100.00 
+----------------------+----------------------+----------
+            Caribbean |    82,458        554 |    83,012 
+                      |     99.33       0.67 |    100.00 
+----------------------+----------------------+----------
+              African |   190,552      1,343 |   191,895 
+                      |     99.30       0.70 |    100.00 
+----------------------+----------------------+----------
+              Chinese |   105,131        137 |   105,268 
+                      |     99.87       0.13 |    100.00 
+----------------------+----------------------+----------
+            All mixed |   170,824        800 |   171,624 
+                      |     99.53       0.47 |    100.00 
+----------------------+----------------------+----------
+            All Other |   507,799      3,112 |   510,911 
+                      |     99.39       0.61 |    100.00 
+----------------------+----------------------+----------
+                    . | 4,569,407     16,922 | 4,586,329 
+                      |     99.63       0.37 |    100.00 
+----------------------+----------------------+----------
+                Total |17,356,048     73,675 |17,429,723 
+                      |     99.58       0.42 |    100.00 
+
+         failure _d:  positivetest
+   analysis time _t:  (stime_positivetest-origin)
+             origin:  time enter_date
+  enter on or after:  time enter_date
+                 id:  patient_id
+
+Iteration 0:   log likelihood = -928679.03
+Iteration 1:   log likelihood =  -927095.3
+Iteration 2:   log likelihood = -926877.37
+Iteration 3:   log likelihood = -926875.39
+Iteration 4:   log likelihood = -926875.39
+Refining estimates:
+Iteration 0:   log likelihood = -926875.39
+
+Cox regression -- Breslow method for ties
+
+No. of subjects =   12,843,394                  Number of obs    =  12,843,394
+No. of failures =       56,753
+Time at risk    =   2313555882
+                                                LR chi2(10)      =     3607.29
+Log likelihood  =   -926875.39                  Prob > chi2      =      0.0000
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       eth16 |
+      Irish  |   1.177811   .0604754     3.19   0.001      1.06505     1.30251
+Other White  |   .8164308   .0127865   -12.95   0.000     .7917505    .8418804
+     Indian  |    1.98582   .0347548    39.20   0.000     1.918857     2.05512
+  Pakistani  |   2.116132   .0425137    37.31   0.000     2.034426    2.201119
+Bangladeshi  |   1.062156   .0607583     1.05   0.292     .9495051    1.188172
+  Caribbean  |   1.621377   .0693688    11.30   0.000     1.490961    1.763201
+    African  |   1.695605   .0470513    19.03   0.000     1.605849    1.790378
+    Chinese  |   .3143768   .0269057   -13.52   0.000     .2658281    .3717919
+  All mixed  |    1.12807   .0402865     3.37   0.001      1.05181     1.20986
+  All Other  |   1.475239   .0274704    20.88   0.000     1.422368    1.530074
+------------------------------------------------------------------------------
+file E:\analyses\ethnicity-covid-research/output/tempdata/crude_positivetest_et
+> h16.ster saved
+(note: file E:\analyses\ethnicity-covid-research/output/tempdata/crude_positive
+> test_eth16.dta not found)
+file E:\analyses\ethnicity-covid-research/output/tempdata/crude_positivetest_et
+> h16.dta saved
+
+         failure _d:  positivetest
+   analysis time _t:  (stime_positivetest-origin)
+             origin:  time enter_date
+  enter on or after:  time enter_date
+                 id:  patient_id
+
+Iteration 0:   log likelihood = -744050.74
+Iteration 1:   log likelihood = -738519.17
+Iteration 2:   log likelihood = -733393.83
+Iteration 3:   log likelihood = -733236.12
+Iteration 4:   log likelihood = -733235.79
+Refining estimates:
+Iteration 0:   log likelihood = -733235.79
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects =   12,729,506                  Number of obs    =  12,729,506
+No. of failures =       56,257
+Time at risk    =   2293018062
+                                                LR chi2(18)      =    21629.91
+Log likelihood  =   -733235.79                  Prob > chi2      =      0.0000
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       eth16 |
+      Irish  |   1.172392   .0605485     3.08   0.002     1.059528    1.297279
+Other White  |    1.01601   .0166648     0.97   0.333     .9838671    1.049203
+     Indian  |   2.187479   .0418488    40.92   0.000     2.106976    2.271059
+  Pakistani  |   2.165619   .0464068    36.06   0.000     2.076546    2.258511
+Bangladeshi  |   1.212791    .070088     3.34   0.001     1.082915    1.358243
+  Caribbean  |    1.61537   .0703416    11.01   0.000     1.483223    1.759292
+    African  |   2.102057   .0603254    25.89   0.000     1.987085    2.223681
+    Chinese  |    .450535   .0387809    -9.26   0.000     .3805917    .5333321
+  All mixed  |   1.500992   .0545265    11.18   0.000     1.397838    1.611759
+  All Other  |   1.906768   .0375679    32.76   0.000     1.834539     1.98184
+             |
+        male |
+       Male  |   .8375364   .0071632   -20.73   0.000     .8236138    .8516943
+        age1 |    1.04895   .0015378    32.60   0.000      1.04594    1.051968
+        age2 |   .8482128   .0037919   -36.82   0.000     .8408132    .8556774
+        age3 |   1.739044   .0210334    45.75   0.000     1.698304    1.780761
+             |
+         imd |
+          2  |     1.1336   .0168173     8.45   0.000     1.101113    1.167045
+          3  |   1.272319   .0186102    16.47   0.000     1.236362    1.309322
+          4  |   1.423652   .0203552    24.70   0.000      1.38431    1.464112
+5 most de..  |   1.545262   .0224577    29.94   0.000     1.501867    1.589911
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+file E:\analyses\ethnicity-covid-research/output/tempdata/model1_positivetest_e
+> th16.ster saved
+(note: file E:\analyses\ethnicity-covid-research/output/tempdata/model1_positiv
+> etest_eth16.dta not found)
+file E:\analyses\ethnicity-covid-research/output/tempdata/model1_positivetest_e
+> th16.dta saved
+
+         failure _d:  positivetest
+   analysis time _t:  (stime_positivetest-origin)
+             origin:  time enter_date
+  enter on or after:  time enter_date
+                 id:  patient_id
+
+note: 1.asthma omitted because of collinearity
+Iteration 0:   log likelihood = -583209.11
+Iteration 1:   log likelihood = -574619.79
+Iteration 2:   log likelihood = -570545.58
+Iteration 3:   log likelihood = -570306.83
+Iteration 4:   log likelihood = -570304.93
+Iteration 5:   log likelihood = -570304.93
+Refining estimates:
+Iteration 0:   log likelihood = -570304.93
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects =    8,830,743                  Number of obs    =   8,830,743
+No. of failures =       45,322
+Time at risk    =   1588912158
+                                                LR chi2(41)      =    25808.35
+Log likelihood  =   -570304.93                  Prob > chi2      =      0.0000
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       eth16 |
+      Irish  |   1.178901   .0667971     2.90   0.004     1.054989    1.317367
+Other White  |   1.136811   .0221097     6.59   0.000     1.094292    1.180982
+     Indian  |   1.928248   .0433927    29.18   0.000     1.845049      2.0152
+  Pakistani  |   1.829785   .0444662    24.86   0.000     1.744676    1.919046
+Bangladeshi  |   1.043291    .067951     0.65   0.515     .9182592    1.185346
+  Caribbean  |   1.433414   .0671851     7.68   0.000     1.307601    1.571333
+    African  |   2.083152   .0689633    22.17   0.000     1.952278    2.222799
+    Chinese  |   .7878371   .0790947    -2.38   0.018     .6471132    .9591634
+  All mixed  |   1.532264   .0649136    10.07   0.000     1.410174    1.664923
+  All Other  |    1.95206   .0448297    29.13   0.000     1.866144    2.041932
+             |
+        male |
+       Male  |   .9228588   .0090771    -8.16   0.000     .9052384    .9408222
+        age1 |   1.040825   .0021148    19.69   0.000     1.036688    1.044978
+        age2 |   .8362247   .0048699   -30.71   0.000     .8267341    .8458242
+        age3 |   1.789467   .0275508    37.80   0.000     1.736275    1.844289
+             |
+         imd |
+          2  |   1.123971   .0186134     7.06   0.000     1.088076    1.161052
+          3  |   1.245443   .0204006    13.40   0.000     1.206094    1.286076
+          4  |   1.400093   .0224565    20.98   0.000     1.356764    1.444806
+5 most de..  |   1.530959   .0250686    26.01   0.000     1.482605    1.580889
+             |
+         bmi |   1.017625    .000864    20.58   0.000     1.015933    1.019319
+gp_consult~t |   1.008231   .0003121    26.48   0.000     1.007619    1.008842
+             |
+smoke_nomiss |
+     Former  |   1.065444   .0111312     6.07   0.000      1.04385    1.087486
+    Current  |   .6144828   .0109234   -27.39   0.000      .593442    .6362696
+             |
+1.htdiag_o~p |   .9805714   .0112916    -1.70   0.088      .958688    1.002954
+    1.asthma |          1  (omitted)
+1.~c_disease |   1.245613   .0171685    15.93   0.000     1.212414    1.279722
+             |
+     dm_type |
+       T1DM  |   1.358292   .0667022     6.24   0.000     1.233653    1.495525
+       T2DM  |   1.315706    .017573    20.54   0.000     1.281711    1.350604
+ UNKNOWN_DM  |   1.041704   .0257218     1.65   0.098     .9924904    1.093357
+             |
+    1.cancer |   1.193153   .0186839    11.28   0.000     1.157089     1.23034
+1.~r_disease |   1.501557   .0610048    10.01   0.000     1.386626    1.626014
+    1.stroke |     1.5974   .0289437    25.85   0.000     1.541667    1.655148
+  1.dementia |   3.594945   .1017869    45.19   0.000     3.400881    3.800083
+1.other_ne~o |   1.926748   .0524607    24.09   0.000     1.826623    2.032362
+             |
+         ckd |
+          2  |   1.136069    .019951     7.26   0.000     1.097631    1.175853
+          3  |   1.421881   .0318223    15.73   0.000     1.360858    1.485639
+          4  |   1.869502   .0629596    18.58   0.000     1.750087    1.997064
+          5  |   3.713228   .2230972    21.84   0.000      3.30073    4.177277
+             |
+      1.esrf |   2.368663   .1469298    13.90   0.000     2.097504    2.674878
+1.perm_imm~f |   .6891828   .2655241    -0.97   0.334     .3238834    1.466493
+1.temp_imm~f |   1.888965   .6694093     1.79   0.073     .9431401    3.783309
+1.other_im~o |   1.434815   .5515544     0.94   0.348     .6754409    3.047927
+1.ra_sle_p~s |   1.050119   .0193981     2.65   0.008      1.01278    1.088836
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+file E:\analyses\ethnicity-covid-research/output/tempdata/model2_positivetest_e
+> th16.ster saved
+(note: file E:\analyses\ethnicity-covid-research/output/tempdata/model2_positiv
+> etest_eth16.dta not found)
+file E:\analyses\ethnicity-covid-research/output/tempdata/model2_positivetest_e
+> th16.dta saved
+
+         failure _d:  positivetest
+   analysis time _t:  (stime_positivetest-origin)
+             origin:  time enter_date
+  enter on or after:  time enter_date
+                 id:  patient_id
+
+note: 1.asthma omitted because of collinearity
+Iteration 0:   log likelihood = -583209.11
+Iteration 1:   log likelihood =  -574755.3
+Iteration 2:   log likelihood = -570354.67
+Iteration 3:   log likelihood =  -570035.2
+Iteration 4:   log likelihood = -570025.31
+Iteration 5:   log likelihood = -570025.03
+Iteration 6:   log likelihood = -570025.03
+Refining estimates:
+Iteration 0:   log likelihood = -570025.03
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects =    8,830,743                  Number of obs    =   8,830,743
+No. of failures =       45,322
+Time at risk    =   1588912158
+                                                LR chi2(42)      =    26368.16
+Log likelihood  =   -570025.03                  Prob > chi2      =      0.0000
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       eth16 |
+      Irish  |   1.176093   .0666382     2.86   0.004     1.052476     1.31423
+Other White  |   1.120832   .0219152     5.83   0.000     1.078691    1.164618
+     Indian  |   1.921572   .0432428    29.02   0.000      1.83866    2.008223
+  Pakistani  |   1.825434   .0443668    24.76   0.000     1.740516    1.914496
+Bangladeshi  |   1.040246   .0677544     0.61   0.545     .9155763    1.181891
+  Caribbean  |   1.431241   .0670837     7.65   0.000     1.305618    1.568951
+    African  |   2.075996   .0687291    22.06   0.000     1.945567    2.215169
+    Chinese  |   .7694574   .0772576    -2.61   0.009     .6320035    .9368062
+  All mixed  |    1.52749   .0647127    10.00   0.000     1.405779    1.659739
+  All Other  |   1.945263   .0446754    28.97   0.000     1.859642    2.034826
+             |
+        male |
+       Male  |   .9201958   .0090536    -8.45   0.000      .902621    .9381128
+        age1 |   1.042426   .0021161    20.47   0.000     1.038287    1.046581
+        age2 |   .8338772   .0048501   -31.23   0.000     .8244251    .8434377
+        age3 |   1.799763   .0276735    38.22   0.000     1.746333    1.854828
+             |
+         imd |
+          2  |   1.122131   .0185829     6.96   0.000     1.086294    1.159151
+          3  |   1.243777   .0203813    13.31   0.000     1.204465    1.284372
+          4  |   1.403337     .02251    21.13   0.000     1.359904    1.448156
+5 most de..  |   1.534535   .0251291    26.15   0.000     1.486065    1.584586
+             |
+     hh_size |   1.001917   .0000461    41.66   0.000     1.001827    1.002008
+         bmi |   1.017772   .0008639    20.75   0.000      1.01608    1.019466
+gp_consult~t |   1.008261   .0003104    26.72   0.000     1.007652    1.008869
+             |
+smoke_nomiss |
+     Former  |   1.067384   .0111551     6.24   0.000     1.045743    1.089473
+    Current  |   .6141922   .0109221   -27.41   0.000     .5931541    .6359765
+             |
+1.htdiag_o~p |   .9808568   .0112939    -1.68   0.093      .958969    1.003244
+    1.asthma |          1  (omitted)
+1.~c_disease |   1.245694   .0171678    15.94   0.000     1.212496    1.279801
+             |
+     dm_type |
+       T1DM  |   1.360893   .0668319     6.27   0.000     1.236011    1.498392
+       T2DM  |   1.315375   .0175675    20.53   0.000      1.28139    1.350261
+ UNKNOWN_DM  |   1.041062    .025706     1.63   0.103      .991879    1.092684
+             |
+    1.cancer |   1.193693    .018691    11.31   0.000     1.157616    1.230895
+1.~r_disease |   1.502035   .0610245    10.01   0.000     1.387067    1.626532
+    1.stroke |   1.594885    .028899    25.76   0.000     1.539238    1.652544
+  1.dementia |    3.54461   .1003776    44.69   0.000     3.353234    3.746909
+1.other_ne~o |   1.924536   .0524026    24.04   0.000     1.824521    2.030033
+             |
+         ckd |
+          2  |   1.136005   .0199506     7.26   0.000     1.097568    1.175789
+          3  |   1.420564   .0317943    15.69   0.000     1.359595    1.484266
+          4  |   1.867174   .0628804    18.54   0.000      1.74791    1.994575
+          5  |   3.710271   .2228765    21.83   0.000     3.298176    4.173856
+             |
+      1.esrf |   2.372452   .1471522    13.93   0.000     2.100881    2.679129
+1.perm_imm~f |   .6946692   .2676307    -0.95   0.344     .3264684    1.478138
+1.temp_imm~f |   1.905796   .6753935     1.82   0.069     .9515238    3.817096
+1.other_im~o |   1.425208   .5478763     0.92   0.357     .6709047    3.027582
+1.ra_sle_p~s |   1.049691   .0193904     2.63   0.009     1.012367    1.088392
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+file E:\analyses\ethnicity-covid-research/output/tempdata/model3_positivetest_e
+> th16.ster saved
+(note: file E:\analyses\ethnicity-covid-research/output/tempdata/model3_positiv
+> etest_eth16.dta not found)
+file E:\analyses\ethnicity-covid-research/output/tempdata/model3_positivetest_e
+> th16.dta saved
+  39,364
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |  9,546,921    1.72e+09           0   1.72e+09   1.72e+09
+  383
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |     79,000    1.42e+07           0   1.42e+07   1.42e+07
+  4,548
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |  1,347,597    2.43e+08           0   2.43e+08   2.43e+08
+  3,560
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |    434,433    7.83e+07           0   7.83e+07   7.83e+07
+  2,644
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |    302,581    5.45e+07           0   5.45e+07   5.45e+07
+  308
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |     70,152    1.27e+07           0   1.27e+07   1.27e+07
+  554
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |     83,012    1.49e+07           0   1.49e+07   1.49e+07
+  1,343
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |    191,895    3.46e+07           0   3.46e+07   3.46e+07
+  137
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |    105,268    1.90e+07           0   1.90e+07   1.90e+07
+  800
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |    171,624    3.10e+07           0   3.10e+07   3.10e+07
+  3,112
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |    510,911    9.21e+07           0   9.21e+07   9.21e+07
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+
+/**** REDACTED TABLE *****/
+
+
+
+         failure _d:  icu
+   analysis time _t:  (stime_icu-origin)
+             origin:  time enter_date
+  enter on or after:  time enter_date
+                 id:  patient_id
+
+Iteration 0:   log likelihood = -24156.826
+Iteration 1:   log likelihood = -24076.115
+Iteration 2:   log likelihood = -24022.462
+Iteration 3:   log likelihood = -24020.308
+Iteration 4:   log likelihood = -24020.292
+Iteration 5:   log likelihood = -24020.292
+Refining estimates:
+Iteration 0:   log likelihood = -24020.292
+
+Cox regression -- Breslow method for ties
+
+No. of subjects =   12,843,394                  Number of obs    =  12,843,394
+No. of failures =        1,476
+Time at risk    =   2317839448
+                                                LR chi2(10)      =      273.07
+Log likelihood  =   -24020.292                  Prob > chi2      =      0.0000
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       eth16 |
+      Irish  |   .2603379   .1842848    -1.90   0.057     .0650129    1.042498
+Other White  |   .7615366   .0801476    -2.59   0.010     .6195929    .9359985
+     Indian  |   2.504402   .2567518     8.95   0.000     2.048513    3.061748
+  Pakistani  |   1.865295   .2588546     4.49   0.000     1.421094    2.448343
+Bangladeshi  |   1.901371   .5310224     2.30   0.021     1.099867    3.286956
+  Caribbean  |    3.34213   .6524731     6.18   0.000     2.279534    4.900051
+    African  |   3.688989   .4602992    10.46   0.000     2.888666    4.711046
+    Chinese  |   1.266714    .353773     0.85   0.397     .7327432    2.189806
+  All mixed  |   1.853105    .338335     3.38   0.001     1.295657    2.650392
+  All Other  |   2.630864   .2455318    10.36   0.000     2.191078    3.158921
+------------------------------------------------------------------------------
+file E:\analyses\ethnicity-covid-research/output/tempdata/crude_icu_eth16.ster 
+> saved
+(note: file E:\analyses\ethnicity-covid-research/output/tempdata/crude_icu_eth1
+> 6.dta not found)
+file E:\analyses\ethnicity-covid-research/output/tempdata/crude_icu_eth16.dta s
+> aved
+
+         failure _d:  icu
+   analysis time _t:  (stime_icu-origin)
+             origin:  time enter_date
+  enter on or after:  time enter_date
+                 id:  patient_id
+
+Iteration 0:   log likelihood = -19481.627
+Iteration 1:   log likelihood = -18732.878
+Iteration 2:   log likelihood = -18695.154
+Iteration 3:   log likelihood = -18691.861
+Iteration 4:   log likelihood = -18691.786
+Iteration 5:   log likelihood = -18691.786
+Refining estimates:
+Iteration 0:   log likelihood = -18691.786
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects =   12,729,506                  Number of obs    =  12,729,506
+No. of failures =        1,473
+Time at risk    =   2297262179
+                                                LR chi2(18)      =     1579.68
+Log likelihood  =   -18691.786                  Prob > chi2      =      0.0000
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       eth16 |
+      Irish  |   .2292631   .1624141    -2.08   0.038      .057191    .9190534
+Other White  |   1.104048   .1202589     0.91   0.363     .8918058    1.366801
+     Indian  |    2.89371   .3250073     9.46   0.000     2.321947    3.606266
+  Pakistani  |   2.459313   .3577302     6.19   0.000     1.849263    3.270613
+Bangladeshi  |   2.769751    .783838     3.60   0.000     1.590564    4.823145
+  Caribbean  |   2.740823   .5486599     5.04   0.000     1.851343    4.057655
+    African  |   4.572285   .6029216    11.53   0.000     3.530938    5.920746
+    Chinese  |   2.346714   .6586098     3.04   0.002     1.353845    4.067725
+  All mixed  |   2.815709    .521932     5.58   0.000     1.957967    4.049208
+  All Other  |   3.360409   .3437168    11.85   0.000     2.749968    4.106356
+             |
+        male |
+       Male  |   2.549923   .1464934    16.29   0.000     2.278377    2.853834
+        age1 |   1.062409   .0169094     3.80   0.000     1.029778    1.096073
+        age2 |   1.165431   .0490135     3.64   0.000     1.073219    1.265566
+        age3 |   .5005249   .0549826    -6.30   0.000     .4035723    .6207691
+             |
+         imd |
+          2  |   1.034657   .0943928     0.37   0.709     .8652472    1.237235
+          3  |    1.22491    .108038     2.30   0.021     1.030451    1.456065
+          4  |   1.396978   .1205623     3.87   0.000     1.179585    1.654437
+5 most de..  |   1.278116   .1178114     2.66   0.008     1.066867    1.531195
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+file E:\analyses\ethnicity-covid-research/output/tempdata/model1_icu_eth16.ster
+>  saved
+(note: file E:\analyses\ethnicity-covid-research/output/tempdata/model1_icu_eth
+> 16.dta not found)
+file E:\analyses\ethnicity-covid-research/output/tempdata/model1_icu_eth16.dta 
+> saved
+
+         failure _d:  icu
+   analysis time _t:  (stime_icu-origin)
+             origin:  time enter_date
+  enter on or after:  time enter_date
+                 id:  patient_id
+
+note: 1.asthma omitted because of collinearity
+Iteration 0:   log likelihood = -16595.473
+Iteration 1:   log likelihood = -16404.899
+Iteration 2:   log likelihood = -15700.587
+Iteration 3:   log likelihood =  -15623.44
+Iteration 4:   log likelihood = -15609.794
+Iteration 5:   log likelihood = -15608.259
+Iteration 6:   log likelihood = -15608.213
+Iteration 7:   log likelihood = -15608.211
+Iteration 8:   log likelihood = -15608.211
+Iteration 9:   log likelihood = -15608.211
+Iteration 10:  log likelihood = -15608.211
+Iteration 11:  log likelihood = -15608.211
+Iteration 12:  log likelihood = -15608.211
+Iteration 13:  log likelihood = -15608.211
+Iteration 14:  log likelihood = -15608.211
+Iteration 15:  log likelihood = -15608.211
+Iteration 16:  log likelihood = -15608.211
+Iteration 17:  log likelihood = -15608.211
+Iteration 18:  log likelihood = -15608.211
+Refining estimates:
+Iteration 0:   log likelihood = -15608.211
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects =    8,830,743                  Number of obs    =   8,830,743
+No. of failures =        1,292
+Time at risk    =   1592287144
+                                                LR chi2(40)      =     1974.53
+Log likelihood  =   -15608.211                  Prob > chi2      =      0.0000
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       eth16 |
+      Irish  |    .278444   .1973219    -1.80   0.071     .0694266    1.116734
+Other White  |   1.247998    .150186     1.84   0.066     .9857781     1.57997
+     Indian  |   2.558624   .3199908     7.51   0.000     2.002406    3.269346
+  Pakistani  |   1.952105   .3111087     4.20   0.000     1.428389    2.667841
+Bangladeshi  |    2.82071   .8371686     3.49   0.000     1.576621    5.046492
+  Caribbean  |   2.549798   .5245465     4.55   0.000     1.703711    3.816064
+    African  |   3.822441   .5642958     9.08   0.000     2.862071    5.105063
+    Chinese  |   4.326968   1.324796     4.78   0.000     2.374487    7.884928
+  All mixed  |   2.660081   .5486755     4.74   0.000     1.775513    3.985346
+  All Other  |   3.433109    .384754    11.01   0.000     2.756082    4.276448
+             |
+        male |
+       Male  |   3.123417   .1991315    17.86   0.000     2.756527    3.539141
+        age1 |    1.02525   .0218158     1.17   0.241     .9833716    1.068913
+        age2 |   1.181417   .0630289     3.12   0.002     1.064122    1.311641
+        age3 |   .5034277   .0685413    -5.04   0.000     .3855197    .6573968
+             |
+         imd |
+          2  |   .9724614   .0949078    -0.29   0.775     .8031543    1.177459
+          3  |   1.105482   .1043776     1.06   0.288     .9187188    1.330211
+          4  |   1.216428   .1126879     2.11   0.034     1.014454    1.458614
+5 most de..  |   1.120295   .1107674     1.15   0.251     .9229356    1.359859
+             |
+         bmi |   1.088318   .0051801    17.78   0.000     1.078213    1.098519
+gp_consult~t |   1.010049   .0017177     5.88   0.000     1.006688    1.013421
+             |
+smoke_nomiss |
+     Former  |   1.101459   .0659017     1.62   0.106     .9795802    1.238503
+    Current  |   .2495605   .0375344    -9.23   0.000     .1858461    .3351184
+             |
+1.htdiag_o~p |   1.079272   .0683699     1.20   0.228     .9532547    1.221949
+    1.asthma |          1  (omitted)
+1.~c_disease |   .9367152   .0783175    -0.78   0.434      .795133    1.103508
+             |
+     dm_type |
+       T1DM  |   2.167897   .5246128     3.20   0.001     1.349134    3.483552
+       T2DM  |   1.638835   .1134806     7.13   0.000      1.43085    1.877052
+ UNKNOWN_DM  |   1.383694   .1655385     2.71   0.007     1.094476    1.749338
+             |
+    1.cancer |   1.085046   .1106797     0.80   0.424     .8884268    1.325179
+1.~r_disease |   .4024332   .1528609    -2.40   0.017      .191149    .8472579
+    1.stroke |   1.125811    .158356     0.84   0.400      .854547    1.483184
+  1.dementia |   .2563158   .2570744    -1.36   0.175     .0358967    1.830191
+1.other_ne~o |   .9992437   .2456795    -0.00   0.998     .6171495    1.617903
+             |
+         ckd |
+          2  |   1.463472   .1522061     3.66   0.000     1.193594    1.794371
+          3  |   1.500341   .2570501     2.37   0.018     1.072397    2.099058
+          4  |   .9646954   .3211613    -0.11   0.914     .5023572    1.852541
+          5  |   1.215472   .4506897     0.53   0.599     .5876579    2.514001
+             |
+      1.esrf |   6.136205   1.929791     5.77   0.000     3.312862    11.36571
+1.perm_imm~f |   2.35e-08          .        .       .            .           .
+1.temp_imm~f |   7.31e-08   7.59e-08   -15.82   0.000     9.55e-09    5.60e-07
+1.other_im~o |   3.23e+07    9085921    61.46   0.000     1.86e+07    5.61e+07
+1.ra_sle_p~s |    1.29346   .1297233     2.57   0.010     1.062636    1.574423
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+file E:\analyses\ethnicity-covid-research/output/tempdata/model2_icu_eth16.ster
+>  saved
+(note: file E:\analyses\ethnicity-covid-research/output/tempdata/model2_icu_eth
+> 16.dta not found)
+file E:\analyses\ethnicity-covid-research/output/tempdata/model2_icu_eth16.dta 
+> saved
+
+         failure _d:  icu
+   analysis time _t:  (stime_icu-origin)
+             origin:  time enter_date
+  enter on or after:  time enter_date
+                 id:  patient_id
+
+note: 1.asthma omitted because of collinearity
+Iteration 0:   log likelihood = -16595.473
+Iteration 1:   log likelihood = -16402.811
+Iteration 2:   log likelihood = -15698.157
+Iteration 3:   log likelihood = -15621.033
+Iteration 4:   log likelihood = -15607.411
+Iteration 5:   log likelihood =  -15605.88
+Iteration 6:   log likelihood = -15605.834
+Iteration 7:   log likelihood = -15605.832
+Iteration 8:   log likelihood = -15605.832
+Iteration 9:   log likelihood = -15605.832
+Iteration 10:  log likelihood = -15605.832
+Iteration 11:  log likelihood = -15605.832
+Iteration 12:  log likelihood = -15605.832
+Iteration 13:  log likelihood = -15605.832
+Iteration 14:  log likelihood = -15605.832
+Iteration 15:  log likelihood = -15605.832
+Iteration 16:  log likelihood = -15605.832
+Iteration 17:  log likelihood = -15605.832
+Iteration 18:  log likelihood = -15605.832
+Refining estimates:
+Iteration 0:   log likelihood = -15605.832
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects =    8,830,743                  Number of obs    =   8,830,743
+No. of failures =        1,292
+Time at risk    =   1592287144
+                                                LR chi2(41)      =     1979.28
+Log likelihood  =   -15605.832                  Prob > chi2      =      0.0000
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       eth16 |
+      Irish  |   .2782959   .1972168    -1.80   0.071     .0693898    1.116139
+Other White  |   1.241372   .1496731     1.79   0.073     .9801034    1.572287
+     Indian  |   2.552102   .3192122     7.49   0.000     1.997245    3.261105
+  Pakistani  |   1.946075   .3101607     4.18   0.000     1.423958    2.659635
+Bangladeshi  |    2.81234   .8346994     3.48   0.000     1.571926     5.03157
+  Caribbean  |   2.547957    .524167     4.55   0.000     1.702481    3.813306
+    African  |   3.812243   .5627794     9.07   0.000     2.854452    5.091416
+    Chinese  |    4.29433   1.314972     4.76   0.000     2.356394    7.826055
+  All mixed  |   2.656068   .5478498     4.74   0.000     1.772831    3.979339
+  All Other  |   3.426688   .3840298    10.99   0.000     2.750934    4.268438
+             |
+        male |
+       Male  |   3.119744   .1989032    17.85   0.000     2.753275    3.534992
+        age1 |   1.026654   .0218247     1.24   0.216     .9847569    1.070333
+        age2 |   1.178544   .0628003     3.08   0.002     1.061667    1.308288
+        age3 |   .5059988    .068808    -5.01   0.000     .3876139    .6605408
+             |
+         imd |
+          2  |   .9720715   .0948684    -0.29   0.772     .8028345    1.176984
+          3  |    1.10518   .1043554     1.06   0.290     .9184576    1.329862
+          4  |    1.21742   .1127822     2.12   0.034     1.015278    1.459809
+5 most de..  |   1.121044   .1108452     1.16   0.248     .9235465    1.360777
+             |
+     hh_size |   1.001757   .0004683     3.75   0.000     1.000839    1.002675
+         bmi |   1.088345   .0051795    17.79   0.000      1.07824    1.098544
+gp_consult~t |   1.010027   .0017116     5.89   0.000     1.006678    1.013387
+             |
+smoke_nomiss |
+     Former  |   1.101974   .0659391     1.62   0.105      .980026    1.239096
+    Current  |   .2493209   .0375048    -9.23   0.000     .1856583    .3348137
+             |
+1.htdiag_o~p |    1.07956   .0683851     1.21   0.227     .9535143    1.222268
+    1.asthma |          1  (omitted)
+1.~c_disease |    .936765   .0783275    -0.78   0.435     .7951655     1.10358
+             |
+     dm_type |
+       T1DM  |   2.169336   .5249602     3.20   0.001      1.35003    3.485861
+       T2DM  |   1.638831   .1134734     7.13   0.000     1.430858    1.877032
+ UNKNOWN_DM  |   1.383851   .1655542     2.72   0.007     1.094605    1.749528
+             |
+    1.cancer |   1.085437   .1107182     0.80   0.422     .8887489    1.325653
+1.~r_disease |   .4024089   .1528512    -2.40   0.017     .1911379    .8472049
+    1.stroke |   1.125038   .1582506     0.84   0.402     .8539555    1.482175
+  1.dementia |   .2540797   .2548336    -1.37   0.172      .035583     1.81425
+1.other_ne~o |    .998457   .2454886    -0.01   0.995     .6166605    1.616637
+             |
+         ckd |
+          2  |   1.463375   .1521944     3.66   0.000     1.193517    1.794248
+          3  |   1.499816   .2569594     2.37   0.018     1.072022    2.098321
+          4  |   .9643475   .3210302    -0.11   0.913     .5021917    1.851815
+          5  |   1.215566   .4506751     0.53   0.599     .5877502    2.513994
+             |
+      1.esrf |   6.135962   1.929401     5.77   0.000     3.313062    11.36412
+1.perm_imm~f |   2.36e-08          .        .       .            .           .
+1.temp_imm~f |   7.35e-08   7.63e-08   -15.81   0.000     9.60e-09    5.63e-07
+1.other_im~o |   3.22e+07    9047564    61.45   0.000     1.85e+07    5.58e+07
+1.ra_sle_p~s |   1.293191   .1297031     2.56   0.010     1.062405    1.574112
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+file E:\analyses\ethnicity-covid-research/output/tempdata/model3_icu_eth16.ster
+>  saved
+(note: file E:\analyses\ethnicity-covid-research/output/tempdata/model3_icu_eth
+> 16.dta not found)
+file E:\analyses\ethnicity-covid-research/output/tempdata/model3_icu_eth16.dta 
+> saved
+  929
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |  9,546,921    1.72e+09           0   1.72e+09   1.72e+09
+  2
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |     79,000    1.42e+07           0   1.42e+07   1.42e+07
+  100
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |  1,347,597    2.44e+08           0   2.44e+08   2.44e+08
+  106
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |    434,433    7.85e+07           0   7.85e+07   7.85e+07
+  55
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |    302,581    5.47e+07           0   5.47e+07   5.47e+07
+  13
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |     70,152    1.27e+07           0   1.27e+07   1.27e+07
+  27
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |     83,012    1.50e+07           0   1.50e+07   1.50e+07
+  69
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |    191,895    3.47e+07           0   3.47e+07   3.47e+07
+  13
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |    105,268    1.90e+07           0   1.90e+07   1.90e+07
+  31
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |    171,624    3.10e+07           0   3.10e+07   3.10e+07
+  131
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |    510,911    9.24e+07           0   9.24e+07   9.24e+07
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+                      |   outcome cpnsdeath
+     Eth 16 collapsed |         0          1 |     Total
+----------------------+----------------------+----------
+British or Mixed Brit | 9,541,226      5,695 | 9,546,921 
+                      |     99.94       0.06 |    100.00 
+----------------------+----------------------+----------
+                Irish |    78,916         84 |    79,000 
+                      |     99.89       0.11 |    100.00 
+----------------------+----------------------+----------
+          Other White | 1,347,230        367 | 1,347,597 
+                      |     99.97       0.03 |    100.00 
+----------------------+----------------------+----------
+               Indian |   434,163        270 |   434,433 
+                      |     99.94       0.06 |    100.00 
+----------------------+----------------------+----------
+            Pakistani |   302,413        168 |   302,581 
+                      |     99.94       0.06 |    100.00 
+----------------------+----------------------+----------
+          Bangladeshi |    70,117         35 |    70,152 
+                      |     99.95       0.05 |    100.00 
+----------------------+----------------------+----------
+            Caribbean |    82,898        114 |    83,012 
+                      |     99.86       0.14 |    100.00 
+----------------------+----------------------+----------
+              African |   191,810         85 |   191,895 
+                      |     99.96       0.04 |    100.00 
+----------------------+----------------------+----------
+              Chinese |   105,250         18 |   105,268 
+                      |     99.98       0.02 |    100.00 
+----------------------+----------------------+----------
+            All mixed |   171,570         54 |   171,624 
+                      |     99.97       0.03 |    100.00 
+----------------------+----------------------+----------
+            All Other |   510,675        236 |   510,911 
+                      |     99.95       0.05 |    100.00 
+----------------------+----------------------+----------
+                    . | 4,583,879      2,450 | 4,586,329 
+                      |     99.95       0.05 |    100.00 
+----------------------+----------------------+----------
+                Total |17,420,147      9,576 |17,429,723 
+                      |     99.95       0.05 |    100.00 
+
+         failure _d:  cpnsdeath
+   analysis time _t:  (stime_cpnsdeath-origin)
+             origin:  time enter_date
+  enter on or after:  time enter_date
+                 id:  patient_id
+
+Iteration 0:   log likelihood =  -116621.2
+Iteration 1:   log likelihood = -116431.06
+Iteration 2:   log likelihood = -116398.82
+Iteration 3:   log likelihood = -116397.86
+Iteration 4:   log likelihood = -116397.86
+Refining estimates:
+Iteration 0:   log likelihood = -116397.86
+
+Cox regression -- Breslow method for ties
+
+No. of subjects =   12,843,394                  Number of obs    =  12,843,394
+No. of failures =        7,126
+Time at risk    =   2317929120
+                                                LR chi2(10)      =      446.69
+Log likelihood  =   -116397.86                  Prob > chi2      =      0.0000
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       eth16 |
+      Irish  |   1.784515   .1961372     5.27   0.000      1.43868    2.213484
+Other White  |   .4556268   .0245379   -14.60   0.000     .4099846    .5063501
+     Indian  |   1.040011   .0647761     0.63   0.529     .9204958    1.175044
+  Pakistani  |   .9288476   .0727115    -0.94   0.346     .7967302    1.082873
+Bangladeshi  |   .8345095   .1414906    -1.07   0.286     .5985639    1.163462
+  Caribbean  |   2.302318   .2177793     8.82   0.000     1.912709    2.771288
+    African  |   .7406754   .0809348    -2.75   0.006     .5978823     .917572
+    Chinese  |   .2858623   .0674848    -5.30   0.000     .1799741    .4540501
+  All mixed  |   .5261747    .071942    -4.70   0.000     .4024836    .6878784
+  All Other  |   .7725895   .0513227    -3.88   0.000      .678272    .8800224
+------------------------------------------------------------------------------
+file E:\analyses\ethnicity-covid-research/output/tempdata/crude_cpnsdeath_eth16
+> .ster saved
+(note: file E:\analyses\ethnicity-covid-research/output/tempdata/crude_cpnsdeat
+> h_eth16.dta not found)
+file E:\analyses\ethnicity-covid-research/output/tempdata/crude_cpnsdeath_eth16
+> .dta saved
+
+         failure _d:  cpnsdeath
+   analysis time _t:  (stime_cpnsdeath-origin)
+             origin:  time enter_date
+  enter on or after:  time enter_date
+                 id:  patient_id
+
+Iteration 0:   log likelihood = -93531.285
+Iteration 1:   log likelihood = -85984.511
+Iteration 2:   log likelihood = -83499.526
+Iteration 3:   log likelihood = -83448.845
+Iteration 4:   log likelihood = -83444.314
+Iteration 5:   log likelihood = -83444.037
+Iteration 6:   log likelihood = -83444.035
+Iteration 7:   log likelihood = -83444.035
+Refining estimates:
+Iteration 0:   log likelihood = -83444.035
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects =   12,729,506                  Number of obs    =  12,729,506
+No. of failures =        7,090
+Time at risk    =   2297351684
+                                                LR chi2(18)      =    20174.50
+Log likelihood  =   -83444.035                  Prob > chi2      =      0.0000
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       eth16 |
+      Irish  |   1.144081   .1268376     1.21   0.225     .9206382    1.421754
+Other White  |   .9000279   .0497137    -1.91   0.057     .8076798    1.002935
+     Indian  |   1.461608   .0971406     5.71   0.000     1.283095    1.664957
+  Pakistani  |   1.645514   .1331907     6.15   0.000     1.404119     1.92841
+Bangladeshi  |   1.931217   .3300192     3.85   0.000     1.381568    2.699542
+  Caribbean  |   1.435824    .139529     3.72   0.000     1.186818    1.737075
+    African  |    2.10492   .2360073     6.64   0.000     1.689653    2.622249
+    Chinese  |   .9587324   .2267398    -0.18   0.859     .6030989    1.524075
+  All mixed  |   1.444438   .1991348     2.67   0.008     1.102426    1.892554
+  All Other  |   1.731659   .1214656     7.83   0.000     1.509231    1.986869
+             |
+        male |
+       Male  |   2.039147   .0499378    29.10   0.000     1.943583    2.139411
+        age1 |   1.125934   .0246083     5.43   0.000     1.078721    1.175214
+        age2 |   1.015085   .0491288     0.31   0.757     .9232207    1.116091
+        age3 |   .9363933    .105844    -0.58   0.561     .7503154    1.168618
+             |
+         imd |
+          2  |   1.269687   .0527836     5.74   0.000     1.170336    1.377473
+          3  |   1.499326   .0616231     9.85   0.000     1.383284    1.625103
+          4  |   1.874474   .0757625    15.55   0.000     1.731711    2.029006
+5 most de..  |   2.253582   .0937094    19.54   0.000       2.0772    2.444941
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+file E:\analyses\ethnicity-covid-research/output/tempdata/model1_cpnsdeath_eth1
+> 6.ster saved
+(note: file E:\analyses\ethnicity-covid-research/output/tempdata/model1_cpnsdea
+> th_eth16.dta not found)
+file E:\analyses\ethnicity-covid-research/output/tempdata/model1_cpnsdeath_eth1
+> 6.dta saved
+
+         failure _d:  cpnsdeath
+   analysis time _t:  (stime_cpnsdeath-origin)
+             origin:  time enter_date
+  enter on or after:  time enter_date
+                 id:  patient_id
+
+note: 1.asthma omitted because of collinearity
+Iteration 0:   log likelihood = -83198.654
+Iteration 1:   log likelihood = -77681.385
+Iteration 2:   log likelihood = -74026.731
+Iteration 3:   log likelihood = -73683.516
+Iteration 4:   log likelihood = -73665.856
+Iteration 5:   log likelihood = -73664.327
+Iteration 6:   log likelihood = -73664.282
+Iteration 7:   log likelihood = -73664.282
+Refining estimates:
+Iteration 0:   log likelihood = -73664.282
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects =    8,830,743                  Number of obs    =   8,830,743
+No. of failures =        6,486
+Time at risk    =   1592363006
+                                                LR chi2(41)      =    19068.74
+Log likelihood  =   -73664.282                  Prob > chi2      =      0.0000
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       eth16 |
+      Irish  |   1.196567   .1345162     1.60   0.110     .9599445    1.491515
+Other White  |   .9754061   .0562536    -0.43   0.666     .8711541    1.092134
+     Indian  |   1.482265   .1037505     5.62   0.000     1.292249    1.700221
+  Pakistani  |   1.392317   .1185568     3.89   0.000     1.178305      1.6452
+Bangladeshi  |   1.616618   .2775362     2.80   0.005     1.154717    2.263285
+  Caribbean  |   1.221428   .1229821     1.99   0.047     1.002681    1.487897
+    African  |   1.968848   .2394354     5.57   0.000     1.551301    2.498783
+    Chinese  |   1.320535   .3317229     1.11   0.268     .8070963    2.160602
+  All mixed  |   1.301841   .1966301     1.75   0.081     .9682608    1.750344
+  All Other  |    1.78509   .1302552     7.94   0.000      1.54721    2.059544
+             |
+        male |
+       Male  |   1.771537   .0469666    21.57   0.000     1.681835    1.866024
+        age1 |   1.094051   .0294605     3.34   0.001     1.037807    1.153344
+        age2 |   1.019128   .0596807     0.32   0.746     .9086192    1.143077
+        age3 |   .9374977   .1272201    -0.48   0.634      .718556     1.22315
+             |
+         imd |
+          2  |   1.197588   .0522316     4.13   0.000     1.099469    1.304462
+          3  |   1.358549   .0586157     7.10   0.000     1.248388    1.478431
+          4  |   1.628295   .0691131    11.49   0.000     1.498317    1.769548
+5 most de..  |   1.845629   .0809093    13.98   0.000     1.693672     2.01122
+             |
+         bmi |   1.024527   .0025084     9.90   0.000     1.019622    1.029455
+gp_consult~t |   1.011652   .0005748    20.39   0.000     1.010526    1.012779
+             |
+smoke_nomiss |
+     Former  |   1.337409   .0389291     9.99   0.000     1.263245    1.415927
+    Current  |   1.188736   .0618457     3.32   0.001     1.073496    1.316347
+             |
+1.htdiag_o~p |    .945327    .029597    -1.80   0.073     .8890619    1.005153
+    1.asthma |          1  (omitted)
+1.~c_disease |   1.394945    .038297    12.12   0.000     1.321868    1.472062
+             |
+     dm_type |
+       T1DM  |   2.401446   .2609484     8.06   0.000      1.94079     2.97144
+       T2DM  |   1.593067   .0457145    16.23   0.000     1.505942    1.685234
+ UNKNOWN_DM  |   1.018808   .0587808     0.32   0.747      .909875    1.140783
+             |
+    1.cancer |    1.38636   .0421156    10.75   0.000     1.306224    1.471412
+1.~r_disease |   2.072393   .1685825     8.96   0.000     1.766972    2.430606
+    1.stroke |   1.490967   .0522107    11.41   0.000     1.392068    1.596891
+  1.dementia |   2.372847   .1366586    15.00   0.000     2.119565    2.656395
+1.other_ne~o |   2.528821   .1332457    17.61   0.000     2.280697     2.80394
+             |
+         ckd |
+          2  |   1.380906   .0471567     9.45   0.000     1.291506    1.476495
+          3  |   1.840675   .0733244    15.32   0.000     1.702429    1.990148
+          4  |   2.666429   .1448709    18.05   0.000     2.397083     2.96604
+          5  |   3.996882     .44296    12.50   0.000     3.216517    4.966574
+             |
+      1.esrf |   2.494589   .2907928     7.84   0.000     1.985066    3.134896
+1.perm_imm~f |   .8657287   .6608624    -0.19   0.850     .1939139    3.865047
+1.temp_imm~f |    2.27138   1.610296     1.16   0.247     .5660178    9.114851
+1.other_im~o |   1.645626   1.252574     0.65   0.513     .3701996    7.315203
+1.ra_sle_p~s |   1.197803   .0510805     4.23   0.000     1.101756    1.302222
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+file E:\analyses\ethnicity-covid-research/output/tempdata/model2_cpnsdeath_eth1
+> 6.ster saved
+(note: file E:\analyses\ethnicity-covid-research/output/tempdata/model2_cpnsdea
+> th_eth16.dta not found)
+file E:\analyses\ethnicity-covid-research/output/tempdata/model2_cpnsdeath_eth1
+> 6.dta saved
+
+         failure _d:  cpnsdeath
+   analysis time _t:  (stime_cpnsdeath-origin)
+             origin:  time enter_date
+  enter on or after:  time enter_date
+                 id:  patient_id
+
+note: 1.asthma omitted because of collinearity
+Iteration 0:   log likelihood = -83198.654
+Iteration 1:   log likelihood = -77845.743
+Iteration 2:   log likelihood = -73980.284
+Iteration 3:   log likelihood = -73624.132
+Iteration 4:   log likelihood = -73606.097
+Iteration 5:   log likelihood = -73604.309
+Iteration 6:   log likelihood = -73604.248
+Iteration 7:   log likelihood = -73604.248
+Refining estimates:
+Iteration 0:   log likelihood = -73604.248
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects =    8,830,743                  Number of obs    =   8,830,743
+No. of failures =        6,486
+Time at risk    =   1592363006
+                                                LR chi2(42)      =    19188.81
+Log likelihood  =   -73604.248                  Prob > chi2      =      0.0000
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       eth16 |
+      Irish  |   1.200711   .1349661     1.63   0.104     .9632948    1.496643
+Other White  |   .9605593   .0558393    -0.69   0.489     .8571209    1.076481
+     Indian  |   1.489204   .1042225     5.69   0.000     1.298322    1.708149
+  Pakistani  |   1.392666   .1185946     3.89   0.000     1.178587    1.645631
+Bangladeshi  |   1.620134   .2781402     2.81   0.005     1.157228    2.268208
+  Caribbean  |   1.228161   .1236374     2.04   0.041     1.008244    1.496045
+    African  |   1.984062   .2412465     5.63   0.000     1.563348    2.517994
+    Chinese  |   1.319086   .3313486     1.10   0.270     .8062224    2.158197
+  All mixed  |   1.309907   .1978375     1.79   0.074     .9742765    1.761161
+  All Other  |   1.795985   .1309871     8.03   0.000      1.55676    2.071971
+             |
+        male |
+       Male  |   1.768318   .0468994    21.49   0.000     1.678745     1.86267
+        age1 |   1.097695   .0296343     3.45   0.001     1.041123    1.157341
+        age2 |   1.017663   .0596634     0.30   0.765     .9071936    1.141585
+        age3 |   .9351952   .1270024    -0.49   0.622      .716649    1.220388
+             |
+         imd |
+          2  |   1.199408   .0523142     4.17   0.000     1.101135    1.306453
+          3  |   1.352521   .0583895     6.99   0.000     1.242787    1.471943
+          4  |   1.629812   .0691829    11.51   0.000     1.499703    1.771208
+5 most de..  |   1.844792   .0809004    13.96   0.000     1.692854    2.010368
+             |
+     hh_size |   1.002756   .0001189    23.21   0.000     1.002523     1.00299
+         bmi |   1.024578    .002504     9.94   0.000     1.019682    1.029498
+gp_consult~t |   1.011315   .0005591    20.35   0.000      1.01022    1.012412
+             |
+smoke_nomiss |
+     Former  |   1.337617   .0389411     9.99   0.000     1.263431     1.41616
+    Current  |   1.184107   .0616811     3.24   0.001     1.069181    1.311387
+             |
+1.htdiag_o~p |   .9477563   .0296726    -1.71   0.087     .8913476    1.007735
+    1.asthma |          1  (omitted)
+1.~c_disease |   1.396583   .0383497    12.16   0.000     1.323405    1.473806
+             |
+     dm_type |
+       T1DM  |   2.405073    .261347     8.08   0.000     1.943715    2.975939
+       T2DM  |   1.596913   .0458092    16.32   0.000     1.509606     1.68927
+ UNKNOWN_DM  |   1.023474   .0590314     0.40   0.687     .9140747    1.145967
+             |
+    1.cancer |   1.388921   .0421844    10.82   0.000     1.308654    1.474112
+1.~r_disease |    2.07585   .1688579     8.98   0.000     1.769929    2.434647
+    1.stroke |   1.488402   .0521217    11.36   0.000     1.389672    1.594146
+  1.dementia |   2.330694   .1342506    14.69   0.000     2.081877    2.609248
+1.other_ne~o |   2.522955   .1329371    17.56   0.000     2.275406    2.797437
+             |
+         ckd |
+          2  |   1.382767    .047221     9.49   0.000     1.293244    1.478486
+          3  |    1.84312   .0734203    15.35   0.000     1.704693    1.992788
+          4  |    2.67156   .1451184    18.09   0.000     2.401751     2.97168
+          5  |   4.010436   .4444124    12.53   0.000     3.227503    4.983295
+             |
+      1.esrf |   2.494435   .2908181     7.84   0.000     1.984876    3.134808
+1.perm_imm~f |   .8676209    .662299    -0.19   0.852     .1943411    3.873426
+1.temp_imm~f |   2.282316   1.618079     1.16   0.244     .5687284     9.15897
+1.other_im~o |   1.645491    1.25249     0.65   0.513     .3701611    7.314763
+1.ra_sle_p~s |   1.197339   .0510958     4.22   0.000     1.101267    1.301793
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+file E:\analyses\ethnicity-covid-research/output/tempdata/model3_cpnsdeath_eth1
+> 6.ster saved
+(note: file E:\analyses\ethnicity-covid-research/output/tempdata/model3_cpnsdea
+> th_eth16.dta not found)
+file E:\analyses\ethnicity-covid-research/output/tempdata/model3_cpnsdeath_eth1
+> 6.dta saved
+  5,695
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |  9,546,921    1.72e+09           0   1.72e+09   1.72e+09
+  84
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |     79,000    1.42e+07           0   1.42e+07   1.42e+07
+  367
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |  1,347,597    2.44e+08           0   2.44e+08   2.44e+08
+  270
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |    434,433    7.85e+07           0   7.85e+07   7.85e+07
+  168
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |    302,581    5.47e+07           0   5.47e+07   5.47e+07
+  35
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |     70,152    1.27e+07           0   1.27e+07   1.27e+07
+  114
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |     83,012    1.50e+07           0   1.50e+07   1.50e+07
+  85
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |    191,895    3.47e+07           0   3.47e+07   3.47e+07
+  18
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |    105,268    1.90e+07           0   1.90e+07   1.90e+07
+  54
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |    171,624    3.10e+07           0   3.10e+07   3.10e+07
+  236
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |    510,911    9.24e+07           0   9.24e+07   9.24e+07
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+                      |   outcome onsdeath
+     Eth 16 collapsed |         0          1 |     Total
+----------------------+----------------------+----------
+British or Mixed Brit | 9,491,562     55,359 | 9,546,921 
+                      |     99.42       0.58 |    100.00 
+----------------------+----------------------+----------
+                Irish |    78,393        607 |    79,000 
+                      |     99.23       0.77 |    100.00 
+----------------------+----------------------+----------
+          Other White | 1,344,572      3,025 | 1,347,597 
+                      |     99.78       0.22 |    100.00 
+----------------------+----------------------+----------
+               Indian |   433,322      1,111 |   434,433 
+                      |     99.74       0.26 |    100.00 
+----------------------+----------------------+----------
+            Pakistani |   301,925        656 |   302,581 
+                      |     99.78       0.22 |    100.00 
+----------------------+----------------------+----------
+          Bangladeshi |    70,025        127 |    70,152 
+                      |     99.82       0.18 |    100.00 
+----------------------+----------------------+----------
+            Caribbean |    82,530        482 |    83,012 
+                      |     99.42       0.58 |    100.00 
+----------------------+----------------------+----------
+              African |   191,650        245 |   191,895 
+                      |     99.87       0.13 |    100.00 
+----------------------+----------------------+----------
+              Chinese |   105,184         84 |   105,268 
+                      |     99.92       0.08 |    100.00 
+----------------------+----------------------+----------
+            All mixed |   171,384        240 |   171,624 
+                      |     99.86       0.14 |    100.00 
+----------------------+----------------------+----------
+            All Other |   510,071        840 |   510,911 
+                      |     99.84       0.16 |    100.00 
+----------------------+----------------------+----------
+                    . | 4,561,199     25,130 | 4,586,329 
+                      |     99.45       0.55 |    100.00 
+----------------------+----------------------+----------
+                Total |17,341,817     87,906 |17,429,723 
+                      |     99.50       0.50 |    100.00 
+
+         failure _d:  onsdeath
+   analysis time _t:  (stime_onsdeath-origin)
+             origin:  time enter_date
+  enter on or after:  time enter_date
+                 id:  patient_id
+
+Iteration 0:   log likelihood = -1027386.4
+Iteration 1:   log likelihood = -1023301.6
+Iteration 2:   log likelihood = -1022991.7
+Iteration 3:   log likelihood = -1022981.6
+Iteration 4:   log likelihood = -1022981.5
+Iteration 5:   log likelihood = -1022981.5
+Refining estimates:
+Iteration 0:   log likelihood = -1022981.5
+
+Cox regression -- Breslow method for ties
+
+No. of subjects =   12,843,394                  Number of obs    =  12,843,394
+No. of failures =       62,776
+Time at risk    =   2317942353
+                                                LR chi2(10)      =     8809.78
+Log likelihood  =   -1022981.5                  Prob > chi2      =      0.0000
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       eth16 |
+      Irish  |   1.326349   .0541292     6.92   0.000      1.22439    1.436799
+Other White  |   .3864307   .0072154   -50.92   0.000     .3725444    .4008346
+     Indian  |   .4403225   .0133422   -27.07   0.000     .4149336    .4672649
+  Pakistani  |    .373194   .0146569   -25.10   0.000     .3455449    .4030555
+Bangladeshi  |   .3115816   .0276801   -13.13   0.000     .2617902    .3708432
+  Caribbean  |   1.001339   .0458079     0.03   0.977     .9154646    1.095269
+    African  |   .2196834   .0140661   -23.67   0.000     .1937741     .249057
+    Chinese  |   .1372772   .0149895   -18.19   0.000     .1108292    .1700367
+  All mixed  |   .2406375   .0155667   -22.02   0.000     .2119823    .2731663
+  All Other  |   .2829574   .0098367   -36.32   0.000     .2643199     .302909
+------------------------------------------------------------------------------
+file E:\analyses\ethnicity-covid-research/output/tempdata/crude_onsdeath_eth16.
+> ster saved
+(note: file E:\analyses\ethnicity-covid-research/output/tempdata/crude_onsdeath
+> _eth16.dta not found)
+file E:\analyses\ethnicity-covid-research/output/tempdata/crude_onsdeath_eth16.
+> dta saved
+
+         failure _d:  onsdeath
+   analysis time _t:  (stime_onsdeath-origin)
+             origin:  time enter_date
+  enter on or after:  time enter_date
+                 id:  patient_id
+
+Iteration 0:   log likelihood = -822193.14
+Iteration 1:   log likelihood = -752916.97
+Iteration 2:   log likelihood = -731195.42
+Iteration 3:   log likelihood = -730545.38
+Iteration 4:   log likelihood = -730533.63
+Iteration 5:   log likelihood = -730533.39
+Iteration 6:   log likelihood = -730533.39
+Refining estimates:
+Iteration 0:   log likelihood = -730533.39
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects =   12,729,506                  Number of obs    =  12,729,506
+No. of failures =       62,445
+Time at risk    =   2297364917
+                                                LR chi2(18)      =   183319.50
+Log likelihood  =   -730533.39                  Prob > chi2      =      0.0000
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       eth16 |
+      Irish  |   1.061311   .0436447     1.45   0.148     .9791253    1.150395
+Other White  |   .8648163   .0165523    -7.59   0.000     .8329753    .8978744
+     Indian  |   .8395571   .0265212    -5.54   0.000      .789153    .8931806
+  Pakistani  |   .8388177   .0336206    -4.39   0.000     .7754443    .9073703
+Bangladeshi  |   .9548488   .0851569    -0.52   0.604     .8017175    1.137229
+  Caribbean  |   .8623567   .0402463    -3.17   0.002     .7869755    .9449583
+    African  |   .8682371   .0565478    -2.17   0.030     .7641877    .9864536
+    Chinese  |   .5490831   .0603793    -5.45   0.000     .4426258    .6811448
+  All mixed  |   .8330637   .0542608    -2.80   0.005     .7332229    .9464995
+  All Other  |   .8385979    .029997    -4.92   0.000     .7818184     .899501
+             |
+        male |
+       Male  |   1.396222   .0112913    41.27   0.000     1.374266    1.418529
+        age1 |   1.179107   .0092444    21.01   0.000     1.161126    1.197365
+        age2 |   .8461157   .0145793    -9.70   0.000      .818018    .8751786
+        age3 |    1.55853   .0624164    11.08   0.000     1.440874    1.685793
+             |
+         imd |
+          2  |   1.161353   .0151946    11.43   0.000     1.131951    1.191519
+          3  |   1.306112   .0171063    20.39   0.000     1.273011    1.340074
+          4  |   1.546453    .020358    33.12   0.000     1.507063    1.586873
+5 most de..  |   1.891749   .0257158    46.90   0.000     1.842013    1.942829
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+file E:\analyses\ethnicity-covid-research/output/tempdata/model1_onsdeath_eth16
+> .ster saved
+file E:\analyses\ethnicity-covid-research/output/tempdata/model1_onsdeath_eth16
+> .dta saved
+
+         failure _d:  onsdeath
+   analysis time _t:  (stime_onsdeath-origin)
+             origin:  time enter_date
+  enter on or after:  time enter_date
+                 id:  patient_id
+
+note: 1.asthma omitted because of collinearity
+Iteration 0:   log likelihood = -718755.78
+Iteration 1:   log likelihood =  -664493.8
+Iteration 2:   log likelihood = -634008.69
+Iteration 3:   log likelihood =  -631934.3
+Iteration 4:   log likelihood = -631806.09
+Iteration 5:   log likelihood = -631788.97
+Iteration 6:   log likelihood =  -631788.3
+Iteration 7:   log likelihood =  -631788.3
+Refining estimates:
+Iteration 0:   log likelihood =  -631788.3
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects =    8,830,743                  Number of obs    =   8,830,743
+No. of failures =       56,084
+Time at risk    =   1592375010
+                                                LR chi2(41)      =   173934.95
+Log likelihood  =    -631788.3                  Prob > chi2      =      0.0000
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       eth16 |
+      Irish  |   1.032661   .0445312     0.75   0.456     .9489678    1.123735
+Other White  |   .9173867   .0186576    -4.24   0.000     .8815376    .9546935
+     Indian  |   .9058381   .0300839    -2.98   0.003     .8487527    .9667629
+  Pakistani  |   .8210757   .0344488    -4.70   0.000     .7562588    .8914478
+Bangladeshi  |   .8381585   .0767273    -1.93   0.054     .7004947    1.002876
+  Caribbean  |   .8064538   .0392156    -4.42   0.000     .7331417     .887097
+    African  |     .97197   .0681545    -0.41   0.685     .8471623    1.115165
+    Chinese  |   .6514431    .076436    -3.65   0.000     .5176094     .819881
+  All mixed  |   .8776355   .0607274    -1.89   0.059       .76633    1.005108
+  All Other  |   .8999988   .0338644    -2.80   0.005     .8360141    .9688804
+             |
+        male |
+       Male  |   1.199346   .0105464    20.67   0.000     1.178852    1.220195
+        age1 |   1.195729   .0123774    17.27   0.000     1.171714    1.220236
+        age2 |   .7917312   .0175319   -10.55   0.000     .7581043    .8268497
+        age3 |   1.790197   .0910484    11.45   0.000     1.620351    1.977845
+             |
+         imd |
+          2  |   1.130744   .0156599     8.87   0.000     1.100464    1.161857
+          3  |   1.245932   .0172976    15.84   0.000     1.212486      1.2803
+          4  |   1.433566   .0200299    25.78   0.000     1.394841    1.473366
+5 most de..  |   1.661387   .0240925    35.01   0.000     1.614832    1.709285
+             |
+         bmi |   .9599766   .0008826   -44.43   0.000     .9582482    .9617081
+gp_consult~t |   1.012434   .0001937    64.59   0.000     1.012054    1.012813
+             |
+smoke_nomiss |
+     Former  |   1.212031   .0118604    19.65   0.000     1.189006    1.235501
+    Current  |   1.853704   .0282794    40.46   0.000     1.799098    1.909967
+             |
+1.htdiag_o~p |   .9657566   .0100263    -3.36   0.001     .9463041    .9856091
+    1.asthma |          1  (omitted)
+1.~c_disease |   1.426004     .01336    37.88   0.000     1.400057    1.452431
+             |
+     dm_type |
+       T1DM  |   2.197483   .0888228    19.48   0.000     2.030111    2.378655
+       T2DM  |   1.390012   .0141603    32.33   0.000     1.362533    1.418044
+ UNKNOWN_DM  |    .957994   .0197442    -2.08   0.037     .9200672    .9974842
+             |
+    1.cancer |   2.572876   .0232855   104.42   0.000     2.527639    2.618922
+1.~r_disease |   2.861736   .0718394    41.88   0.000     2.724341     3.00606
+    1.stroke |   1.531569   .0177977    36.68   0.000      1.49708    1.566852
+  1.dementia |   2.637163   .0470787    54.32   0.000     2.546486    2.731069
+1.other_ne~o |   2.217222   .0414314    42.61   0.000     2.137487    2.299931
+             |
+         ckd |
+          2  |    1.08679   .0127064     7.12   0.000     1.062169    1.111982
+          3  |   1.372865    .018761    23.19   0.000     1.336582    1.410132
+          4  |   2.081961   .0389849    39.16   0.000     2.006937     2.15979
+          5  |   3.727597   .1531552    32.02   0.000     3.439187    4.040194
+             |
+      1.esrf |    1.71663   .0829213    11.19   0.000     1.561564    1.887095
+1.perm_imm~f |   1.003895   .1984231     0.02   0.984     .6814684    1.478874
+1.temp_imm~f |   3.918001   .7064443     7.57   0.000     2.751608    5.578821
+1.other_im~o |   1.236643   .2422354     1.08   0.278     .8423832    1.815427
+1.ra_sle_p~s |   1.081554   .0162473     5.22   0.000     1.050174    1.113872
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+file E:\analyses\ethnicity-covid-research/output/tempdata/model2_onsdeath_eth16
+> .ster saved
+file E:\analyses\ethnicity-covid-research/output/tempdata/model2_onsdeath_eth16
+> .dta saved
+
+         failure _d:  onsdeath
+   analysis time _t:  (stime_onsdeath-origin)
+             origin:  time enter_date
+  enter on or after:  time enter_date
+                 id:  patient_id
+
+note: 1.asthma omitted because of collinearity
+Iteration 0:   log likelihood = -718755.78
+Iteration 1:   log likelihood = -675894.82
+Iteration 2:   log likelihood = -634092.17
+Iteration 3:   log likelihood = -631200.09
+Iteration 4:   log likelihood = -631041.28
+Iteration 5:   log likelihood = -631020.39
+Iteration 6:   log likelihood = -631019.55
+Iteration 7:   log likelihood = -631019.55
+Refining estimates:
+Iteration 0:   log likelihood = -631019.55
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects =    8,830,743                  Number of obs    =   8,830,743
+No. of failures =       56,084
+Time at risk    =   1592375010
+                                                LR chi2(42)      =   175472.45
+Log likelihood  =   -631019.55                  Prob > chi2      =      0.0000
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       eth16 |
+      Irish  |    1.03408   .0445887     0.78   0.437     .9502786    1.125271
+Other White  |   .8919789   .0183954    -5.54   0.000     .8566435    .9287718
+     Indian  |    .909764   .0302131    -2.85   0.004     .8524335    .9709502
+  Pakistani  |   .8225049   .0345106    -4.66   0.000     .7575719    .8930035
+Bangladeshi  |   .8416496   .0770475    -1.88   0.060     .7034113    1.007055
+  Caribbean  |   .8102114   .0393958    -4.33   0.000     .7365622    .8912248
+    African  |   .9812693   .0688027    -0.27   0.787     .8552742    1.125825
+    Chinese  |   .6522408   .0765288    -3.64   0.000     .5182444    .8208831
+  All mixed  |   .8843025   .0611878    -1.78   0.076     .7721531    1.012741
+  All Other  |   .9058291   .0340785    -2.63   0.009     .8414396    .9751458
+             |
+        male |
+       Male  |   1.196604   .0105308    20.40   0.000     1.176141    1.217423
+        age1 |   1.203177   .0125511    17.73   0.000     1.178827     1.22803
+        age2 |    .787584   .0175331   -10.73   0.000     .7539587     .822709
+        age3 |   1.797493    .091833    11.48   0.000     1.626221    1.986802
+             |
+         imd |
+          2  |    1.13165   .0156718     8.93   0.000     1.101347    1.162787
+          3  |   1.237914   .0172045    15.36   0.000     1.204649    1.272098
+          4  |   1.433452   .0200286    25.77   0.000      1.39473     1.47325
+5 most de..  |   1.659137   .0240644    34.91   0.000     1.612635    1.706979
+             |
+     hh_size |     1.0028   .0000339    82.77   0.000     1.002733    1.002866
+         bmi |   .9603369   .0008816   -44.08   0.000     .9586105    .9620664
+gp_consult~t |   1.012241   .0001901    64.79   0.000     1.011868    1.012613
+             |
+smoke_nomiss |
+     Former  |   1.212143   .0118627    19.66   0.000     1.189114    1.235618
+    Current  |   1.847812   .0282369    40.18   0.000     1.793289    1.903992
+             |
+1.htdiag_o~p |   .9688574    .010065    -3.05   0.002     .9493299    .9887866
+    1.asthma |          1  (omitted)
+1.~c_disease |   1.427463   .0133757    37.98   0.000     1.401486    1.453921
+             |
+     dm_type |
+       T1DM  |   2.203459   .0890668    19.54   0.000     2.035627    2.385128
+       T2DM  |   1.391697   .0141751    32.45   0.000      1.36419    1.419759
+ UNKNOWN_DM  |   .9611946   .0198047    -1.92   0.055     .9231515    1.000806
+             |
+    1.cancer |   2.574786   .0232895   104.56   0.000     2.529542     2.62084
+1.~r_disease |   2.866238     .07195    41.95   0.000     2.728632    3.010785
+    1.stroke |   1.528243   .0177593    36.50   0.000     1.493829     1.56345
+  1.dementia |   2.579414   .0460594    53.07   0.000     2.490701    2.671287
+1.other_ne~o |   2.209335   .0412852    42.42   0.000     2.129882    2.291753
+             |
+         ckd |
+          2  |    1.08801   .0127204     7.21   0.000     1.063362    1.113229
+          3  |   1.374259    .018779    23.27   0.000     1.337941    1.411562
+          4  |   2.082956   .0389991    39.19   0.000     2.007904    2.160812
+          5  |   3.734163   .1534113    32.07   0.000     3.445269    4.047281
+             |
+      1.esrf |   1.718407   .0830123    11.21   0.000      1.56317    1.889059
+1.perm_imm~f |   1.009361   .1994974     0.05   0.962     .6851865    1.486908
+1.temp_imm~f |   3.938889    .710221     7.60   0.000     2.766264    5.608592
+1.other_im~o |   1.234299   .2417786     1.07   0.283      .840784    1.811994
+1.ra_sle_p~s |   1.081944   .0162614     5.24   0.000     1.050537     1.11429
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+file E:\analyses\ethnicity-covid-research/output/tempdata/model3_onsdeath_eth16
+> .ster saved
+file E:\analyses\ethnicity-covid-research/output/tempdata/model3_onsdeath_eth16
+> .dta saved
+  55,359
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |  9,546,921    1.72e+09           0   1.72e+09   1.72e+09
+  607
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |     79,000    1.42e+07           0   1.42e+07   1.42e+07
+  3,025
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |  1,347,597    2.44e+08           0   2.44e+08   2.44e+08
+  1,111
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |    434,433    7.85e+07           0   7.85e+07   7.85e+07
+  656
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |    302,581    5.47e+07           0   5.47e+07   5.47e+07
+  127
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |     70,152    1.27e+07           0   1.27e+07   1.27e+07
+  482
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |     83,012    1.50e+07           0   1.50e+07   1.50e+07
+  245
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |    191,895    3.47e+07           0   3.47e+07   3.47e+07
+  84
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |    105,268    1.90e+07           0   1.90e+07   1.90e+07
+  240
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |    171,624    3.10e+07           0   3.10e+07   3.10e+07
+  840
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |    510,911    9.24e+07           0   9.24e+07   9.24e+07
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+                      | outcome onscoviddeath
+     Eth 16 collapsed |         0          1 |     Total
+----------------------+----------------------+----------
+British or Mixed Brit | 9,537,492      9,429 | 9,546,921 
+                      |     99.90       0.10 |    100.00 
+----------------------+----------------------+----------
+                Irish |    78,875        125 |    79,000 
+                      |     99.84       0.16 |    100.00 
+----------------------+----------------------+----------
+          Other White | 1,347,052        545 | 1,347,597 
+                      |     99.96       0.04 |    100.00 
+----------------------+----------------------+----------
+               Indian |   434,091        342 |   434,433 
+                      |     99.92       0.08 |    100.00 
+----------------------+----------------------+----------
+            Pakistani |   302,380        201 |   302,581 
+                      |     99.93       0.07 |    100.00 
+----------------------+----------------------+----------
+          Bangladeshi |    70,104         48 |    70,152 
+                      |     99.93       0.07 |    100.00 
+----------------------+----------------------+----------
+            Caribbean |    82,851        161 |    83,012 
+                      |     99.81       0.19 |    100.00 
+----------------------+----------------------+----------
+              African |   191,795        100 |   191,895 
+                      |     99.95       0.05 |    100.00 
+----------------------+----------------------+----------
+              Chinese |   105,240         28 |   105,268 
+                      |     99.97       0.03 |    100.00 
+----------------------+----------------------+----------
+            All mixed |   171,549         75 |   171,624 
+                      |     99.96       0.04 |    100.00 
+----------------------+----------------------+----------
+            All Other |   510,620        291 |   510,911 
+                      |     99.94       0.06 |    100.00 
+----------------------+----------------------+----------
+                    . | 4,582,454      3,875 | 4,586,329 
+                      |     99.92       0.08 |    100.00 
+----------------------+----------------------+----------
+                Total |17,414,503     15,220 |17,429,723 
+                      |     99.91       0.09 |    100.00 
+
+         failure _d:  onscoviddeath
+   analysis time _t:  (stime_onscoviddeath-origin)
+             origin:  time enter_date
+  enter on or after:  time enter_date
+                 id:  patient_id
+
+Iteration 0:   log likelihood = -185666.86
+Iteration 1:   log likelihood = -185250.35
+Iteration 2:   log likelihood =  -185214.4
+Iteration 3:   log likelihood = -185213.87
+Iteration 4:   log likelihood = -185213.87
+Refining estimates:
+Iteration 0:   log likelihood = -185213.87
+
+Cox regression -- Breslow method for ties
+
+No. of subjects =   12,843,394                  Number of obs    =  12,843,394
+No. of failures =       11,345
+Time at risk    =   2317942353
+                                                LR chi2(10)      =      905.98
+Log likelihood  =   -185213.87                  Prob > chi2      =      0.0000
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       eth16 |
+      Irish  |   1.603955   .1444099     5.25   0.000     1.344483    1.913502
+Other White  |   .4086445   .0180032   -20.31   0.000     .3748395    .4454984
+     Indian  |   .7956316   .0437961    -4.15   0.000     .7142611     .886272
+  Pakistani  |   .6711788   .0478432    -5.59   0.000     .5836635    .7718162
+Bangladeshi  |   .6912186   .1000224    -2.55   0.011     .5205263    .9178846
+  Caribbean  |   1.963935   .1560956     8.49   0.000     1.680633    2.294994
+    African  |   .5262718   .0529055    -6.39   0.000     .4321553    .6408855
+    Chinese  |   .2685606   .0508285    -6.95   0.000     .1853283    .3891732
+  All mixed  |   .4413669    .051167    -7.06   0.000     .3516587    .5539597
+  All Other  |   .5753511   .0342442    -9.29   0.000     .5120007      .64654
+------------------------------------------------------------------------------
+file E:\analyses\ethnicity-covid-research/output/tempdata/crude_onscoviddeath_e
+> th16.ster saved
+file E:\analyses\ethnicity-covid-research/output/tempdata/crude_onscoviddeath_e
+> th16.dta saved
+
+         failure _d:  onscoviddeath
+   analysis time _t:  (stime_onscoviddeath-origin)
+             origin:  time enter_date
+  enter on or after:  time enter_date
+                 id:  patient_id
+
+Iteration 0:   log likelihood = -148825.64
+Iteration 1:   log likelihood = -135751.72
+Iteration 2:   log likelihood =  -130752.8
+Iteration 3:   log likelihood = -130518.08
+Iteration 4:   log likelihood = -130516.75
+Iteration 5:   log likelihood = -130516.74
+Iteration 6:   log likelihood = -130516.74
+Refining estimates:
+Iteration 0:   log likelihood = -130516.74
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects =   12,729,506                  Number of obs    =  12,729,506
+No. of failures =       11,271
+Time at risk    =   2297364917
+                                                LR chi2(18)      =    36617.80
+Log likelihood  =   -130516.74                  Prob > chi2      =      0.0000
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       eth16 |
+      Irish  |   1.079463   .0980434     0.84   0.400     .9034344    1.289791
+Other White  |    .859664   .0388871    -3.34   0.001     .7867276    .9393621
+     Indian  |   1.250047   .0729735     3.82   0.000       1.1149    1.401576
+  Pakistani  |   1.307387   .0957204     3.66   0.000     1.132618    1.509124
+Bangladeshi  |   1.815757   .2646173     4.09   0.000     1.364611    2.416054
+  Caribbean  |   1.317475   .1074729     3.38   0.001     1.122809    1.545892
+    African  |   1.813899   .1864327     5.79   0.000      1.48295    2.218705
+    Chinese  |   .9932295   .1883493    -0.04   0.971       .68491    1.440342
+  All mixed  |   1.361237   .1590787     2.64   0.008     1.082579    1.711623
+  All Other  |   1.436847   .0897109     5.81   0.000     1.271349    1.623888
+             |
+        male |
+       Male  |   1.664351   .0317986    26.66   0.000     1.603179    1.727857
+        age1 |   1.168386   .0255393     7.12   0.000     1.119387     1.21953
+        age2 |   .9100287   .0430429    -1.99   0.046     .8294585    .9984253
+        age3 |   1.274725   .1391346     2.22   0.026     1.029222    1.578789
+             |
+         imd |
+          2  |   1.220755   .0390005     6.24   0.000     1.146659    1.299638
+          3  |   1.375142   .0439526     9.97   0.000     1.291639    1.464043
+          4  |   1.728329   .0543202    17.41   0.000     1.625076    1.838142
+5 most de..  |   2.069996   .0669158    22.51   0.000     1.942912    2.205393
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+file E:\analyses\ethnicity-covid-research/output/tempdata/model1_onscoviddeath_
+> eth16.ster saved
+file E:\analyses\ethnicity-covid-research/output/tempdata/model1_onscoviddeath_
+> eth16.dta saved
+
+         failure _d:  onscoviddeath
+   analysis time _t:  (stime_onscoviddeath-origin)
+             origin:  time enter_date
+  enter on or after:  time enter_date
+                 id:  patient_id
+
+note: 1.asthma omitted because of collinearity
+Iteration 0:   log likelihood = -131721.81
+Iteration 1:   log likelihood =  -130165.5
+Iteration 2:   log likelihood = -116948.51
+Iteration 3:   log likelihood = -115668.61
+Iteration 4:   log likelihood = -115360.53
+Iteration 5:   log likelihood =  -115341.4
+Iteration 6:   log likelihood = -115341.07
+Iteration 7:   log likelihood = -115341.07
+Refining estimates:
+Iteration 0:   log likelihood = -115341.07
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects =    8,830,743                  Number of obs    =   8,830,743
+No. of failures =       10,253
+Time at risk    =   1592375010
+                                                LR chi2(41)      =    32761.48
+Log likelihood  =   -115341.07                  Prob > chi2      =      0.0000
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       eth16 |
+      Irish  |   1.113196   .1029344     1.16   0.246     .9286742    1.334382
+Other White  |   .9105115   .0434179    -1.97   0.049     .8292696    .9997124
+     Indian  |   1.280084   .0779167     4.06   0.000     1.136128    1.442281
+  Pakistani  |   1.122615   .0864197     1.50   0.133     .9653942     1.30544
+Bangladeshi  |   1.480948   .2190103     2.66   0.008     1.108306    1.978883
+  Caribbean  |   1.110261   .0948659     1.22   0.221     .9390626    1.312671
+    African  |   1.737338   .1903528     5.04   0.000     1.401593     2.15351
+    Chinese  |   1.221898   .2408911     1.02   0.309      .830281     1.79823
+  All mixed  |   1.287644   .1617348     2.01   0.044     1.006654    1.647067
+  All Other  |   1.441231   .0943984     5.58   0.000     1.267597    1.638649
+             |
+        male |
+       Male  |   1.492074   .0309477    19.29   0.000     1.432634     1.55398
+        age1 |   1.119411   .0279656     4.52   0.000      1.06592    1.175587
+        age2 |   .9600388   .0516636    -0.76   0.449     .8639371    1.066831
+        age3 |   1.124745   .1394412     0.95   0.343     .8821158     1.43411
+             |
+         imd |
+          2  |   1.173731    .039509     4.76   0.000     1.098794    1.253779
+          3  |    1.29253   .0435478     7.62   0.000     1.209935    1.380764
+          4  |   1.578987   .0523348    13.78   0.000     1.479674    1.684967
+5 most de..  |   1.831385   .0625476    17.72   0.000     1.712807    1.958172
+             |
+         bmi |   .9985903   .0020447    -0.69   0.491     .9945908    1.002606
+gp_consult~t |   1.009699   .0005723    17.03   0.000     1.008578    1.010822
+             |
+smoke_nomiss |
+     Former  |   1.263963     .02856    10.37   0.000     1.209208    1.321198
+    Current  |   1.107086   .0476888     2.36   0.018     1.017455    1.204613
+             |
+1.htdiag_o~p |   .8770176   .0214295    -5.37   0.000     .8360064    .9200407
+    1.asthma |          1  (omitted)
+1.~c_disease |   1.234341   .0269887     9.63   0.000     1.182561    1.288388
+             |
+     dm_type |
+       T1DM  |   2.210667   .2125952     8.25   0.000     1.830902    2.669203
+       T2DM  |   1.511548   .0349486    17.87   0.000     1.444579    1.581622
+ UNKNOWN_DM  |    .939497   .0436335    -1.34   0.179     .8577537     1.02903
+             |
+    1.cancer |   1.251886   .0307006     9.16   0.000     1.193137    1.313527
+1.~r_disease |    1.94377    .138598     9.32   0.000     1.690251    2.235315
+    1.stroke |   1.558992   .0417542    16.58   0.000     1.479266    1.643014
+  1.dementia |   3.594364   .1320438    34.83   0.000      3.34466     3.86271
+1.other_ne~o |   2.485371   .1019756    22.19   0.000     2.293328    2.693496
+             |
+         ckd |
+          2  |   1.244298    .033065     8.23   0.000      1.18115    1.310821
+          3  |    1.51761   .0476258    13.29   0.000     1.427078    1.613885
+          4  |   2.100616   .0929248    16.78   0.000     1.926159    2.290874
+          5  |   3.168272   .3079206    11.87   0.000     2.618757    3.833097
+             |
+      1.esrf |   2.520513   .2617541     8.90   0.000     2.056327    3.089484
+1.perm_imm~f |    .321677   .3307684    -1.10   0.270     .0428708    2.413674
+1.temp_imm~f |   .8915511   .8922952    -0.11   0.909     .1253817    6.339547
+1.other_im~o |   4.322628   4.438181     1.43   0.154     .5778192    32.33731
+1.ra_sle_p~s |   1.142201   .0398299     3.81   0.000     1.066744    1.222996
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+file E:\analyses\ethnicity-covid-research/output/tempdata/model2_onscoviddeath_
+> eth16.ster saved
+file E:\analyses\ethnicity-covid-research/output/tempdata/model2_onscoviddeath_
+> eth16.dta saved
+
+         failure _d:  onscoviddeath
+   analysis time _t:  (stime_onscoviddeath-origin)
+             origin:  time enter_date
+  enter on or after:  time enter_date
+                 id:  patient_id
+
+note: 1.asthma omitted because of collinearity
+Iteration 0:   log likelihood = -131721.81
+Iteration 1:   log likelihood = -125051.64
+Iteration 2:   log likelihood = -118453.07
+Iteration 3:   log likelihood = -115264.25
+Iteration 4:   log likelihood = -115071.52
+Iteration 5:   log likelihood = -115054.12
+Iteration 6:   log likelihood = -115052.84
+Iteration 7:   log likelihood = -115052.83
+Refining estimates:
+Iteration 0:   log likelihood = -115052.83
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects =    8,830,743                  Number of obs    =   8,830,743
+No. of failures =       10,253
+Time at risk    =   1592375010
+                                                LR chi2(42)      =    33337.95
+Log likelihood  =   -115052.83                  Prob > chi2      =      0.0000
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       eth16 |
+      Irish  |   1.114861   .1030788     1.18   0.240     .9300787    1.336356
+Other White  |   .8636401   .0422579    -3.00   0.003     .7846636    .9505656
+     Indian  |   1.287378   .0783573     4.15   0.000     1.142608    1.450492
+  Pakistani  |   1.126333    .086713     1.55   0.122     .9685792    1.309779
+Bangladeshi  |   1.490876   .2204809     2.70   0.007     1.115732    1.992154
+  Caribbean  |   1.116272   .0953612     1.29   0.198     .9441767    1.319735
+    African  |   1.762568   .1930814     5.17   0.000     1.422003    2.184696
+    Chinese  |   1.225222   .2415374     1.03   0.303     .8325514    1.803096
+  All mixed  |   1.301293   .1634428     2.10   0.036     1.017335     1.66451
+  All Other  |   1.454037   .0952045     5.72   0.000     1.278916    1.653136
+             |
+        male |
+       Male  |   1.486051   .0308608    19.07   0.000     1.426779    1.547785
+        age1 |   1.134035   .0288121     4.95   0.000     1.078948    1.191936
+        age2 |    .948507   .0516695    -0.97   0.332     .8524555    1.055381
+        age3 |   1.139464   .1427802     1.04   0.297     .8913349    1.456666
+             |
+         imd |
+          2  |   1.174782   .0395435     4.79   0.000      1.09978      1.2549
+          3  |   1.276733   .0430881     7.24   0.000     1.195015     1.36404
+          4  |   1.578458   .0523199    13.77   0.000     1.479173    1.684407
+5 most de..  |    1.82498   .0623639    17.60   0.000     1.706752    1.951397
+             |
+     hh_size |   1.003203   .0000618    51.91   0.000     1.003082    1.003324
+         bmi |   .9988844   .0020366    -0.55   0.584     .9949008    1.002884
+gp_consult~t |   1.009439   .0005542    17.11   0.000     1.008354    1.010526
+             |
+smoke_nomiss |
+     Former  |   1.262731   .0285384    10.32   0.000     1.208017    1.319922
+    Current  |   1.094827   .0473199     2.10   0.036     1.005902    1.191614
+             |
+1.htdiag_o~p |   .8802154    .021519    -5.22   0.000     .8390335    .9234186
+    1.asthma |          1  (omitted)
+1.~c_disease |   1.236511   .0270381     9.71   0.000     1.184637    1.290656
+             |
+     dm_type |
+       T1DM  |   2.218257   .2133386     8.28   0.000     1.837166    2.678399
+       T2DM  |   1.515346   .0350333    17.98   0.000     1.448214    1.585589
+ UNKNOWN_DM  |   .9444856   .0438504    -1.23   0.219     .8623349    1.034463
+             |
+    1.cancer |   1.254188   .0307464     9.24   0.000     1.195351    1.315921
+1.~r_disease |   1.950685   .1390893     9.37   0.000     1.696266    2.243263
+    1.stroke |   1.554831   .0416452    16.48   0.000     1.475314    1.638635
+  1.dementia |   3.508522   .1289156    34.16   0.000     3.264735    3.770512
+1.other_ne~o |   2.477701   .1016628    22.11   0.000     2.286247    2.685188
+             |
+         ckd |
+          2  |   1.245751   .0331043     8.27   0.000     1.182529    1.312354
+          3  |   1.518922   .0476644    13.32   0.000     1.428316    1.615275
+          4  |   2.103134   .0930159    16.81   0.000     1.928504    2.293577
+          5  |   3.174934   .3084619    11.89   0.000     2.624435    3.840904
+             |
+      1.esrf |   2.525409   .2622324     8.92   0.000     2.060369    3.095412
+1.perm_imm~f |   .3251096    .334293    -1.09   0.275     .0433296    2.439356
+1.temp_imm~f |   .9025334   .9032971    -0.10   0.918     .1269233    6.417785
+1.other_im~o |   4.296344   4.411241     1.42   0.156     .5742935    32.14136
+1.ra_sle_p~s |   1.143656   .0398953     3.85   0.000     1.068076    1.224584
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+file E:\analyses\ethnicity-covid-research/output/tempdata/model3_onscoviddeath_
+> eth16.ster saved
+file E:\analyses\ethnicity-covid-research/output/tempdata/model3_onscoviddeath_
+> eth16.dta saved
+  9,429
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |  9,546,921    1.72e+09           0   1.72e+09   1.72e+09
+  125
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |     79,000    1.42e+07           0   1.42e+07   1.42e+07
+  545
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |  1,347,597    2.44e+08           0   2.44e+08   2.44e+08
+  342
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |    434,433    7.85e+07           0   7.85e+07   7.85e+07
+  201
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |    302,581    5.47e+07           0   5.47e+07   5.47e+07
+  48
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |     70,152    1.27e+07           0   1.27e+07   1.27e+07
+  161
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |     83,012    1.50e+07           0   1.50e+07   1.50e+07
+  100
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |    191,895    3.47e+07           0   3.47e+07   3.47e+07
+  28
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |    105,268    1.90e+07           0   1.90e+07   1.90e+07
+  75
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |    171,624    3.10e+07           0   3.10e+07   3.10e+07
+  291
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |    510,911    9.24e+07           0   9.24e+07   9.24e+07
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+                      |        outcome
+                      |   ons_noncoviddeath
+     Eth 16 collapsed |         0          1 |     Total
+----------------------+----------------------+----------
+British or Mixed Brit | 9,500,991     45,930 | 9,546,921 
+                      |     99.52       0.48 |    100.00 
+----------------------+----------------------+----------
+                Irish |    78,518        482 |    79,000 
+                      |     99.39       0.61 |    100.00 
+----------------------+----------------------+----------
+          Other White | 1,345,117      2,480 | 1,347,597 
+                      |     99.82       0.18 |    100.00 
+----------------------+----------------------+----------
+               Indian |   433,664        769 |   434,433 
+                      |     99.82       0.18 |    100.00 
+----------------------+----------------------+----------
+            Pakistani |   302,126        455 |   302,581 
+                      |     99.85       0.15 |    100.00 
+----------------------+----------------------+----------
+          Bangladeshi |    70,073         79 |    70,152 
+                      |     99.89       0.11 |    100.00 
+----------------------+----------------------+----------
+            Caribbean |    82,691        321 |    83,012 
+                      |     99.61       0.39 |    100.00 
+----------------------+----------------------+----------
+              African |   191,750        145 |   191,895 
+                      |     99.92       0.08 |    100.00 
+----------------------+----------------------+----------
+              Chinese |   105,212         56 |   105,268 
+                      |     99.95       0.05 |    100.00 
+----------------------+----------------------+----------
+            All mixed |   171,459        165 |   171,624 
+                      |     99.90       0.10 |    100.00 
+----------------------+----------------------+----------
+            All Other |   510,362        549 |   510,911 
+                      |     99.89       0.11 |    100.00 
+----------------------+----------------------+----------
+                    . | 4,565,074     21,255 | 4,586,329 
+                      |     99.54       0.46 |    100.00 
+----------------------+----------------------+----------
+                Total |17,357,037     72,686 |17,429,723 
+                      |     99.58       0.42 |    100.00 
+
+         failure _d:  ons_noncoviddeath
+   analysis time _t:  (stime_ons_noncoviddeath-origin)
+             origin:  time enter_date
+  enter on or after:  time enter_date
+                 id:  patient_id
+
+Iteration 0:   log likelihood = -841719.49
+Iteration 1:   log likelihood = -837871.14
+Iteration 2:   log likelihood = -837517.29
+Iteration 3:   log likelihood = -837499.96
+Iteration 4:   log likelihood = -837499.71
+Iteration 5:   log likelihood = -837499.71
+Refining estimates:
+Iteration 0:   log likelihood = -837499.71
+
+Cox regression -- Breslow method for ties
+
+No. of subjects =   12,843,394                  Number of obs    =  12,843,394
+No. of failures =       51,431
+Time at risk    =   2317942353
+                                                LR chi2(10)      =     8439.56
+Log likelihood  =   -837499.71                  Prob > chi2      =      0.0000
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       eth16 |
+      Irish  |   1.269369   .0581208     5.21   0.000     1.160417    1.388552
+Other White  |   .3818705   .0078724   -46.70   0.000     .3667484    .3976162
+     Indian  |   .3673632   .0133579   -27.54   0.000     .3420933    .3944996
+  Pakistani  |   .3120029   .0146992   -24.72   0.000     .2844831    .3421848
+Bangladeshi  |   .2336214   .0263071   -12.91   0.000     .1873539    .2913149
+  Caribbean  |   .8037501   .0450174    -3.90   0.000      .720188    .8970078
+    African  |   .1567194   .0130354   -22.28   0.000     .1331444    .1844687
+    Chinese  |   .1103148   .0147504   -16.49   0.000     .0848824    .1433671
+  All mixed  |    .199415   .0155523   -20.67   0.000     .1711485      .23235
+  All Other  |   .2229119   .0095703   -34.96   0.000     .2049219    .2424812
+------------------------------------------------------------------------------
+file E:\analyses\ethnicity-covid-research/output/tempdata/crude_ons_noncoviddea
+> th_eth16.ster saved
+file E:\analyses\ethnicity-covid-research/output/tempdata/crude_ons_noncoviddea
+> th_eth16.dta saved
+
+         failure _d:  ons_noncoviddeath
+   analysis time _t:  (stime_ons_noncoviddeath-origin)
+             origin:  time enter_date
+  enter on or after:  time enter_date
+                 id:  patient_id
+
+Iteration 0:   log likelihood =  -673367.5
+Iteration 1:   log likelihood = -617146.81
+Iteration 2:   log likelihood = -600249.76
+Iteration 3:   log likelihood = -599774.97
+Iteration 4:   log likelihood = -599763.43
+Iteration 5:   log likelihood = -599763.17
+Iteration 6:   log likelihood = -599763.17
+Refining estimates:
+Iteration 0:   log likelihood = -599763.17
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects =   12,729,506                  Number of obs    =  12,729,506
+No. of failures =       51,174
+Time at risk    =   2297364917
+                                                LR chi2(18)      =   147208.67
+Log likelihood  =   -599763.17                  Prob > chi2      =      0.0000
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       eth16 |
+      Irish  |   1.060592   .0489163     1.28   0.202     .9689233    1.160933
+Other White  |   .8681636   .0183348    -6.69   0.000     .8329616    .9048534
+     Indian  |   .7361959   .0277678    -8.12   0.000      .683735    .7926819
+  Pakistani  |   .7244508   .0347717    -6.72   0.000     .6594069    .7959106
+Bangladeshi  |   .7426427   .0838812    -2.63   0.008     .5951646     .926665
+  Caribbean  |   .7369528   .0420681    -5.35   0.000     .6589459    .8241942
+    African  |   .6401546   .0542353    -5.26   0.000      .542212     .755789
+    Chinese  |    .448579   .0605744    -5.94   0.000     .3442674    .5844967
+  All mixed  |   .7103169   .0557869    -4.36   0.000     .6089763    .8285217
+  All Other  |   .6922232   .0304133    -8.37   0.000     .6351087     .754474
+             |
+        male |
+       Male  |   1.343469   .0120019    33.05   0.000      1.32015    1.367199
+        age1 |   1.181908   .0099427    19.87   0.000     1.162581    1.201557
+        age2 |   .8330871   .0154405    -9.85   0.000     .8033673    .8639063
+        age3 |   1.625389   .0700991    11.26   0.000     1.493644    1.768754
+             |
+         imd |
+          2  |   1.149954   .0164925     9.74   0.000      1.11808    1.182738
+          3  |   1.292823   .0185634    17.89   0.000     1.256947    1.329723
+          4  |   1.510001   .0219082    28.40   0.000     1.467667    1.553557
+5 most de..  |   1.856615   .0278382    41.27   0.000     1.802847    1.911986
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+file E:\analyses\ethnicity-covid-research/output/tempdata/model1_ons_noncovidde
+> ath_eth16.ster saved
+file E:\analyses\ethnicity-covid-research/output/tempdata/model1_ons_noncovidde
+> ath_eth16.dta saved
+
+         failure _d:  ons_noncoviddeath
+   analysis time _t:  (stime_ons_noncoviddeath-origin)
+             origin:  time enter_date
+  enter on or after:  time enter_date
+                 id:  patient_id
+
+note: 1.asthma omitted because of collinearity
+Iteration 0:   log likelihood = -587033.97
+Iteration 1:   log likelihood = -538551.38
+Iteration 2:   log likelihood = -516812.45
+Iteration 3:   log likelihood = -515211.59
+Iteration 4:   log likelihood =  -515080.2
+Iteration 5:   log likelihood = -515058.63
+Iteration 6:   log likelihood = -515057.49
+Iteration 7:   log likelihood = -515057.48
+Refining estimates:
+Iteration 0:   log likelihood = -515057.48
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects =    8,830,743                  Number of obs    =   8,830,743
+No. of failures =       45,831
+Time at risk    =   1592375010
+                                                LR chi2(41)      =   143952.97
+Log likelihood  =   -515057.48                  Prob > chi2      =      0.0000
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       eth16 |
+      Irish  |   1.016633   .0495636     0.34   0.735     .9239872    1.118569
+Other White  |   .9212145   .0207097    -3.65   0.000     .8815054    .9627123
+     Indian  |   .8004877   .0319208    -5.58   0.000     .7403065    .8655611
+  Pakistani  |   .7338972   .0368252    -6.17   0.000     .6651567    .8097417
+Bangladeshi  |   .6596365   .0770873    -3.56   0.000     .5246026    .8294285
+  Caribbean  |   .7083544   .0420607    -5.81   0.000     .6305332    .7957804
+    African  |   .7379944   .0678688    -3.30   0.001     .6162731     .883757
+    Chinese  |   .5178608    .075684    -4.50   0.000      .388877    .6896263
+  All mixed  |   .7712835    .064015    -3.13   0.002       .65549    .9075322
+  All Other  |   .7524319   .0348761    -6.14   0.000      .687089     .823989
+             |
+        male |
+       Male  |   1.147358   .0111526    14.14   0.000     1.125706    1.169426
+        age1 |   1.212479   .0138003    16.93   0.000     1.185731    1.239831
+        age2 |   .7600279   .0184832   -11.28   0.000     .7246513    .7971315
+        age3 |   1.975612   .1102932    12.20   0.000     1.770848    2.204053
+             |
+         imd |
+          2  |   1.122306    .017054     7.59   0.000     1.089374    1.156234
+          3  |   1.236467   .0188419    13.93   0.000     1.200084    1.273953
+          4  |   1.401833   .0216193    21.90   0.000     1.360094    1.444853
+5 most de..  |   1.623948   .0260365    30.24   0.000     1.573711    1.675789
+             |
+         bmi |   .9512269   .0009785   -48.61   0.000      .949311    .9531467
+gp_consult~t |   1.012871   .0002039    63.53   0.000     1.012472    1.013271
+             |
+smoke_nomiss |
+     Former  |   1.200113   .0130305    16.80   0.000     1.174844    1.225926
+    Current  |   2.012737   .0330588    42.59   0.000     1.948975    2.078585
+             |
+1.htdiag_o~p |   .9865941   .0113161    -1.18   0.239     .9646624    1.009024
+    1.asthma |          1  (omitted)
+1.~c_disease |   1.473562   .0152798    37.39   0.000     1.443916    1.503816
+             |
+     dm_type |
+       T1DM  |    2.19428   .0977362    17.64   0.000     2.010845     2.39445
+       T2DM  |   1.361101   .0154758    27.11   0.000     1.331104    1.391773
+ UNKNOWN_DM  |   .9650677   .0221956    -1.55   0.122     .9225311    1.009566
+             |
+    1.cancer |   2.959164   .0291554   110.11   0.000     2.902569    3.016863
+1.~r_disease |   3.066385   .0823105    41.74   0.000     2.909229    3.232029
+    1.stroke |   1.523689   .0196572    32.64   0.000     1.485644    1.562707
+  1.dementia |   2.424341   .0496328    43.26   0.000     2.328988    2.523597
+1.other_ne~o |   2.152986   .0452105    36.52   0.000     2.066174    2.243446
+             |
+         ckd |
+          2  |   1.053506   .0137239     4.00   0.000     1.026948     1.08075
+          3  |   1.342952   .0203908    19.42   0.000     1.303576    1.383518
+          4  |   2.078486   .0429584    35.40   0.000     1.995972    2.164412
+          5  |   3.879244   .1756172    29.95   0.000     3.549869     4.23918
+             |
+      1.esrf |    1.54654   .0847051     7.96   0.000     1.389122    1.721798
+1.perm_imm~f |   1.073847   .2177705     0.35   0.725     .7216444    1.597944
+1.temp_imm~f |   4.413543   .8093463     8.10   0.000     3.081029    6.322355
+1.other_im~o |   1.124438   .2255096     0.58   0.559     .7589696    1.665891
+1.ra_sle_p~s |   1.069314   .0177989     4.03   0.000     1.034991    1.104774
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+file E:\analyses\ethnicity-covid-research/output/tempdata/model2_ons_noncovidde
+> ath_eth16.ster saved
+file E:\analyses\ethnicity-covid-research/output/tempdata/model2_ons_noncovidde
+> ath_eth16.dta saved
+
+         failure _d:  ons_noncoviddeath
+   analysis time _t:  (stime_ons_noncoviddeath-origin)
+             origin:  time enter_date
+  enter on or after:  time enter_date
+                 id:  patient_id
+
+note: 1.asthma omitted because of collinearity
+Iteration 0:   log likelihood = -587033.97
+Iteration 1:   log likelihood =  -541357.1
+Iteration 2:   log likelihood = -516620.94
+Iteration 3:   log likelihood = -514755.81
+Iteration 4:   log likelihood = -514591.05
+Iteration 5:   log likelihood = -514561.48
+Iteration 6:   log likelihood = -514559.55
+Iteration 7:   log likelihood = -514559.53
+Refining estimates:
+Iteration 0:   log likelihood = -514559.53
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects =    8,830,743                  Number of obs    =   8,830,743
+No. of failures =       45,831
+Time at risk    =   1592375010
+                                                LR chi2(42)      =   144948.87
+Log likelihood  =   -514559.53                  Prob > chi2      =      0.0000
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       eth16 |
+      Irish  |   1.017991   .0496257     0.37   0.715     .9252283    1.120053
+Other White  |   .9004207   .0204743    -4.61   0.000     .8611728    .9414572
+     Indian  |   .8036574   .0320458    -5.48   0.000     .7432404    .8689855
+  Pakistani  |   .7348042   .0368724    -6.14   0.000     .6659757    .8107461
+Bangladeshi  |   .6618782   .0773498    -3.53   0.000     .5263845    .8322484
+  Caribbean  |   .7115614    .042249    -5.73   0.000     .6333914    .7993786
+    African  |   .7441666   .0684336    -3.21   0.001      .621432    .8911417
+    Chinese  |   .5183483   .0757547    -4.50   0.000     .3892438    .6902742
+  All mixed  |   .7765168   .0644484    -3.05   0.002     .6599391    .9136878
+  All Other  |   .7568315   .0350754    -6.01   0.000     .6911148    .8287971
+             |
+        male |
+       Male  |   1.145332   .0111405    13.95   0.000     1.123704    1.167377
+        age1 |   1.218076   .0139459    17.23   0.000     1.191047    1.245718
+        age2 |   .7575766   .0184976   -11.37   0.000     .7221757    .7947127
+        age3 |   1.977029   .1107462    12.17   0.000     1.771462    2.206452
+             |
+         imd |
+          2  |   1.123076   .0170648     7.64   0.000     1.090122    1.157025
+          3  |   1.229916   .0187589    13.57   0.000     1.193693    1.267238
+          4  |   1.401668   .0216165    21.89   0.000     1.359935    1.444682
+5 most de..  |   1.622228   .0260123    30.17   0.000     1.572038    1.674021
+             |
+     hh_size |   1.002686   .0000408    65.90   0.000     1.002606    1.002766
+         bmi |    .951576   .0009777   -48.31   0.000     .9496616    .9534943
+gp_consult~t |   1.012714    .000201    63.65   0.000      1.01232    1.013108
+             |
+smoke_nomiss |
+     Former  |   1.200378   .0130344    16.82   0.000     1.175101    1.226199
+    Current  |   2.008418   .0330328    42.40   0.000     1.944707    2.074216
+             |
+1.htdiag_o~p |   .9894168   .0113549    -0.93   0.354     .9674101    1.011924
+    1.asthma |          1  (omitted)
+1.~c_disease |   1.474855   .0152954    37.47   0.000     1.445179     1.50514
+             |
+     dm_type |
+       T1DM  |   2.199472   .0979694    17.70   0.000     2.015599     2.40012
+       T2DM  |   1.362365   .0154878    27.20   0.000     1.332345    1.393061
+ UNKNOWN_DM  |   .9679342   .0222557    -1.42   0.156     .9252821    1.012552
+             |
+    1.cancer |   2.960822   .0291554   110.23   0.000     2.904227    3.018521
+1.~r_disease |   3.069887    .082401    41.79   0.000     2.912559    3.235714
+    1.stroke |   1.520487   .0196161    32.48   0.000     1.482523    1.559424
+  1.dementia |   2.372818   .0485907    42.20   0.000     2.279468    2.469991
+1.other_ne~o |   2.145108   .0450463    36.34   0.000     2.058611    2.235239
+             |
+         ckd |
+          2  |   1.054629   .0137382     4.08   0.000     1.028044    1.081902
+          3  |   1.344302   .0204103    19.49   0.000     1.304888    1.384906
+          4  |    2.07906   .0429664    35.42   0.000      1.99653    2.165002
+          5  |   3.884865    .175858    29.98   0.000     3.555038    4.245293
+             |
+      1.esrf |   1.548101    .084795     7.98   0.000     1.390516    1.723545
+1.perm_imm~f |   1.078875   .2187845     0.37   0.708     .7250311     1.60541
+1.temp_imm~f |   4.431565   .8126598     8.12   0.000     3.093598    6.348196
+1.other_im~o |   1.122784    .225179     0.58   0.564     .7578517    1.663444
+1.ra_sle_p~s |   1.069588   .0178115     4.04   0.000     1.035241    1.105073
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+file E:\analyses\ethnicity-covid-research/output/tempdata/model3_ons_noncovidde
+> ath_eth16.ster saved
+file E:\analyses\ethnicity-covid-research/output/tempdata/model3_ons_noncovidde
+> ath_eth16.dta saved
+  45,930
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |  9,546,921    1.72e+09           0   1.72e+09   1.72e+09
+  482
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |     79,000    1.42e+07           0   1.42e+07   1.42e+07
+  2,480
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |  1,347,597    2.44e+08           0   2.44e+08   2.44e+08
+  769
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |    434,433    7.85e+07           0   7.85e+07   7.85e+07
+  455
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |    302,581    5.47e+07           0   5.47e+07   5.47e+07
+  79
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |     70,152    1.27e+07           0   1.27e+07   1.27e+07
+  321
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |     83,012    1.50e+07           0   1.50e+07   1.50e+07
+  145
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |    191,895    3.47e+07           0   3.47e+07   3.47e+07
+  56
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |    105,268    1.90e+07           0   1.90e+07   1.90e+07
+  165
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |    171,624    3.10e+07           0   3.10e+07   3.10e+07
+  549
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |    510,911    9.24e+07           0   9.24e+07   9.24e+07
+
+. 
+. file close tablecontent
+
+. 
+. * Close log file 
+. log close
+      name:  <unnamed>
+       log:  E:\analyses\ethnicity-covid-research/output/log\06a_eth_an_multiva
+> riable_eth16.log
+  log type:  text
+ closed on:  23 Jul 2020, 06:50:37
+-------------------------------------------------------------------------------

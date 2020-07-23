@@ -1,20 +1,20 @@
 #delim ;
 prog def parmby, rclass;
-version 16.0;
+version 11.0;
 *
  Call a regression command followed by -parmest- with by-variables,
  creating an output data set containing the by-variables
  together with the parameter sequence number -parmseq-
  and all the variables in a -parmest- output data set.
 *! Author: Roger Newson
-*! Date: 10 April 2020
+*! Date: 06 October 2015
 *;
 
 
 gettoken cmd 0: 0;
 if `"`cmd'"' == `""' {;error 198;};
 
-syntax [ , LIst(passthru) FRAme(string asis) SAving(passthru) noREstore FAST * ];
+syntax [ , LIst(passthru) SAving(passthru) noREstore FAST * ];
 /*
 -norestore- specifies that the pre-existing data set
   is not restored after the output data set has been produced
@@ -26,51 +26,22 @@ All other options are passed to -_parmby-.
 */
 
 *
- Set restore to norestore if fast is present
+ Set restore to norestore if -fast- is present
  and check that the user has specified one of the four options:
- list and/or nd/or frame and/or saving and/or norestore and/or fast.
+ -list()- and/or -saving()- and/or -norestore- and/or -fast-.
 *;
 if "`fast'"!="" {;
     local restore="norestore";
 };
-if (`"`list'"'=="")&(`"`frame'"'=="")&(`"`saving'"'=="")&("`restore'"!="norestore")&("`fast'"=="") {;
-    disp as error "You must specify at least one of the five options:"
-      _n "list(), frame(), saving(), norestore, and fast."
+if (`"`list'"'=="")&(`"`saving'"'=="")&("`restore'"!="norestore")&("`fast'"=="") {;
+    disp as error "You must specify at least one of the four options:"
+      _n "list(), saving(), norestore, and fast."
       _n "If you specify list(), then the output variables specified are listed."
-      _n "f you specify frame(), then the new data set is output to a data frame."
       _n "If you specify saving(), then the new data set is output to a disk file."
-      _n "If you specify norestore and/or fast, then the new data set is created in the current ata frame,"
-      _n "and any existing data set in the current data frame is destroyed."
+      _n "If you specify norestore and/or fast, then the new data set is created in the memory,"
+      _n "and any existing data set in the memory is destroyed."
       _n "For more details, see {help parmest:on-line help for parmby and parmest}.";
     error 498;
-};
-
-*
- Parse frame() option if present
-*;
-if `"`frame'"'!="" {;
-  cap frameoption `frame';
-  if _rc {;
-    disp as error `"Illegal frame option: `frame'"';
-    error 498;
-  };
-  local framename "`r(namelist)'";
-  local framereplace "`r(replace)'";
-  local framechange "`r(change)'";
-  if `"`framename'"'=="`c(frame)'" {;
-    disp as error "frame() option may not specify current frame."
-      _n "Use norestore or fast instead.";
-    error 498;
-  };
-  if "`framereplace'"=="" {;
-    cap noi conf new frame `framename';
-    if _rc {;
-      error 498;
-    };
-  };
-};
-if "`framename'"!="" {;
-  local passframe "frame(`framename', `framereplace' `framechange')";
 };
 
 *
@@ -81,7 +52,7 @@ if("`fast'"==""){;
 };
 
 * Call -_parmby- with all other options *;
-_parmby `"`cmd'"' , `list' `passframe' `saving' `options';
+_parmby `"`cmd'"' , `list' `saving' `options';
 return add;
 
 *
@@ -97,15 +68,7 @@ if "`fast'"=="" {;
     };
 };
 
-*
- Change frame if requested
-*;
-if "`framename'"!="" & "`framechange'"!="" {;
-  frame change `framename';
-};
-
 end;
-
 
 prog def _parmby, rclass;
 version 11.0;
@@ -118,38 +81,13 @@ version 11.0;
 
 gettoken cmd 0: 0;
 
-syntax [ ,BY(varlist) COMmand LIst(string asis) FRAme(string asis) SAving(string asis) FList(string) REName(string) FOrmat(string) * ];
+syntax [ ,BY(varlist) COMmand LIst(string asis) SAving(string asis) FList(string) REName(string) FOrmat(string) * ];
 *
  -by- is list of by-variables.
  -command- specifies that the regression command is saved in the output data set
   as a string variable named -command-.
  Other options are as defined for -parmest-.
 *;
-
-*
- Parse frame() option if present
-*;
-if `"`frame'"'!="" {;
-  cap frameoption `frame';
-  if _rc {;
-    disp as error `"Illegal frame option: `frame'"';
-    error 498;
-  };
-  local framename "`r(namelist)'";
-  local framereplace "`r(replace)'";
-  local framechange "`r(change)'";
-  if `"`framename'"'=="`c(frame)'" {;
-    disp as error "frame() option may not specify current frame."
-      _n "Use norestore or fast instead.";
-    error 498;
-  };
-  if "`framereplace'"=="" {;
-    cap noi conf new frame `framename';
-    if _rc {;
-      error 498;
-    };
-  };
-};
 
 * Echo the command and by-variables *;
 disp as text "Command: " as result `"`cmd'"';
@@ -372,15 +310,6 @@ if(`"`saving'"'!=""){;
 };
 
 
-*
- Create new frame if requested
-*;
-local oldframe=c(frame);
-if `"`framename'"'!="" {;
-  qui frame copy `oldframe' `framename', `framereplace';
-};
-
-
 * Return results *;
 return local by "`by'";
 return local command `"`cmd'"';
@@ -388,23 +317,8 @@ return local command `"`cmd'"';
 end;
 
 
-prog def frameoption, rclass;
-version 16.0;
-*
- Parse frame() option
-*;
-
-syntax name [, replace CHange ];
-
-return local change "`change'";
-return local replace "`replace'";
-return local namelist "`namelist'";
-
-end;
-
-
 #delim cr
-version 16.0
+version 11.0
 /*
   Private Mata programs used by parmby
 */

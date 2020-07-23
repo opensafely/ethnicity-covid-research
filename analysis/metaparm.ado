@@ -1,6 +1,6 @@
 #delim ;
 prog def metaparm, byable(onecall);
-version 16.0;
+version 11.0;
 /*
   Meta-analysis using parmest resultsset
   Input a parmest-style resultsset with 1 obs per parameter
@@ -10,12 +10,12 @@ version 16.0;
   for the meta-analysed summary parameter within each by-group,
   assuming that parameters within each by-group are statistically independent.
 *! Author: Roger Newson
-*! Date: 10 April 2020
+*! Date: 06 October 2015
 */
 
 
 syntax [if] [in] [aweight iweight] [,
-      LIst(string asis) FRAme(string asis) SAving(string asis) noREstore FList(string)
+      LIst(string asis) SAving(string asis) noREstore FList(string)
       BY(varlist) SUmvar(varlist numeric)
       DFCombine(string)
       IDNum(string) NIDNum(name) IDStr(string) NIDStr(name)
@@ -29,7 +29,6 @@ LIst contains a varlist of variables to be listed,
   expected to be present in the output resultsset,
   together with optional if and/or in subsetting clauses and/or list_options
   as allowed by the list command.
-FRAme specifies a Stata data frame in which to create the output data set.
 SAving() specifies a file in which to save the resultsset.
 noREstore specifies that the pre-existing dataset
   is not restored after the output resultsset has been produced
@@ -108,45 +107,21 @@ if _by() {;
 
 *
  Set restore to norestore if -fast- is present
- and check that the user has specified one of the five options:
- -list()- and/or -frame- and/or -saving()- and/or -norestore- and/or -fast-.
+ and check that the user has specified one of the four options:
+ -list()- and/or -saving()- and/or -norestore- and/or -fast-.
 *;
-if (`"`list'"'=="")&(`"`frame'"'=="")&(`"`saving'"'=="")&("`restore'"!="norestore")&("`fast'"=="") {;
-    disp as error "You must specify at least one of the five options:"
-      _n "list(), frame(), saving(), norestore, and fast."
-      _n "If you specify list(), then the output variables specified are listed."
-      _n "f you specify frame(), then the new data set is output to a data frame."
-      _n "If you specify saving(), then the new data set is output to a disk file."
-      _n "If you specify norestore and/or fast, then the new data set is created in the current ata frame,"
-      _n "and any existing data set in the current data frame is destroyed."
-      _n "For more details, see {help parmest:on-line help for parmby and parmest}.";
-    error 498;
+if "`fast'"!="" {;
+    local restore="norestore";
 };
-
-
-*
- Parse frame() option if present
-*;
-if `"`frame'"'!="" {;
-  cap frameoption `frame';
-  if _rc {;
-    disp as error `"Illegal frame option: `frame'"';
+if (`"`list'"'=="")&(`"`saving'"'=="")&("`restore'"!="norestore")&("`fast'"=="") {;
+    disp as error "You must specify at least one of the four options:"
+      _n "list(), saving(), norestore, and fast."
+      _n "If you specify list(), then the output variables specified are listed."
+      _n "If you specify saving(), then the new data set is output to a disk file."
+      _n "If you specify norestore and/or fast, then the new data set is created in the memory,"
+      _n "and any existing data set in the memory is destroyed."
+      _n "For more details, see {help parmest:on-line help for metaparm.";
     error 498;
-  };
-  local framename "`r(namelist)'";
-  local framereplace "`r(replace)'";
-  local framechange "`r(change)'";
-  if `"`framename'"'=="`c(frame)'" {;
-    disp as error "frame() option may not specify current frame."
-      _n "Use norestore or fast instead.";
-    error 498;
-  };
-  if "`framereplace'"=="" {;
-    cap noi conf new frame `framename';
-    if _rc {;
-      error 498;
-    };
-  };
 };
 
 
@@ -464,16 +439,6 @@ if(`"`saving'"'!=""){;
 
 
 *
- Create new frame if requested
-*;
-local oldframe=c(frame);
-tempname tempframe;
-if `"`framename'"'!="" {;
-  qui frame copy `oldframe' `tempframe', `framereplace';
-};
-
-
-*
  Restore old data set if -restore- is set
  or if program fails when -fast- is unset
 *;
@@ -486,34 +451,5 @@ if "`fast'"=="" {;
     };
 };
 
-
-*
- Rename temporary frame to frame name (if frame is specified)
- and change current frame to frame name (if requested)
-*;
-if "`framename'"!="" {;
-  if "`framereplace'"=="replace" {;
-    cap frame drop `framename';
-  };
-  frame rename `tempframe' `framename';
-  if "`framechange'"!="" {;
-    frame change `framename';
-  };
-};
-
-
-end;
-
-prog def frameoption, rclass;
-version 16.0;
-*
- Parse frame() option
-*;
-
-syntax name [, replace CHange ];
-
-return local change "`change'";
-return local replace "`replace'";
-return local namelist "`namelist'";
 
 end;
