@@ -163,9 +163,10 @@ forvalues i=1/11 {
 
 * Delete unneeded graphs
 foreach j of global outcomes {
+	erase "$Tabfigdir/kmplot_eth5_`j'"
+	erase "$Tabfigdir/kmplot_eth16_`j'"
+
 forvalues i=1/11 {		
-		erase "$Tabfigdir/kmplot_eth5_`j'"
-		erase "$Tabfigdir/kmplot_eth16_`j'"
 		erase "$Tabfigdir/kmplot_eth`i'_age.gph"
 		erase "$Tabfigdir/kmplot_eth`i'_sex.gph"
 } //end agegroup
