@@ -60,6 +60,9 @@ do "$Dodir/06b_eth_an_multivariable_eth5.do"
 do "$Dodir/07a_eth_cr_forestplots_eth16.do" 
 do "$Dodir/07b_eth_cr_forestplots_eth5.do" 
 
+*ventilation - in those admitted to ICU
+do "$Dodir/09a_eth_an_ventilation_eth16"
+do "$Dodir/09b_eth_an_ventilation_eth5"
 
 /*multivariable analysis - imputed ethnicity
 do "$Dodir/08a_eth_an_multivariable_eth16_mi.do"
@@ -67,8 +70,6 @@ do "$Dodir/08b_eth_an_multivariable_eth5_mi.do"
 
 *multivariable analysis - in those with infection
 
-*ventilation
-*in whole population (admitted to ICU)
 
 *in those with infection (admitted to ICU)
 
