@@ -44,7 +44,6 @@ cap  sts graph, 				///
 	xlabel(0 "1 Feb 20" 29 "1 Mar 20" 				///
 	60 "1 Apr 20" 91 "1 May 20" 122 "1 Jun 20"		///
 	152 "1 Jul 20")									///
-	saving($Tabfigdir/kmplot_eth5_`j', replace)
 cap graph export "$Tabfigdir/kmplot_eth5_`j'", as(svg) replace
 
 * KM plot by 16  ethnic groups
@@ -58,7 +57,6 @@ cap sts graph, 				///
 	xlabel(0 "1 Feb 20" 29 "1 Mar 20" 				///
 	60 "1 Apr 20" 91 "1 May 20" 122 "1 Jun 20"		///
 	152 "1 Jul 20")									///
-	saving($Tabfigdir/kmplot_eth16_`j', replace)
 cap graph export "$Tabfigdir/kmplot_eth16_`j'", as(svg) replace
 
 
@@ -151,8 +149,7 @@ forvalues i=1/11 {
 		cap erase "$Tabfigdir/kmplot_eth`i'_age.gph"
 		cap erase "$Tabfigdir/kmplot_eth`i'_sex.gph"
 }
-
-
+ 
 } //end outcomes
 
 
