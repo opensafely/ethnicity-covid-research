@@ -194,31 +194,26 @@ graph set window
 gen num=[_n]
 sum num
 l
-save "$Tempdir/ventilated_forestplot_eth5_cc.dta", replace
 
 gen adjusted="Age-sex-IMD" if model=="model1"
 replace adjusted="+ co-morbidities" if model=="model2"
 replace adjusted="+ household size" if model=="model3"
 
 *Create one graph 
-metan estimate min95 max95  ///
- , effect(OR) null(1) lcols(eth5) dp(2) by(adjusted)  ///
-	nowt nosubgroup nooverall nobox graphregion(color(white)) scheme(sj)  	///
+metan estimate min95 max95  if eth5!=1 ///
+ , effect(Odds Ratio) null(1) lcols(eth5) dp(2) by(adjusted)  ///
+	random nowt nosubgroup nooverall nobox graphregion(color(white)) scheme(sj)  	///
 	title("Ventilation", size(medsmall)) 	///
 	t2title("complete case analysis", size(small)) 	///
-	graphregion(margin(zero)) ///
-	saving("$Tabfigdir\Forestplot_ventilated_eth5_cc.gph", replace)
+	graphregion(margin(zero)) 
 	graph export "$Tabfigdir\Forestplot_ventilated_eth5_cc.svg", replace  
 
-* Delete unneeded graphs
-erase "$Tabfigdir\Forestplot_ventilated_eth5_cc.gph"
 
 * Close log file 
 log close
 
 
 insheet using "$Tabfigdir/table3_eth5.txt", clear
-save "$Tabfigdir/table3_eth5.dta", replace
 
 
 
