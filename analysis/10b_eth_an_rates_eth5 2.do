@@ -40,6 +40,7 @@ strate eth5, per(10000) missing output($Tempdir/strate_`i'_eth5,replace) ///
 } //end outcomes
 
 grc1leg `graph', altshrink saving("$Tabfigdir/strate_eth5_combined", replace)
+macro drop graph 
 
 foreach i of global outcomes {
 * Open Stata dataset
@@ -62,6 +63,7 @@ forvalues j=1/7 {
 
 grc1leg `grapha', altshrink saving("$Tabfigdir/strate_`i'_eth5_age_combined", replace)
 graph export "$Tabfigdir/strate_`i'_eth5_age_combined", as(svg) replace
+macro drop grapha
 
 *rates by ethnic group, age, and sex
 forvalues j=1/7 {	
@@ -72,6 +74,7 @@ forvalues j=1/7 {
 
 grc1leg `graphf', altshrink  saving("$Tabfigdir/strate_`i'_eth5_agef_combined", replace)
 graph export "$Tabfigdir/strate_`i'_eth5_agef_combined", as(svg) replace
+macro drop graphf
 
 forvalues j=1/7 {	
 	strate eth5 if agegroup==`j' & male==1, per(10000) missing output($Tempdir/strate_`i'_eth5_agegroup`j'_male, replace) ///
@@ -81,9 +84,7 @@ forvalues j=1/7 {
 
 grc1leg `graphm', altshrink  saving("$Tabfigdir/strate_`i'_eth5_agem_combined", replace)
 graph export "$Tabfigdir/strate_`i'_eth5_agem_combined", as(svg) replace
-
-
-
+macro drop  graphm
 
 } //end outcomes
 
