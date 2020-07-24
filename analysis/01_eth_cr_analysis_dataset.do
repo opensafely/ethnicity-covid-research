@@ -869,20 +869,6 @@ foreach i of global outcomes {
 	save "$Tempdir/analysis_dataset_STSET_`i'.dta", replace
 }	
 
-**********************************************************************
-*  Create positive test outcome dataset for people who've had a test  *
-************************************************************************
-use "$Tempdir/analysis_dataset.dta", clear
-
-keep if tested==1
-safecount
-save "$Tempdir/analysis_dataset_tested.dta", replace
-
-drop if positivetest_date <= tested_date 
-
-stset stime_positivetest, fail(positivetest) 				///	
-id(patient_id) enter(tested_date) origin(tested_date)
-save "$Tempdir/analysis_dataset_STSET_positivetest_tested.dta", replace
 
 ****************************************************************
 *  Create outcome specific datasets for those with evidence of infection  *

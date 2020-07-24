@@ -61,6 +61,10 @@ do "$Dodir/06b_eth_an_multivariable_eth5.do"
 *do "$Dodir/07a_eth_cr_forestplots_eth16.do" - works locally and on server  
 *do "$Dodir/07b_eth_cr_forestplots_eth5.do" - works locally and on server  
 
+/*multivariable analysis - imputed ethnicity
+do "$Dodir/08a_eth_an_multivariable_eth16_mi.do"
+do "$Dodir/08b_eth_an_multivariable_eth5_mi.do"*/
+
 *ventilation - in those admitted to ICU
 do "$Dodir/09a_eth_an_ventilation_eth16"
 do "$Dodir/09b_eth_an_ventilation_eth5"
@@ -69,12 +73,9 @@ do "$Dodir/09b_eth_an_ventilation_eth5"
 *do "$Dodir/10a_eth_an_rates_eth16"
 *do "$Dodir/10b_eth_an_rates_eth5"
 
-/*multivariable analysis - imputed ethnicity
-do "$Dodir/08a_eth_an_multivariable_eth16_mi.do"
-do "$Dodir/08b_eth_an_multivariable_eth5_mi.do"
-
-*multivariable analysis - in those with infection
-
+*Odds of testing positive amongst those tested
+do "$Dodir/11a_eth_an_testedpop_eth16"
+do "$Dodir/11b_eth_an_testedpop_eth5"
 
 
 
