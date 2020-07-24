@@ -30,7 +30,7 @@
 foreach j of global outcomes {
 use "$Tempdir/analysis_dataset_STSET_`j'.dta", clear
 
-* KM plot by high level ethnic groups
+*KM plot by high level ethnic groups
    sts graph, 				///
 	title("`j' eth5") 								///
 	failure by(eth5) 						///
@@ -44,7 +44,7 @@ use "$Tempdir/analysis_dataset_STSET_`j'.dta", clear
 	local graph5 "`graph5' "$Tabfigdir/kmplot_eth5_`j'.gph" "
 } //end outcomes
 
-graph combine `graph5', altshrink saving("$Tabfigdir/kmplot_eth5_combined", replace) ///
+grc1leg `graph5', altshrink saving("$Tabfigdir/kmplot_eth5_combined", replace) ///
 	imargin(0 0 0 0)
 graph export "$Tabfigdir/kmplot_eth5", as(svg) replace
 
@@ -58,7 +58,7 @@ foreach j of global outcomes {
 use "$Tempdir/analysis_dataset_STSET_`j'.dta", clear
 
 * KM plot by 16  ethnic groups
-cap sts graph, 				///
+sts graph, 				///
 	title("`j' eth16") 								///
 	failure by(eth16) 						///
 	xtitle("Days since 1 Feb 2020", size(small))						///
@@ -67,11 +67,11 @@ cap sts graph, 				///
 	xscale(range(30, 100)) 							///
 	xlabel(0 "1 Feb 20" 29 "1 Mar 20" 				///
 	60 "1 Apr 20" 91 "1 May 20" 122 "1 Jun 20"		///
-	152 "1 Jul 20")		
+	152 "1 Jul 20") saving("$Tabfigdir/kmplot_eth16_`j'", replace)		
 	local graph16 "`graph16' "$Tabfigdir/kmplot_eth16_`j'" "
 } //end outcomes
  
-cap graph combine `graph16', altshrink saving("$Tabfigdir/kmplot_eth16_combined",replace) ///
+grc1leg `graph16', altshrink saving("$Tabfigdir/kmplot_eth16_combined",replace) ///
 	imargin(0 0 0 0)
 graph export "$Tabfigdir/kmplot_eth16", as(svg) replace
 
