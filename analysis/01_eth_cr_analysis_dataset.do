@@ -844,11 +844,13 @@ drop if age > 110 & age != .
 
 safecount
 noi di "DROP IF DIED BEFORE INDEX"
+
+*fix death dates
 drop if onsdeath_date <= indexdate
 drop if cpnsdeath_date <= indexdate
 
 safecount 
-stop
+
 sort patient_id
 save "$Tempdir/analysis_dataset.dta", replace
 
