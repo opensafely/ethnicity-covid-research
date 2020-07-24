@@ -739,7 +739,7 @@ lab var rural_urban					"Rural-Urban Indicator"
 lab var carehome					"Care home type"
 lab var hba1c_mmol_per_mol			"HbA1c mmo/mol"
 lab var hba1c_percentage			"HbA1c %"
-lab var gp_consult_safecount			"Number of GP consultations in the 12 months prior to baseline"
+lab var gp_consult_count			"Number of GP consultations in the 12 months prior to baseline"
 
 * Comorbidities of interest 
 label var asthma						"Asthma category"
