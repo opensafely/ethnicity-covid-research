@@ -193,7 +193,7 @@ label values eth5 eth5
 graph set window 
 gen num=[_n]
 sum num
-l
+
 
 gen adjusted="Age-sex-IMD" if model=="model1"
 replace adjusted="+ co-morbidities" if model=="model2"
