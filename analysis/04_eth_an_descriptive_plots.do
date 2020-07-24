@@ -168,16 +168,15 @@ forvalues i=1/11 {
 		t1(" ") l1title("Cumulative probability of `j' by ethnic group and sex", size(medsmall))
  graph export "$Tabfigdir/km_`j'_eth16_sex.svg", as(svg) replace
 
+* Delete unneeded graphs
+forvalues i=1/11 {		
+		cap erase "$Tabfigdir/kmplot_eth`i'_age.gph"
+		cap erase "$Tabfigdir/kmplot_eth`i'_sex.gph"
+} //end outcomes
 
  
 } //end outcomes
 
 
-* Delete unneeded graphs
-forvalues i=1/11 {		
-		cap erase "$Tabfigdir/kmplot_eth`i'_age.gph"
-		cap erase "$Tabfigdir/kmplot_eth`i'_sex.gph"
-} //end agegroup
-} //end outcomes
 
 	
