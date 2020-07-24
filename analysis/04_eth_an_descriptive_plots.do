@@ -19,7 +19,7 @@
 *  
 ********************************************************************************
 *	
-*	Stata routines needed:	grc1leg	
+*	Stata routines needed:	graph combine	
 *
 ********************************************************************************/
 
@@ -44,7 +44,7 @@ use "$Tempdir/analysis_dataset_STSET_`j'.dta", clear
 	local graph5 "`graph5' "$Tabfigdir/kmplot_eth5_`j'.gph" "
 } //end outcomes
 
-grc1leg `graph5', altshrink saving("$Tabfigdir/kmplot_eth5_combined", replace) ///
+graph combine `graph5', altshrink saving("$Tabfigdir/kmplot_eth5_combined", replace) ///
 	imargin(0 0 0 0)
 graph export "$Tabfigdir/kmplot_eth5", as(svg) replace
 
@@ -65,7 +65,7 @@ use "$Tempdir/analysis_dataset_STSET_`j'.dta", clear
 	local graph16 "`graph16' "$Tabfigdir/kmplot_eth16_`j'" "
 } //end outcomes
  
-grc1leg `graph16', altshrink saving("$Tabfigdir/kmplot_eth16_combined",replace) ///
+graph combine `graph16', altshrink saving("$Tabfigdir/kmplot_eth16_combined",replace) ///
 	imargin(0 0 0 0)
 graph export "$Tabfigdir/kmplot_eth16", as(svg) replace
 
@@ -105,7 +105,7 @@ forvalues i=1/11 {
 
 
 * KM plot by ethnicity and age
- grc1leg "$Tabfigdir/kmplot_eth1_age"				///
+ graph combine "$Tabfigdir/kmplot_eth1_age"				///
 		"$Tabfigdir/kmplot_eth2_age"				///
 		"$Tabfigdir/kmplot_eth3_age"				///
 		"$Tabfigdir/kmplot_eth4_age"				///
@@ -142,7 +142,7 @@ forvalues i=1/11 {
 
 
 * KM plot by ethnicity and sex
- grc1leg "$Tabfigdir/kmplot_eth1_sex"				///
+ graph combine "$Tabfigdir/kmplot_eth1_sex"				///
 		"$Tabfigdir/kmplot_eth2_sex"				///
 		"$Tabfigdir/kmplot_eth3_sex"				///
 		"$Tabfigdir/kmplot_eth4_sex"				///

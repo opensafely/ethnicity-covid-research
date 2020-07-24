@@ -3,9 +3,8 @@ DO FILE NAME:			10b_eth_an_rates_eth5
 PROJECT:				Ethnicity and COVID
 AUTHOR:					R Mathur (modified from A wong and A Schultze)
 DATE: 					15 July 2020					
-DESCRIPTION OF FILE:	program 06 
-						univariable regression
-						multivariable regression 
+DESCRIPTION OF FILE:	program 10b 
+						strate and graphs
 DATASETS USED:			data in memory ($tempdir/analysis_dataset_STSET_outcome)
 
 DATASETS CREATED: 		none

@@ -1,11 +1,10 @@
 /*==============================================================================
-DO FILE NAME:			10b_eth_an_rates_eth16
+DO FILE NAME:			10a_eth_an_rates_eth16
 PROJECT:				Ethnicity and COVID
 AUTHOR:					R Mathur (modified from A wong and A Schultze)
 DATE: 					15 July 2020					
-DESCRIPTION OF FILE:	program 06 
-						univariable regression
-						multivariable regression 
+DESCRIPTION OF FILE:	program 10a 
+						strate and graphs
 DATASETS USED:			data in memory ($tempdir/analysis_dataset_STSET_outcome)
 
 DATASETS CREATED: 		none
@@ -16,7 +15,7 @@ OTHER OUTPUT: 			logfiles, printed to folder analysis/$logdir
 * Open a log file
 
 cap log close
-log using $logdir\10b_eth_an_rates_eth16, replace text
+log using $logdir\10a_eth_an_rates_eth16, replace text
 
 *CALCULATE RATES
 
