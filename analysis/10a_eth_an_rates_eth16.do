@@ -153,14 +153,4 @@ forvalues j=1/7 {
 
 
 
-
-
-log close
-
-
-
-
-
-
-
 log close
