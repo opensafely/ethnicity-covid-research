@@ -49,9 +49,9 @@ graph combine `graph5', altshrink saving("$Tabfigdir/kmplot_eth5_combined", repl
 graph export "$Tabfigdir/kmplot_eth5", as(svg) replace
 
 *erase eth5 graphs
-erase "$Tabfigdir/kmplot_eth5_combined.gph"
+cap erase "$Tabfigdir/kmplot_eth5_combined.gph"
 foreach j of global outcomes {
-	erase "$Tabfigdir/kmplot_eth5_`j'.gph" 
+	cap erase "$Tabfigdir/kmplot_eth5_`j'.gph" 
 }
 
 foreach j of global outcomes {
@@ -71,14 +71,14 @@ cap sts graph, 				///
 	local graph16 "`graph16' "$Tabfigdir/kmplot_eth16_`j'" "
 } //end outcomes
  
-graph combine `graph16', altshrink saving("$Tabfigdir/kmplot_eth16_combined",replace) ///
+cap graph combine `graph16', altshrink saving("$Tabfigdir/kmplot_eth16_combined",replace) ///
 	imargin(0 0 0 0)
 graph export "$Tabfigdir/kmplot_eth16", as(svg) replace
 
 *erase eth16 graphs
-erase "$Tabfigdir/kmplot_eth16_combined.gph"
+cap erase "$Tabfigdir/kmplot_eth16_combined.gph"
 foreach j of global outcomes {
-	erase "$Tabfigdir/kmplot_eth16_`j'.gph" 
+	cap erase "$Tabfigdir/kmplot_eth16_`j'.gph" 
 }
 
 *************************************
