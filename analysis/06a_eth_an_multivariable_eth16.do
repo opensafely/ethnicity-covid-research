@@ -54,7 +54,6 @@ if _rc==0{
 estimates
 estimates save "$Tempdir/model1_`i'_eth16", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model1_`i'_eth16", replace) idstr("model1_`i'_eth16") 
-
 }
 else di "WARNING MODEL1 DID NOT FIT (OUTCOME `outcome')"
 
