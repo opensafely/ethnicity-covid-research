@@ -32,7 +32,7 @@ use "$Tempdir/analysis_dataset_STSET_`i'.dta", clear
 
 /* Sense check outcomes=======================================================*/ 
 
-tab eth16 `i', missing row
+safetab eth16 `i', missing row
 
 
 /* Main Model=================================================================*/
@@ -62,7 +62,7 @@ else di "WARNING MODEL1 DID NOT FIT (OUTCOME `outcome')"
 * Age, Gender, IMD and Comorbidities  
 noi cap stcox i.eth16 i.male age1 age2 age3 	i.imd							///
 										bmi							///
-										gp_consult_count			///
+										gp_consult_safecount			///
 										i.smoke_nomiss				///
 										i.htdiag_or_highbp		 	///	
 										i.asthma					///
@@ -92,7 +92,7 @@ else di "WARNING MODEL2 DID NOT FIT (OUTCOME `outcome')"
 
 noi cap stcox i.eth16 i.male age1 age2 age3 i.imd hh_size					///
 										bmi							///
-										gp_consult_count			///
+										gp_consult_safecount			///
 										i.smoke_nomiss				///
 										i.htdiag_or_highbp		 	///	
 										i.asthma					///
@@ -137,10 +137,10 @@ local lab9: label eth16 9
 local lab10: label eth16 10
 local lab11: label eth16 11
 
-/* Counts */
+/* safecounts */
  
 * First row, eth16 = 1 (White British) reference cat
-	count if eth16 == 1 & `i' == 1
+	safecount if eth16 == 1 & `i' == 1
 	local event = r(N)
     bysort eth16: egen total_follow_up = total(_t)
 	su total_follow_up if eth16 == 1
@@ -153,7 +153,7 @@ local lab11: label eth16 11
 * Subsequent ethnic groups
 forvalues eth=2/11 {
 
-	count if eth16 == `eth' & `i' == 1
+	safecount if eth16 == `eth' & `i' == 1
 	local event = r(N)
 	su total_follow_up if eth16 == `eth'
 	local person_week = r(mean)/7

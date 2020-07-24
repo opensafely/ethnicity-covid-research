@@ -32,7 +32,7 @@ use "$Tempdir/analysis_dataset_STSET_`i'.dta", clear
 
 /* Sense check outcomes=======================================================*/ 
 
-tab eth5 `i', missing row
+safetab eth5 `i', missing row
 
 
 /* Main Model=================================================================*/

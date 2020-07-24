@@ -246,25 +246,6 @@ foreach var of varlist 	chronic_respiratory_disease ///
 						safetab male `var', row 
 }
 
- * Relationships with smoking
-foreach var of varlist 	chronic_respiratory_disease ///
-						chronic_cardiac_disease  ///
-						cancer  ///
-						perm_immunodef  ///
-						temp_immunodef  ///
-						chronic_liver_disease  ///
-						other_neuro  ///
-						stroke			///
-						dementia ///
-						esrf  ///
-						hypertension  ///
-						asthma ///
-						ra_sle_psoriasis  ///
-						dm_type ///
-					{	
-					safetab smoke `var', row 
-}
-
 
 * Close log file 
 log close

@@ -22,7 +22,7 @@ cap log close
 log using "$Logdir/01_eth_cr_create_analysis_dataset.log", replace t
 
 
-di "STARTING COUNT FROM IMPORT:"
+di "STARTING safecount FROM IMPORT:"
 cou
 
 
@@ -81,7 +81,7 @@ label define ethnicity 	1 "White"  					///
 						5 "Other"					
 						
 label values ethnicity ethnicity
-tab ethnicity
+safetab ethnicity
 
  *re-order ethnicity
  gen eth5=1 if ethnicity==1
@@ -99,7 +99,7 @@ tab ethnicity
 					
 
 label values eth5 eth5
-tab eth5, m
+safetab eth5, m
 
 
 
@@ -124,7 +124,7 @@ label define ethnicity_16 									///
 						16 "Other" 							
 						
 label values ethnicity_16 ethnicity_16
-tab ethnicity_16,m
+safetab ethnicity_16,m
 
 
 * Ethnicity (16 category grouped further)
@@ -159,7 +159,7 @@ label define eth16 	///
 						10 "All mixed" ///
 						11 "All Other" 
 label values eth16 eth16
-tab eth16,m
+safetab eth16,m
 
 
 * STP 
@@ -245,7 +245,7 @@ gen male = 1 if sex == "M"
 replace male = 0 if sex == "F"
 label define male 0"Female" 1"Male"
 label values male male
-tab male
+safetab male
 
 
 * Create binary age (for age stratification)
@@ -298,7 +298,7 @@ foreach var of varlist 	chronic_respiratory_disease ///
 						ace_inhibitors ///
 						arbs ///
 						alpha_blockers ///
-						betablockers ///
+						besafetablockers ///
 						calcium_channel_blockers ///
 						combination_bp_meds ///
 						spironolactone  ///
@@ -358,7 +358,7 @@ foreach var of varlist 	chronic_respiratory_disease ///
 						ace_inhibitors ///
 						arbs ///
 						alpha_blockers ///
-						betablockers ///
+						besafetablockers ///
 						calcium_channel_blockers ///
 						combination_bp_meds ///
 						spironolactone  ///
@@ -370,7 +370,7 @@ foreach var of varlist 	chronic_respiratory_disease ///
 	local newvar =  substr("`var'", 1, length("`var'") - 5)
 	gen `newvar' = (`var'!=. )
 	order `newvar', after(`var')
-	tab `newvar'
+	safetab `newvar'
 	
 }
 
@@ -432,7 +432,7 @@ gen bmicat_sa=bmicat
 replace bmicat_sa = 2 if bmi>=18.5 & bmi <23 & ethnicity  ==3
 replace bmicat_sa = 3 if bmi>=23 & bmi < 27.5 & ethnicity ==3
 replace bmicat_sa = 4 if bmi>=27.5 & bmi < 35 & ethnicity ==3
-tab bmicat_sa
+safetab bmicat_sa
 
 label define bmicat_sa 1 "Underweight (<18.5)" 	///
 					2 "Normal (18.5-24.9 / 22.9)"		///
@@ -532,7 +532,7 @@ replace dm_type=2 if diabetes_type=="T2DM"
 replace dm_type=3 if diabetes_type=="UNKNOWN_DM"
 replace dm_type=0 if diabetes_type=="NO_DM"
 
-tab dm_type diabetes_type
+safetab dm_type diabetes_type
 label define dm_type 0"No DM" 1"T1DM" 2"T2DM" 3"UNKNOWN_DM"
 label values dm_type dm_type
 
@@ -619,7 +619,7 @@ replace hba1ccat = 3 if hba1c_pct >= 8    & hba1c_pct < 9
 replace hba1ccat = 4 if hba1c_pct >= 9    & hba1c_pct !=.
 label define hba1ccat 0 "<6.5%" 1">=6.5-7.4" 2">=7.5-7.9" 3">=8-8.9" 4">=9"
 label values hba1ccat hba1ccat
-tab hba1ccat
+safetab hba1ccat
 
 gen hba1c75=0 if hba1c_pct<7.5
 replace hba1c75=1 if hba1c_pct>7.5 & hba1c_pct!=.
@@ -686,7 +686,7 @@ rename dereg_date dereg_dstr
 foreach i of global outcomes {
 		gen `i'=0
 		replace  `i'=1 if `i'_date < .
-		tab `i'
+		safetab `i'
 }
 
 
@@ -739,7 +739,7 @@ lab var rural_urban					"Rural-Urban Indicator"
 lab var carehome					"Care home type"
 lab var hba1c_mmol_per_mol			"HbA1c mmo/mol"
 lab var hba1c_percentage			"HbA1c %"
-lab var gp_consult_count			"Number of GP consultations in the 12 months prior to baseline"
+lab var gp_consult_safecount			"Number of GP consultations in the 12 months prior to baseline"
 
 * Comorbidities of interest 
 label var asthma						"Asthma category"
@@ -788,7 +788,7 @@ lab var insulin								"Insulin in last 6 months"
 lab var ace_inhibitors 						"ACE in last 6 months"
 lab var alpha_blockers 						"Alpha blocker in last 6 months"
 lab var arbs 								"ARB in last 6 months"
-lab var betablockers 						"Beta blocker in last 6 months"
+lab var besafetablockers 						"Beta blocker in last 6 months"
 lab var calcium_channel_blockers 			"CCB in last 6 months"
 lab var combination_bp_meds 				"BP med in last 6 months"
 lab var spironolactone 						"Spironolactone in last 6 months"
@@ -799,7 +799,7 @@ lab var insulin_date								"Insulin in last 6 months"
 lab var ace_inhibitors_date 						"ACE in last 6 months"
 lab var alpha_blockers_date 						"Alpha blocker in last 6 months"
 lab var arbs_date 								"ARB in last 6 months"
-lab var betablockers_date 						"Beta blocker in last 6 months"
+lab var besafetablockers_date 						"Beta blocker in last 6 months"
 lab var calcium_channel_blockers_date 			"CCB in last 6 months"
 lab var combination_bp_meds_date 				"BP med in last 6 months"
 lab var spironolactone_date 						"Spironolactone in last 6 months"
@@ -825,7 +825,7 @@ foreach i of global outcomes {
 * binary outcome indicators
 foreach i of global outcomes {
 	lab var `i' 					"outcome `i'"
-	tab `i'
+	safetab `i'
 }
 label var was_ventilated_flag		"outcome: ICU Ventilation"
 
@@ -837,17 +837,17 @@ drop `r(varlist)'
 
 /* APPLY INCLUSION/EXCLUIONS==================================================*/ 
 
-count
+safecount
 
 noi di "DROP AGE >110:"
 drop if age > 110 & age != .
 
-count
+safecount
 noi di "DROP IF DIED BEFORE INDEX"
 drop if onsdeath_date <= indexdate
 drop if cpnsdeath_date <= indexdate
 
-count 
+safecount 
 
 sort patient_id
 save "$Tempdir/analysis_dataset.dta", replace
@@ -873,7 +873,7 @@ foreach i of global outcomes {
 use "$Tempdir/analysis_dataset.dta", clear
 
 keep if tested==1
-count
+safecount
 save "$Tempdir/analysis_dataset_tested.dta", replace
 
 drop if positivetest_date <= tested_date 
@@ -888,7 +888,7 @@ save "$Tempdir/analysis_dataset_STSET_positivetest_tested.dta", replace
 use "$Tempdir/analysis_dataset.dta", clear
 
 keep if confirmed==1 | positivetest==1
-count
+safecount
 gen infected_date=min(confirmed_date, positivetest_date)
 save "$Tempdir/analysis_dataset_infected.dta", replace
 
