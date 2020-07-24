@@ -106,12 +106,6 @@ forvalues i=1/11 {
 	label(3 "50-<60") label(4 "60-<70")				///
 	label(5 "70-<80") label(6 "80+")				///
 	col(3) colfirst size(small))	noorigin		///
-	plot1opts(lcolor(red)) 							///
-	plot2opts(lcolor(blue)) 						///
-	plot3opts(lcolor(orange) lpattern(dash)) 		///
-	plot4opts(lcolor(green)  lpattern(dash)) 		///
-	plot5opts(lcolor(pink)   lpattern(dash_dot)) 	///
-	plot6opts(lcolor(sienna) lpattern(dash_dot))  	///
 	saving($Tabfigdir/kmplot_eth`i'_age, replace)
 }
 
@@ -147,8 +141,6 @@ forvalues i=1/11 {
 	subtitle("Sex", size(small)) 				///
 	label(1 "Female") label(2 "Male") 			///
 	col(3) colfirst size(small))	noorigin		///
-	plot1opts(lcolor(red)) 							///
-	plot2opts(lcolor(blue)) 						///
 	saving($Tabfigdir/kmplot_eth`i'_sex, replace)
 }
 
