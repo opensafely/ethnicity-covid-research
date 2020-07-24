@@ -66,8 +66,8 @@ do "$Dodir/09a_eth_an_ventilation_eth16"
 do "$Dodir/09b_eth_an_ventilation_eth5"
 
 *rates - crude, age, and age-sex stratified
-do "$Dodir/10a_eth_an_rates_eth16"
-do "$Dodir/10b_eth_an_rates_eth5"
+*do "$Dodir/10a_eth_an_rates_eth16"
+*do "$Dodir/10b_eth_an_rates_eth5"
 
 /*multivariable analysis - imputed ethnicity
 do "$Dodir/08a_eth_an_multivariable_eth16_mi.do"
