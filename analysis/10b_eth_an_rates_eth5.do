@@ -137,16 +137,5 @@ forvalues j=1/7 {
 
 } //end outcomes
 
-
-
-
-
 log close
 
-
-
-
-
-
-
-log close
