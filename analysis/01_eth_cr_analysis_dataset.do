@@ -849,13 +849,13 @@ drop if cpnsdeath_date <= indexdate
 
 count 
 
-***************
-*  Save data  *
-***************
 sort patient_id
 save "$Tempdir/analysis_dataset.dta", replace
 
-**save a version set on each outcome
+****************************************************************
+*  Create outcome specific datasets for the whole population  *
+*****************************************************************
+
 
 foreach i of global outcomes {
 	use "$Tempdir/analysis_dataset.dta", clear
@@ -866,6 +866,42 @@ foreach i of global outcomes {
 	id(patient_id) enter(indexdate) origin(indexdate)
 	save "$Tempdir/analysis_dataset_STSET_`i'.dta", replace
 }	
+
+**********************************************************************
+*  Create positive test outcome dataset for people who've had a test  *
+************************************************************************
+use "$Tempdir/analysis_dataset.dta", clear
+
+keep if tested==1
+count
+save "$Tempdir/analysis_dataset_tested.dta", replace
+
+drop if positivetest_date <= tested_date 
+
+stset stime_positivetest, fail(positivetest) 				///	
+id(patient_id) enter(tested_date) origin(tested_date)
+save "$Tempdir/analysis_dataset_STSET_positivetest_tested.dta", replace
+
+****************************************************************
+*  Create outcome specific datasets for those with evidence of infection  *
+*****************************************************************
+use "$Tempdir/analysis_dataset.dta", clear
+
+keep if confirmed==1 | positivetest==1
+count
+gen infected_date=min(confirmed_date, positivetest_date)
+save "$Tempdir/analysis_dataset_infected.dta", replace
+
+foreach i of global outcomes2 {
+	use "$Tempdir/analysis_dataset_infected.dta", clear
+	
+	drop if `i'_date <= infected_date 
+
+	stset stime_`i', fail(`i') 				///	
+	id(patient_id) enter(infected_date) origin(infected_date)
+	save "$Tempdir/analysis_dataset_STSET_`i'_infected.dta", replace
+}	
+
 	
 * Close log file 
 log close

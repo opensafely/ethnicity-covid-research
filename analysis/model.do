@@ -38,6 +38,8 @@ global tempdir    "$Tempdir"
 * Set globals for  outcomes
 global outcomes "suspected confirmed  tested positivetest ae icu cpnsdeath onsdeath onscoviddeath ons_noncoviddeath severe"
 
+global outcomes2 "ae icu cpnsdeath onsdeath onscoviddeath ons_noncoviddeath severe"
+
 *Create analysis dataset
 do "$Dodir/01_eth_cr_analysis_dataset.do"
 
