@@ -69,14 +69,14 @@ do "$Dodir/08b_eth_an_multivariable_eth5_mi.do"*/
 do "$Dodir/09a_eth_an_ventilation_eth16"
 do "$Dodir/09b_eth_an_ventilation_eth5"
 
-*rates - crude, age, and age-sex stratified
-*do "$Dodir/10a_eth_an_rates_eth16"
-*do "$Dodir/10b_eth_an_rates_eth5"
 
 *Odds of testing positive amongst those tested
 do "$Dodir/11a_eth_an_testedpop_eth16"
 do "$Dodir/11b_eth_an_testedpop_eth5"
 
+*rates - crude, age, and age-sex stratified
+do "$Dodir/10a_eth_an_rates_eth16"
+do "$Dodir/10b_eth_an_rates_eth5"
 
 
 
