@@ -48,11 +48,17 @@ graph combine `graph5', altshrink saving("$Tabfigdir/kmplot_eth5_combined", repl
 	imargin(0 0 0 0)
 graph export "$Tabfigdir/kmplot_eth5", as(svg) replace
 
+*erase eth5 graphs
+erase "$Tabfigdir/kmplot_eth5_combined.gph"
+foreach j of global outcomes {
+	erase "$Tabfigdir/kmplot_eth5_`j'.gph" 
+}
+
 foreach j of global outcomes {
 use "$Tempdir/analysis_dataset_STSET_`j'.dta", clear
 
 * KM plot by 16  ethnic groups
- sts graph, 				///
+cap sts graph, 				///
 	title("`j' eth16") 								///
 	failure by(eth16) 						///
 	xtitle("Days since 1 Feb 2020", size(small))						///
@@ -68,6 +74,12 @@ use "$Tempdir/analysis_dataset_STSET_`j'.dta", clear
 graph combine `graph16', altshrink saving("$Tabfigdir/kmplot_eth16_combined",replace) ///
 	imargin(0 0 0 0)
 graph export "$Tabfigdir/kmplot_eth16", as(svg) replace
+
+*erase eth16 graphs
+erase "$Tabfigdir/kmplot_eth16_combined.gph"
+foreach j of global outcomes {
+	erase "$Tabfigdir/kmplot_eth16_`j'.gph" 
+}
 
 *************************************
 *  KM plot by ethnic group and age/sex
@@ -162,10 +174,6 @@ forvalues i=1/11 {
 
 
 * Delete unneeded graphs
-foreach j of global outcomes {
-	cap erase "$Tabfigdir/kmplot_eth5_`j'"
-	cap erase "$Tabfigdir/kmplot_eth16_`j'"
-
 forvalues i=1/11 {		
 		cap erase "$Tabfigdir/kmplot_eth`i'_age.gph"
 		cap erase "$Tabfigdir/kmplot_eth`i'_sex.gph"
