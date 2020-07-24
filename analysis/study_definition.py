@@ -91,7 +91,7 @@ study = StudyDefinition(
     returning="was_ventilated",
     return_expectations={
             "rate": "exponential_increase",
-            "incidence" : 0.02,
+            "incidence" : 0.20,
             "date" : {"earliest" : "2020-02-01"},
             "bool" : True,
         }

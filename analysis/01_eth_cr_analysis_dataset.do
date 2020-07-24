@@ -29,16 +29,16 @@ safecount
 **************************   INPUT REQUIRED   *********************************
 
 * Censoring dates for each outcome (largely, last date outcome data available)
-gen suspected_censor			= "31/07/2020"	//TPP censor date
-gen confirmed_censor			= "31/07/2020"	//TPP censor date
+gen suspected_censor		= "31/07/2020"	//TPP censor date
+gen confirmed_censor		= "31/07/2020"	//TPP censor date
 gen tested_censor			= "31/07/2020"	//testing data
 gen positivetest_censor		= "31/07/2020"	//testing data
 gen ae_censor	 			= "31/07/2020"	//A&E admission
 gen icu_censor		 		= "31/07/2020"	//ICU admission 
-gen cpnsdeath_censor			= "31/07/2020"	//in-hospital death
-gen onsdeath_censor 			= "31/07/2020"	//all death
-gen onscoviddeath_censor 		= "31/07/2020"	//all death covid related
-gen ons_noncoviddeath_censor 	= "31/07/2020"	//all death noncovid related
+gen cpnsdeath_censor		= "31/07/2020"	//in-hospital death
+gen onsdeath_censor 		= "31/07/2020"	//all death
+gen onscoviddeath_censor 	= "31/07/2020"	//all death covid related
+gen ons_noncoviddeath_censor = "31/07/2020"	//all death noncovid related
 
 
 
