@@ -61,7 +61,7 @@ else di "WARNING MODEL1 DID NOT FIT (OUTCOME `outcome')"
 
 
 * Age, Gender, IMD and Comorbidities  
-stcox i.eth16 i.male age1 age2 age3 	i.imd							///
+noi cap stcox i.eth16 i.male age1 age2 age3 	i.imd							///
 										bmi							///
 										gp_consult_count			///
 										i.smoke_nomiss				///
@@ -91,7 +91,7 @@ else di "WARNING MODEL2 DID NOT FIT (OUTCOME `outcome')"
 
 * Age, Gender, IMD and Comorbidities  and household size
 
-stcox i.eth16 i.male age1 age2 age3 i.imd hh_size					///
+noi cap stcox i.eth16 i.male age1 age2 age3 i.imd hh_size					///
 										bmi							///
 										gp_consult_count			///
 										i.smoke_nomiss				///
