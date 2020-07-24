@@ -80,7 +80,7 @@ clogit ventilated  i.eth16 i.male age1 age2 age3 	i.imd			///
 										i.perm_immunodef 			///
 										i.temp_immunodef 			///
 										i.other_immuno		 		///
-										i.ra_sle_psoriasis, strata(stp) or	iter(100)			
+										i.ra_sle_psoriasis, strata(stp) or				
 										
 estimates save "$Tempdir/model2_ventilated_eth16", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model2_ventilated_eth16", replace) idstr("model2_ventilated_eth16") 

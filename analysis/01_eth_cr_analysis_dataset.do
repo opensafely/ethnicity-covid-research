@@ -23,7 +23,7 @@ log using "$Logdir/01_eth_cr_create_analysis_dataset.log", replace t
 
 
 di "STARTING safecount FROM IMPORT:"
-cou
+safecount
 
 
 **************************   INPUT REQUIRED   *********************************
@@ -228,18 +228,18 @@ bysort hh_id: gen hh_total=_N
 /* DROP ALL KIDS, AS HH COMPOSITION VARS ARE NOW MADE */
 noi di "DROPPING AGE<18:" 
 drop if age<18
-
+safecount
 
 * Age: Exclude those with implausible ages
 cap assert age<.
 noi di "DROPPING AGE<105:" 
 drop if age>105
-
+safecount
 * Sex: Exclude categories other than M and F
 cap assert inlist(sex, "M", "F", "I", "U")
 noi di "DROPPING GENDER NOT M/F:" 
 drop if inlist(sex, "I", "U")
-
+safecount
 
 gen male = 1 if sex == "M"
 replace male = 0 if sex == "F"
@@ -298,7 +298,7 @@ foreach var of varlist 	chronic_respiratory_disease ///
 						ace_inhibitors ///
 						arbs ///
 						alpha_blockers ///
-						besafetablockers ///
+						betablockers ///
 						calcium_channel_blockers ///
 						combination_bp_meds ///
 						spironolactone  ///
@@ -358,7 +358,7 @@ foreach var of varlist 	chronic_respiratory_disease ///
 						ace_inhibitors ///
 						arbs ///
 						alpha_blockers ///
-						besafetablockers ///
+						betablockers ///
 						calcium_channel_blockers ///
 						combination_bp_meds ///
 						spironolactone  ///
@@ -788,7 +788,7 @@ lab var insulin								"Insulin in last 6 months"
 lab var ace_inhibitors 						"ACE in last 6 months"
 lab var alpha_blockers 						"Alpha blocker in last 6 months"
 lab var arbs 								"ARB in last 6 months"
-lab var besafetablockers 						"Beta blocker in last 6 months"
+lab var betablockers 						"Beta blocker in last 6 months"
 lab var calcium_channel_blockers 			"CCB in last 6 months"
 lab var combination_bp_meds 				"BP med in last 6 months"
 lab var spironolactone 						"Spironolactone in last 6 months"
@@ -799,7 +799,7 @@ lab var insulin_date								"Insulin in last 6 months"
 lab var ace_inhibitors_date 						"ACE in last 6 months"
 lab var alpha_blockers_date 						"Alpha blocker in last 6 months"
 lab var arbs_date 								"ARB in last 6 months"
-lab var besafetablockers_date 						"Beta blocker in last 6 months"
+lab var betablockers_date 						"Beta blocker in last 6 months"
 lab var calcium_channel_blockers_date 			"CCB in last 6 months"
 lab var combination_bp_meds_date 				"BP med in last 6 months"
 lab var spironolactone_date 						"Spironolactone in last 6 months"
@@ -848,7 +848,7 @@ drop if onsdeath_date <= indexdate
 drop if cpnsdeath_date <= indexdate
 
 safecount 
-
+stop
 sort patient_id
 save "$Tempdir/analysis_dataset.dta", replace
 
