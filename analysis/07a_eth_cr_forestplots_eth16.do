@@ -12,9 +12,9 @@ OTHER OUTPUT: 			forestplot for eth16 complete case analysis
 clear
 * Open a log file
 cap log close
-log using $logdir\07b_eth_cr_forestplots_eth16, replace 
+log using $logdir\07a_eth_cr_forestplots_eth16, replace t
 
-capture {
+//capture {
 
 foreach i of global outcomes {
 		cap describe using "$Tempdir/model1_`i'_eth16.dta"
@@ -71,34 +71,40 @@ tab eth16,m
 graph set window 
 gen num=[_n]
 sum num
-l
+
+gen log_estimate = log(estimate)
+gen log_min95 = log(min95)
+gen log_max95 = log(max95)
+
 save "$Tempdir/HR_forestplot_eth16_cc.dta", replace
 
-replace model="" if eth16!=1
 
+// *Create one graph for all fully adjusted outcomes
+// metan log_estimate log_min95 log_max95 if model=="model3" ///
+//  , eform random effect(Hazard Ratio) null(1) lcols(outcome eth16) dp(2) xlab(.25,.5,1,2,4) ///
+// 	nowt  nooverall nobox graphregion(color(white)) scheme(sj) texts(100) astext(65) 	///
+// 	title("fully adjusted eth16'", size(medsmall)) ///
+// 	t2title("complete case analysis", size(small)) ///
+// 	graphregion(margin(zero)) ///
+// 	saving("$Tabfigdir\Forestplot_alloutcomes_eth16_cc.gph", replace)
+// *Export graph
+// graph export "$Tabfigdir\Forestplot_alloutcomes_eth16_cc.svg", replace 
+// //	} //end capture
+cap {
 *Create one graph per outcome
+replace model="" if eth16!=1
 foreach i of global outcomes {
-cap metan estimate min95 max95 if outcome=="`i'" ///
- , effect(HR) null(1) lcols(model eth16) by(outcome) dp(2) ///
-	nowt nosubgroup  nooverall nobox graphregion(color(white)) scheme(sj)  	///
+metan log_estimate log_min95 log_max95 if outcome=="`i'" ///
+ , eform random effect(Hazard Ratio) null(1) lcols(model eth16) by(outcome) dp(2) xlab(.25,.5,1,2,4) ///
+	nowt nosubgroup  nooverall nobox graphregion(color(white)) scheme(sj) texts(100) astext(65)  	///
 	title("`i'", size(medsmall)) ///
 	t2title("complete case analysis", size(small)) ///
 	graphregion(margin(zero)) ///
 	saving("$Tabfigdir\Forestplot_`i'_eth16_cc.gph", replace)
-	graph export "$Tabfigdir\Forestplot_`i'_eth16_cc.svg", replace  
+*Export graph
+graph export "$Tabfigdir\Forestplot_`i'_eth16_cc.svg", replace  
 } //end outcomes
-
-*Create one graph for all fully adjusted outcomes
-cap metan estimate min95 max95 if model=="model3" ///
- , effect(HR) null(1) lcols(outcome eth16) dp(2) ///
-	nowt  nooverall nobox graphregion(color(white)) scheme(sj)  	///
-	title("fully adjusted eth16'", size(medsmall)) ///
-	t2title("complete case analysis", size(small)) ///
-	graphregion(margin(zero)) ///
-	saving("$Tabfigdir\Forestplot_alloutcomes_eth16_cc.gph", replace)
-	graph export "$Tabfigdir\Forestplot_alloutcomes_eth16_cc.svg", replace 
-	
-	} //end capture
+}
 
 	
 log close

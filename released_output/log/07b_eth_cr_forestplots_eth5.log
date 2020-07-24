@@ -1,0 +1,757 @@
+-------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  E:\analyses\ethnicity-covid-research/output/log\07b_eth_cr_forestp
+> lots_eth5.log
+  log type:  text
+ opened on:  23 Jul 2020, 19:38:38
+
+. 
+. foreach i of global outcomes {
+  2.                 describe using "$Tempdir/model1_`i'_eth5.dta"
+  3.         if r(N) > 0 local hr "`hr' "$Tempdir/model1_`i'_eth5.dta" "
+  4. }
+
+Contains data                                 
+  obs:            15                          23 Jul 2020 07:09
+ vars:             9                          
+-------------------------------------------------------------------------------
+              storage   display    value
+variable name   type    format     label      variable label
+-------------------------------------------------------------------------------
+idstr           str18   %18s                  String ID
+parm            str7    %9s                   Parameter name
+label           str35   %35s                  Parameter label
+estimate        double  %10.0g                Parameter estimate
+stderr          double  %10.0g                SE of parameter estimate
+z               double  %10.0g                Standard normal deviate
+p               double  %10.0g                P-value
+min95           double  %10.0g                Lower 95% confidence limit
+max95           double  %10.0g                Upper 95% confidence limit
+-------------------------------------------------------------------------------
+Sorted by: 
+
+Contains data                                 
+  obs:            15                          23 Jul 2020 08:11
+ vars:             9                          
+-------------------------------------------------------------------------------
+              storage   display    value
+variable name   type    format     label      variable label
+-------------------------------------------------------------------------------
+idstr           str24   %24s                  String ID
+parm            str7    %9s                   Parameter name
+label           str35   %35s                  Parameter label
+estimate        double  %10.0g                Parameter estimate
+stderr          double  %10.0g                SE of parameter estimate
+z               double  %10.0g                Standard normal deviate
+p               double  %10.0g                P-value
+min95           double  %10.0g                Lower 95% confidence limit
+max95           double  %10.0g                Upper 95% confidence limit
+-------------------------------------------------------------------------------
+Sorted by: 
+
+Contains data                                 
+  obs:            15                          23 Jul 2020 09:14
+ vars:             9                          
+-------------------------------------------------------------------------------
+              storage   display    value
+variable name   type    format     label      variable label
+-------------------------------------------------------------------------------
+idstr           str15   %15s                  String ID
+parm            str7    %9s                   Parameter name
+label           str35   %35s                  Parameter label
+estimate        double  %10.0g                Parameter estimate
+stderr          double  %10.0g                SE of parameter estimate
+z               double  %10.0g                Standard normal deviate
+p               double  %10.0g                P-value
+min95           double  %10.0g                Lower 95% confidence limit
+max95           double  %10.0g                Upper 95% confidence limit
+-------------------------------------------------------------------------------
+Sorted by: 
+
+Contains data                                 
+  obs:            15                          23 Jul 2020 10:49
+ vars:             9                          
+-------------------------------------------------------------------------------
+              storage   display    value
+variable name   type    format     label      variable label
+-------------------------------------------------------------------------------
+idstr           str21   %21s                  String ID
+parm            str7    %9s                   Parameter name
+label           str35   %35s                  Parameter label
+estimate        double  %10.0g                Parameter estimate
+stderr          double  %10.0g                SE of parameter estimate
+z               double  %10.0g                Standard normal deviate
+p               double  %10.0g                P-value
+min95           double  %10.0g                Lower 95% confidence limit
+max95           double  %10.0g                Upper 95% confidence limit
+-------------------------------------------------------------------------------
+Sorted by: 
+
+Contains data                                 
+  obs:            15                          23 Jul 2020 11:57
+ vars:             9                          
+-------------------------------------------------------------------------------
+              storage   display    value
+variable name   type    format     label      variable label
+-------------------------------------------------------------------------------
+idstr           str20   %20s                  String ID
+parm            str7    %9s                   Parameter name
+label           str35   %35s                  Parameter label
+estimate        double  %10.0g                Parameter estimate
+stderr          double  %10.0g                SE of parameter estimate
+z               double  %10.0g                Standard normal deviate
+p               double  %10.0g                P-value
+min95           double  %10.0g                Lower 95% confidence limit
+max95           double  %10.0g                Upper 95% confidence limit
+-------------------------------------------------------------------------------
+Sorted by: 
+
+Contains data                                 
+  obs:            15                          23 Jul 2020 13:06
+ vars:             9                          
+-------------------------------------------------------------------------------
+              storage   display    value
+variable name   type    format     label      variable label
+-------------------------------------------------------------------------------
+idstr           str25   %25s                  String ID
+parm            str7    %9s                   Parameter name
+label           str35   %35s                  Parameter label
+estimate        double  %10.0g                Parameter estimate
+stderr          double  %10.0g                SE of parameter estimate
+z               double  %10.0g                Standard normal deviate
+p               double  %10.0g                P-value
+min95           double  %10.0g                Lower 95% confidence limit
+max95           double  %10.0g                Upper 95% confidence limit
+-------------------------------------------------------------------------------
+Sorted by: 
+
+Contains data                                 
+  obs:            15                          23 Jul 2020 14:19
+ vars:             9                          
+-------------------------------------------------------------------------------
+              storage   display    value
+variable name   type    format     label      variable label
+-------------------------------------------------------------------------------
+idstr           str29   %29s                  String ID
+parm            str7    %9s                   Parameter name
+label           str35   %35s                  Parameter label
+estimate        double  %10.0g                Parameter estimate
+stderr          double  %10.0g                SE of parameter estimate
+z               double  %10.0g                Standard normal deviate
+p               double  %10.0g                P-value
+min95           double  %10.0g                Lower 95% confidence limit
+max95           double  %10.0g                Upper 95% confidence limit
+-------------------------------------------------------------------------------
+Sorted by: 
+
+. 
+. foreach i of global outcomes {
+  2.                 describe using "$Tempdir/model2_`i'_eth5.dta"
+  3.         if r(N) > 0 local hr "`hr' "$Tempdir/model2_`i'_eth5.dta" "
+  4. }
+
+Contains data                                 
+  obs:            54                          23 Jul 2020 07:30
+ vars:             9                          
+-------------------------------------------------------------------------------
+              storage   display    value
+variable name   type    format     label      variable label
+-------------------------------------------------------------------------------
+idstr           str18   %18s                  String ID
+parm            str26   %26s                  Parameter name
+label           str61   %61s                  Parameter label
+estimate        double  %10.0g                Parameter estimate
+stderr          double  %10.0g                SE of parameter estimate
+z               double  %10.0g                Standard normal deviate
+p               double  %10.0g                P-value
+min95           double  %10.0g                Lower 95% confidence limit
+max95           double  %10.0g                Upper 95% confidence limit
+-------------------------------------------------------------------------------
+Sorted by: 
+
+Contains data                                 
+  obs:            54                          23 Jul 2020 08:32
+ vars:             9                          
+-------------------------------------------------------------------------------
+              storage   display    value
+variable name   type    format     label      variable label
+-------------------------------------------------------------------------------
+idstr           str24   %24s                  String ID
+parm            str26   %26s                  Parameter name
+label           str61   %61s                  Parameter label
+estimate        double  %10.0g                Parameter estimate
+stderr          double  %10.0g                SE of parameter estimate
+z               double  %10.0g                Standard normal deviate
+p               double  %10.0g                P-value
+min95           double  %10.0g                Lower 95% confidence limit
+max95           double  %10.0g                Upper 95% confidence limit
+-------------------------------------------------------------------------------
+Sorted by: 
+
+Contains data                                 
+  obs:            54                          23 Jul 2020 09:49
+ vars:             9                          
+-------------------------------------------------------------------------------
+              storage   display    value
+variable name   type    format     label      variable label
+-------------------------------------------------------------------------------
+idstr           str15   %15s                  String ID
+parm            str26   %26s                  Parameter name
+label           str61   %61s                  Parameter label
+estimate        double  %10.0g                Parameter estimate
+stderr          double  %10.0g                SE of parameter estimate
+z               double  %10.0g                Standard normal deviate
+p               double  %10.0g                P-value
+min95           double  %10.0g                Lower 95% confidence limit
+max95           double  %10.0g                Upper 95% confidence limit
+-------------------------------------------------------------------------------
+Sorted by: 
+
+Contains data                                 
+  obs:            54                          23 Jul 2020 11:12
+ vars:             9                          
+-------------------------------------------------------------------------------
+              storage   display    value
+variable name   type    format     label      variable label
+-------------------------------------------------------------------------------
+idstr           str21   %21s                  String ID
+parm            str26   %26s                  Parameter name
+label           str61   %61s                  Parameter label
+estimate        double  %10.0g                Parameter estimate
+stderr          double  %10.0g                SE of parameter estimate
+z               double  %10.0g                Standard normal deviate
+p               double  %10.0g                P-value
+min95           double  %10.0g                Lower 95% confidence limit
+max95           double  %10.0g                Upper 95% confidence limit
+-------------------------------------------------------------------------------
+Sorted by: 
+
+Contains data                                 
+  obs:            54                          23 Jul 2020 12:20
+ vars:             9                          
+-------------------------------------------------------------------------------
+              storage   display    value
+variable name   type    format     label      variable label
+-------------------------------------------------------------------------------
+idstr           str20   %20s                  String ID
+parm            str26   %26s                  Parameter name
+label           str61   %61s                  Parameter label
+estimate        double  %10.0g                Parameter estimate
+stderr          double  %10.0g                SE of parameter estimate
+z               double  %10.0g                Standard normal deviate
+p               double  %10.0g                P-value
+min95           double  %10.0g                Lower 95% confidence limit
+max95           double  %10.0g                Upper 95% confidence limit
+-------------------------------------------------------------------------------
+Sorted by: 
+
+Contains data                                 
+  obs:            54                          23 Jul 2020 13:31
+ vars:             9                          
+-------------------------------------------------------------------------------
+              storage   display    value
+variable name   type    format     label      variable label
+-------------------------------------------------------------------------------
+idstr           str25   %25s                  String ID
+parm            str26   %26s                  Parameter name
+label           str61   %61s                  Parameter label
+estimate        double  %10.0g                Parameter estimate
+stderr          double  %10.0g                SE of parameter estimate
+z               double  %10.0g                Standard normal deviate
+p               double  %10.0g                P-value
+min95           double  %10.0g                Lower 95% confidence limit
+max95           double  %10.0g                Upper 95% confidence limit
+-------------------------------------------------------------------------------
+Sorted by: 
+
+Contains data                                 
+  obs:            54                          23 Jul 2020 14:42
+ vars:             9                          
+-------------------------------------------------------------------------------
+              storage   display    value
+variable name   type    format     label      variable label
+-------------------------------------------------------------------------------
+idstr           str29   %29s                  String ID
+parm            str26   %26s                  Parameter name
+label           str61   %61s                  Parameter label
+estimate        double  %10.0g                Parameter estimate
+stderr          double  %10.0g                SE of parameter estimate
+z               double  %10.0g                Standard normal deviate
+p               double  %10.0g                P-value
+min95           double  %10.0g                Lower 95% confidence limit
+max95           double  %10.0g                Upper 95% confidence limit
+-------------------------------------------------------------------------------
+Sorted by: 
+
+. 
+. foreach i of global outcomes {
+  2.                 describe using "$Tempdir/model3_`i'_eth5.dta"
+  3.         if r(N) > 0 local hr "`hr' "$Tempdir/model3_`i'_eth5.dta" "
+  4. }
+
+Contains data                                 
+  obs:            55                          23 Jul 2020 07:51
+ vars:             9                          
+-------------------------------------------------------------------------------
+              storage   display    value
+variable name   type    format     label      variable label
+-------------------------------------------------------------------------------
+idstr           str18   %18s                  String ID
+parm            str26   %26s                  Parameter name
+label           str61   %61s                  Parameter label
+estimate        double  %10.0g                Parameter estimate
+stderr          double  %10.0g                SE of parameter estimate
+z               double  %10.0g                Standard normal deviate
+p               double  %10.0g                P-value
+min95           double  %10.0g                Lower 95% confidence limit
+max95           double  %10.0g                Upper 95% confidence limit
+-------------------------------------------------------------------------------
+Sorted by: 
+
+Contains data                                 
+  obs:            55                          23 Jul 2020 08:54
+ vars:             9                          
+-------------------------------------------------------------------------------
+              storage   display    value
+variable name   type    format     label      variable label
+-------------------------------------------------------------------------------
+idstr           str24   %24s                  String ID
+parm            str26   %26s                  Parameter name
+label           str61   %61s                  Parameter label
+estimate        double  %10.0g                Parameter estimate
+stderr          double  %10.0g                SE of parameter estimate
+z               double  %10.0g                Standard normal deviate
+p               double  %10.0g                P-value
+min95           double  %10.0g                Lower 95% confidence limit
+max95           double  %10.0g                Upper 95% confidence limit
+-------------------------------------------------------------------------------
+Sorted by: 
+
+Contains data                                 
+  obs:            55                          23 Jul 2020 10:26
+ vars:             9                          
+-------------------------------------------------------------------------------
+              storage   display    value
+variable name   type    format     label      variable label
+-------------------------------------------------------------------------------
+idstr           str15   %15s                  String ID
+parm            str26   %26s                  Parameter name
+label           str61   %61s                  Parameter label
+estimate        double  %10.0g                Parameter estimate
+stderr          double  %10.0g                SE of parameter estimate
+z               double  %10.0g                Standard normal deviate
+p               double  %10.0g                P-value
+min95           double  %10.0g                Lower 95% confidence limit
+max95           double  %10.0g                Upper 95% confidence limit
+-------------------------------------------------------------------------------
+Sorted by: 
+
+Contains data                                 
+  obs:            55                          23 Jul 2020 11:35
+ vars:             9                          
+-------------------------------------------------------------------------------
+              storage   display    value
+variable name   type    format     label      variable label
+-------------------------------------------------------------------------------
+idstr           str21   %21s                  String ID
+parm            str26   %26s                  Parameter name
+label           str61   %61s                  Parameter label
+estimate        double  %10.0g                Parameter estimate
+stderr          double  %10.0g                SE of parameter estimate
+z               double  %10.0g                Standard normal deviate
+p               double  %10.0g                P-value
+min95           double  %10.0g                Lower 95% confidence limit
+max95           double  %10.0g                Upper 95% confidence limit
+-------------------------------------------------------------------------------
+Sorted by: 
+
+Contains data                                 
+  obs:            55                          23 Jul 2020 12:44
+ vars:             9                          
+-------------------------------------------------------------------------------
+              storage   display    value
+variable name   type    format     label      variable label
+-------------------------------------------------------------------------------
+idstr           str20   %20s                  String ID
+parm            str26   %26s                  Parameter name
+label           str61   %61s                  Parameter label
+estimate        double  %10.0g                Parameter estimate
+stderr          double  %10.0g                SE of parameter estimate
+z               double  %10.0g                Standard normal deviate
+p               double  %10.0g                P-value
+min95           double  %10.0g                Lower 95% confidence limit
+max95           double  %10.0g                Upper 95% confidence limit
+-------------------------------------------------------------------------------
+Sorted by: 
+
+Contains data                                 
+  obs:            55                          23 Jul 2020 13:56
+ vars:             9                          
+-------------------------------------------------------------------------------
+              storage   display    value
+variable name   type    format     label      variable label
+-------------------------------------------------------------------------------
+idstr           str25   %25s                  String ID
+parm            str26   %26s                  Parameter name
+label           str61   %61s                  Parameter label
+estimate        double  %10.0g                Parameter estimate
+stderr          double  %10.0g                SE of parameter estimate
+z               double  %10.0g                Standard normal deviate
+p               double  %10.0g                P-value
+min95           double  %10.0g                Lower 95% confidence limit
+max95           double  %10.0g                Upper 95% confidence limit
+-------------------------------------------------------------------------------
+Sorted by: 
+
+Contains data                                 
+  obs:            55                          23 Jul 2020 15:06
+ vars:             9                          
+-------------------------------------------------------------------------------
+              storage   display    value
+variable name   type    format     label      variable label
+-------------------------------------------------------------------------------
+idstr           str29   %29s                  String ID
+parm            str26   %26s                  Parameter name
+label           str61   %61s                  Parameter label
+estimate        double  %10.0g                Parameter estimate
+stderr          double  %10.0g                SE of parameter estimate
+z               double  %10.0g                Standard normal deviate
+p               double  %10.0g                P-value
+min95           double  %10.0g                Lower 95% confidence limit
+max95           double  %10.0g                Upper 95% confidence limit
+-------------------------------------------------------------------------------
+Sorted by: 
+
+. 
+. dsconcat `hr'
+
+. duplicates drop
+
+Duplicates in terms of all variables
+
+(0 observations are duplicates)
+
+. 
+. split idstr, p(_)
+variables created as string: 
+idstr1  idstr2  idstr3  idstr4
+
+. drop idstr
+
+. ren idstr1 model
+
+. ren idstr2 outcome
+
+. drop idstr3 idstr4
+
+. 
+. replace outcome="ONS non-COVID death" if outcome=="ons"
+variable outcome was str13 now str19
+(124 real changes made)
+
+. 
+. 
+. *keep HRs for ethnic group
+. keep if label=="Eth 5 categories"
+(763 observations deleted)
+
+. drop label
+
+. 
+. gen eth5=1 if regexm(parm, "1b")
+(84 missing values generated)
+
+. forvalues i=2/5 {
+  2.         replace eth5=`i' if regexm(parm, "`i'.eth5")
+  3. }
+(21 real changes made)
+(21 real changes made)
+(21 real changes made)
+(21 real changes made)
+
+. 
+. drop parm
+
+. order outcome model eth5
+
+. 
+.  label define eth5              1 "White"                                    
+>    ///
+>                                                 2 "South Asian"              
+>            ///                                             
+>                                                 3 "Black"                    
+>                    ///
+>                                                 4 "Mixed"       ///
+>                                                 5 "Other"                    
+>                    ///
+>                                         
+
+. 
+. label values eth5 eth5
+
+. tab eth5, m
+
+       eth5 |      Freq.     Percent        Cum.
+------------+-----------------------------------
+      White |         21       20.00       20.00
+South Asian |         21       20.00       40.00
+      Black |         21       20.00       60.00
+      Mixed |         21       20.00       80.00
+      Other |         21       20.00      100.00
+------------+-----------------------------------
+      Total |        105      100.00
+
+. 
+. graph set window 
+
+   window           current
+   setting          default          choices
+   ------------------------------------------------------------------------
+   fontface         Arial             font name
+   fontfacesans     Arial             font name
+   fontfaceserif    Times New Roman   font name
+   fontfacemono     Courier New       font name
+   fontfacesymbol   Symbol            font name
+   ------------------------------------------------------------------------
+   To change setting, type "graph set window setting choice"
+
+. gen num=[_n]
+
+. sum num
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+         num |        105          53    30.45488          1        105
+
+. sort num
+
+. 
+. gen log_estimate = log(estimate)
+
+. gen log_min95 = log(min95)
+
+. gen log_max95 = log(max95)
+
+. 
+. save "$Tempdir/HR_forestplot_eth5_cc.dta", replace
+file E:\analyses\ethnicity-covid-research/output/tempdata/HR_forestplot_eth5_cc
+> .dta saved
+
+. 
+. 
+. 
+. 
+. *Create one graph per outcome
+. replace model="" if eth5!=1
+(84 real changes made)
+
+. foreach i of global outcomes {
+  2. metan log_estimate log_min95 log_max95 if outcome=="`i'" ///
+>  , eform random effect(Hazard Ratio) null(1) lcols(model eth5) by(outcome) dp
+> (2) xlab(.25,.5,1,2,4) ///
+>         nowt nosubgroup  nooverall nobox graphregion(color(white)) scheme(sj)
+>  texts(100) astext(65)     ///
+>         title("`i'", size(medsmall)) ///
+>         t2title("complete case analysis", size(small)) ///
+>         graphregion(margin(zero)) ///
+>         saving("$Tabfigdir\Forestplot_`i'_eth5_cc.gph", replace)
+  3. *Export graph
+. graph export "$Tabfigdir\Forestplot_`i'_eth5_cc.svg", replace  
+  4. } //end outcomes
+
+           Study     |     ES    [95% Conf. Interval]     
+---------------------+---------------------------------------------------
+     tested
+model1               |    1.000     1.000     1.000        
+                     |    1.090     1.078     1.101        
+                     |    1.059     1.041     1.077        
+                     |    1.029     1.004     1.054        
+                     |    0.721     0.706     0.737        
+model2               |    1.000     1.000     1.000        
+                     |    1.035     1.022     1.047        
+                     |    1.062     1.041     1.083        
+                     |    1.052     1.022     1.082        
+                     |    0.878     0.856     0.900        
+model3               |    1.000     1.000     1.000        
+                     |    1.033     1.020     1.045        
+                     |    1.061     1.040     1.082        
+                     |    1.050     1.020     1.080        
+                     |    0.873     0.851     0.895        
+---------------------+---------------------------------------------------
+(note: file E:\analyses\ethnicity-covid-research/output/tabfig\Forestplot_teste
+> d_eth5_cc.gph not found)
+(file E:\analyses\ethnicity-covid-research/output/tabfig\Forestplot_tested_eth5
+> _cc.gph saved)
+(note: file E:\analyses\ethnicity-covid-research/output/tabfig\Forestplot_teste
+> d_eth5_cc.svg not found)
+(file E:\analyses\ethnicity-covid-research/output/tabfig\Forestplot_tested_eth5
+> _cc.svg written in SVG format)
+
+           Study     |     ES    [95% Conf. Interval]     
+---------------------+---------------------------------------------------
+     positivetest
+model1               |    1.000     1.000     1.000        
+                     |    2.143     2.088     2.200        
+                     |    1.859     1.779     1.943        
+                     |    1.494     1.391     1.603        
+                     |    1.180     1.112     1.251        
+model2               |    1.000     1.000     1.000        
+                     |    1.864     1.807     1.923        
+                     |    1.726     1.642     1.815        
+                     |    1.499     1.380     1.628        
+                     |    1.429     1.333     1.531        
+model3               |    1.000     1.000     1.000        
+                     |    1.862     1.805     1.921        
+                     |    1.726     1.641     1.814        
+                     |    1.497     1.378     1.627        
+                     |    1.420     1.325     1.521        
+---------------------+---------------------------------------------------
+(note: file E:\analyses\ethnicity-covid-research/output/tabfig\Forestplot_posit
+> ivetest_eth5_cc.gph not found)
+(file E:\analyses\ethnicity-covid-research/output/tabfig\Forestplot_positivetes
+> t_eth5_cc.gph saved)
+(note: file E:\analyses\ethnicity-covid-research/output/tabfig\Forestplot_posit
+> ivetest_eth5_cc.svg not found)
+(file E:\analyses\ethnicity-covid-research/output/tabfig\Forestplot_positivetes
+> t_eth5_cc.svg written in SVG format)
+
+           Study     |     ES    [95% Conf. Interval]     
+---------------------+---------------------------------------------------
+     icu
+model1               |    1.000     1.000     1.000        
+                     |    2.859     2.438     3.352        
+                     |    3.699     3.008     4.547        
+                     |    2.786     1.940     4.000        
+                     |    3.017     2.328     3.908        
+model2               |    1.000     1.000     1.000        
+                     |    2.479     2.069     2.972        
+                     |    3.179     2.537     3.984        
+                     |    2.590     1.731     3.876        
+                     |    3.626     2.728     4.821        
+model3               |    1.000     1.000     1.000        
+                     |    2.475     2.065     2.966        
+                     |    3.176     2.534     3.980        
+                     |    2.588     1.729     3.872        
+                     |    3.618     2.722     4.810        
+---------------------+---------------------------------------------------
+(note: file E:\analyses\ethnicity-covid-research/output/tabfig\Forestplot_icu_e
+> th5_cc.gph not found)
+(file E:\analyses\ethnicity-covid-research/output/tabfig\Forestplot_icu_eth5_cc
+> .gph saved)
+(note: file E:\analyses\ethnicity-covid-research/output/tabfig\Forestplot_icu_e
+> th5_cc.svg not found)
+(file E:\analyses\ethnicity-covid-research/output/tabfig\Forestplot_icu_eth5_cc
+> .svg written in SVG format)
+
+           Study     |     ES    [95% Conf. Interval]     
+---------------------+---------------------------------------------------
+     cpnsdeath
+model1               |    1.000     1.000     1.000        
+                     |    1.641     1.498     1.798        
+                     |    1.699     1.482     1.948        
+                     |    1.453     1.109     1.903        
+                     |    1.298     1.058     1.592        
+model2               |    1.000     1.000     1.000        
+                     |    1.552     1.408     1.711        
+                     |    1.462     1.264     1.691        
+                     |    1.291     0.961     1.736        
+                     |    1.439     1.164     1.779        
+model3               |    1.000     1.000     1.000        
+                     |    1.560     1.415     1.720        
+                     |    1.474     1.274     1.704        
+                     |    1.302     0.968     1.749        
+                     |    1.447     1.170     1.788        
+---------------------+---------------------------------------------------
+(note: file E:\analyses\ethnicity-covid-research/output/tabfig\Forestplot_cpnsd
+> eath_eth5_cc.gph not found)
+(file E:\analyses\ethnicity-covid-research/output/tabfig\Forestplot_cpnsdeath_e
+> th5_cc.gph saved)
+(note: file E:\analyses\ethnicity-covid-research/output/tabfig\Forestplot_cpnsd
+> eath_eth5_cc.svg not found)
+(file E:\analyses\ethnicity-covid-research/output/tabfig\Forestplot_cpnsdeath_e
+> th5_cc.svg written in SVG format)
+
+           Study     |     ES    [95% Conf. Interval]     
+---------------------+---------------------------------------------------
+     onsdeath
+model1               |    1.000     1.000     1.000        
+                     |    0.862     0.825     0.901        
+                     |    0.893     0.833     0.957        
+                     |    0.846     0.744     0.961        
+                     |    0.724     0.656     0.798        
+model2               |    1.000     1.000     1.000        
+                     |    0.888     0.847     0.930        
+                     |    0.866     0.804     0.932        
+                     |    0.884     0.772     1.012        
+                     |    0.814     0.734     0.901        
+model3               |    1.000     1.000     1.000        
+                     |    0.894     0.853     0.936        
+                     |    0.874     0.812     0.940        
+                     |    0.893     0.780     1.023        
+                     |    0.819     0.739     0.908        
+---------------------+---------------------------------------------------
+(note: file E:\analyses\ethnicity-covid-research/output/tabfig\Forestplot_onsde
+> ath_eth5_cc.gph not found)
+(file E:\analyses\ethnicity-covid-research/output/tabfig\Forestplot_onsdeath_et
+> h5_cc.gph saved)
+(note: file E:\analyses\ethnicity-covid-research/output/tabfig\Forestplot_onsde
+> ath_eth5_cc.svg not found)
+(file E:\analyses\ethnicity-covid-research/output/tabfig\Forestplot_onsdeath_et
+> h5_cc.svg written in SVG format)
+
+           Study     |     ES    [95% Conf. Interval]     
+---------------------+---------------------------------------------------
+     onscoviddeath
+model1               |    1.000     1.000     1.000        
+                     |    1.374     1.268     1.488        
+                     |    1.496     1.327     1.686        
+                     |    1.379     1.097     1.734        
+                     |    1.195     1.004     1.422        
+model2               |    1.000     1.000     1.000        
+                     |    1.304     1.198     1.420        
+                     |    1.292     1.137     1.467        
+                     |    1.291     1.009     1.651        
+                     |    1.272     1.061     1.526        
+model3               |    1.000     1.000     1.000        
+                     |    1.319     1.211     1.436        
+                     |    1.310     1.153     1.488        
+                     |    1.312     1.026     1.677        
+                     |    1.287     1.073     1.543        
+---------------------+---------------------------------------------------
+(note: file E:\analyses\ethnicity-covid-research/output/tabfig\Forestplot_onsco
+> viddeath_eth5_cc.gph not found)
+(file E:\analyses\ethnicity-covid-research/output/tabfig\Forestplot_onscoviddea
+> th_eth5_cc.gph saved)
+(note: file E:\analyses\ethnicity-covid-research/output/tabfig\Forestplot_onsco
+> viddeath_eth5_cc.svg not found)
+(file E:\analyses\ethnicity-covid-research/output/tabfig\Forestplot_onscoviddea
+> th_eth5_cc.svg written in SVG format)
+Insufficient data to perform this meta-analysis
+(note: file E:\analyses\ethnicity-covid-research/output/tabfig\Forestplot_ons_n
+> oncoviddeath_eth5_cc.svg not found)
+(file E:\analyses\ethnicity-covid-research/output/tabfig\Forestplot_ons_noncovi
+> ddeath_eth5_cc.svg written in SVG format)
+
+. 
+. 
+. 
+. // *Create one graph for all fully adjusted outcomes
+. // metan estimate min95 max95 if model=="model3" ///
+. //  , effect(HR) null(1) lcols(outcome eth5) dp(2) ///
+. //      nowt  nooverall nobox graphregion(color(white)) scheme(sj)      ///
+. //      title("fully adjusted eth5'", size(medsmall)) ///
+. //      t2title("complete case analysis", size(small)) ///
+. //      graphregion(margin(zero)) ///
+. //      saving("$Tabfigdir\Forestplot_alloutcomes_eth5_cc.gph", replace)
+. //      graph export "$Tabfigdir\Forestplot_alloutcomes_eth5_cc.svg", replace
+>   
+. 
+. //} //end capture
+. *close log file
+. log close
+      name:  <unnamed>
+       log:  E:\analyses\ethnicity-covid-research/output/log\07b_eth_cr_forestp
+> lots_eth5.log
+  log type:  text
+ closed on:  23 Jul 2020, 19:39:09
+-------------------------------------------------------------------------------
