@@ -13,6 +13,7 @@ DATASETS CREATED: 		none
 OTHER OUTPUT: 			logfiles, printed to folder analysis/$logdir
 
 
+import delimited `c(pwd)'/output/input.csv, clear
 							
 ==============================================================================*/
 
@@ -28,16 +29,17 @@ cou
 **************************   INPUT REQUIRED   *********************************
 
 * Censoring dates for each outcome (largely, last date outcome data available)
-global suspected_censor			= "31/07/2020"	//TPP censor date
-global confirmed_censor			= "31/07/2020"	//TPP censor date
-global tested_censor			= "31/07/2020"	//testing data
-global positivetest_censor		= "31/07/2020"	//testing data
-global ae_censor	 			= "31/07/2020"	//A&E admission
-global icu_censor		 		= "31/07/2020"	//ICU admission 
-global cpnsdeath_censor			= "31/07/2020"	//in-hospital death
-global onsdeath_censor 			= "31/07/2020"	//all death
-global onscoviddeath_censor 		= "31/07/2020"	//all death covid related
-global ons_noncoviddeath_censor 	= "31/07/2020"	//all death noncovid related
+gen suspected_censor			= "31/07/2020"	//TPP censor date
+gen confirmed_censor			= "31/07/2020"	//TPP censor date
+gen tested_censor			= "31/07/2020"	//testing data
+gen positivetest_censor		= "31/07/2020"	//testing data
+gen ae_censor	 			= "31/07/2020"	//A&E admission
+gen icu_censor		 		= "31/07/2020"	//ICU admission 
+gen cpnsdeath_censor			= "31/07/2020"	//in-hospital death
+gen onsdeath_censor 			= "31/07/2020"	//all death
+gen onscoviddeath_censor 		= "31/07/2020"	//all death covid related
+gen ons_noncoviddeath_censor 	= "31/07/2020"	//all death noncovid related
+
 
 
 foreach i of global outcomes {
@@ -45,12 +47,13 @@ foreach i of global outcomes {
 }
 
 *Start dates
-global indexdate 			= "01/02/2020"
+gen index 			= "01/02/2020"
 
 
 /*  Cohort entry and censor dates  */
-* Date of cohort entry, 1 Mar 2020
-gen enter_date = date("$indexdate", "DMY")
+* Date of cohort entry, 1 Feb 2020
+gen indexdate = date(index, "DMY")
+format indexdate %d
 
 * Date of study end (typically: last date of outcome data available)
 
@@ -59,6 +62,7 @@ foreach i of global outcomes {
 	summ   `i'_censor_date 
 }
 
+replace severe_censor_date=min(ae_censor_date, icu_censor_date, cpnsdeath_censor_date, onsdeath_censor_date)
 
 *******************************************************************************
 
@@ -143,7 +147,7 @@ recode eth16 16 = 11
 
 
 label define eth16 	///
-						1 "British or Mixed British" ///
+						1 "British" ///
 						2 "Irish" ///
 						3 "Other White" ///
 						4 "Indian" ///
@@ -379,7 +383,7 @@ replace bmi = . if bmi == 0
 replace bmi = . if !inrange(bmi, 15, 50)
 
 * Restrict to within 10 years of index and aged > 16 
-gen bmi_time = (date("$indexdate", "DMY") - bmi_measured_date)/365.25
+gen bmi_time = (indexdate - bmi_measured_date)/365.25
 gen bmi_age = age - bmi_time
 
 replace bmi = . if bmi_age < 16 
@@ -491,7 +495,7 @@ label values cancer_cat cancer
 * Permanent immunodeficiency ever, OR 
 * Temporary immunodeficiency  last year
 gen temp1  = 1 if perm_immunodef_date!=.
-gen temp2  = inrange(temp_immunodef_date, (date("$indexdate", "DMY") - 365), date("$indexdate", "DMY"))
+gen temp2  = inrange(temp_immunodef_date, (indexdate - 365), indexdate)
 
 egen other_immuno = rowmax(temp1 temp2)
 drop temp1 temp2 
@@ -652,11 +656,15 @@ gen onscoviddeath_date = onsdeath_date if died_ons_covid_flag_any == 1
 
 * Date of non-COVID death in ONS 
 * If missing date of death resulting died_date will also be missing
-gen ons_noncoviddeath_date = onsdeath_date if died_ons_covid_flag_any != 1 
+gen ons_noncoviddeath_date = onsdeath_date if died_ons_covid_flag_any != 1
+
 
 
 /* CONVERT STRINGS TO DATE FOR OUTCOME VARIABLES =============================*/
 * Recode to dates from the strings 
+*gen dummy date for severe and replace later on
+gen severe_date=ae_date
+
 foreach var of global outcomes {
 	confirm string variable `var'_date
 	rename `var'_date `var'_dstr
@@ -665,6 +673,9 @@ foreach var of global outcomes {
 	format `var'_date %td 
 
 }
+
+*Date of first severe outcome
+replace severe_date = min(ae_date, icu_date, cpnsdeath_date, onsdeath_date)
 
 rename dereg_date dereg_dstr
 	gen dereg_date = date(dereg_dstr, "YMD")
@@ -795,9 +806,9 @@ lab var spironolactone_date 						"Spironolactone in last 6 months"
 lab var thiazide_diuretics_date					"TZD in last 6 months"
 
 * Outcomes and follow-up
-label var enter_date					"Date of study entry"
+label var indexdate					"Date of study start (feb 1 2020)"
 foreach i of global outcomes {
-	label var `i'_censor_date		 "Date of admin censoring for covid TPP cases"
+	label var `i'_censor_date		 "Date of admin censoring"
 }
 *Outcome dates
 foreach i of global outcomes {
@@ -832,10 +843,9 @@ noi di "DROP AGE >110:"
 drop if age > 110 & age != .
 
 count
-
 noi di "DROP IF DIED BEFORE INDEX"
-drop if onsdeath_date <= date("$indexdate", "DMY")
-drop if cpnsdeath_date <= date("$indexdate", "DMY")
+drop if onsdeath_date <= indexdate
+drop if cpnsdeath_date <= indexdate
 
 count 
 
@@ -850,10 +860,10 @@ save "$Tempdir/analysis_dataset.dta", replace
 foreach i of global outcomes {
 	use "$Tempdir/analysis_dataset.dta", clear
 	
-	drop if `i'_date <= date("$indexdate", "DMY") 
+	drop if `i'_date <= indexdate 
 
 	stset stime_`i', fail(`i') 				///	
-	id(patient_id) enter(enter_date) origin(enter_date)
+	id(patient_id) enter(indexdate) origin(indexdate)
 	save "$Tempdir/analysis_dataset_STSET_`i'.dta", replace
 }	
 	

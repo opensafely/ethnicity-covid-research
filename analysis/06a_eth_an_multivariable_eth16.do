@@ -7,7 +7,6 @@ DESCRIPTION OF FILE:	program 06
 						univariable regression
 						multivariable regression 
 DATASETS USED:			data in memory ($tempdir/analysis_dataset_STSET_outcome)
-
 DATASETS CREATED: 		none
 OTHER OUTPUT: 			logfiles, printed to folder analysis/$logdir
 						table2, printed to $Tabfigdir
@@ -17,7 +16,7 @@ OTHER OUTPUT: 			logfiles, printed to folder analysis/$logdir
 * Open a log file
 
 cap log close
-log using $logdir\06a_eth_an_multivariable_eth16, replace 
+log using $logdir\06a_eth_an_multivariable_eth16, replace t 
 
 cap file close tablecontent
 file open tablecontent using $Tabfigdir/table2_eth16.txt, write text replace
@@ -40,22 +39,22 @@ tab eth16 `i', missing row
 
 /* Univariable model */ 
 
-cap stcox i.eth16 
-cap estimates save "$Tempdir/crude_`i'_eth16", replace 
-cap parmest, label eform format(estimate p lb ub) saving("$Tempdir/crude_`i'_eth16", replace) idstr("crude_`i'_eth16") 
+stcox i.eth16 
+estimates save "$Tempdir/crude_`i'_eth16", replace 
+parmest, label eform format(estimate p lb ub) saving("$Tempdir/crude_`i'_eth16", replace) idstr("crude_`i'_eth16") 
 
 /* Multivariable models */ 
 
 * Age, Gender, IMD
 * Age fit as spline
 
-cap stcox i.eth16 i.male age1 age2 age3 i.imd, strata(stp)
-cap estimates save "$Tempdir/model1_`i'_eth16", replace 
-cap parmest, label eform format(estimate p lb ub) saving("$Tempdir/model1_`i'_eth16", replace) idstr("model1_`i'_eth16") 
+stcox i.eth16 i.male age1 age2 age3 i.imd, strata(stp)
+estimates save "$Tempdir/model1_`i'_eth16", replace 
+parmest, label eform format(estimate p lb ub) saving("$Tempdir/model1_`i'_eth16", replace) idstr("model1_`i'_eth16") 
 
 
 * Age, Gender, IMD and Comorbidities  
-cap stcox i.eth16 i.male age1 age2 age3 	i.imd							///
+stcox i.eth16 i.male age1 age2 age3 	i.imd							///
 										bmi							///
 										gp_consult_count			///
 										i.smoke_nomiss				///
@@ -75,12 +74,12 @@ cap stcox i.eth16 i.male age1 age2 age3 	i.imd							///
 										i.other_immuno		 		///
 										i.ra_sle_psoriasis, strata(stp)				
 										
-cap estimates save "$Tempdir/model2_`i'_eth16", replace 
-cap parmest, label eform format(estimate p lb ub) saving("$Tempdir/model2_`i'_eth16", replace) idstr("model2_`i'_eth16") 
+estimates save "$Tempdir/model2_`i'_eth16", replace 
+parmest, label eform format(estimate p lb ub) saving("$Tempdir/model2_`i'_eth16", replace) idstr("model2_`i'_eth16") 
 
 * Age, Gender, IMD and Comorbidities  and household size
 
-cap stcox i.eth16 i.male age1 age2 age3 i.imd hh_size					///
+stcox i.eth16 i.male age1 age2 age3 i.imd hh_size					///
 										bmi							///
 										gp_consult_count			///
 										i.smoke_nomiss				///
@@ -100,8 +99,8 @@ cap stcox i.eth16 i.male age1 age2 age3 i.imd hh_size					///
 										i.other_immuno		 		///
 										i.ra_sle_psoriasis, strata(stp)				
 										
-cap estimates save "$Tempdir/model3_`i'_eth16", replace
-cap parmest, label eform format(estimate p lb ub) saving("$Tempdir/model3_`i'_eth16", replace) idstr("model3_`i'_eth16") 
+estimates save "$Tempdir/model3_`i'_eth16", replace
+parmest, label eform format(estimate p lb ub) saving("$Tempdir/model3_`i'_eth16", replace) idstr("model3_`i'_eth16") 
 
 /* Print table================================================================*/ 
 *  Print the results for the main model 
@@ -169,9 +168,5 @@ file close tablecontent
 
 * Close log file 
 log close
-
-
-insheet using "$Tabfigdir/table2_eth16.txt", clear
-save "$Tabfigdir/table2_eth16.dta", replace
 
 
