@@ -90,7 +90,7 @@ save "$Tempdir/HR_forestplot_eth16_cc.dta", replace
 // *Export graph
 // graph export "$Tabfigdir\Forestplot_alloutcomes_eth16_cc.svg", replace 
 // //	} //end capture
-
+cap {
 *Create one graph per outcome
 replace model="" if eth16!=1
 foreach i of global outcomes {
@@ -104,7 +104,7 @@ metan log_estimate log_min95 log_max95 if outcome=="`i'" ///
 *Export graph
 graph export "$Tabfigdir\Forestplot_`i'_eth16_cc.svg", replace  
 } //end outcomes
-
+}
 
 	
 log close

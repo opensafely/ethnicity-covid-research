@@ -77,7 +77,7 @@ save "$Tempdir/HR_forestplot_eth5_cc.dta", replace
 
 
 
-
+cap{
 *Create one graph per outcome
 replace model="" if eth5!=1
 foreach i of global outcomes {
@@ -91,7 +91,7 @@ metan log_estimate log_min95 log_max95 if outcome=="`i'" ///
 *Export graph
 graph export "$Tabfigdir\Forestplot_`i'_eth5_cc.svg", replace  
 } //end outcomes
-
+}
 
 
 // *Create one graph for all fully adjusted outcomes
