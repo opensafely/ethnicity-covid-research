@@ -94,7 +94,7 @@ forvalues j=1/7 {
 
 grc1leg `graphm', altshrink  saving("$Tabfigdir/strate_`i'_eth16_agem_combined", replace)
 graph export "$Tabfigdir/strate_`i'_eth16_agem_combined", as(svg) replace
-macrio drop graphm
+macro drop graphm
 
 
 
