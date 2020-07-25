@@ -48,8 +48,7 @@ parmest, label eform format(estimate p lb ub) saving("$Tempdir/crude_`i'_eth16",
 * Age, Gender, IMD
 * Age fit as spline
 
-stcox i.eth16 i.male age1 age2 age3 i.imd, strata(stp)
-
+noi cap stcox i.eth16 i.male age1 age2 age3 i.imd, strata(stp)
 if _rc==0{
 estimates
 estimates save "$Tempdir/model1_`i'_eth16", replace 
@@ -87,9 +86,7 @@ parmest, label eform format(estimate p lb ub) saving("$Tempdir/model2_`i'_eth16"
 else di "WARNING MODEL2 DID NOT FIT (OUTCOME `outcome')"
 
 										
-
 * Age, Gender, IMD and Comorbidities  and household size
-
 noi cap stcox i.eth16 i.male age1 age2 age3 i.imd hh_size					///
 										bmi							///
 										gp_consult_safecount			///
@@ -116,7 +113,6 @@ parmest, label eform format(estimate p lb ub) saving("$Tempdir/model3_`i'_eth16"
 }
 else di "WARNING MODEL3 DID NOT FIT (OUTCOME `outcome')"
 										
-
 /* Print table================================================================*/ 
 *  Print the results for the main model 
 
@@ -137,7 +133,7 @@ local lab9: label eth16 9
 local lab10: label eth16 10
 local lab11: label eth16 11
 
-/* safecounts */
+/* counts */
  
 * First row, eth16 = 1 (White British) reference cat
 	safecount if eth16 == 1 & `i' == 1

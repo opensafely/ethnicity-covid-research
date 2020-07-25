@@ -46,9 +46,9 @@ parmest, label eform format(estimate p lb ub) saving("$Tempdir/crude_`i'_eth5", 
 /* Multivariable models */ 
 
 * Age, Gender, IMD
-* Age fit as spline in first instance, categorical below 
+* Age fit as spline 
 
-stcox i.eth5 i.male age1 age2 age3 i.imd, strata(stp)
+noi cap stcox i.eth5 i.male age1 age2 age3 i.imd, strata(stp)
 if _rc==0{
 estimates
 estimates save "$Tempdir/model1_`i'_eth5", replace 
@@ -77,7 +77,6 @@ noi cap stcox i.eth5 i.male age1 age2 age3 	i.imd							///
 										i.other_immuno		 		///
 										i.ra_sle_psoriasis, strata(stp)				
 										
-
 if _rc==0{
 estimates
 estimates save "$Tempdir/model1_`i'_eth5", replace 
@@ -113,6 +112,7 @@ estimates save "$Tempdir/model3_`i'_eth5", replace
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model3_`i'_eth5", replace) idstr("model3_`i'_eth5") 
 }
 else di "WARNING MODEL3 DID NOT FIT (OUTCOME `outcome')"
+
 
 /* Print table================================================================*/ 
 *  Print the results for the main model 
