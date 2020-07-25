@@ -6,19 +6,19 @@ from cohortextractor import (
 covid_codelist = codelist(["U071", "U072"], system="icd10")
 
 covid_primary_care_positive_test=codelist_from_csv(
-    "codelists/opensafely-covid-identification-in-primary-care-probable-covid-positive-test.csv"
-     system="ctv3", 
+    "codelists/opensafely-covid-identification-in-primary-care-probable-covid-positive-test.csv",
+    system="ctv3", 
     column="CTV3ID",
 )
 
 covid_primary_care_code=codelist_from_csv(
-    "codelists/opensafely-opensafely/covid-identification-in-primary-care-probable-covid-clinical-code"
+    "codelists/opensafely-covid-identification-in-primary-care-probable-covid-clinical-code.csv",
     system="ctv3", 
     column="CTV3ID",
 )
 
 covid_primary_care_sequalae=codelist_from_csv(
-    "codelists/opensafely-covid-identification-in-primary-care-probable-covid-sequelae"
+    "codelists/opensafely-covid-identification-in-primary-care-probable-covid-sequelae.csv",
     system="ctv3",
     column="CTV3ID",
 )
@@ -40,6 +40,7 @@ covid_primary_care_potential_historic_case = codelist_from_csv(
     system="ctv3", 
     column="CTV3ID",
 )
+
 covid_suspected_code = codelist_from_csv(
     "codelists/opensafely-covid-identification-in-primary-care-suspected-covid-suspected-codes.csv", 
     system="ctv3", 
@@ -47,19 +48,19 @@ covid_suspected_code = codelist_from_csv(
 )
 
 covid_suspected_111 = codelist_from_csv(
-    "codelists/opensafely-covid-identification-in-primary-care-helper-111-suspected",
+    "codelists/opensafely-covid-identification-in-primary-care-helper-111-suspected.csv",
     system="ctv3",
     column="CTV3ID",
 )
 
 covid_suspected_advice = codelist_from_csv(
-    "codelists/opensafely-covid-identification-in-primary-care-suspected-covid-advice",
+    "codelists/opensafely-covid-identification-in-primary-care-suspected-covid-advice.csv",
     system="ctv3",
     column="CTV3ID",
 )
 
 covid_suspected_test = codelist_from_csv(
-    "codelists/opensafely-covid-identification-in-primary-care-suspected-covid-had-test",  
+    "codelists/opensafely-covid-identification-in-primary-care-suspected-covid-had-test.csv",  
     system="ctv3",
     column="CTV3ID",
 )

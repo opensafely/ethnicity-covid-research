@@ -38,18 +38,20 @@ opensafely/spironolactone/2020-05-19
 opensafely/thiazide-type-diuretic-medication/2020-05-19
 opensafely/combination-blood-pressure-medication/2020-05-19
 opensafely/statin-medication/2020-04-20
-opensafely/covid-identification-in-primary-care-exposure-to-disease/2020-06-23
-opensafely/covid-identification-in-primary-care-historic-case/2020-06-23
-opensafely/covid-identification-in-primary-care-potential-historic-case/2020-06-23
 opensafely/diabetes-unknown-type/2020-06-29
 opensafely/type-1-diabetes/2020-06-29
 opensafely/type-2-diabetes/2020-06-29
 opensafely/diabetes-exeter-group/2020-07-06
 opensafely/asthma-oral-prednisolone-medication/2020-04-27
 opensafely/antidiabetic-drugs/2020-07-16
-opensafely/covid-identification-in-primary-care-probable-covid-sequelae/2020-07-16
 opensafely/covid-identification-in-primary-care-suspected-covid-suspected-codes/2020-07-16
 opensafely/covid-identification-in-primary-care-helper-111-suspected/2020-06-28
 opensafely/covid-identification-in-primary-care-suspected-covid-advice/2020-07-16
 opensafely/covid-identification-in-primary-care-suspected-covid-had-test/2020-07-16
+opensafely/covid-identification-in-primary-care-probable-covid-positive-test/2020-07-16
+opensafely/covid-identification-in-primary-care-probable-covid-clinical-code/2020-07-16
+opensafely/covid-identification-in-primary-care-probable-covid-sequelae/2020-07-16
+opensafely/covid-identification-in-primary-care-exposure-to-disease/2020-06-23
+opensafely/covid-identification-in-primary-care-historic-case/2020-06-23
+opensafely/covid-identification-in-primary-care-potential-historic-case/2020-06-23
 
