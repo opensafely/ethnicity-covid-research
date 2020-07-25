@@ -5,13 +5,25 @@ from cohortextractor import (
 
 covid_codelist = codelist(["U071", "U072"], system="icd10")
 
-covid_primary_care_case = codelist_from_csv(
-    "codelists/opensafely-covid-identification-in-primary-care-case.csv", 
+covid_primary_care_positive_test=codelist_from_csv(
+    "codelists/opensafely-covid-identification-in-primary-care-probable-covid-positive-test.csv"
+     system="ctv3", 
+    column="CTV3ID",
+)
+
+covid_primary_care_code=codelist_from_csv(
+    "codelists/opensafely-opensafely/covid-identification-in-primary-care-probable-covid-clinical-code"
     system="ctv3", 
     column="CTV3ID",
 )
 
-covid_primary_exposure = codelist_from_csv(
+covid_primary_care_sequalae=codelist_from_csv(
+    "codelists/opensafely-covid-identification-in-primary-care-probable-covid-sequelae"
+    system="ctv3",
+    column="CTV3ID",
+)
+
+covid_primary_care_exposure = codelist_from_csv(
     "codelists/opensafely-covid-identification-in-primary-care-exposure-to-disease.csv", 
     system="ctv3", 
     column="CTV3ID",
@@ -28,11 +40,30 @@ covid_primary_care_potential_historic_case = codelist_from_csv(
     system="ctv3", 
     column="CTV3ID",
 )
-covid_primary_care_suspect_case = codelist_from_csv(
-    "codelists/opensafely-covid-identification-in-primary-care-suspect-case.csv", 
+covid_suspected_code = codelist_from_csv(
+    "codelists/opensafely-covid-identification-in-primary-care-suspected-covid-suspected-codes.csv", 
     system="ctv3", 
     column="CTV3ID",
 )
+
+covid_suspected_111 = codelist_from_csv(
+    "codelists/opensafely-covid-identification-in-primary-care-helper-111-suspected",
+    system="ctv3",
+    column="CTV3ID",
+)
+
+covid_suspected_advice = codelist_from_csv(
+    "codelists/opensafely-covid-identification-in-primary-care-suspected-covid-advice",
+    system="ctv3",
+    column="CTV3ID",
+)
+
+covid_suspected_test = codelist_from_csv(
+    "codelists/opensafely-covid-identification-in-primary-care-suspected-covid-had-test",  
+    system="ctv3",
+    column="CTV3ID",
+)
+
 
 aplastic_codes = codelist_from_csv(
     "codelists/opensafely-aplastic-anaemia.csv", system="ctv3", column="CTV3ID"
