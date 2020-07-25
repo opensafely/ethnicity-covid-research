@@ -7,7 +7,6 @@ DESCRIPTION OF FILE:	program 06
 						univariable regression
 						multivariable regression 
 DATASETS USED:			data in memory ($tempdir/analysis_dataset_STSET_outcome)
-
 DATASETS CREATED: 		none
 OTHER OUTPUT: 			logfiles, printed to folder analysis/$logdir
 						table2, printed to $Tabfigdir
@@ -33,7 +32,7 @@ use "$Tempdir/analysis_dataset_STSET_`i'.dta", clear
 
 /* Sense check outcomes=======================================================*/ 
 
-tab eth16 `i', missing row
+safetab eth16 `i', missing row
 
 
 /* Main Model=================================================================*/
@@ -49,15 +48,20 @@ parmest, label eform format(estimate p lb ub) saving("$Tempdir/crude_`i'_eth16",
 * Age, Gender, IMD
 * Age fit as spline
 
-stcox i.eth16 i.male age1 age2 age3 i.imd, strata(stp)
+noi cap stcox i.eth16 i.male age1 age2 age3 i.imd, strata(stp)
+if _rc==0{
+estimates
 estimates save "$Tempdir/model1_`i'_eth16", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model1_`i'_eth16", replace) idstr("model1_`i'_eth16") 
+}
+else di "WARNING MODEL1 DID NOT FIT (OUTCOME `outcome')"
+
 
 
 * Age, Gender, IMD and Comorbidities  
-stcox i.eth16 i.male age1 age2 age3 	i.imd							///
+noi cap stcox i.eth16 i.male age1 age2 age3 	i.imd							///
 										bmi							///
-										gp_consult_count			///
+										gp_consult_safecount			///
 										i.smoke_nomiss				///
 										i.htdiag_or_highbp		 	///	
 										i.asthma					///
@@ -73,16 +77,19 @@ stcox i.eth16 i.male age1 age2 age3 	i.imd							///
 										i.perm_immunodef 			///
 										i.temp_immunodef 			///
 										i.other_immuno		 		///
-										i.ra_sle_psoriasis, strata(stp)				
-										
+										i.ra_sle_psoriasis, strata(stp)		
+if _rc==0{
+estimates
 estimates save "$Tempdir/model2_`i'_eth16", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model2_`i'_eth16", replace) idstr("model2_`i'_eth16") 
+}
+else di "WARNING MODEL2 DID NOT FIT (OUTCOME `outcome')"
 
+										
 * Age, Gender, IMD and Comorbidities  and household size
-
-stcox i.eth16 i.male age1 age2 age3 i.imd hh_size					///
+noi cap stcox i.eth16 i.male age1 age2 age3 i.imd hh_size					///
 										bmi							///
-										gp_consult_count			///
+										gp_consult_safecount			///
 										i.smoke_nomiss				///
 										i.htdiag_or_highbp		 	///	
 										i.asthma					///
@@ -99,10 +106,13 @@ stcox i.eth16 i.male age1 age2 age3 i.imd hh_size					///
 										i.temp_immunodef 			///
 										i.other_immuno		 		///
 										i.ra_sle_psoriasis, strata(stp)				
-										
+if _rc==0{
+estimates
 estimates save "$Tempdir/model3_`i'_eth16", replace
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model3_`i'_eth16", replace) idstr("model3_`i'_eth16") 
-
+}
+else di "WARNING MODEL3 DID NOT FIT (OUTCOME `outcome')"
+										
 /* Print table================================================================*/ 
 *  Print the results for the main model 
 
@@ -123,10 +133,10 @@ local lab9: label eth16 9
 local lab10: label eth16 10
 local lab11: label eth16 11
 
-/* Counts */
+/* counts */
  
 * First row, eth16 = 1 (White British) reference cat
-	count if eth16 == 1 & `i' == 1
+	safecount if eth16 == 1 & `i' == 1
 	local event = r(N)
     bysort eth16: egen total_follow_up = total(_t)
 	su total_follow_up if eth16 == 1
@@ -139,7 +149,7 @@ local lab11: label eth16 11
 * Subsequent ethnic groups
 forvalues eth=2/11 {
 
-	count if eth16 == `eth' & `i' == 1
+	safecount if eth16 == `eth' & `i' == 1
 	local event = r(N)
 	su total_follow_up if eth16 == `eth'
 	local person_week = r(mean)/7
@@ -169,9 +179,5 @@ file close tablecontent
 
 * Close log file 
 log close
-
-
-insheet using "$Tabfigdir/table2_eth16.txt", clear
-save "$Tabfigdir/table2_eth16.dta", replace
 
 

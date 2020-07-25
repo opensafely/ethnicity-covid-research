@@ -23,8 +23,6 @@ log using $logdir/02_an_data_checks, replace t
 * Open Stata dataset
 use "$Tempdir/analysis_dataset.dta", clear
 
-*run ssc install if not on local machine - server needs datacheck.ado file
-ssc install datacheck 
 
 *Duplicate patient check
 datacheck _n==1, by(patient_id) nol
@@ -109,7 +107,7 @@ summ diabetes_date, format
 foreach comorb in $varlist { 
 
 	local comorb: subinstr local comorb "i." ""
-	tab `comorb', m
+	safetab `comorb', m
 	
 }
 
@@ -126,47 +124,47 @@ summ hh_size hh_total
 bysort bmicat: summ bmi
 bysort bmicat_sa: summ bmi
 
-tab bmicat obese4cat, m
-tab bmicat_sa obese4cat_sa, m
+safetab bmicat obese4cat, m
+safetab bmicat_sa obese4cat_sa, m
 
 * Age
 bysort agegroup: summ age
-tab agegroup age66, m
+safetab agegroup age66, m
 
 * Smoking
-tab smoke smoke_nomiss, m
+safetab smoke smoke_nomiss, m
 
 * Diabetes
-tab dm_type
-tab dm_type_exeter_os
-tab dm_type dm_type_exeter_os, row col
+safetab dm_type
+safetab dm_type_exeter_os
+safetab dm_type dm_type_exeter_os, row col
 
 * CKD
-tab reduced egfr_cat, m
+safetab reduced egfr_cat, m
 
 
 /* EXPECTED RELATIONSHIPS=====================================================*/ 
 
 /*  Relationships between demographic/lifestyle variables  */
-tab agegroup bmicat, 	row 
-tab agegroup smoke, 	row  
-tab agegroup ethnicity, row 
-tab agegroup ethnicity_16, row 
-tab agegroup imd, 		row 
+safetab agegroup bmicat, 	row 
+safetab agegroup smoke, 	row  
+safetab agegroup ethnicity, row 
+safetab agegroup ethnicity_16, row 
+safetab agegroup imd, 		row 
 
-tab bmicat smoke, 		 row   
-tab bmicat ethnicity, 	 row 
-tab bmicat ethnicity_16, 	 row 
-tab bmicat imd, 	 	 row 
-tab bmicat hypertension, row 
+safetab bmicat smoke, 		 row   
+safetab bmicat ethnicity, 	 row 
+safetab bmicat ethnicity_16, 	 row 
+safetab bmicat imd, 	 	 row 
+safetab bmicat hypertension, row 
 
-tab smoke ethnicity, 	row 
-tab smoke ethnicity_16, 	row 
-tab smoke imd, 			row 
-tab smoke hypertension, row 
+safetab smoke ethnicity, 	row 
+safetab smoke ethnicity_16, 	row 
+safetab smoke imd, 			row 
+safetab smoke hypertension, row 
                       
-tab ethnicity imd, 		row 
-tab ethnicity_16 imd, 		row 
+safetab ethnicity imd, 		row 
+safetab ethnicity_16 imd, 		row 
 
 
 
@@ -186,7 +184,7 @@ foreach var of varlist 	chronic_respiratory_disease ///
 						ra_sle_psoriasis  ///
 						dm_type ///
 					{	
-					tab ethnicity `var', row 
+					safetab ethnicity `var', row 
 }
 
 foreach var of varlist 	chronic_respiratory_disease ///
@@ -204,7 +202,7 @@ foreach var of varlist 	chronic_respiratory_disease ///
 						ra_sle_psoriasis  ///
 						dm_type ///
 					{	
-					tab eth16 `var', row 
+					safetab eth16 `var', row 
 }
 
 
@@ -225,7 +223,7 @@ foreach var of varlist 	chronic_respiratory_disease ///
 						ra_sle_psoriasis  ///
 						dm_type ///
 					{
-						tab agegroup `var', row 
+						safetab agegroup `var', row 
  }
 
 
@@ -245,26 +243,7 @@ foreach var of varlist 	chronic_respiratory_disease ///
 						ra_sle_psoriasis  ///
 						dm_type ///
 					{
-						tab male `var', row 
-}
-
- * Relationships with smoking
-foreach var of varlist 	chronic_respiratory_disease ///
-						chronic_cardiac_disease  ///
-						cancer  ///
-						perm_immunodef  ///
-						temp_immunodef  ///
-						chronic_liver_disease  ///
-						other_neuro  ///
-						stroke			///
-						dementia ///
-						esrf  ///
-						hypertension  ///
-						asthma ///
-						ra_sle_psoriasis  ///
-						dm_type ///
-					{	
-					tab smoke `var', row 
+						safetab male `var', row 
 }
 
 

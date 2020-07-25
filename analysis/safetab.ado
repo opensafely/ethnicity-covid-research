@@ -6,7 +6,6 @@ local if " if `touse'"
 local commapos = strpos("`0'", ",")
 local commaposm1 = `commapos'-1
 
-di "`commapos'"
 if `commapos'>0 {
 	local main = substr("`0'", 1, `commaposm1')
 	local options = substr("`0'", `commapos', .)

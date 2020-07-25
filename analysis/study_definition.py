@@ -38,36 +38,45 @@ study = StudyDefinition(
 
     # OUTCOMES,
     primary_care_case=patients.with_these_clinical_events(
-        covid_primary_care_case,
+        combine_codelists(covid_primary_care_code,
+                          covid_primary_care_positive_test,
+                          ),        
+        returning="date",
+        find_first_match_in_period=True,
+        date_format="YYYY-MM-DD",
+        return_expectations={"rate" : "exponential_increase"},
+    ),
+
+    primary_care_sequalae=patients.with_these_clinical_events(
+        covid_primary_care_sequalae,
         returning="date",
         find_first_match_in_period=True,
         date_format="YYYY-MM-DD",
         return_expectations={"rate" : "exponential_increase"},
     ),
     primary_care_historic_case=patients.with_these_clinical_events(
-        covid_primary_care_historic_case,
+        combine_codelists(covid_primary_care_historic_case,
+                        covid_primary_care_potential_historic_case,
+                        ),
         returning="date",
         date_format="YYYY-MM-DD",
         find_first_match_in_period=True,
         return_expectations={"rate" : "exponential_increase"},
     ),
 
-    primary_care_potential_historic_case=patients.with_these_clinical_events(
-        covid_primary_care_potential_historic_case,
-        returning="date",
-        find_first_match_in_period=True,
-        date_format="YYYY-MM-DD",
-        return_expectations={"rate" : "exponential_increase"},
-    ),
     primary_care_exposure=patients.with_these_clinical_events(
-        covid_primary_exposure,
+        covid_primary_care_exposure,
         returning="date",
         find_first_match_in_period=True,
         date_format="YYYY-MM-DD",
         return_expectations={"rate" : "exponential_increase"},
     ),
     primary_care_suspect_case=patients.with_these_clinical_events(
-        covid_primary_care_suspect_case,
+        combine_codelists(covid_suspected_code,
+                          covid_suspected_111,
+                          covid_suspected_advice,
+                          covid_suspected_test,
+                          ),   
         returning="date",
         date_format="YYYY-MM-DD",
         find_first_match_in_period=True,
@@ -91,7 +100,7 @@ study = StudyDefinition(
     returning="was_ventilated",
     return_expectations={
             "rate": "exponential_increase",
-            "incidence" : 0.02,
+            "incidence" : 0.20,
             "date" : {"earliest" : "2020-02-01"},
             "bool" : True,
         }
@@ -113,6 +122,8 @@ study = StudyDefinition(
         returning="date_of_death",
         include_month=True,
         include_day=True,
+        return_expectations={"date": {"earliest" : "2020-02-01"},
+        "rate" : "exponential_increase"},
     ),
 
     # ons
@@ -120,7 +131,8 @@ study = StudyDefinition(
         covid_codelist,
         on_or_before="2020-08-01",
         match_only_underlying_cause=False,
-        return_expectations={"date": {"earliest": "2020-02-01"}},
+        return_expectations={"date": {"earliest" : "2020-02-01"},
+        "rate" : "exponential_increase"},
     ),
     died_ons_covid_flag_underlying=patients.with_these_codes_on_death_certificate(
         covid_codelist,
@@ -133,6 +145,8 @@ study = StudyDefinition(
         returning="date_of_death",
         include_month=True,
         include_day=True,
+        return_expectations={"date": {"earliest" : "2020-02-01"},
+        "rate" : "exponential_increase"},
     ),
     first_tested_for_covid=patients.with_test_result_in_sgss(
         pathogen="SARS-CoV-2",
@@ -140,6 +154,8 @@ study = StudyDefinition(
         find_first_match_in_period=True,
         returning="date",
         date_format="YYYY-MM-DD",
+        return_expectations={"date": {"earliest" : "2020-02-01"},
+        "rate" : "exponential_increase"},
     ),
     first_positive_test_date=patients.with_test_result_in_sgss(
         pathogen="SARS-CoV-2",
@@ -147,6 +163,8 @@ study = StudyDefinition(
         find_first_match_in_period=True,
         returning="date",
         date_format="YYYY-MM-DD",
+        return_expectations={"date": {"earliest" : "2020-02-01"},
+        "rate" : "exponential_increase"},
     ),
 
     ## DEMOGRAPHIC COVARIATES
@@ -241,22 +259,22 @@ study = StudyDefinition(
         return_expectations={
             "category": {
                 "ratios": {
-                    "1": 0.5,
-                    "2": 0.1,
-                    "3": 0.05,
-                    "4": 0.05,
-                    "5": 0.05,
-                    "6": 0.05,
-                    "7": 0.05,
-                    "8": 0.05,
-                    "9": 0.02,
-                    "10": 0.02,
-                    "11": 0.01,
-                    "12": 0.01,
-                    "13": 0.01,
-                    "14": 0.01,
-                    "15": 0.01,
-                    "16": 0.01,
+                    "1": 0.0625,
+                    "2": 0.0625,
+                    "3": 0.0625,
+                    "4": 0.0625,
+                    "5": 0.0625,
+                    "6": 0.0625,
+                    "7": 0.0625,
+                    "8": 0.0625,
+                    "9": 0.0625,
+                    "10": 0.0625,
+                    "11": 0.0625,
+                    "12": 0.0625,
+                    "13": 0.0625,
+                    "14": 0.0625,
+                    "15": 0.0625,
+                    "16": 0.0625,
                 }
             },
             "incidence": 0.75,
@@ -271,7 +289,7 @@ study = StudyDefinition(
         find_last_match_in_period=True,
         include_date_of_match=True,
         return_expectations={
-            "category": {"ratios": {"1": 0.8, "2":0.05, "3":0.05, "4":0.05, "5": 0.05}},
+            "category": {"ratios": {"1": 0.2, "2":0.2, "3":0.2, "4":0.2, "5": 0.2}},
             "incidence": 0.75,
         },
     ),

@@ -5,7 +5,6 @@ AUTHOR:					R Mathur
 DATE: 					18 July 2020					
 DESCRIPTION OF FILE:	program 08 
 						create forest plots for complete case analysis eth16
-
 DATASETS CREATED: 		parmest output from 06a_eth_an_multivariable_eth16
 OTHER OUTPUT: 			forestplot for eth16 complete case analysis
 ==============================================================================*/
