@@ -228,6 +228,7 @@ replace adjusted="+ household size" if model=="model3"
 
 *save dataset for later
 outsheet using "$Tabfigdir/FP_multivariable_eth5.txt", replace
+save  "$Tabfigdir/FP_multivariable_eth5.dta", replace
 
 
 * Close log file 
