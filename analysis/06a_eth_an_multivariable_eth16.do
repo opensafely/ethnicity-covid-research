@@ -33,14 +33,14 @@ use "$Tempdir/analysis_dataset_STSET_`i'.dta", clear
 
 /* Sense check outcomes=======================================================*/ 
 
-safetab eth16 `i', missing row
+*safetab eth16 `i', missing row
 
 
 /* Main Model=================================================================*/
 
 /* Univariable model */ 
 
-stcox i.eth16 
+noi cap stcox i.eth16 
 estimates save "$Tempdir/crude_`i'_eth16", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/crude_`i'_eth16", replace) idstr("crude_`i'_eth16") 
 local hr "`hr' "$Tempdir/crude_`i'_eth16" "
@@ -48,14 +48,13 @@ local hr "`hr' "$Tempdir/crude_`i'_eth16" "
 
 /* Multivariable models */ 
 *Age and gender
-stcox i.eth16 i.male age1 age2 age3
+noi cap stcox i.eth16 i.male age1 age2 age3
 estimates save "$Tempdir/model0_`i'_eth16", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model0_`i'_eth16", replace) idstr("model0_`i'_eth16")
 local hr "`hr' "$Tempdir/model0_`i'_eth16" "
  
 
 * Age, Gender, IMD
-* Age fit as spline
 
 noi cap stcox i.eth16 i.male age1 age2 age3 i.imd, strata(stp)
 if _rc==0{
@@ -63,9 +62,8 @@ estimates
 estimates save "$Tempdir/model1_`i'_eth16", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model1_`i'_eth16", replace) idstr("model1_`i'_eth16") 
 local hr "`hr' "$Tempdir/model1_`i'_eth16" "
-
 }
-else di "WARNING MODEL1 DID NOT FIT (OUTCOME `outcome')"
+else di "WARNING MODEL1 DID NOT FIT (OUTCOME `i')"
 
 
 * Age, Gender, IMD and Comorbidities  
@@ -93,9 +91,8 @@ estimates
 estimates save "$Tempdir/model2_`i'_eth16", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model2_`i'_eth16", replace) idstr("model2_`i'_eth16") 
 local hr "`hr' "$Tempdir/model2_`i'_eth16" "
-
 }
-else di "WARNING MODEL2 DID NOT FIT (OUTCOME `outcome')"
+else di "WARNING MODEL2 DID NOT FIT (OUTCOME `i')"
 
 										
 * Age, Gender, IMD and Comorbidities  and household size
@@ -123,9 +120,8 @@ estimates
 estimates save "$Tempdir/model3_`i'_eth16", replace
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model3_`i'_eth16", replace) idstr("model3_`i'_eth16") 
 local hr "`hr' "$Tempdir/model3_`i'_eth16" "
-
 }
-else di "WARNING MODEL3 DID NOT FIT (OUTCOME `outcome')"
+else di "WARNING MODEL3 DID NOT FIT (OUTCOME `i')"
 										
 /* Print table================================================================*/ 
 *  Print the results for the main model 
@@ -153,7 +149,7 @@ local lab11: label eth16 11
 	safecount if eth16 == 1 & `i' == 1
 	local event = r(N)
     bysort eth16: egen total_follow_up = total(_t)
-	su total_follow_up if eth16 == 1
+	qui su total_follow_up if eth16 == 1
 	local person_week = r(mean)/7
 	local rate = 1000*(`event'/`person_week')
 	
@@ -165,7 +161,7 @@ forvalues eth=2/11 {
 
 	safecount if eth16 == `eth' & `i' == 1
 	local event = r(N)
-	su total_follow_up if eth16 == `eth'
+	qui su total_follow_up if eth16 == `eth'
 	local person_week = r(mean)/7
 	local rate = 1000*(`event'/`person_week')
 	file write tablecontent  ("`lab`eth''") _tab   (`event') _tab %10.0f (`person_week') _tab %3.2f (`rate') _tab  
@@ -198,12 +194,11 @@ file close tablecontent
 ************************************************create forestplot dataset
 dsconcat `hr'
 duplicates drop
-stop 
 split idstr, p(_)
 ren idstr1 model
 ren idstr2 outcome
 drop idstr idstr3
-
+tab model
 
 *keep ORs for ethnicity
 keep if regexm(label, "Eth")
@@ -249,5 +244,4 @@ outsheet using "$Tabfigdir/FP_multivariable_eth16.txt", replace
 * Close log file 
 log close
 
-insheet using $Tabfigdir/table2_eth16.txt, clear
 

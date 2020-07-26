@@ -67,8 +67,7 @@ do "$Dodir/06a_eth_an_multivariable_eth16.do"
 do "$Dodir/06b_eth_an_multivariable_eth5.do"
 
 *Forest plots for complete case analysis
-*do "$Dodir/07a_eth_cr_forestplots_eth16.do" - works locally and on server  
-*do "$Dodir/07b_eth_cr_forestplots_eth5.do" - works locally and on server  
+do "$Dodir/07_eth_cr_forestplots.do"
 
 /*multivariable analysis - imputed ethnicity
 do "$Dodir/08a_eth_an_multivariable_eth16_mi.do"
