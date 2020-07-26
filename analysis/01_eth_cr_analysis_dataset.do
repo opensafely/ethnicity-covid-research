@@ -595,7 +595,7 @@ label values hba1ccat hba1ccat
 safetab hba1ccat
 
 gen hba1c75=0 if hba1c_pct<7.5
-replace hba1c75=1 if hba1c_pct>7.5 & hba1c_pct!=.
+replace hba1c75=1 if hba1c_pct>=7.5 & hba1c_pct!=.
 label define hba1c75 0"<7.5" 1">=7.5"
 
 /*  Asthma  */
@@ -770,7 +770,9 @@ lab var temp_immunodef_date   				"Temporary immunosuppression date"
 lab var esrf_date 							"end stage renal failure"
 lab var hba1c_mmol_per_mol_date				"HbA1c mmo/mol_date"
 lab var hba1c_percentage_date				"HbA1c % date"
-
+lab var hba1ccat							"HbA1c in categories"
+lab var hba1c75								"HbA1c >= 7.5%"
+ 
 *medications
 lab var statin								"Statin in last 6 months"
 lab var insulin								"Insulin in last 6 months"
