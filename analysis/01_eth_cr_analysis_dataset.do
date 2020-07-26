@@ -25,44 +25,13 @@ log using "$Logdir/01_eth_cr_create_analysis_dataset.log", replace t
 di "STARTING safecount FROM IMPORT:"
 safecount
 
-
-**************************   INPUT REQUIRED   *********************************
-
-* Censoring dates for each outcome (largely, last date outcome data available)
-gen suspected_censor		= "31/07/2020"	//TPP censor date
-gen confirmed_censor		= "31/07/2020"	//TPP censor date
-gen tested_censor			= "31/07/2020"	//testing data
-gen positivetest_censor		= "31/07/2020"	//testing data
-gen ae_censor	 			= "31/07/2020"	//A&E admission
-gen icu_censor		 		= "31/07/2020"	//ICU admission 
-gen cpnsdeath_censor		= "31/07/2020"	//in-hospital death
-gen onsdeath_censor 		= "31/07/2020"	//all death
-gen onscoviddeath_censor 	= "31/07/2020"	//all death covid related
-gen ons_noncoviddeath_censor = "31/07/2020"	//all death noncovid related
-
-
-
-foreach i of global outcomes {
-	di "`i'" " $`i'_censor"
-}
-
 *Start dates
 gen index 			= "01/02/2020"
 
-
-/*  Cohort entry and censor dates  */
 * Date of cohort entry, 1 Feb 2020
 gen indexdate = date(index, "DMY")
 format indexdate %d
 
-* Date of study end (typically: last date of outcome data available)
-
-foreach i of global outcomes {
-	gen `i'_censor_date    	    	= date("$`i'_censor", 	"DMY")
-	summ   `i'_censor_date 
-}
-
-replace severe_censor_date=min(ae_censor_date, icu_censor_date, cpnsdeath_censor_date, onsdeath_censor_date)
 
 *******************************************************************************
 
@@ -689,6 +658,16 @@ foreach i of global outcomes {
 		safetab `i'
 }
 
+/* CENSORING */
+/* SET FU DATES===============================================================*/ 
+* Censoring dates for each outcome (largely, last date outcome data available, minus a lag window based on previous graphs)
+
+foreach i of global outcomes {
+qui summ `i'_date, format
+gen `i'_censor_date = r(max)-7
+format `i'_censor_date %d
+summ `i'_date `i'_censor_date, format
+}
 
 /**** Create survival times  ****/
 * For looping later, name must be stime_binary_outcome_name
@@ -697,6 +676,12 @@ foreach i of global outcomes {
 *Ventilation does not have a survival time because it is a yes/no flag
 foreach i of global outcomes {
 	gen stime_`i' = min(`i'_censor_date, onsdeath_date, `i'_date, dereg_date)
+}
+
+* If outcome was after censoring occurred, set to zero
+foreach i of global outcomes {
+	replace `i'=0 if `i'_date>stime_`i'
+	tab `i'
 }
 
 * Format date variables
