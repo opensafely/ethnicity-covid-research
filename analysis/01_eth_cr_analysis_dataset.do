@@ -189,7 +189,12 @@ label values agegroup agegroup
 *Total number people in household (to check hh size)
 bysort hh_id: gen hh_total=_N
 
-
+recode hh_total 	///
+			1/2=0 ///
+			3/5 = 1 /// 
+		    6/9 = 2 /// 
+			10/max = 3, gen(hh_total_cat) 
+tab hh_total_cat,m
 ****************************
 *  Create required cohort  *
 ****************************
@@ -695,9 +700,10 @@ format  stime* %td
 *  Label variables you are intending to keep, drop the rest 
 
 *HH variable
-label var  hh_size "Number people in household"
+label var  hh_size "# people in household"
 label var  hh_id "Household ID"
-
+label var hh_total "# people in household calculated"
+label var hh_total_cat "# people in household category"
 
 * Demographics
 label var patient_id				"Patient ID"
