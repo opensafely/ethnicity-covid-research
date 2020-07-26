@@ -44,7 +44,7 @@ graph export "$Tabfigdir\Forestplot_`i'_eth5_cc.svg", replace
 } //end outcomes
 }
 
-insheet using "$Tabfigdir/FP_mi_eth16.txt", clearcs
+insheet using "$Tabfigdir/FP_mi_eth16.txt", clear
 *Create one graph per outcome
 replace model="" if eth16!=1
 foreach i of global outcomes {
@@ -59,7 +59,7 @@ graph export "$Tabfigdir\Forestplot_`i'_eth16_mi.svg", replace
 } //end outcomes
 }
 
-insheet using "$Tabfigdir/FP_mi_5.txt", clearcs
+insheet using "$Tabfigdir/FP_mi_5.txt", clear
 *Create one graph per outcome
 replace model="" if eth5!=1
 foreach i of global outcomes {
