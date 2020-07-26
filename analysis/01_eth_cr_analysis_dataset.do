@@ -194,6 +194,13 @@ recode hh_total 	///
 			3/5 = 1 /// 
 		    6/9 = 2 /// 
 			10/max = 3, gen(hh_total_cat) 
+			
+label define hh_total_cat 	0 "1-2" ///
+						1 "2-5" ///
+						2 "6-9" ///
+						3 "10+" 					
+label values hh_total_cat hh_total_cat
+
 tab hh_total_cat,m
 ****************************
 *  Create required cohort  *
@@ -703,7 +710,7 @@ format  stime* %td
 label var  hh_size "# people in household"
 label var  hh_id "Household ID"
 label var hh_total "# people in household calculated"
-label var hh_total_cat "# people in household category"
+label var hh_total_cat "Number of people in household"
 
 * Demographics
 label var patient_id				"Patient ID"
@@ -743,8 +750,8 @@ label var egfr_cat						"Calculated eGFR"
 label var hypertension				    "Diagnosed hypertension"
 label var chronic_respiratory_disease 	"Chronic Respiratory Diseases"
 label var chronic_cardiac_disease 		"Chronic Cardiac Diseases"
-label var dm_type						"Diabetes by type"
-label var dm_type_exeter_os				"Diabetes exeter type - OS codelist"
+label var dm_type						"Diabetes Type"
+label var dm_type_exeter_os				"Diabetes type (Exeter definition)"
 label var cancer						"Cancer"
 label var other_immuno					"Immunosuppressed (combination algorithm)"
 label var chronic_liver_disease 		"Chronic liver disease"
@@ -755,12 +762,11 @@ label var ra_sle_psoriasis				"Autoimmune disease"
 lab var egfr							"eGFR"
 lab var perm_immunodef  				"Permanent immunosuppression"
 lab var temp_immunodef  				"Temporary immunosuppression"
-lab var  bphigh 							"non-missing indicator of known high blood pressure"
-lab var bpcat 								"Blood pressure four levels, non-missing"
-lab var htdiag_or_highbp 					"High blood pressure or hypertension diagnosis"
+lab var  bphigh 						"non-missing indicator of known high blood pressure"
+lab var bpcat 							"Blood pressure four levels, non-missing"
+lab var htdiag_or_highbp 				"High blood pressure or hypertension diagnosis"
 lab var esrf 							"end stage renal failure"
-
-lab var asthma_date 					"Diagnosed Asthma Date"
+lab var asthma_date 						"Diagnosed Asthma Date"
 label var hypertension_date			   		"Diagnosed hypertension Date"
 label var chronic_respiratory_disease_date 	"Other Respiratory Diseases Date"
 label var chronic_cardiac_disease_date		"Other Heart Diseases Date"
@@ -776,7 +782,7 @@ lab var temp_immunodef_date   				"Temporary immunosuppression date"
 lab var esrf_date 							"end stage renal failure"
 lab var hba1c_mmol_per_mol_date				"HbA1c mmo/mol_date"
 lab var hba1c_percentage_date				"HbA1c % date"
-lab var hba1ccat							"HbA1c in categories"
+lab var hba1ccat							"HbA1c category"
 lab var hba1c75								"HbA1c >= 7.5%"
  
 *medications
@@ -791,16 +797,16 @@ lab var combination_bp_meds 				"BP med in last 6 months"
 lab var spironolactone 						"Spironolactone in last 6 months"
 lab var thiazide_diuretics					"TZD in last 6 months"
 
-lab var statin_date								"Statin in last 6 months"
-lab var insulin_date								"Insulin in last 6 months"
-lab var ace_inhibitors_date 						"ACE in last 6 months"
-lab var alpha_blockers_date 						"Alpha blocker in last 6 months"
-lab var arbs_date 								"ARB in last 6 months"
-lab var betablockers_date 						"Beta blocker in last 6 months"
-lab var calcium_channel_blockers_date 			"CCB in last 6 months"
-lab var combination_bp_meds_date 				"BP med in last 6 months"
-lab var spironolactone_date 						"Spironolactone in last 6 months"
-lab var thiazide_diuretics_date					"TZD in last 6 months"
+lab var statin_date							"Statin in last 6 months"
+lab var insulin_date						"Insulin in last 6 months"
+lab var ace_inhibitors_date 				"ACE in last 6 months"
+lab var alpha_blockers_date 				"Alpha blocker in last 6 months"
+lab var arbs_date 							"ARB in last 6 months"
+lab var betablockers_date 					"Beta blocker in last 6 months"
+lab var calcium_channel_blockers_date 		"CCB in last 6 months"
+lab var combination_bp_meds_date 			"BP med in last 6 months"
+lab var spironolactone_date 				"Spironolactone in last 6 months"
+lab var thiazide_diuretics_date				"TZD in last 6 months"
 
 * Outcomes and follow-up
 label var indexdate					"Date of study start (feb 1 2020)"

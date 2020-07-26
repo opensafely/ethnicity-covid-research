@@ -63,9 +63,9 @@ syntax, variable(varname) condition(string)
 	file write tablecontent %9.0gc (r(N)) (" (") %3.1f (`pct') (")") _tab
 	}
 	
-	cou if eth5 == .u
+	cou if eth5 == .
 	local rowdenom = r(N)
-	cou if eth5 == .u & `variable' `condition'
+	cou if eth5 == . & `variable' `condition'
 	local pct = 100*(r(N)/`rowdenom')
 	file write tablecontent %9.0gc (r(N)) (" (") %3.1f (`pct') (")") _n
 	
@@ -159,7 +159,10 @@ syntax, variable(varname)
 	
 	qui summarize `variable' if eth5 == .u, d
 	file write tablecontent %3.1f (r(p50)) (" (") %3.1f (r(p25)) ("-") %3.1f (r(p75)) (")") _n
-	
+
+qui summarize `variable' if eth5 == ., d
+file write tablecontent %3.1f (r(min)) (", ") %3.1f (r(max)) ("") _n
+
 	
 /*
 	qui summarize `variable', d
@@ -171,8 +174,6 @@ syntax, variable(varname)
 	file write tablecontent %3.1f (r(min)) (", ") %3.1f (r(max)) ("") _tab
 	}
 	
-	qui summarize `variable' if eth5 == .u, d
-	file write tablecontent %3.1f (r(min)) (", ") %3.1f (r(max)) ("") _n
 */
 end
 
@@ -220,6 +221,9 @@ file write tablecontent _n
 tabulatevariable, variable(imd) min(1) max(5) missing
 file write tablecontent _n 
 
+tabulatevariable, variable(hh_total_cat) min(0) max(3) missing
+file write tablecontent _n 
+
 qui summarizevariable, variable(bmi)
 file write tablecontent _n
 
@@ -227,6 +231,19 @@ tabulatevariable, variable(obese4cat_sa) min(1) max(4) missing
 file write tablecontent _n 
 
 tabulatevariable, variable(smoke) min(1) max(3) missing 
+file write tablecontent _n 
+
+tabulatevariable, variable(dm_type) min(0) max(3) missing 
+file write tablecontent _n 
+
+tabulatevariable, variable(dm_type_exeter_os) min(0) max(2) missing 
+file write tablecontent _n 
+
+tabulatevariable, variable(hba1c75) min(0) max(1) missing 
+file write tablecontent _n 
+
+
+tabulatevariable, variable(hba1ccat) min(0) max(4) missing 
 file write tablecontent _n 
 
 file write tablecontent _n _n
@@ -237,21 +254,15 @@ file write tablecontent _n _n
 * COMORBIDITIES (continous)
 format hba1c_mmol_per_mol hba1c_percentage bmi egfr %9.2f
 
-
-
 qui summarizevariable, variable(hba1c_percentage)
 file write tablecontent _n
 
 qui summarizevariable, variable(hba1c_mmol_per_mol)
 file write tablecontent _n
 
-qui summarizevariable, variable(hh_size)
-file write tablecontent _n
-
 ** COMORBIDITIES (binary)
 
 foreach comorb of varlist 		///
-	dm_type 					///
 	hypertension 				///
 	htdiag_or_highbp			///
 	chronic_cardiac_disease		///
