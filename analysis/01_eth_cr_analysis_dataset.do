@@ -574,9 +574,13 @@ noi summ hba1c_percentage hba1c_mmol_per_mol
 gen 	hba1c_pct = hba1c_percentage 
 replace hba1c_pct = (hba1c_mmol_per_mol/10.929)+2.15 if hba1c_mmol_per_mol<. 
 
-* Valid % range between 0-20  
+* Valid % range between 0-20  /195 mmol/mol
 replace hba1c_pct = . if !inrange(hba1c_pct, 0, 20) 
 replace hba1c_pct = round(hba1c_pct, 0.1)
+
+
+replace hba1c_percentage = . if !inrange(hba1c_pct, 0, 195) 
+replace hba1c_percentage = round(hba1c_percentage, 0.1)
 
 /* Categorise hba1c and diabetes  */
 
