@@ -21,8 +21,8 @@ log using $logdir\06b_eth_an_multivariable_eth5, replace t
 cap file close tablecontent
 file open tablecontent using $Tabfigdir/table2_eth5.txt, write text replace
 file write tablecontent ("Table 2: Association between ethnicity in five categories and COVID-19 outcomes - Complete Case Analysis") _n
-file write tablecontent _tab ("Number of events") _tab ("Total person-weeks") _tab ("Rate per 1,000") _tab ("Crude") _tab _tab ("Age/Sex/IMD Adjusted") _tab _tab 	("+ co-morbidities") _tab _tab 	("+ household size)") _tab _tab _n
-file write tablecontent _tab _tab _tab _tab   ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _n
+file write tablecontent _tab ("Number of events") _tab ("Total person-weeks") _tab ("Rate per 1,000") _tab ("Crude") _tab _tab ("Age/Sex Adjusted") _tab _tab ("Age/Sex/IMD Adjusted") _tab _tab 	("+ co-morbidities") _tab _tab 	("+ household size)") _tab _tab _n
+file write tablecontent _tab _tab _tab _tab   ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI")  _tab ("HR") _tab ("95% CI") _n
 
 
 
@@ -44,6 +44,10 @@ estimates save "$Tempdir/crude_`i'_eth5", replace
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/crude_`i'_eth5", replace) idstr("crude_`i'_eth5") 
 
 /* Multivariable models */ 
+*Age and gender
+stcox i.eth5 i.male age1 age2 age3
+estimates save "$Tempdir/model0_`i'_eth5", replace 
+parmest, label eform format(estimate p lb ub) saving("$Tempdir/model0_`i'_eth5", replace) idstr("model0_`i'_eth5") 
 
 * Age, Gender, IMD
 * Age fit as spline 
@@ -86,7 +90,7 @@ else di "WARNING MODEL2 DID NOT FIT (OUTCOME `outcome')"
 
 * Age, Gender, IMD and Comorbidities and household size
 
-noi cap stcox i.eth5 i.male age1 age2 age3 i.imd hh_size					///
+noi cap stcox i.eth5 i.male age1 age2 age3 i.imd i.hh_total_cat		///
 										bmi							///
 										gp_consult_count			///
 										i.smoke_nomiss				///
@@ -139,7 +143,7 @@ local lab5: label eth5 5
 	local rate = 1000*(`event'/`person_week')
 	
 	file write tablecontent  ("`lab1'") _tab (`event') _tab %10.0f (`person_week') _tab %3.2f (`rate') _tab
-	file write tablecontent ("1.00 (ref)") _tab _tab ("1.00 (ref)") _tab _tab ("1.00 (ref)")  _tab _tab ("1.00 (ref)") _n
+	file write tablecontent ("1.00 (ref)") _tab _tab ("1.00 (ref)") _tab _tab ("1.00 (ref)")  _tab _tab ("1.00 (ref)")  _tab _tab ("1.00 (ref)") _n
 	
 * Subsequent ethnic groups
 forvalues eth=2/5 {
@@ -151,6 +155,10 @@ forvalues eth=2/5 {
 	local rate = 1000*(`event'/`person_week')
 	file write tablecontent  ("`lab`eth''") _tab   (`event') _tab %10.0f (`person_week') _tab %3.2f (`rate') _tab  
 	cap estimates use "$Tempdir/crude_`i'_eth5" 
+	cap lincom `eth'.eth5, eform
+	file write tablecontent  %4.2f (r(estimate)) _tab %4.2f (r(lb)) (" - ") %4.2f (r(ub)) _tab 
+	cap estimates clear
+		cap estimates use "$Tempdir/model0_`i'_eth5" 
 	cap lincom `eth'.eth5, eform
 	file write tablecontent  %4.2f (r(estimate)) _tab %4.2f (r(lb)) (" - ") %4.2f (r(ub)) _tab 
 	cap estimates clear
@@ -175,7 +183,7 @@ file close tablecontent
 * Close log file 
 log close
 
-
+insheet using $Tabfigdir/table2_eth5.txt, clear
 
 
 

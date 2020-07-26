@@ -63,8 +63,8 @@ safetab ethnicity
  label define eth5	 	1 "White"  					///
 						2 "South Asian"				///						
 						3 "Black"  					///
-						4 "Mixed"	///
-						5 "Other"					///
+						4 "Mixed"					///
+						5 "Other"					
 					
 
 label values eth5 eth5
@@ -676,11 +676,10 @@ foreach i of global outcomes {
 
 /* CENSORING */
 /* SET FU DATES===============================================================*/ 
-* Censoring dates for each outcome (largely, last date outcome data available, minus a lag window based on previous graphs)
-
+* Censoring dates for each outcome (last date outcome data available)
 foreach i of global outcomes {
 qui summ `i'_date, format
-gen `i'_censor_date = r(max)-7
+gen `i'_censor_date = r(max)
 format `i'_censor_date %d
 summ `i'_date `i'_censor_date, format
 }

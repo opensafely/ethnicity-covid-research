@@ -21,8 +21,8 @@ log using $logdir\06a_eth_an_multivariable_eth16, replace t
 cap file close tablecontent
 file open tablecontent using $Tabfigdir/table2_eth16.txt, write text replace
 file write tablecontent ("Table 2: Association between ethnicity in 16 categories and COVID-19 outcomes - Complete Case Analysis") _n
-file write tablecontent _tab ("Number of events") _tab ("Total person-weeks") _tab ("Rate per 1,000") _tab ("Crude") _tab _tab ("Age/Sex/IMD Adjusted") _tab _tab 	("+ co-morbidities") _tab _tab 	("+ household size)") _tab _tab _n
-file write tablecontent _tab _tab _tab _tab   ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _n
+file write tablecontent _tab ("Number of events") _tab ("Total person-weeks") _tab ("Rate per 1,000") _tab ("Crude") _tab _tab ("Age/Sex Adjusted") _tab _tab ("Age/Sex/IMD Adjusted") _tab _tab 	("+ co-morbidities") _tab _tab 	("+ household size)") _tab _tab _n
+file write tablecontent _tab _tab _tab _tab   ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _n
 
 
 
@@ -44,6 +44,10 @@ estimates save "$Tempdir/crude_`i'_eth16", replace
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/crude_`i'_eth16", replace) idstr("crude_`i'_eth16") 
 
 /* Multivariable models */ 
+*Age and gender
+stcox i.eth16 i.male age1 age2 age3
+estimates save "$Tempdir/model0_`i'_eth16", replace 
+parmest, label eform format(estimate p lb ub) saving("$Tempdir/model0_`i'_eth16", replace) idstr("model0_`i'_eth16") 
 
 * Age, Gender, IMD
 * Age fit as spline
@@ -55,7 +59,6 @@ estimates save "$Tempdir/model1_`i'_eth16", replace
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model1_`i'_eth16", replace) idstr("model1_`i'_eth16") 
 }
 else di "WARNING MODEL1 DID NOT FIT (OUTCOME `outcome')"
-
 
 
 * Age, Gender, IMD and Comorbidities  
@@ -87,7 +90,7 @@ else di "WARNING MODEL2 DID NOT FIT (OUTCOME `outcome')"
 
 										
 * Age, Gender, IMD and Comorbidities  and household size
-noi cap stcox i.eth16 i.male age1 age2 age3 i.imd hh_size					///
+noi cap stcox i.eth16 i.male age1 age2 age3 i.imd i.hh_total_cat					///
 										bmi							///
 										gp_consult_safecount			///
 										i.smoke_nomiss				///
@@ -159,6 +162,10 @@ forvalues eth=2/11 {
 	cap cap lincom `eth'.eth16, eform
 	file write tablecontent  %4.2f (r(estimate)) _tab %4.2f (r(lb)) (" - ") %4.2f (r(ub)) _tab 
 	cap estimates clear
+	cap estimates use "$Tempdir/model0_`i'_eth16" 
+	cap cap lincom `eth'.eth16, eform
+	file write tablecontent  %4.2f (r(estimate)) _tab %4.2f (r(lb)) (" - ") %4.2f (r(ub)) _tab 
+	cap estimates clear
 	cap estimates use "$Tempdir/model1_`i'_eth16" 
 	cap cap lincom `eth'.eth16, eform
 	file write tablecontent  %4.2f (r(estimate)) _tab %4.2f (r(lb)) (" - ") %4.2f (r(ub)) _tab 
@@ -180,4 +187,5 @@ file close tablecontent
 * Close log file 
 log close
 
+insheet using $Tabfigdir/table2_eth16.txt, clear
 
