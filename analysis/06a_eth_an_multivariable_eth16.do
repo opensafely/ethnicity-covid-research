@@ -16,6 +16,7 @@ OTHER OUTPUT: 			logfiles, printed to folder analysis/$logdir
 * Open a log file
 
 cap log close
+macro drop hr
 log using $logdir\06a_eth_an_multivariable_eth16, replace t 
 
 cap file close tablecontent
@@ -42,12 +43,16 @@ safetab eth16 `i', missing row
 stcox i.eth16 
 estimates save "$Tempdir/crude_`i'_eth16", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/crude_`i'_eth16", replace) idstr("crude_`i'_eth16") 
+local hr "`hr' "$Tempdir/crude_`i'_eth16" "
+
 
 /* Multivariable models */ 
 *Age and gender
 stcox i.eth16 i.male age1 age2 age3
 estimates save "$Tempdir/model0_`i'_eth16", replace 
-parmest, label eform format(estimate p lb ub) saving("$Tempdir/model0_`i'_eth16", replace) idstr("model0_`i'_eth16") 
+parmest, label eform format(estimate p lb ub) saving("$Tempdir/model0_`i'_eth16", replace) idstr("model0_`i'_eth16")
+local hr "`hr' "$Tempdir/model0_`i'_eth16" "
+ 
 
 * Age, Gender, IMD
 * Age fit as spline
@@ -57,6 +62,8 @@ if _rc==0{
 estimates
 estimates save "$Tempdir/model1_`i'_eth16", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model1_`i'_eth16", replace) idstr("model1_`i'_eth16") 
+local hr "`hr' "$Tempdir/model1_`i'_eth16" "
+
 }
 else di "WARNING MODEL1 DID NOT FIT (OUTCOME `outcome')"
 
@@ -85,6 +92,8 @@ if _rc==0{
 estimates
 estimates save "$Tempdir/model2_`i'_eth16", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model2_`i'_eth16", replace) idstr("model2_`i'_eth16") 
+local hr "`hr' "$Tempdir/model2_`i'_eth16" "
+
 }
 else di "WARNING MODEL2 DID NOT FIT (OUTCOME `outcome')"
 
@@ -113,6 +122,8 @@ if _rc==0{
 estimates
 estimates save "$Tempdir/model3_`i'_eth16", replace
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model3_`i'_eth16", replace) idstr("model3_`i'_eth16") 
+local hr "`hr' "$Tempdir/model3_`i'_eth16" "
+
 }
 else di "WARNING MODEL3 DID NOT FIT (OUTCOME `outcome')"
 										
@@ -183,6 +194,57 @@ forvalues eth=2/11 {
 } //end outcomes
 
 file close tablecontent
+
+************************************************create forestplot dataset
+dsconcat `hr'
+duplicates drop
+stop 
+split idstr, p(_)
+ren idstr1 model
+ren idstr2 outcome
+drop idstr idstr3
+
+
+*keep ORs for ethnicity
+keep if regexm(label, "Eth")
+drop label
+
+gen eth16=1 if regexm(parm, "1b")
+forvalues i=2/11 {
+	replace eth16=`i' if regexm(parm, "`i'.eth16")
+}
+
+drop parm  stderr z 
+order outcome model eth16 
+
+destring eth16, replace
+label define eth16 	///
+						1 "British or Mixed British" ///
+						2 "Irish" ///
+						3 "Other White" ///
+						4 "Indian" ///
+						5 "Pakistani" ///
+						6 "Bangladeshi" ///					
+						7 "Caribbean" ///
+						8 "African" ///
+						9 "Chinese" ///
+						10 "All mixed" ///
+						11 "All Other" 
+label values eth16 eth16
+
+graph set window 
+gen num=[_n]
+sum num
+
+gen adjusted="Crude" if model=="crude"
+replace adjusted="Age-sex" if model=="model0"
+replace adjusted="Age-sex-IMD" if model=="model1"
+replace adjusted="+ co-morbidities" if model=="model2"
+replace adjusted="+ household size" if model=="model3"
+
+*save dataset for later
+outsheet using "$Tabfigdir/FP_multivariable_eth16.txt", replace
+
 
 * Close log file 
 log close
