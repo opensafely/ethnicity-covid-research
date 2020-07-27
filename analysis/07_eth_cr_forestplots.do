@@ -21,8 +21,9 @@ metan estimate min95 max95 if outcome=="`i'" ///
 	nowt nosubgroup  nooverall nobox graphregion(color(white)) scheme(sj) texts(100) astext(65)  	///
 	title("`i'", size(medsmall)) ///
 	t2title("complete case analysis", size(small)) ///
-	graphregion(margin(zero)) ///
-	*Export graph
+	graphregion(margin(zero)) 
+
+*Export graph
 graph export "$Tabfigdir\Forestplot_`i'_eth16_cc.svg", replace  
 } //end outcomes
 
@@ -37,8 +38,9 @@ metan estimate min95 max95  if outcome=="`i'" ///
 	nowt nosubgroup  nooverall nobox graphregion(color(white)) scheme(sj) texts(100) astext(65)  	///
 	title("`i'", size(medsmall)) ///
 	t2title("complete case analysis", size(small)) ///
-	graphregion(margin(zero)) ///
-	*Export graph
+	graphregion(margin(zero)) 
+	
+*Export graph
 graph export "$Tabfigdir\Forestplot_`i'_eth5_cc.svg", replace  
 } //end outcomes
 
@@ -51,8 +53,9 @@ metan estimate min95 max95  if outcome=="`i'" ///
 	nowt nosubgroup  nooverall nobox graphregion(color(white)) scheme(sj) texts(100) astext(65)  	///
 	title("`i'", size(medsmall)) ///
 	t2title("complete case analysis", size(small)) ///
-	graphregion(margin(zero)) ///
-	*Export graph
+	graphregion(margin(zero))
+
+*Export graph
 graph export "$Tabfigdir\Forestplot_`i'_eth16_mi.svg", replace  
 } //end outcomes
 
@@ -66,8 +69,9 @@ metan estimate min95 max95  if outcome=="`i'" ///
 	nowt nosubgroup  nooverall nobox graphregion(color(white)) scheme(sj) texts(100) astext(65)  	///
 	title("`i'", size(medsmall)) ///
 	t2title("complete case analysis", size(small)) ///
-	graphregion(margin(zero)) ///
-	*Export graph
+	graphregion(margin(zero)) 
+
+*Export graph
 graph export "$Tabfigdir\Forestplot_`i'_eth5_mi.svg", replace  
 } //end outcomes
 
