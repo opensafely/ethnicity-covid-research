@@ -14,10 +14,10 @@ log using $logdir\07_eth_cr_forestplots, replace t
 
 use "$Tabfigdir/FP_multivariable_eth16.dta", clear
 *Create one graph per outcome
-replace model="" if eth16!=1
+replace adjusted="" if eth16!=1
 foreach i of global outcomes {
 metan estimate min95 max95 if outcome=="`i'" ///
- , random effect(Hazard Ratio) null(1) lcols(model eth16) by(outcome) dp(2) xlab(.25,.5,1,2,4) ///
+ , random effect(Hazard Ratio) null(1) lcols(adjusted eth16) by(outcome) dp(2) xlab(.25,.5,1,2,4) ///
 	nowt nosubgroup  nooverall nobox graphregion(color(white)) scheme(sj) texts(100) astext(65)  	///
 	title("`i'", size(medsmall)) ///
 	t2title("complete case analysis", size(small)) ///
@@ -34,7 +34,7 @@ destring eth5, replace
 replace model="" if eth5!=1
 foreach i of global outcomes {
 metan estimate min95 max95  if outcome=="`i'" ///
- , random effect(Hazard Ratio) null(1) lcols(model eth5) by(outcome) dp(2) xlab(.25,.5,1,2,4) ///
+ , random effect(Hazard Ratio) null(1) lcols(adjusted eth5) by(outcome) dp(2) xlab(.25,.5,1,2,4) ///
 	nowt nosubgroup  nooverall nobox graphregion(color(white)) scheme(sj) texts(100) astext(65)  	///
 	title("`i'", size(medsmall)) ///
 	t2title("complete case analysis", size(small)) ///
@@ -46,10 +46,10 @@ graph export "$Tabfigdir\Forestplot_`i'_eth5_cc.svg", replace
 
 use "$Tabfigdir/FP_mi_eth16.dta", clear
 *Create one graph per outcome
-replace model="" if eth16!=1
+replace adjusted="" if eth16!=1
 foreach i of global outcomes {
 metan estimate min95 max95  if outcome=="`i'" ///
- , random effect(Hazard Ratio) null(1) lcols(model eth16) by(outcome) dp(2) xlab(.25,.5,1,2,4) ///
+ , random effect(Hazard Ratio) null(1) lcols(adjusted eth16) by(outcome) dp(2) xlab(.25,.5,1,2,4) ///
 	nowt nosubgroup  nooverall nobox graphregion(color(white)) scheme(sj) texts(100) astext(65)  	///
 	title("`i'", size(medsmall)) ///
 	t2title("complete case analysis", size(small)) ///
@@ -65,7 +65,7 @@ destring eth5, replace
 replace model="" if eth5!=1
 foreach i of global outcomes {
 metan estimate min95 max95  if outcome=="`i'" ///
- , random effect(Hazard Ratio) null(1) lcols(model eth5) by(outcome) dp(2) xlab(.25,.5,1,2,4) ///
+ , random effect(Hazard Ratio) null(1) lcols(adjusted eth5) by(outcome) dp(2) xlab(.25,.5,1,2,4) ///
 	nowt nosubgroup  nooverall nobox graphregion(color(white)) scheme(sj) texts(100) astext(65)  	///
 	title("`i'", size(medsmall)) ///
 	t2title("complete case analysis", size(small)) ///
