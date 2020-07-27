@@ -54,6 +54,14 @@ estimates save "$Tempdir/crude_postest_eth16", replace
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/crude_postest_eth16", replace) idstr("crude_postest_eth16") 
 
 /* Multivariable models */ 
+*Age gender
+clogit positivetest i.eth16 i.male age1 age2 age3, strata(stp) or
+if _rc==0{
+estimates
+estimates save "$Tempdir/model0_postest_eth16", replace 
+parmest, label eform format(estimate p lb ub) saving("$Tempdir/model0_postest_eth16", replace) idstr("model0_postest_eth16") 
+}
+else di "WARNING MODEL1 DID NOT FIT (OUTCOME `outcome')"
 
 * Age, Gender, IMD
 * Age fit as spline in first instance, categorical below 
@@ -73,6 +81,7 @@ clogit positivetest i.eth16 i.male age1 age2 age3 	i.imd							///
 										i.smoke_nomiss				///
 										i.htdiag_or_highbp		 	///	
 										i.asthma					///
+										i.chronic_respiratory_disease ///
 										i.chronic_cardiac_disease	///
 										i.diabcat 					///	
 										i.cancer                    ///
@@ -90,7 +99,7 @@ clogit positivetest i.eth16 i.male age1 age2 age3 	i.imd							///
 
 if _rc==0{
 estimates
-estimates save "$Tempdir/model1_postest_eth16", replace 
+estimates save "$Tempdir/model2_postest_eth16", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model2_postest_eth16", replace) idstr("model2_postest_eth16") 
 }
 else di "WARNING MODEL2 DID NOT FIT (OUTCOME `outcome')"
@@ -103,6 +112,7 @@ clogit positivetest i.eth16 i.male age1 age2 age3 i.imd hh_size					///
 										i.smoke_nomiss				///
 										i.htdiag_or_highbp		 	///	
 										i.asthma					///
+										i.chronic_respiratory_disease ///
 										i.chronic_cardiac_disease	///
 										i.diabcat 					///	
 										i.cancer                    ///
@@ -161,6 +171,10 @@ forvalues eth=2/11 {
 	cap lincom `eth'.eth16, eform
 	file write tablecontent  %4.2f (r(estimate)) _tab %4.2f (r(lb)) (" - ") %4.2f (r(ub)) _tab 
 	cap estimates clear
+	cap estimates use "$Tempdir/model0_postest_eth16" 
+	cap lincom `eth'.eth16, eform
+	file write tablecontent  %4.2f (r(estimate)) _tab %4.2f (r(lb)) (" - ") %4.2f (r(ub)) _tab 
+	cap estimates clear
 	cap estimates use "$Tempdir/model1_postest_eth16" 
 	cap lincom `eth'.eth16, eform
 	file write tablecontent  %4.2f (r(estimate)) _tab %4.2f (r(lb)) (" - ") %4.2f (r(ub)) _tab 
@@ -179,7 +193,7 @@ file close tablecontent
 
 /* Foresplot================================================================*/ 
 
-dsconcat  "$Tempdir/model1_postest_eth16" "$Tempdir/model2_postest_eth16" "$Tempdir/model3_postest_eth16"
+dsconcat "$Tempdir/model0_postest_eth16"  "$Tempdir/model1_postest_eth16" "$Tempdir/model2_postest_eth16" "$Tempdir/model3_postest_eth16"
 duplicates drop
 
 split idstr, p(_)
@@ -218,7 +232,8 @@ graph set window
 gen num=[_n]
 sum num
 
-gen adjusted="Age-sex-IMD" if model=="model1"
+gen adjusted="Age-sex" if model=="model0"
+replace adjusted="Age-sex-IMD" if model=="model1"
 replace adjusted="+ co-morbidities" if model=="model2"
 replace adjusted="+ household size" if model=="model3"
 

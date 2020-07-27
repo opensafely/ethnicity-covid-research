@@ -45,7 +45,7 @@ parmest, label eform format(estimate p lb ub) saving("$Tempdir/inf_crude_`i'_eth
 
 /* Multivariable inf_models */ 
 *Age and gender
-stcox i.eth16 i.male age1 age2 age3
+stcox i.eth16 i.male age1 age2 age3, strata(stp)
 estimates save "$Tempdir/inf_model0_`i'_eth16", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/inf_model0_`i'_eth16", replace) idstr("inf_model0_`i'_eth16") 
 
@@ -64,10 +64,11 @@ else di "WARNING inf_model1 DID NOT FIT (OUTCOME `outcome')"
 * Age, Gender, IMD and Comorbidities  
 noi cap stcox i.eth16 i.male age1 age2 age3 	i.imd							///
 										bmi							///
-										gp_consult_safecount			///
+										gp_consult_count			///
 										i.smoke_nomiss				///
 										i.htdiag_or_highbp		 	///	
 										i.asthma					///
+										i.chronic_respiratory_disease ///
 										i.chronic_cardiac_disease	///
 										i.diabcat 					///	
 										i.cancer                    ///
@@ -90,12 +91,13 @@ else di "WARNING inf_model2 DID NOT FIT (OUTCOME `outcome')"
 
 										
 * Age, Gender, IMD and Comorbidities  and household size
-noi cap stcox i.eth16 i.male age1 age2 age3 i.imd i.hh_total_cat					///
+noi cap stcox i.eth16 i.male age1 age2 age3 i.imd i.hh_total_cat	///
 										bmi							///
-										gp_consult_safecount			///
+										gp_consult_count			///
 										i.smoke_nomiss				///
 										i.htdiag_or_highbp		 	///	
 										i.asthma					///
+										i.chronic_respiratory_disease ///
 										i.chronic_cardiac_disease	///
 										i.diabcat 					///	
 										i.cancer                    ///

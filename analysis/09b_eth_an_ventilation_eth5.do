@@ -48,7 +48,7 @@ tab eth5 ventilated , missing row
 
 /* Univariable model */ 
 
-clogit ventilated i.eth5, strata(stp) or
+clogit ventilated i.eth5
 estimates save "$Tempdir/crude_ventilated_eth5", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/crude_ventilated_eth5", replace) idstr("crude_ventilated_eth5") 
 
@@ -75,6 +75,7 @@ noi cap clogit ventilated  i.eth5 i.male age1 age2 age3 	i.imd			///
 										i.smoke_nomiss				///
 										i.htdiag_or_highbp		 	///	
 										i.asthma					///
+										i.chronic_respiratory_disease ///
 										i.chronic_cardiac_disease	///
 										i.diabcat 					///	
 										i.cancer                    ///
@@ -104,6 +105,7 @@ noi cap clogit ventilated i.eth5 i.male age1 age2 age3 i.imd i.hh_total_cat					
 										i.smoke_nomiss				///
 										i.htdiag_or_highbp		 	///	
 										i.asthma					///
+										i.chronic_respiratory_disease ///
 										i.chronic_cardiac_disease	///
 										i.diabcat 					///	
 										i.cancer                    ///

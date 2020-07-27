@@ -48,7 +48,7 @@ local hr "`hr' "$Tempdir/crude_`i'_eth5" "
 
 /* Multivariable models */ 
 *Age and gender
-noi cap stcox i.eth5 i.male age1 age2 age3
+noi cap stcox i.eth5 i.male age1 age2 age3, strata(stp)
 estimates save "$Tempdir/model0_`i'_eth5", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model0_`i'_eth5", replace) idstr("model0_`i'_eth5")
 local hr "`hr' "$Tempdir/model0_`i'_eth5" "
@@ -68,7 +68,7 @@ else di "WARNING MODEL1 DID NOT FIT (OUTCOME `i')"
 * Age, Gender, IMD and Comorbidities  
 noi cap stcox i.eth5 i.male age1 age2 age3 	i.imd							///
 										bmi							///
-										gp_consult_safecount			///
+										gp_consult_count			///
 										i.smoke_nomiss				///
 										i.htdiag_or_highbp		 	///	
 										i.asthma					///
@@ -97,7 +97,7 @@ else di "WARNING MODEL2 DID NOT FIT (OUTCOME `i')"
 * Age, Gender, IMD and Comorbidities  and household size
 noi cap stcox i.eth5 i.male age1 age2 age3 i.imd i.hh_total_cat					///
 										bmi							///
-										gp_consult_safecount			///
+										gp_consult_count			///
 										i.smoke_nomiss				///
 										i.htdiag_or_highbp		 	///	
 										i.asthma					///

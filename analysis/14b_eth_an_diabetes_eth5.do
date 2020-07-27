@@ -50,12 +50,12 @@ local hr "`hr' "$Tempdir/dm_crude_`i'_eth5_`eth'" "
 
 /* Multivariable dm_models */ 
 *Age and gender
-stcox i.diabcat i.male age1 age2 age3
+stcox i.diabcat i.male age1 age2 age3, strata(stp)
 if _rc==0{
 estimates
 estimates save "$Tempdir/dm_model0_`i'_eth5_`eth'", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/dm_model0_`i'_eth5_`eth'", replace) idstr("dm_model0_`i'_eth5_`eth'")
-local hr "`hr' "$Tempdir/dm_crude_`i'_eth5_`eth'" " 
+local hr "`hr' "$Tempdir/dm_model0_`i'_eth5_`eth'" " 
 }
 else di "WARNING dm_model1 DID NOT FIT (OUTCOME `outcome')"
 
@@ -67,7 +67,7 @@ if _rc==0{
 estimates
 estimates save "$Tempdir/dm_model1_`i'_eth5_`eth'", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/dm_model1_`i'_eth5_`eth'", replace) idstr("dm_model1_`i'_eth5_`eth'")
-local hr "`hr' "$Tempdir/dm_crude_`i'_eth5_`eth'" " 
+local hr "`hr' "$Tempdir/dm_model1_`i'_eth5_`eth'" " 
 }
 else di "WARNING dm_model1 DID NOT FIT (OUTCOME `outcome')"
 
@@ -79,8 +79,8 @@ noi cap stcox i.diabcat i.male age1 age2 age3 	i.imd							///
 										i.smoke_nomiss				///
 										i.htdiag_or_highbp		 	///	
 										i.asthma					///
+										i.chronic_respiratory_disease ///
 										i.chronic_cardiac_disease	///
-										i.dm_type 					///	
 										i.cancer                    ///
 										i.chronic_liver_disease		///
 										i.stroke					///
@@ -96,7 +96,7 @@ if _rc==0{
 estimates
 estimates save "$Tempdir/dm_model2_`i'_eth5_`eth'", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/dm_model2_`i'_eth5_`eth'", replace) idstr("dm_model2_`i'_eth5_`eth'") 
-local hr "`hr' "$Tempdir/dm_crude_`i'_eth5_`eth'" "
+local hr "`hr' "$Tempdir/dm_model2_`i'_eth5_`eth'" "
 }
 else di "WARNING dm_model2 DID NOT FIT (OUTCOME `outcome')"
 
