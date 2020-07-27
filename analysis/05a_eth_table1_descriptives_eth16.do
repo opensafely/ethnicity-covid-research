@@ -249,11 +249,7 @@ file write tablecontent _n
 tabulatevariable, variable(dm_type_exeter_os) min(0) max(2) missing 
 file write tablecontent _n 
 
-tabulatevariable, variable(hba1c75) min(0) max(1) missing 
-file write tablecontent _n 
-
-
-tabulatevariable, variable(hba1ccat) min(0) max(4) missing 
+tabulatevariable, variable(diabcat) min(1) max(6) missing 
 file write tablecontent _n 
 
 file write tablecontent _n _n
@@ -262,12 +258,9 @@ file write tablecontent _n _n
 ** COMORBIDITIES (categorical and continous)
 
 * COMORBIDITIES (continous)
-format hba1c_mmol_per_mol hba1c_percentage bmi egfr %9.2f
+format hba1c_pct bmi egfr %9.2f
 
-qui summarizevariable, variable(hba1c_percentage)
-file write tablecontent _n
-
-qui summarizevariable, variable(hba1c_mmol_per_mol)
+qui summarizevariable, variable(hba1c_pct)
 file write tablecontent _n
 
 ** COMORBIDITIES (binary)

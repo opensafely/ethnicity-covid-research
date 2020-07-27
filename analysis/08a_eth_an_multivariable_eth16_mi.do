@@ -84,7 +84,7 @@ noi cap mi estimate, dots saving("$Tempdir/model2_`i'", replace) eform: stcox i.
 										i.htdiag_or_highbp		 	///	
 										i.asthma					///
 										i.chronic_cardiac_disease	///
-										i.dm_type 					///	
+										i.diabcat 					///	
 										i.cancer                    ///
 										i.chronic_liver_disease		///
 										i.stroke					///
@@ -112,7 +112,7 @@ noi cap mi estimate, dots saving("$Tempdir/model3_`i'", replace) eform: stcox i.
 										i.htdiag_or_highbp		 	///	
 										i.asthma					///
 										i.chronic_cardiac_disease	///
-										i.dm_type 					///	
+										i.diabcat 					///	
 										i.cancer                    ///
 										i.chronic_liver_disease		///
 										i.stroke					///

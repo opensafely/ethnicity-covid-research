@@ -591,9 +591,6 @@ replace hba1c_pct = . if !inrange(hba1c_pct, 0, 20)
 replace hba1c_pct = round(hba1c_pct, 0.1)
 
 
-replace hba1c_percentage = . if !inrange(hba1c_pct, 0, 195) 
-replace hba1c_percentage = round(hba1c_percentage, 0.1)
-
 /* Categorise hba1c and diabetes  */
 
 * Group hba1c
@@ -609,6 +606,25 @@ safetab hba1ccat
 gen hba1c75=0 if hba1c_pct<7.5
 replace hba1c75=1 if hba1c_pct>=7.5 & hba1c_pct!=.
 label define hba1c75 0"<7.5" 1">=7.5"
+safetab hba1c75, m
+
+* Create diabetes, split by control/not
+gen     diabcat = 1 if dm_type==0
+replace diabcat = 2 if dm_type==1 & inlist(hba1ccat, 0, 1)
+replace diabcat = 3 if dm_type==1 & inlist(hba1ccat, 2, 3, 4)
+replace diabcat = 4 if dm_type==2 & inlist(hba1ccat, 0, 1)
+replace diabcat = 5 if dm_type==2 & inlist(hba1ccat, 2, 3, 4)
+replace diabcat = 6 if dm_type==1 & hba1c_pct==. | dm_type==2 & hba1c_pct==.
+
+
+label define diabcat 	1 "No diabetes" 			///
+						2 "T1DM, controlled"		///
+						3 "T1DM, uncontrolled" 		///
+						4 "T2DM, controlled"		///
+						5 "T2DM, uncontrolled"		///
+						6 "Diabetes, no HbA1c"
+label values diabcat diabcat
+safetab diabcat, m
 
 /*  Asthma  */
 * Asthma  (coded: 0 No, 1 Yes no OCS, 2 Yes with OCS)
@@ -783,7 +799,7 @@ lab var hba1c_mmol_per_mol_date				"HbA1c mmo/mol_date"
 lab var hba1c_percentage_date				"HbA1c % date"
 lab var hba1ccat							"HbA1c category"
 lab var hba1c75								"HbA1c >= 7.5%"
- 
+lab var diabcat								"Diabetes and HbA1c combined" 
 *medications
 lab var statin								"Statin in last 6 months"
 lab var insulin								"Insulin in last 6 months"

@@ -74,7 +74,7 @@ clogit positivetest i.eth16 i.male age1 age2 age3 	i.imd							///
 										i.htdiag_or_highbp		 	///	
 										i.asthma					///
 										i.chronic_cardiac_disease	///
-										i.dm_type 					///	
+										i.diabcat 					///	
 										i.cancer                    ///
 										i.chronic_liver_disease		///
 										i.stroke					///
@@ -104,7 +104,7 @@ clogit positivetest i.eth16 i.male age1 age2 age3 i.imd hh_size					///
 										i.htdiag_or_highbp		 	///	
 										i.asthma					///
 										i.chronic_cardiac_disease	///
-										i.dm_type 					///	
+										i.diabcat 					///	
 										i.cancer                    ///
 										i.chronic_liver_disease		///
 										i.stroke					///
