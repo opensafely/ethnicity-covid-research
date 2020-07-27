@@ -44,9 +44,14 @@ metan estimate min95 max95  if outcome=="`i'" ///
 graph export "$Tabfigdir\Forestplot_`i'_eth5_cc.svg", replace  
 } //end outcomes
 
+/*
 use "$Tabfigdir/FP_mi_eth16.dta", clear
 *Create one graph per outcome
 replace adjusted="" if eth16!=1
+replace min95=1 if min95==.
+replace max95=1 if max95==.
+drop if estimate<min95
+
 foreach i of global outcomes {
 metan estimate min95 max95  if outcome=="`i'" ///
  , random effect(Hazard Ratio) null(1) lcols(adjusted eth16) by(outcome) dp(2) xlab(.25,.5,1,2,4) ///
@@ -63,6 +68,9 @@ use "$Tabfigdir/FP_mi_eth5.dta", clear
 *Create one graph per outcome
 destring eth5, replace
 replace adjusted="" if eth5!=1
+replace min95=1 if min95==.
+replace max95=1 if max95==.
+drop if estimate<min95
 foreach i of global outcomes {
 metan estimate min95 max95  if outcome=="`i'" ///
  , random effect(Hazard Ratio) null(1) lcols(adjusted eth5) by(outcome) dp(2) xlab(.25,.5,1,2,4) ///

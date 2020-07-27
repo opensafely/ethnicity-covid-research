@@ -66,10 +66,10 @@ do "$Dodir/05b_eth_table1_descriptives_eth5.do"
 do "$Dodir/06a_eth_an_multivariable_eth16.do" 
 do "$Dodir/06b_eth_an_multivariable_eth5.do"
 
-*multivariable analysis - imputed ethnicity
+/*multivariable analysis - imputed ethnicity
 do "$Dodir/08a_eth_an_multivariable_eth16_mi.do"
 do "$Dodir/08b_eth_an_multivariable_eth5_mi.do"
-
+*/
 *Forest plots for complete case analysis and MI
 do "$Dodir/07_eth_cr_forestplots.do"
 
