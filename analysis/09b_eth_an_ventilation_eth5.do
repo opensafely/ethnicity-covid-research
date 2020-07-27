@@ -48,15 +48,19 @@ tab eth5 ventilated , missing row
 
 /* Univariable model */ 
 
-clogit ventilated i.eth5, strata(stp) or
+logistic ventilated i.eth5
 estimates save "$Tempdir/crude_ventilated_eth5", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/crude_ventilated_eth5", replace) idstr("crude_ventilated_eth5") 
 
 /* Multivariable models */ 
 *Age Gender
 clogit ventilated i.eth5 i.male age1 age2 age3, strata(stp) or
+if _rc==0{
+estimates
 estimates save "$Tempdir/model0_ventilated_eth5", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model0_ventilated_eth5", replace) idstr("model0_ventilated_eth5") 
+}
+else di "WARNING MODEL1 DID NOT FIT (OUTCOME `outcome')"
 
 * Age, Gender, IMD
 noi cap clogit ventilated i.eth5 i.male age1 age2 age3 i.imd, strata(stp) or
@@ -75,6 +79,7 @@ noi cap clogit ventilated  i.eth5 i.male age1 age2 age3 	i.imd			///
 										i.smoke_nomiss				///
 										i.htdiag_or_highbp		 	///	
 										i.asthma					///
+										i.chronic_respiratory_disease ///
 										i.chronic_cardiac_disease	///
 										i.diabcat 					///	
 										i.cancer                    ///
@@ -104,6 +109,7 @@ noi cap clogit ventilated i.eth5 i.male age1 age2 age3 i.imd i.hh_total_cat					
 										i.smoke_nomiss				///
 										i.htdiag_or_highbp		 	///	
 										i.asthma					///
+										i.chronic_respiratory_disease ///
 										i.chronic_cardiac_disease	///
 										i.diabcat 					///	
 										i.cancer                    ///

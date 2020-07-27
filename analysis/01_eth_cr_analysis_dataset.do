@@ -196,7 +196,7 @@ recode hh_total 	///
 			10/max = 3, gen(hh_total_cat) 
 			
 label define hh_total_cat 	0 "1-2" ///
-						1 "2-5" ///
+						1 "3-5" ///
 						2 "6-9" ///
 						3 "10+" 					
 label values hh_total_cat hh_total_cat

@@ -54,6 +54,14 @@ estimates save "$Tempdir/crude_postest_eth5", replace
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/crude_postest_eth5", replace) idstr("crude_postest_eth5") 
 
 /* Multivariable models */ 
+*Age gender
+clogit positivetest i.eth5 i.male age1 age2 age3, strata(stp) or
+if _rc==0{
+estimates
+estimates save "$Tempdir/model0_postest_eth5", replace 
+parmest, label eform format(estimate p lb ub) saving("$Tempdir/model0_postest_eth5", replace) idstr("model0_postest_eth5") 
+}
+else di "WARNING MODEL1 DID NOT FIT (OUTCOME `outcome')"
 
 * Age, Gender, IMD
 * Age fit as spline in first instance, categorical below 
@@ -73,6 +81,7 @@ clogit positivetest i.eth5 i.male age1 age2 age3 	i.imd							///
 										i.smoke_nomiss				///
 										i.htdiag_or_highbp		 	///	
 										i.asthma					///
+										i.chronic_respiratory_disease ///
 										i.chronic_cardiac_disease	///
 										i.diabcat 					///	
 										i.cancer                    ///
@@ -90,7 +99,7 @@ clogit positivetest i.eth5 i.male age1 age2 age3 	i.imd							///
 
 if _rc==0{
 estimates
-estimates save "$Tempdir/model1_postest_eth5", replace 
+estimates save "$Tempdir/model2_postest_eth5", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model2_postest_eth5", replace) idstr("model2_postest_eth5") 
 }
 else di "WARNING MODEL2 DID NOT FIT (OUTCOME `outcome')"
@@ -103,6 +112,7 @@ clogit positivetest i.eth5 i.male age1 age2 age3 i.imd hh_size					///
 										i.smoke_nomiss				///
 										i.htdiag_or_highbp		 	///	
 										i.asthma					///
+										i.chronic_respiratory_disease ///
 										i.chronic_cardiac_disease	///
 										i.diabcat 					///	
 										i.cancer                    ///
@@ -206,7 +216,8 @@ graph set window
 gen num=[_n]
 sum num
 
-gen adjusted="Age-sex-IMD" if model=="model1"
+gen adjusted="Age-sex" if model=="model0"
+replace adjusted="Age-sex-IMD" if model=="model1"
 replace adjusted="+ co-morbidities" if model=="model2"
 replace adjusted="+ household size" if model=="model3"
 

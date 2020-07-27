@@ -50,10 +50,10 @@ local hr "`hr' "$Tempdir/hh_crude_`i'_eth16_`eth'" "
 
 /* Multivariable hh_models */ 
 *Age and gender
-stcox i.hh_total_cat i.male age1 age2 age3
+stcox i.hh_total_cat i.male age1 age2 age3, strata(stp)
 estimates save "$Tempdir/hh_model0_`i'_eth16_`eth'", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/hh_model0_`i'_eth16_`eth'", replace) idstr("hh_model0_`i'_eth16_`eth'")
-local hr "`hr' "$Tempdir/hh_crude_`i'_eth16_`eth'" " 
+local hr "`hr' "$Tempdir/hh_model0_`i'_eth16_`eth'" " 
 
 * Age, Gender, IMD
 * Age fit as spline
@@ -63,7 +63,7 @@ if _rc==0{
 estimates
 estimates save "$Tempdir/hh_model1_`i'_eth16_`eth'", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/hh_model1_`i'_eth16_`eth'", replace) idstr("hh_model1_`i'_eth16_`eth'")
-local hr "`hr' "$Tempdir/hh_crude_`i'_eth16_`eth'" " 
+local hr "`hr' "$Tempdir/hh_model1_`i'_eth16_`eth'" " 
 }
 else di "WARNING hh_model1 DID NOT FIT (OUTCOME `outcome')"
 
@@ -71,10 +71,11 @@ else di "WARNING hh_model1 DID NOT FIT (OUTCOME `outcome')"
 * Age, Gender, IMD and Comorbidities  
 noi cap stcox i.hh_total_cat i.male age1 age2 age3 	i.imd							///
 										bmi							///
-										gp_consult_safecount			///
+										gp_consult_count			///
 										i.smoke_nomiss				///
 										i.htdiag_or_highbp		 	///	
 										i.asthma					///
+										i.chronic_respiratory_disease ///
 										i.chronic_cardiac_disease	///
 										i.diabcat 					///	
 										i.cancer                    ///
@@ -92,7 +93,7 @@ if _rc==0{
 estimates
 estimates save "$Tempdir/hh_model2_`i'_eth16_`eth'", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/hh_model2_`i'_eth16_`eth'", replace) idstr("hh_model2_`i'_eth16_`eth'") 
-local hr "`hr' "$Tempdir/hh_crude_`i'_eth16_`eth'" "
+local hr "`hr' "$Tempdir/hh_model2_`i'_eth16_`eth'" "
 }
 else di "WARNING hh_model2 DID NOT FIT (OUTCOME `outcome')"
 
