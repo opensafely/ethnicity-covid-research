@@ -76,7 +76,7 @@ noi cap stcox i.hh_total_cat i.male age1 age2 age3 	i.imd							///
 										i.htdiag_or_highbp		 	///	
 										i.asthma					///
 										i.chronic_cardiac_disease	///
-										i.dm_type 					///	
+										i.diabcat 					///	
 										i.cancer                    ///
 										i.chronic_liver_disease		///
 										i.stroke					///
