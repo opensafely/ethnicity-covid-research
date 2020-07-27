@@ -507,23 +507,6 @@ gen htdiag_or_highbp = bphigh
 recode htdiag_or_highbp 0 = 1 if hypertension==1 
 
 
-/* Diabetes type */
-gen dm_type=1 if diabetes_type=="T1DM"
-replace dm_type=2 if diabetes_type=="T2DM"
-replace dm_type=3 if diabetes_type=="UNKNOWN_DM"
-replace dm_type=0 if diabetes_type=="NO_DM"
-
-safetab dm_type diabetes_type
-label define dm_type 0"No DM" 1"T1DM" 2"T2DM" 3"UNKNOWN_DM"
-label values dm_type dm_type
-
-*Open safely diabetes codes with exeter algorithm
-gen dm_type_exeter_os=1 if diabetes_exeter_os=="T1DM_EX_OS"
-replace dm_type_exeter_os=2 if diabetes_exeter_os=="T2DM_EX_OS"
-replace dm_type_exeter_os=0 if diabetes_exeter_os=="NO_DM"
-label values  dm_type_exeter_os dm_type
-
-
 ************
 *   eGFR   *
 ************
@@ -592,6 +575,21 @@ replace hba1c_pct = round(hba1c_pct, 0.1)
 
 
 /* Categorise hba1c and diabetes  */
+/* Diabetes type */
+gen dm_type=1 if diabetes_type=="T1DM"
+replace dm_type=2 if diabetes_type=="T2DM"
+replace dm_type=3 if diabetes_type=="UNKNOWN_DM"
+replace dm_type=0 if diabetes_type=="NO_DM"
+
+safetab dm_type diabetes_type
+label define dm_type 0"No DM" 1"T1DM" 2"T2DM" 3"UNKNOWN_DM"
+label values dm_type dm_type
+
+*Open safely diabetes codes with exeter algorithm
+gen dm_type_exeter_os=1 if diabetes_exeter_os=="T1DM_EX_OS"
+replace dm_type_exeter_os=2 if diabetes_exeter_os=="T2DM_EX_OS"
+replace dm_type_exeter_os=0 if diabetes_exeter_os=="NO_DM"
+label values  dm_type_exeter_os dm_type
 
 * Group hba1c
 gen 	hba1ccat = 0 if hba1c_pct <  6.5
