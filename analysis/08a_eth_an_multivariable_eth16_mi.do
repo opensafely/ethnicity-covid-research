@@ -243,7 +243,7 @@ replace adjusted="+ household size" if model=="model3"
 
 *save dataset for later
 outsheet using "$Tabfigdir/FP_mi_eth16.txt", replace
-save "$Tabfigdir/FP_mi_eth16.dta", clea
+save "$Tabfigdir/FP_mi_eth16.dta", replace
 
 
 * Close log file 
