@@ -48,7 +48,7 @@ tab eth5 ventilated , missing row
 
 /* Univariable model */ 
 
-clogit ventilated i.eth5
+logistic ventilated i.eth5
 estimates save "$Tempdir/crude_ventilated_eth5", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/crude_ventilated_eth5", replace) idstr("crude_ventilated_eth5") 
 
