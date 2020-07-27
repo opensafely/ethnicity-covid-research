@@ -17,15 +17,15 @@ OTHER OUTPUT: 			logfiles, printed to folder analysis/$logdir
 * Open a log file
 
 cap log close
-log using $logdir\09b_eth_an_ventilation_eth5, replace t
+log using $logdir\09b_eth_an_ventilation_eth5, replace text
 
 cap file close tablecontent
 file open tablecontent using $Tabfigdir/table3_eth5.txt, write text replace
 file write tablecontent ("Table 3: Association between ethnicity and Ventilation - Complete Case Analysis") _n
 
-file write tablecontent _tab ("Number of events") _tab ("Univariable") _tab _tab ("Age/Sex/IMD Adjusted") _tab _tab 	("+ co-morbidities") _tab _tab 	("+ household size)") _tab _tab _n
+file write tablecontent _tab ("Number of events") _tab ("Univariable") _tab _tab ("Age/SexAdjusted") _tab _tab ("Age/Sex/IMD Adjusted") _tab _tab 	("+ co-morbidities") _tab _tab 	("+ household size)") _tab _tab _n
 
-file write tablecontent _tab _tab ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _n
+file write tablecontent _tab _tab ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _n
 
 
 
@@ -53,23 +53,30 @@ estimates save "$Tempdir/crude_ventilated_eth5", replace
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/crude_ventilated_eth5", replace) idstr("crude_ventilated_eth5") 
 
 /* Multivariable models */ 
+*Age Gender
+clogit ventilated i.eth5 i.male age1 age2 age3, strata(stp) or
+estimates save "$Tempdir/model0_ventilated_eth5", replace 
+parmest, label eform format(estimate p lb ub) saving("$Tempdir/model0_ventilated_eth5", replace) idstr("model0_ventilated_eth5") 
 
 * Age, Gender, IMD
-* Age fit as spline in first instance, categorical below 
-
-clogit ventilated i.eth5 i.male age1 age2 age3 i.imd, strata(stp) or
+noi cap clogit ventilated i.eth5 i.male age1 age2 age3 i.imd, strata(stp) or
+if _rc==0{
+estimates
 estimates save "$Tempdir/model1_ventilated_eth5", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model1_ventilated_eth5", replace) idstr("model1_ventilated_eth5") 
+}
+else di "WARNING MODEL1 DID NOT FIT (OUTCOME `outcome')"
+
 
 * Age, Gender, IMD and Comorbidities  
-clogit ventilated  i.eth5 i.male age1 age2 age3 	i.imd			///
+noi cap clogit ventilated  i.eth5 i.male age1 age2 age3 	i.imd			///
 										bmi							///
 										gp_consult_count			///
 										i.smoke_nomiss				///
 										i.htdiag_or_highbp		 	///	
 										i.asthma					///
 										i.chronic_cardiac_disease	///
-										i.dm_type 					///	
+										i.diabcat 					///	
 										i.cancer                    ///
 										i.chronic_liver_disease		///
 										i.stroke					///
@@ -82,19 +89,23 @@ clogit ventilated  i.eth5 i.male age1 age2 age3 	i.imd			///
 										i.other_immuno		 		///
 										i.ra_sle_psoriasis, strata(stp) or				
 										
+if _rc==0{
+estimates
 estimates save "$Tempdir/model2_ventilated_eth5", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model2_ventilated_eth5", replace) idstr("model2_ventilated_eth5") 
+}
+else di "WARNING MODEL1 DID NOT FIT (OUTCOME `outcome')"
 
 * Age, Gender, IMD and Comorbidities and household size
 
-clogit ventilated i.eth5 i.male age1 age2 age3 i.imd hh_size					///
+noi cap clogit ventilated i.eth5 i.male age1 age2 age3 i.imd i.hh_total_cat					///
 										bmi							///
 										gp_consult_count			///
 										i.smoke_nomiss				///
 										i.htdiag_or_highbp		 	///	
 										i.asthma					///
 										i.chronic_cardiac_disease	///
-										i.dm_type 					///	
+										i.diabcat 					///	
 										i.cancer                    ///
 										i.chronic_liver_disease		///
 										i.stroke					///
@@ -105,10 +116,14 @@ clogit ventilated i.eth5 i.male age1 age2 age3 i.imd hh_size					///
 										i.perm_immunodef 			///
 										i.temp_immunodef 			///
 										i.other_immuno		 		///
-										i.ra_sle_psoriasis, strata(stp) or				
+										i.ra_sle_psoriasis, strata(stp) or	iter(100)			
 										
-estimates save "$Tempdir/model3_ventilated_eth5", replace
+if _rc==0{
+estimates
+estimates save "$Tempdir/model3_ventilated_eth5", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model3_ventilated_eth5", replace) idstr("model3_ventilated_eth5") 
+}
+else di "WARNING MODEL1 DID NOT FIT (OUTCOME `outcome')"
 
 /* Print table================================================================*/ 
 *  Print the results for the main model 
@@ -130,7 +145,7 @@ local lab5: label eth5 5
 	count if eth5 == 1 & ventilated == 1
 	local event = r(N)
 	
-	file write tablecontent  ("`lab1'") _tab (`event') _tab ("1.00 (ref)") _tab _tab ("1.00 (ref)") _tab _tab ("1.00 (ref)")  _tab _tab ("1.00 (ref)") _n
+	file write tablecontent  ("`lab1'") _tab (`event') _tab ("1.00 (ref)") _tab _tab ("1.00 (ref)") _tab _tab ("1.00 (ref)") _tab _tab ("1.00 (ref)")  _tab _tab ("1.00 (ref)") _n
 	
 * Subsequent ethnic groups
 forvalues eth=2/5 {
@@ -140,6 +155,10 @@ forvalues eth=2/5 {
 	file write tablecontent  ("`lab`eth''") _tab   (`event') _tab
 	estimates use "$Tempdir/crude_ventilated_eth5" 
 	lincom `eth'.eth5, eform
+	file write tablecontent  %4.2f (r(estimate)) _tab %4.2f (r(lb)) (" - ") %4.2f (r(ub)) _tab 
+	cap estimates clear
+	cap estimates use "$Tempdir/model0_ventilated_eth5" 
+	cap lincom `eth'.eth5, eform
 	file write tablecontent  %4.2f (r(estimate)) _tab %4.2f (r(lb)) (" - ") %4.2f (r(ub)) _tab 
 	cap estimates clear
 	cap estimates use "$Tempdir/model1_ventilated_eth5" 
@@ -160,7 +179,7 @@ file close tablecontent
 
 /* Foresplot================================================================*/ 
 
-dsconcat  "$Tempdir/model1_ventilated_eth5" "$Tempdir/model2_ventilated_eth5" "$Tempdir/model3_ventilated_eth5"
+dsconcat "$Tempdir/model0_ventilated_eth5" "$Tempdir/model1_ventilated_eth5" "$Tempdir/model2_ventilated_eth5" "$Tempdir/model3_ventilated_eth5"
 duplicates drop
 
 split idstr, p(_)
@@ -182,12 +201,11 @@ forvalues i=2/5 {
 drop parm eq
 order outcome model eth5
 
-label define eth5 	///
-						1 "White" ///
-						2 "South Asian" ///
-						3 "Black" ///
-						4 "Mixed" ///
-						5 "Other" 
+ label define eth5	 	1 "White"  					///
+						2 "South Asian"				///						
+						3 "Black"  					///
+						4 "Mixed"					///
+						5 "Other"					
 label values eth5 eth5
 
 graph set window 
@@ -195,14 +213,18 @@ gen num=[_n]
 sum num
 
 
-gen adjusted="Age-sex-IMD" if model=="model1"
+gen adjusted="Age-sex" if model=="model0"
+replace adjusted="Age-sex-IMD" if model=="model1"
 replace adjusted="+ co-morbidities" if model=="model2"
 replace adjusted="+ household size" if model=="model3"
 
+*save dataset for later
+outsheet using "$Tabfigdir/FP_ventilated_eth5.txt", replace
+
 *Create one graph 
 metan estimate min95 max95  if eth5!=1 ///
- , effect(Odds Ratio) null(1) lcols(eth5) dp(2) by(adjusted)  ///
-	random nowt nosubgroup nooverall nobox graphregion(color(white)) scheme(sj)  	///
+ , random effect(Odds Ratio) null(1) lcols(eth5) dp(2) by(adjusted)  ///
+	nowt nosubgroup nooverall nobox graphregion(color(white)) scheme(sj)  	///
 	title("Ventilation", size(medsmall)) 	///
 	t2title("complete case analysis", size(small)) 	///
 	graphregion(margin(zero)) 
@@ -213,10 +235,7 @@ metan estimate min95 max95  if eth5!=1 ///
 log close
 
 
-insheet using "$Tabfigdir/table3_eth5.txt", clear
-
-
-
+insheet using "$Tabfigdir/FP_ventilated_eth5.txt", clear
 
 
 

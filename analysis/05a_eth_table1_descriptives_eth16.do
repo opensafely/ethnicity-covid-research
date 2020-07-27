@@ -1,5 +1,5 @@
 /*==============================================================================
-DO FILE NAME:			05_eth_table1_descriptives
+DO FILE NAME:			05a_eth_table1_descriptives_eth16
 PROJECT:				Ethnicity and COVID-19 
 DATE: 					14 July 2020 
 AUTHOR:					R Mathur
@@ -28,20 +28,13 @@ USER-INSTALLED ADO:
 
 * Open a log file
 capture log close
-log using $Logdir/05_eth_table1_descriptives, replace t
+log using $Logdir/05a_eth_table1_descriptives_eth16, replace t
 
 * Open Stata dataset
 use $Tempdir/analysis_dataset, clear
 
-  *give missing ethnicity a value
- label list eth16
- replace eth16=99 if eth16==.
- label define eth16 99"Unknown", add
- tab eth16,m
- 
 
-
-/* PROGRAMS TO AUTOMATE TABULATIONS===========================================*/ 
+ /* PROGRAMS TO AUTOMATE TABULATIONS===========================================*/ 
 
 ********************************************************************************
 * All below code from K Baskharan 
@@ -62,7 +55,7 @@ syntax, variable(varname) condition(string)
 	local colpct = 100*(r(N)/`overalldenom')
 	file write tablecontent %9.0gc (`rowdenom')  (" (") %3.1f (`colpct') (")") _tab
 
-	forvalues i=1/11 {
+	forvalues i=1/11{
 	cou if eth16 == `i'
 	local rowdenom = r(N)
 	cou if eth16 == `i' & `variable' `condition'
@@ -70,9 +63,9 @@ syntax, variable(varname) condition(string)
 	file write tablecontent %9.0gc (r(N)) (" (") %3.1f (`pct') (")") _tab
 	}
 	
-	cou if eth16 == 99
+	cou if eth16 == .
 	local rowdenom = r(N)
-	cou if eth16 == 99 & `variable' `condition'
+	cou if eth16 == . & `variable' `condition'
 	local pct = 100*(r(N)/`rowdenom')
 	file write tablecontent %9.0gc (r(N)) (" (") %3.1f (`pct') (")") _n
 	
@@ -110,7 +103,7 @@ syntax, variable(varname) min(real) max(real) [missing]
 		generaterow, variable(`variable') condition("==`varlevel'")
 	}
 	
-	if "`missing'"!="" generaterow, variable(`variable') condition("== .")
+	if "`missing'"!="" generaterow, variable(`variable') condition("== 12")
 
 end
 
@@ -138,47 +131,49 @@ if there is a missing specified, then run the generate row for missing vals
 cap prog drop summarizevariable 
 prog define summarizevariable
 syntax, variable(varname) 
+
 	local lab: variable label `variable'
 	file write tablecontent ("`lab'") _n 
+
 
 	qui summarize `variable', d
 	file write tablecontent ("Mean (SD)") _tab 
 	file write tablecontent  %3.1f (r(mean)) (" (") %3.1f (r(sd)) (")") _tab
 	
-	forvalues i=1/11 {							
+	forvalues i=1/11{							
 	qui summarize `variable' if eth16 == `i', d
 	file write tablecontent  %3.1f (r(mean)) (" (") %3.1f (r(sd)) (")") _tab
 	}
 	
-	qui summarize `variable' if eth16 == 99, d
+	qui summarize `variable' if eth16 == .u, d
 	file write tablecontent  %3.1f (r(mean)) (" (") %3.1f (r(sd)) (")") _n
-
 	
 	qui summarize `variable', d
 	file write tablecontent ("Median (IQR)") _tab 
 	file write tablecontent %3.1f (r(p50)) (" (") %3.1f (r(p25)) ("-") %3.1f (r(p75)) (")") _tab
 	
-	forvalues i=1/11 {
+	forvalues i=1/11{
 	qui summarize `variable' if eth16 == `i', d
 	file write tablecontent %3.1f (r(p50)) (" (") %3.1f (r(p25)) ("-") %3.1f (r(p75)) (")") _tab
 	}
 	
-	qui summarize `variable' if eth16 == 99, d
+	qui summarize `variable' if eth16 == .u, d
 	file write tablecontent %3.1f (r(p50)) (" (") %3.1f (r(p25)) ("-") %3.1f (r(p75)) (")") _n
 	
-	/*
+qui summarize `variable' if eth16 == ., d
+file write tablecontent %3.1f (r(min)) (", ") %3.1f (r(max)) ("") _n
+	
+/*
 	qui summarize `variable', d
 	file write tablecontent ("Min, Max") _tab 
 	file write tablecontent %3.1f (r(min)) (", ") %3.1f (r(max)) ("") _tab
 	
-	forvalues i=1/11 {							
+	forvalues i=1/5{							
 	qui summarize `variable' if eth16 == `i', d
 	file write tablecontent %3.1f (r(min)) (", ") %3.1f (r(max)) ("") _tab
 	}
 	
-	qui summarize `variable' if eth16 == 99, d
-	file write tablecontent %3.1f (r(min)) (", ") %3.1f (r(max)) ("") _n
-	*/
+*/
 end
 
 /* INVOKE PROGRAMS FOR TABLE 1================================================*/ 
@@ -202,7 +197,7 @@ local lab8: label eth16 8
 local lab9: label eth16 9
 local lab10: label eth16 10
 local lab11: label eth16 11
-local lab99: label eth16 99
+
 
 
 file write tablecontent _tab ("Total")				  			  _tab ///
@@ -216,8 +211,7 @@ file write tablecontent _tab ("Total")				  			  _tab ///
 							 ("`lab8'")  						  _tab ///
 							 ("`lab9'")  						  _tab ///
 							 ("`lab10'")  						  _tab ///
-							 ("`lab11'")  						  _tab ///
-							 ("`lab99'")		  				  _n 
+							 ("`lab11'")  						  _n 
 
 * DEMOGRAPHICS (more than one level, potentially missing) 
 
@@ -237,6 +231,9 @@ file write tablecontent _n
 tabulatevariable, variable(imd) min(1) max(5) missing
 file write tablecontent _n 
 
+tabulatevariable, variable(hh_total_cat) min(0) max(3) missing
+file write tablecontent _n 
+
 qui summarizevariable, variable(bmi)
 file write tablecontent _n
 
@@ -246,29 +243,29 @@ file write tablecontent _n
 tabulatevariable, variable(smoke) min(1) max(3) missing 
 file write tablecontent _n 
 
+tabulatevariable, variable(dm_type) min(0) max(3) missing 
+file write tablecontent _n 
+
+tabulatevariable, variable(dm_type_exeter_os) min(0) max(2) missing 
+file write tablecontent _n 
+
+tabulatevariable, variable(diabcat) min(1) max(6) missing 
+file write tablecontent _n 
+
 file write tablecontent _n _n
 
 
 ** COMORBIDITIES (categorical and continous)
 
 * COMORBIDITIES (continous)
-format hba1c_mmol_per_mol hba1c_percentage bmi egfr %9.2f
+format hba1c_pct bmi egfr %9.2f
 
-
-
-qui summarizevariable, variable(hba1c_percentage)
-file write tablecontent _n
-
-qui summarizevariable, variable(hba1c_mmol_per_mol)
-file write tablecontent _n
-
-qui summarizevariable, variable(hh_size)
+qui summarizevariable, variable(hba1c_pct)
 file write tablecontent _n
 
 ** COMORBIDITIES (binary)
 
 foreach comorb of varlist 		///
-	dm_type 					///
 	hypertension 				///
 	htdiag_or_highbp			///
 	chronic_cardiac_disease		///
@@ -306,7 +303,7 @@ foreach treat of varlist ///
 local lab: variable label `treat'
 file write tablecontent ("`lab'") _n 
 	
-generaterow, variable(`treat') condition("==0")
+*generaterow, variable(`treat') condition("==0")
 generaterow, variable(`treat') condition("==1")
 
 file write tablecontent _n

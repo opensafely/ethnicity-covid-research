@@ -25,44 +25,13 @@ log using "$Logdir/01_eth_cr_create_analysis_dataset.log", replace t
 di "STARTING safecount FROM IMPORT:"
 safecount
 
-
-**************************   INPUT REQUIRED   *********************************
-
-* Censoring dates for each outcome (largely, last date outcome data available)
-gen suspected_censor		= "31/07/2020"	//TPP censor date
-gen confirmed_censor		= "31/07/2020"	//TPP censor date
-gen tested_censor			= "31/07/2020"	//testing data
-gen positivetest_censor		= "31/07/2020"	//testing data
-gen ae_censor	 			= "31/07/2020"	//A&E admission
-gen icu_censor		 		= "31/07/2020"	//ICU admission 
-gen cpnsdeath_censor		= "31/07/2020"	//in-hospital death
-gen onsdeath_censor 		= "31/07/2020"	//all death
-gen onscoviddeath_censor 	= "31/07/2020"	//all death covid related
-gen ons_noncoviddeath_censor = "31/07/2020"	//all death noncovid related
-
-
-
-foreach i of global outcomes {
-	di "`i'" " $`i'_censor"
-}
-
 *Start dates
 gen index 			= "01/02/2020"
 
-
-/*  Cohort entry and censor dates  */
 * Date of cohort entry, 1 Feb 2020
 gen indexdate = date(index, "DMY")
 format indexdate %d
 
-* Date of study end (typically: last date of outcome data available)
-
-foreach i of global outcomes {
-	gen `i'_censor_date    	    	= date("$`i'_censor", 	"DMY")
-	summ   `i'_censor_date 
-}
-
-replace severe_censor_date=min(ae_censor_date, icu_censor_date, cpnsdeath_censor_date, onsdeath_censor_date)
 
 *******************************************************************************
 
@@ -94,8 +63,8 @@ safetab ethnicity
  label define eth5	 	1 "White"  					///
 						2 "South Asian"				///						
 						3 "Black"  					///
-						4 "Mixed"	///
-						5 "Other"					///
+						4 "Mixed"					///
+						5 "Other"					
 					
 
 label values eth5 eth5
@@ -220,7 +189,19 @@ label values agegroup agegroup
 *Total number people in household (to check hh size)
 bysort hh_id: gen hh_total=_N
 
+recode hh_total 	///
+			1/2=0 ///
+			3/5 = 1 /// 
+		    6/9 = 2 /// 
+			10/max = 3, gen(hh_total_cat) 
+			
+label define hh_total_cat 	0 "1-2" ///
+						1 "2-5" ///
+						2 "6-9" ///
+						3 "10+" 					
+label values hh_total_cat hh_total_cat
 
+tab hh_total_cat,m
 ****************************
 *  Create required cohort  *
 ****************************
@@ -526,23 +507,6 @@ gen htdiag_or_highbp = bphigh
 recode htdiag_or_highbp 0 = 1 if hypertension==1 
 
 
-/* Diabetes type */
-gen dm_type=1 if diabetes_type=="T1DM"
-replace dm_type=2 if diabetes_type=="T2DM"
-replace dm_type=3 if diabetes_type=="UNKNOWN_DM"
-replace dm_type=0 if diabetes_type=="NO_DM"
-
-safetab dm_type diabetes_type
-label define dm_type 0"No DM" 1"T1DM" 2"T2DM" 3"UNKNOWN_DM"
-label values dm_type dm_type
-
-*Open safely diabetes codes with exeter algorithm
-gen dm_type_exeter_os=1 if diabetes_exeter_os=="T1DM_EX_OS"
-replace dm_type_exeter_os=2 if diabetes_exeter_os=="T2DM_EX_OS"
-replace dm_type_exeter_os=0 if diabetes_exeter_os=="NO_DM"
-label values  dm_type_exeter_os dm_type
-
-
 ************
 *   eGFR   *
 ************
@@ -605,11 +569,27 @@ noi summ hba1c_percentage hba1c_mmol_per_mol
 gen 	hba1c_pct = hba1c_percentage 
 replace hba1c_pct = (hba1c_mmol_per_mol/10.929)+2.15 if hba1c_mmol_per_mol<. 
 
-* Valid % range between 0-20  
+* Valid % range between 0-20  /195 mmol/mol
 replace hba1c_pct = . if !inrange(hba1c_pct, 0, 20) 
 replace hba1c_pct = round(hba1c_pct, 0.1)
 
+
 /* Categorise hba1c and diabetes  */
+/* Diabetes type */
+gen dm_type=1 if diabetes_type=="T1DM"
+replace dm_type=2 if diabetes_type=="T2DM"
+replace dm_type=3 if diabetes_type=="UNKNOWN_DM"
+replace dm_type=0 if diabetes_type=="NO_DM"
+
+safetab dm_type diabetes_type
+label define dm_type 0"No DM" 1"T1DM" 2"T2DM" 3"UNKNOWN_DM"
+label values dm_type dm_type
+
+*Open safely diabetes codes with exeter algorithm
+gen dm_type_exeter_os=1 if diabetes_exeter_os=="T1DM_EX_OS"
+replace dm_type_exeter_os=2 if diabetes_exeter_os=="T2DM_EX_OS"
+replace dm_type_exeter_os=0 if diabetes_exeter_os=="NO_DM"
+label values  dm_type_exeter_os dm_type
 
 * Group hba1c
 gen 	hba1ccat = 0 if hba1c_pct <  6.5
@@ -622,8 +602,27 @@ label values hba1ccat hba1ccat
 safetab hba1ccat
 
 gen hba1c75=0 if hba1c_pct<7.5
-replace hba1c75=1 if hba1c_pct>7.5 & hba1c_pct!=.
+replace hba1c75=1 if hba1c_pct>=7.5 & hba1c_pct!=.
 label define hba1c75 0"<7.5" 1">=7.5"
+safetab hba1c75, m
+
+* Create diabetes, split by control/not
+gen     diabcat = 1 if dm_type==0
+replace diabcat = 2 if dm_type==1 & inlist(hba1ccat, 0, 1)
+replace diabcat = 3 if dm_type==1 & inlist(hba1ccat, 2, 3, 4)
+replace diabcat = 4 if dm_type==2 & inlist(hba1ccat, 0, 1)
+replace diabcat = 5 if dm_type==2 & inlist(hba1ccat, 2, 3, 4)
+replace diabcat = 6 if dm_type==1 & hba1c_pct==. | dm_type==2 & hba1c_pct==.
+
+
+label define diabcat 	1 "No diabetes" 			///
+						2 "T1DM, controlled"		///
+						3 "T1DM, uncontrolled" 		///
+						4 "T2DM, controlled"		///
+						5 "T2DM, uncontrolled"		///
+						6 "Diabetes, no HbA1c"
+label values diabcat diabcat
+safetab diabcat, m
 
 /*  Asthma  */
 * Asthma  (coded: 0 No, 1 Yes no OCS, 2 Yes with OCS)
@@ -689,6 +688,15 @@ foreach i of global outcomes {
 		safetab `i'
 }
 
+/* CENSORING */
+/* SET FU DATES===============================================================*/ 
+* Censoring dates for each outcome (last date outcome data available)
+foreach i of global outcomes {
+qui summ `i'_date, format
+gen `i'_censor_date = r(max)
+format `i'_censor_date %d
+summ `i'_date `i'_censor_date, format
+}
 
 /**** Create survival times  ****/
 * For looping later, name must be stime_binary_outcome_name
@@ -699,6 +707,12 @@ foreach i of global outcomes {
 	gen stime_`i' = min(`i'_censor_date, onsdeath_date, `i'_date, dereg_date)
 }
 
+* If outcome was after censoring occurred, set to zero
+foreach i of global outcomes {
+	replace `i'=0 if `i'_date>stime_`i'
+	tab `i'
+}
+
 * Format date variables
 format  stime* %td 
 
@@ -706,9 +720,10 @@ format  stime* %td
 *  Label variables you are intending to keep, drop the rest 
 
 *HH variable
-label var  hh_size "Number people in household"
+label var  hh_size "# people in household"
 label var  hh_id "Household ID"
-
+label var hh_total "# people in household calculated"
+label var hh_total_cat "Number of people in household"
 
 * Demographics
 label var patient_id				"Patient ID"
@@ -748,8 +763,8 @@ label var egfr_cat						"Calculated eGFR"
 label var hypertension				    "Diagnosed hypertension"
 label var chronic_respiratory_disease 	"Chronic Respiratory Diseases"
 label var chronic_cardiac_disease 		"Chronic Cardiac Diseases"
-label var dm_type						"Diabetes by type"
-label var dm_type_exeter_os				"Diabetes exeter type - OS codelist"
+label var dm_type						"Diabetes Type"
+label var dm_type_exeter_os				"Diabetes type (Exeter definition)"
 label var cancer						"Cancer"
 label var other_immuno					"Immunosuppressed (combination algorithm)"
 label var chronic_liver_disease 		"Chronic liver disease"
@@ -760,12 +775,11 @@ label var ra_sle_psoriasis				"Autoimmune disease"
 lab var egfr							"eGFR"
 lab var perm_immunodef  				"Permanent immunosuppression"
 lab var temp_immunodef  				"Temporary immunosuppression"
-lab var  bphigh 							"non-missing indicator of known high blood pressure"
-lab var bpcat 								"Blood pressure four levels, non-missing"
-lab var htdiag_or_highbp 					"High blood pressure or hypertension diagnosis"
+lab var  bphigh 						"non-missing indicator of known high blood pressure"
+lab var bpcat 							"Blood pressure four levels, non-missing"
+lab var htdiag_or_highbp 				"High blood pressure or hypertension diagnosis"
 lab var esrf 							"end stage renal failure"
-
-lab var asthma_date 					"Diagnosed Asthma Date"
+lab var asthma_date 						"Diagnosed Asthma Date"
 label var hypertension_date			   		"Diagnosed hypertension Date"
 label var chronic_respiratory_disease_date 	"Other Respiratory Diseases Date"
 label var chronic_cardiac_disease_date		"Other Heart Diseases Date"
@@ -779,9 +793,11 @@ label var ra_sle_psoriasis_date 			"Autoimmune disease  Date"
 lab var perm_immunodef_date  				"Permanent immunosuppression date"
 lab var temp_immunodef_date   				"Temporary immunosuppression date"
 lab var esrf_date 							"end stage renal failure"
-lab var hba1c_mmol_per_mol_date				"HbA1c mmo/mol_date"
 lab var hba1c_percentage_date				"HbA1c % date"
-
+lab var hba1c_pct							"HbA1c %"
+lab var hba1ccat							"HbA1c category"
+lab var hba1c75								"HbA1c >= 7.5%"
+lab var diabcat								"Diabetes and HbA1c combined" 
 *medications
 lab var statin								"Statin in last 6 months"
 lab var insulin								"Insulin in last 6 months"
@@ -794,16 +810,16 @@ lab var combination_bp_meds 				"BP med in last 6 months"
 lab var spironolactone 						"Spironolactone in last 6 months"
 lab var thiazide_diuretics					"TZD in last 6 months"
 
-lab var statin_date								"Statin in last 6 months"
-lab var insulin_date								"Insulin in last 6 months"
-lab var ace_inhibitors_date 						"ACE in last 6 months"
-lab var alpha_blockers_date 						"Alpha blocker in last 6 months"
-lab var arbs_date 								"ARB in last 6 months"
-lab var betablockers_date 						"Beta blocker in last 6 months"
-lab var calcium_channel_blockers_date 			"CCB in last 6 months"
-lab var combination_bp_meds_date 				"BP med in last 6 months"
-lab var spironolactone_date 						"Spironolactone in last 6 months"
-lab var thiazide_diuretics_date					"TZD in last 6 months"
+lab var statin_date							"Statin in last 6 months"
+lab var insulin_date						"Insulin in last 6 months"
+lab var ace_inhibitors_date 				"ACE in last 6 months"
+lab var alpha_blockers_date 				"Alpha blocker in last 6 months"
+lab var arbs_date 							"ARB in last 6 months"
+lab var betablockers_date 					"Beta blocker in last 6 months"
+lab var calcium_channel_blockers_date 		"CCB in last 6 months"
+lab var combination_bp_meds_date 			"BP med in last 6 months"
+lab var spironolactone_date 				"Spironolactone in last 6 months"
+lab var thiazide_diuretics_date				"TZD in last 6 months"
 
 * Outcomes and follow-up
 label var indexdate					"Date of study start (feb 1 2020)"

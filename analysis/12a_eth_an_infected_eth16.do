@@ -1,5 +1,5 @@
 /*==============================================================================
-DO FILE NAME:			06b_eth_an_multivariable_eth5
+DO FILE NAME:			12a_eth_an_infected_eth16
 PROJECT:				Ethnicity and COVID
 AUTHOR:					R Mathur (modified from A wong and A Schultze)
 DATE: 					15 July 2020					
@@ -16,57 +16,53 @@ OTHER OUTPUT: 			logfiles, printed to folder analysis/$logdir
 * Open a log file
 
 cap log close
-macro drop hr
-log using $logdir\06b_eth_an_multivariable_eth5, replace t 
+log using $logdir\12a_eth_an_infected_eth16, replace t 
 
 cap file close tablecontent
-file open tablecontent using $Tabfigdir/table2_eth5.txt, write text replace
-file write tablecontent ("Table 2: Association between ethnicity in 16 categories and COVID-19 outcomes - Complete Case Analysis") _n
+file open tablecontent using $Tabfigdir/table6_eth16.txt, write text replace
+file write tablecontent ("Table 6: Ethnic differences secondary care outcomes amongst those with evidence of infection - Complete Case Analysis") _n
 file write tablecontent _tab ("Number of events") _tab ("Total person-weeks") _tab ("Rate per 1,000") _tab ("Crude") _tab _tab ("Age/Sex Adjusted") _tab _tab ("Age/Sex/IMD Adjusted") _tab _tab 	("+ co-morbidities") _tab _tab 	("+ household size)") _tab _tab _n
 file write tablecontent _tab _tab _tab _tab   ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _n
 
 
 
-foreach i of global outcomes {
+foreach i of global outcomes2 {
 * Open Stata dataset
-use "$Tempdir/analysis_dataset_STSET_`i'.dta", clear
+use "$Tempdir/analysis_dataset_STSET_`i'_infected.dta", clear
 
 /* Sense check outcomes=======================================================*/ 
 
-*safetab eth5 `i', missing row
+safetab eth16 `i', missing row
 
 
-/* Main Model=================================================================*/
+/* Main inf_model=================================================================*/
 
-/* Univariable model */ 
+/* Univariable inf_model */ 
 
-noi cap stcox i.eth5 
-estimates save "$Tempdir/crude_`i'_eth5", replace 
-parmest, label eform format(estimate p lb ub) saving("$Tempdir/crude_`i'_eth5", replace) idstr("crude_`i'_eth5") 
-local hr "`hr' "$Tempdir/crude_`i'_eth5" "
+stcox i.eth16 
+estimates save "$Tempdir/inf_crude_`i'_eth16", replace 
+parmest, label eform format(estimate p lb ub) saving("$Tempdir/inf_crude_`i'_eth16", replace) idstr("inf_crude_`i'_eth16") 
 
-
-/* Multivariable models */ 
+/* Multivariable inf_models */ 
 *Age and gender
-noi cap stcox i.eth5 i.male age1 age2 age3
-estimates save "$Tempdir/model0_`i'_eth5", replace 
-parmest, label eform format(estimate p lb ub) saving("$Tempdir/model0_`i'_eth5", replace) idstr("model0_`i'_eth5")
-local hr "`hr' "$Tempdir/model0_`i'_eth5" "
- 
+stcox i.eth16 i.male age1 age2 age3
+estimates save "$Tempdir/inf_model0_`i'_eth16", replace 
+parmest, label eform format(estimate p lb ub) saving("$Tempdir/inf_model0_`i'_eth16", replace) idstr("inf_model0_`i'_eth16") 
 
 * Age, Gender, IMD
-noi cap stcox i.eth5 i.male age1 age2 age3 i.imd, strata(stp)
+* Age fit as spline
+
+noi cap stcox i.eth16 i.male age1 age2 age3 i.imd, strata(stp)
 if _rc==0{
 estimates
-estimates save "$Tempdir/model1_`i'_eth5", replace 
-parmest, label eform format(estimate p lb ub) saving("$Tempdir/model1_`i'_eth5", replace) idstr("model1_`i'_eth5") 
-local hr "`hr' "$Tempdir/model1_`i'_eth5" "
+estimates save "$Tempdir/inf_model1_`i'_eth16", replace 
+parmest, label eform format(estimate p lb ub) saving("$Tempdir/inf_model1_`i'_eth16", replace) idstr("inf_model1_`i'_eth16") 
 }
-else di "WARNING MODEL1 DID NOT FIT (OUTCOME `i')"
+else di "WARNING inf_model1 DID NOT FIT (OUTCOME `outcome')"
 
 
 * Age, Gender, IMD and Comorbidities  
-noi cap stcox i.eth5 i.male age1 age2 age3 	i.imd							///
+noi cap stcox i.eth16 i.male age1 age2 age3 	i.imd							///
 										bmi							///
 										gp_consult_safecount			///
 										i.smoke_nomiss				///
@@ -87,15 +83,14 @@ noi cap stcox i.eth5 i.male age1 age2 age3 	i.imd							///
 										i.ra_sle_psoriasis, strata(stp)		
 if _rc==0{
 estimates
-estimates save "$Tempdir/model2_`i'_eth5", replace 
-parmest, label eform format(estimate p lb ub) saving("$Tempdir/model2_`i'_eth5", replace) idstr("model2_`i'_eth5") 
-local hr "`hr' "$Tempdir/model2_`i'_eth5" "
+estimates save "$Tempdir/inf_model2_`i'_eth16", replace 
+parmest, label eform format(estimate p lb ub) saving("$Tempdir/inf_model2_`i'_eth16", replace) idstr("inf_model2_`i'_eth16") 
 }
-else di "WARNING MODEL2 DID NOT FIT (OUTCOME `i')"
+else di "WARNING inf_model2 DID NOT FIT (OUTCOME `outcome')"
 
 										
 * Age, Gender, IMD and Comorbidities  and household size
-noi cap stcox i.eth5 i.male age1 age2 age3 i.imd i.hh_total_cat					///
+noi cap stcox i.eth16 i.male age1 age2 age3 i.imd i.hh_total_cat					///
 										bmi							///
 										gp_consult_safecount			///
 										i.smoke_nomiss				///
@@ -116,33 +111,38 @@ noi cap stcox i.eth5 i.male age1 age2 age3 i.imd i.hh_total_cat					///
 										i.ra_sle_psoriasis, strata(stp)				
 if _rc==0{
 estimates
-estimates save "$Tempdir/model3_`i'_eth5", replace
-parmest, label eform format(estimate p lb ub) saving("$Tempdir/model3_`i'_eth5", replace) idstr("model3_`i'_eth5") 
-local hr "`hr' "$Tempdir/model3_`i'_eth5" "
+estimates save "$Tempdir/inf_model3_`i'_eth16", replace
+parmest, label eform format(estimate p lb ub) saving("$Tempdir/inf_model3_`i'_eth16", replace) idstr("inf_model3_`i'_eth16") 
 }
-else di "WARNING MODEL3 DID NOT FIT (OUTCOME `i')"
+else di "WARNING inf_model3 DID NOT FIT (OUTCOME `outcome')"
 										
 /* Print table================================================================*/ 
-*  Print the results for the main model 
+*  Print the results for the main inf_model 
 
 
 * Column headings 
 file write tablecontent ("Outcome: `i'") _n
 
 * Row headings 
-local lab1: label eth5 1
-local lab2: label eth5 2
-local lab3: label eth5 3
-local lab4: label eth5 4
-local lab5: label eth5 5
+local lab1: label eth16 1
+local lab2: label eth16 2
+local lab3: label eth16 3
+local lab4: label eth16 4
+local lab5: label eth16 5
+local lab6: label eth16 6
+local lab7: label eth16 7
+local lab8: label eth16 8
+local lab9: label eth16 9
+local lab10: label eth16 10
+local lab11: label eth16 11
 
 /* counts */
  
-* First row, eth5 = 1 (White British) reference cat
-	safecount if eth5 == 1 & `i' == 1
+* First row, eth16 = 1 (White British) reference cat
+	safecount if eth16 == 1 & `i' == 1
 	local event = r(N)
-    bysort eth5: egen total_follow_up = total(_t)
-	qui su total_follow_up if eth5 == 1
+    bysort eth16: egen total_follow_up = total(_t)
+	su total_follow_up if eth16 == 1
 	local person_week = r(mean)/7
 	local rate = 1000*(`event'/`person_week')
 	
@@ -150,32 +150,32 @@ local lab5: label eth5 5
 	file write tablecontent ("1.00 (ref)") _tab _tab ("1.00 (ref)") _tab _tab ("1.00 (ref)")  _tab _tab ("1.00 (ref)") _n
 	
 * Subsequent ethnic groups
-forvalues eth=2/5 {
+forvalues eth=2/11 {
 
-	safecount if eth5 == `eth' & `i' == 1
+	safecount if eth16 == `eth' & `i' == 1
 	local event = r(N)
-	qui su total_follow_up if eth5 == `eth'
+	su total_follow_up if eth16 == `eth'
 	local person_week = r(mean)/7
 	local rate = 1000*(`event'/`person_week')
 	file write tablecontent  ("`lab`eth''") _tab   (`event') _tab %10.0f (`person_week') _tab %3.2f (`rate') _tab  
-	cap estimates use "$Tempdir/crude_`i'_eth5" 
-	cap cap lincom `eth'.eth5, eform
+	cap estimates use "$Tempdir/inf_crude_`i'_eth16" 
+	cap cap lincom `eth'.eth16, eform
 	file write tablecontent  %4.2f (r(estimate)) _tab %4.2f (r(lb)) (" - ") %4.2f (r(ub)) _tab 
 	cap estimates clear
-	cap estimates use "$Tempdir/model0_`i'_eth5" 
-	cap cap lincom `eth'.eth5, eform
+	cap estimates use "$Tempdir/inf_model0_`i'_eth16" 
+	cap cap lincom `eth'.eth16, eform
 	file write tablecontent  %4.2f (r(estimate)) _tab %4.2f (r(lb)) (" - ") %4.2f (r(ub)) _tab 
 	cap estimates clear
-	cap estimates use "$Tempdir/model1_`i'_eth5" 
-	cap cap lincom `eth'.eth5, eform
+	cap estimates use "$Tempdir/inf_model1_`i'_eth16" 
+	cap cap lincom `eth'.eth16, eform
 	file write tablecontent  %4.2f (r(estimate)) _tab %4.2f (r(lb)) (" - ") %4.2f (r(ub)) _tab 
 	cap estimates clear
-	cap estimates use "$Tempdir/model2_`i'_eth5" 
-	cap cap lincom `eth'.eth5, eform
+	cap estimates use "$Tempdir/inf_model2_`i'_eth16" 
+	cap cap lincom `eth'.eth16, eform
 	file write tablecontent  %4.2f (r(estimate)) _tab %4.2f (r(lb)) (" - ") %4.2f (r(ub)) _tab 
 	cap estimates clear
-	cap estimates use "$Tempdir/model3_`i'_eth5" 
-	cap cap lincom `eth'.eth5, eform
+	cap estimates use "$Tempdir/inf_model3_`i'_eth16" 
+	cap cap lincom `eth'.eth16, eform
 	file write tablecontent  %4.2f (r(estimate)) _tab %4.2f (r(lb)) (" - ") %4.2f (r(ub)) _n
 }  //end ethnic group
 
@@ -184,54 +184,8 @@ forvalues eth=2/5 {
 
 file close tablecontent
 
-************************************************create forestplot dataset
-dsconcat `hr'
-duplicates drop
-split idstr, p(_)
-ren idstr1 model
-ren idstr2 outcome
-drop idstr idstr3
-tab model
-
-*keep ORs for ethnicity
-keep if regexm(label, "Eth")
-drop label
-
-gen eth5=1 if regexm(parm, "1b")
-forvalues i=2/5 {
-	replace eth5=`i' if regexm(parm, "`i'.eth5")
-}
-
-drop parm  stderr z 
-order outcome model eth5 
-
-destring eth5, replace
-
- label define eth5	 	1 "White"  					///
-						2 "South Asian"				///						
-						3 "Black"  					///
-						4 "Mixed"					///
-						5 "Other"					
-					
-
-label values eth5 eth5
-
-graph set window 
-gen num=[_n]
-sum num
-
-gen adjusted="Crude" if model=="crude"
-replace adjusted="Age-sex" if model=="model0"
-replace adjusted="Age-sex-IMD" if model=="model1"
-replace adjusted="+ co-morbidities" if model=="model2"
-replace adjusted="+ household size" if model=="model3"
-
-*save dataset for later
-outsheet using "$Tabfigdir/FP_multivariable_eth5.txt", replace
-save  "$Tabfigdir/FP_multivariable_eth5.dta", replace
-
-
 * Close log file 
 log close
 
+insheet using $Tabfigdir/table6_eth16.txt, clear
 

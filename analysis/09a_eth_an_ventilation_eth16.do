@@ -23,9 +23,9 @@ cap file close tablecontent
 file open tablecontent using $Tabfigdir/table3_eth16.txt, write text replace
 file write tablecontent ("Table 3: Association between ethnicity and Ventilation - Complete Case Analysis") _n
 
-file write tablecontent _tab ("Number of events") _tab ("Univariable") _tab _tab ("Age/Sex/IMD Adjusted") _tab _tab 	("+ co-morbidities") _tab _tab 	("+ household size)") _tab _tab _n
+file write tablecontent _tab ("Number of events") _tab ("Univariable") _tab _tab ("Age/SexAdjusted") _tab _tab ("Age/Sex/IMD Adjusted") _tab _tab 	("+ co-morbidities") _tab _tab 	("+ household size)") _tab _tab _n
 
-file write tablecontent _tab _tab ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _n
+file write tablecontent _tab _tab ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _n
 
 
 
@@ -53,23 +53,30 @@ estimates save "$Tempdir/crude_ventilated_eth16", replace
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/crude_ventilated_eth16", replace) idstr("crude_ventilated_eth16") 
 
 /* Multivariable models */ 
+*Age Gender
+clogit ventilated i.eth16 i.male age1 age2 age3, strata(stp) or
+estimates save "$Tempdir/model0_ventilated_eth16", replace 
+parmest, label eform format(estimate p lb ub) saving("$Tempdir/model0_ventilated_eth16", replace) idstr("model0_ventilated_eth16") 
 
 * Age, Gender, IMD
-* Age fit as spline in first instance, categorical below 
-
-clogit ventilated i.eth16 i.male age1 age2 age3 i.imd, strata(stp) or
+noi cap clogit ventilated i.eth16 i.male age1 age2 age3 i.imd, strata(stp) or
+if _rc==0{
+estimates
 estimates save "$Tempdir/model1_ventilated_eth16", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model1_ventilated_eth16", replace) idstr("model1_ventilated_eth16") 
+}
+else di "WARNING MODEL1 DID NOT FIT (OUTCOME `outcome')"
+
 
 * Age, Gender, IMD and Comorbidities  
-clogit ventilated  i.eth16 i.male age1 age2 age3 	i.imd			///
+noi cap clogit ventilated  i.eth16 i.male age1 age2 age3 	i.imd			///
 										bmi							///
 										gp_consult_count			///
 										i.smoke_nomiss				///
 										i.htdiag_or_highbp		 	///	
 										i.asthma					///
 										i.chronic_cardiac_disease	///
-										i.dm_type 					///	
+										i.diabcat 					///	
 										i.cancer                    ///
 										i.chronic_liver_disease		///
 										i.stroke					///
@@ -82,19 +89,23 @@ clogit ventilated  i.eth16 i.male age1 age2 age3 	i.imd			///
 										i.other_immuno		 		///
 										i.ra_sle_psoriasis, strata(stp) or				
 										
+if _rc==0{
+estimates
 estimates save "$Tempdir/model2_ventilated_eth16", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model2_ventilated_eth16", replace) idstr("model2_ventilated_eth16") 
+}
+else di "WARNING MODEL1 DID NOT FIT (OUTCOME `outcome')"
 
 * Age, Gender, IMD and Comorbidities and household size
 
-clogit ventilated i.eth16 i.male age1 age2 age3 i.imd hh_size					///
+noi cap clogit ventilated i.eth16 i.male age1 age2 age3 i.imd i.hh_total_cat					///
 										bmi							///
 										gp_consult_count			///
 										i.smoke_nomiss				///
 										i.htdiag_or_highbp		 	///	
 										i.asthma					///
 										i.chronic_cardiac_disease	///
-										i.dm_type 					///	
+										i.diabcat 					///	
 										i.cancer                    ///
 										i.chronic_liver_disease		///
 										i.stroke					///
@@ -107,8 +118,12 @@ clogit ventilated i.eth16 i.male age1 age2 age3 i.imd hh_size					///
 										i.other_immuno		 		///
 										i.ra_sle_psoriasis, strata(stp) or	iter(100)			
 										
-estimates save "$Tempdir/model3_ventilated_eth16", replace
+if _rc==0{
+estimates
+estimates save "$Tempdir/model3_ventilated_eth16", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model3_ventilated_eth16", replace) idstr("model3_ventilated_eth16") 
+}
+else di "WARNING MODEL1 DID NOT FIT (OUTCOME `outcome')"
 
 /* Print table================================================================*/ 
 *  Print the results for the main model 
@@ -136,7 +151,7 @@ local lab11: label eth16 11
 	count if eth16 == 1 & ventilated == 1
 	local event = r(N)
 	
-	file write tablecontent  ("`lab1'") _tab (`event') _tab ("1.00 (ref)") _tab _tab ("1.00 (ref)") _tab _tab ("1.00 (ref)")  _tab _tab ("1.00 (ref)") _n
+	file write tablecontent  ("`lab1'") _tab (`event') _tab ("1.00 (ref)") _tab _tab ("1.00 (ref)") _tab _tab ("1.00 (ref)") _tab _tab ("1.00 (ref)")  _tab _tab ("1.00 (ref)") _n
 	
 * Subsequent ethnic groups
 forvalues eth=2/11 {
@@ -146,6 +161,10 @@ forvalues eth=2/11 {
 	file write tablecontent  ("`lab`eth''") _tab   (`event') _tab
 	estimates use "$Tempdir/crude_ventilated_eth16" 
 	lincom `eth'.eth16, eform
+	file write tablecontent  %4.2f (r(estimate)) _tab %4.2f (r(lb)) (" - ") %4.2f (r(ub)) _tab 
+	cap estimates clear
+	cap estimates use "$Tempdir/model0_ventilated_eth16" 
+	cap lincom `eth'.eth16, eform
 	file write tablecontent  %4.2f (r(estimate)) _tab %4.2f (r(lb)) (" - ") %4.2f (r(ub)) _tab 
 	cap estimates clear
 	cap estimates use "$Tempdir/model1_ventilated_eth16" 
@@ -166,7 +185,7 @@ file close tablecontent
 
 /* Foresplot================================================================*/ 
 
-dsconcat  "$Tempdir/model1_ventilated_eth16" "$Tempdir/model2_ventilated_eth16" "$Tempdir/model3_ventilated_eth16"
+dsconcat "$Tempdir/model0_ventilated_eth16" "$Tempdir/model1_ventilated_eth16" "$Tempdir/model2_ventilated_eth16" "$Tempdir/model3_ventilated_eth16"
 duplicates drop
 
 split idstr, p(_)
@@ -207,10 +226,13 @@ gen num=[_n]
 sum num
 
 
-gen adjusted="Age-sex-IMD" if model=="model1"
+gen adjusted="Age-sex" if model=="model0"
+replace adjusted="Age-sex-IMD" if model=="model1"
 replace adjusted="+ co-morbidities" if model=="model2"
 replace adjusted="+ household size" if model=="model3"
 
+*save dataset for later
+outsheet using "$Tabfigdir/FP_ventilated_eth16.txt", replace
 
 *Create one graph 
 metan estimate min95 max95  if eth16!=1 ///
@@ -224,9 +246,6 @@ metan estimate min95 max95  if eth16!=1 ///
 
 * Close log file 
 log close
-
-
-insheet using "$Tabfigdir/table3_eth16.txt", clear
 
 
 
