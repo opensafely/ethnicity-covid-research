@@ -31,7 +31,7 @@ graph export "$Tabfigdir\Forestplot_`i'_eth16_cc.svg", replace
 use "$Tabfigdir/FP_multivariable_eth5.dta", clear
 *Create one graph per outcome
 destring eth5, replace
-replace model="" if eth5!=1
+replace adjusted="" if eth5!=1
 foreach i of global outcomes {
 metan estimate min95 max95  if outcome=="`i'" ///
  , random effect(Hazard Ratio) null(1) lcols(adjusted eth5) by(outcome) dp(2) xlab(.25,.5,1,2,4) ///
@@ -62,7 +62,7 @@ graph export "$Tabfigdir\Forestplot_`i'_eth16_mi.svg", replace
 use "$Tabfigdir/FP_mi_eth5.dta", clear
 *Create one graph per outcome
 destring eth5, replace
-replace model="" if eth5!=1
+replace adjusted="" if eth5!=1
 foreach i of global outcomes {
 metan estimate min95 max95  if outcome=="`i'" ///
  , random effect(Hazard Ratio) null(1) lcols(adjusted eth5) by(outcome) dp(2) xlab(.25,.5,1,2,4) ///
