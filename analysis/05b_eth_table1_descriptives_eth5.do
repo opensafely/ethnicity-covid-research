@@ -214,7 +214,7 @@ file write tablecontent _n
 qui summarizevariable, variable(age) 
 file write tablecontent _n
 
-tabulatevariable, variable(agegroup) min(1) max(6) 
+tabulatevariable, variable(agegroup) min(1) max(7) 
 file write tablecontent _n 
 
 tabulatevariable, variable(male) min(0) max(1) 
