@@ -93,8 +93,6 @@ noi cap mi estimate, dots saving("$Tempdir/model2_`i'", replace) eform: stcox i.
 										i.other_neuro				///
 										i.ckd						///
 										i.esrf						///
-										i.perm_immunodef 			///
-										i.temp_immunodef 			///
 										i.other_immuno		 		///
 										i.ra_sle_psoriasis, strata(stp)				
 										
@@ -122,8 +120,6 @@ noi cap mi estimate, dots saving("$Tempdir/model3_`i'", replace) eform: stcox i.
 										i.other_neuro				///
 										i.ckd						///
 										i.esrf						///
-										i.perm_immunodef 			///
-										i.temp_immunodef 			///
 										i.other_immuno		 		///
 										i.ra_sle_psoriasis, strata(stp)				
 										

@@ -91,8 +91,6 @@ clogit positivetest i.eth5 i.male age1 age2 age3 	i.imd							///
 										i.other_neuro				///
 										i.ckd						///
 										i.esrf						///
-										i.perm_immunodef 			///
-										i.temp_immunodef 			///
 										i.other_immuno		 		///
 										i.ra_sle_psoriasis, strata(stp)				
 										
@@ -122,8 +120,6 @@ clogit positivetest i.eth5 i.male age1 age2 age3 i.imd hh_size					///
 										i.other_neuro				///
 										i.ckd						///
 										i.esrf						///
-										i.perm_immunodef 			///
-										i.temp_immunodef 			///
 										i.other_immuno		 		///
 										i.ra_sle_psoriasis, strata(stp)				
 										

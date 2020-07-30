@@ -78,8 +78,6 @@ noi cap stcox i.eth16 i.male age1 age2 age3 	i.imd							///
 										i.other_neuro				///
 										i.ckd						///
 										i.esrf						///
-										i.perm_immunodef 			///
-										i.temp_immunodef 			///
 										i.other_immuno		 		///
 										i.ra_sle_psoriasis, strata(stp)		
 if _rc==0{
@@ -107,8 +105,6 @@ noi cap stcox i.eth16 i.male age1 age2 age3 i.imd i.hh_total_cat	///
 										i.other_neuro				///
 										i.ckd						///
 										i.esrf						///
-										i.perm_immunodef 			///
-										i.temp_immunodef 			///
 										i.other_immuno		 		///
 										i.ra_sle_psoriasis, strata(stp)				
 if _rc==0{
