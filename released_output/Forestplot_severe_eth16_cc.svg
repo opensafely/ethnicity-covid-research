@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- This is a Stata 16.1 generated SVG file (http://www.stata.com) -->
+
+<svg version="1.1" width="8.94in" height="12.00in" viewBox="0 0 6440 8640" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<desc>Stata Graph - Graph</desc>
+	<rect x="0" y="0" width="6440" height="8640" style="fill:#F0F0F0;stroke:none"/>
+	<rect x="0.00" y="0.27" width="6440.00" height="8639.73" style="fill:#FFFFFF"/>
+	<rect x="6.44" y="6.71" width="6427.12" height="8626.85" style="fill:none;stroke:#FFFFFF;stroke-width:12.88"/>
+	<rect x="340.47" y="557.28" width="5826.29" height="7823.25" style="fill:#FFFFFF"/>
+	<rect x="346.91" y="563.72" width="5813.41" height="7810.37" style="fill:none;stroke:#FFFFFF;stroke-width:12.88"/>
+	<line x1="340.47" y1="967.41" x2="6166.76" y2="967.41" style="stroke:#C0C0C0;stroke-width:12.88"/>
+	<text x="434.43" y="8211.65" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">NOTE: Weights are from random effects analysis</text>
+	<line x1="4160.13" y1="8380.53" x2="4160.13" y2="967.41" style="stroke:#000000;stroke-width:12.88"/>
+	<text x="434.43" y="8148.74" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">.</text>
+	<line x1="4160.13" y1="1188.27" x2="4160.13" y2="1188.27" style="stroke:#000000;stroke-width:19.32"/>
+	<line x1="4158.24" y1="1314.36" x2="4176.87" y2="1314.36" style="stroke:#000000;stroke-width:19.32"/>
+	<line x1="4068.33" y1="1440.45" x2="4072.11" y2="1440.45" style="stroke:#000000;stroke-width:19.32"/>
+	<line x1="4063.74" y1="1566.81" x2="4069.95" y2="1566.81" style="stroke:#000000;stroke-width:19.32"/>
+	<line x1="4111.26" y1="1692.90" x2="4119.90" y2="1692.90" style="stroke:#000000;stroke-width:19.32"/>
+	<line x1="4076.43" y1="1818.99" x2="4092.63" y2="1818.99" style="stroke:#000000;stroke-width:19.32"/>
+	<line x1="4135.29" y1="1945.35" x2="4152.57" y2="1945.35" style="stroke:#000000;stroke-width:19.32"/>
+	<line x1="4087.23" y1="2071.44" x2="4097.49" y2="2071.44" style="stroke:#000000;stroke-width:19.32"/>
+	<line x1="3960.88" y1="2197.53" x2="3968.71" y2="2197.53" style="stroke:#000000;stroke-width:19.32"/>
+	<line x1="4094.25" y1="2323.89" x2="4105.32" y2="2323.89" style="stroke:#000000;stroke-width:19.32"/>
+	<line x1="4072.92" y1="2449.98" x2="4078.86" y2="2449.98" style="stroke:#000000;stroke-width:19.32"/>
+	<line x1="4160.13" y1="2576.07" x2="4160.13" y2="2576.07" style="stroke:#000000;stroke-width:19.32"/>
+	<line x1="4162.83" y1="2702.43" x2="4182.00" y2="2702.43" style="stroke:#000000;stroke-width:19.32"/>
+	<line x1="4098.03" y1="2828.52" x2="4102.62" y2="2828.52" style="stroke:#000000;stroke-width:19.32"/>
+	<line x1="4106.13" y1="2954.88" x2="4114.50" y2="2954.88" style="stroke:#000000;stroke-width:19.32"/>
+	<line x1="4151.22" y1="3080.97" x2="4162.02" y2="3080.97" style="stroke:#000000;stroke-width:19.32"/>
+	<line x1="4128.27" y1="3207.06" x2="4149.60" y2="3207.06" style="stroke:#000000;stroke-width:19.32"/>
+	<line x1="4174.98" y1="3333.42" x2="4195.50" y2="3333.42" style="stroke:#000000;stroke-width:19.32"/>
+	<line x1="4143.66" y1="3459.51" x2="4156.89" y2="3459.51" style="stroke:#000000;stroke-width:19.32"/>
+	<line x1="3972.49" y1="3585.60" x2="3981.67" y2="3585.60" style="stroke:#000000;stroke-width:19.32"/>
+	<line x1="4138.53" y1="3711.96" x2="4152.30" y2="3711.96" style="stroke:#000000;stroke-width:19.32"/>
+	<line x1="4120.44" y1="3838.05" x2="4128.27" y2="3838.05" style="stroke:#000000;stroke-width:19.32"/>
+	<line x1="4160.13" y1="3964.14" x2="4160.13" y2="3964.14" style="stroke:#000000;stroke-width:19.32"/>
+	<line x1="4154.19" y1="4090.50" x2="4172.82" y2="4090.50" style="stroke:#000000;stroke-width:19.32"/>
+	<line x1="4087.23" y1="4216.59" x2="4091.55" y2="4216.59" style="stroke:#000000;stroke-width:19.32"/>
+	<line x1="4094.52" y1="4342.68" x2="4102.35" y2="4342.68" style="stroke:#000000;stroke-width:19.32"/>
+	<line x1="4118.28" y1="4469.04" x2="4127.46" y2="4469.04" style="stroke:#000000;stroke-width:19.32"/>
+	<line x1="4099.38" y1="4595.13" x2="4118.01" y2="4595.13" style="stroke:#000000;stroke-width:19.32"/>
+	<line x1="4143.66" y1="4721.22" x2="4161.75" y2="4721.22" style="stroke:#000000;stroke-width:19.32"/>
+	<line x1="4114.50" y1="4847.58" x2="4126.38" y2="4847.58" style="stroke:#000000;stroke-width:19.32"/>
+	<line x1="3972.22" y1="4973.67" x2="3981.40" y2="4973.67" style="stroke:#000000;stroke-width:19.32"/>
+	<line x1="4123.95" y1="5099.76" x2="4136.64" y2="5099.76" style="stroke:#000000;stroke-width:19.32"/>
+	<line x1="4103.97" y1="5226.12" x2="4111.26" y2="5226.12" style="stroke:#000000;stroke-width:19.32"/>
+	<line x1="4160.13" y1="5352.21" x2="4160.13" y2="5352.21" style="stroke:#000000;stroke-width:19.32"/>
+	<line x1="4162.56" y1="5478.30" x2="4184.43" y2="5478.30" style="stroke:#000000;stroke-width:19.32"/>
+	<line x1="4128.54" y1="5604.66" x2="4135.02" y2="5604.66" style="stroke:#000000;stroke-width:19.32"/>
+	<line x1="4126.11" y1="5730.75" x2="4136.91" y2="5730.75" style="stroke:#000000;stroke-width:19.32"/>
+	<line x1="4122.60" y1="5856.84" x2="4133.40" y2="5856.84" style="stroke:#000000;stroke-width:19.32"/>
+	<line x1="4104.24" y1="5983.20" x2="4126.92" y2="5983.20" style="stroke:#000000;stroke-width:19.32"/>
+	<line x1="4146.36" y1="6109.29" x2="4167.69" y2="6109.29" style="stroke:#000000;stroke-width:19.32"/>
+	<line x1="4159.86" y1="6235.38" x2="4177.41" y2="6235.38" style="stroke:#000000;stroke-width:19.32"/>
+	<line x1="4039.17" y1="6361.74" x2="4062.66" y2="6361.74" style="stroke:#000000;stroke-width:19.32"/>
+	<line x1="4146.90" y1="6487.83" x2="4164.45" y2="6487.83" style="stroke:#000000;stroke-width:19.32"/>
+	<line x1="4146.36" y1="6613.92" x2="4157.16" y2="6613.92" style="stroke:#000000;stroke-width:19.32"/>
+	<line x1="4160.13" y1="6740.28" x2="4160.13" y2="6740.28" style="stroke:#000000;stroke-width:19.32"/>
+	<line x1="4162.56" y1="6866.37" x2="4184.16" y2="6866.37" style="stroke:#000000;stroke-width:19.32"/>
+	<line x1="4127.19" y1="6992.46" x2="4133.40" y2="6992.46" style="stroke:#000000;stroke-width:19.32"/>
+	<line x1="4119.90" y1="7118.82" x2="4130.43" y2="7118.82" style="stroke:#000000;stroke-width:19.32"/>
+	<line x1="4110.72" y1="7244.91" x2="4121.25" y2="7244.91" style="stroke:#000000;stroke-width:19.32"/>
+	<line x1="4093.98" y1="7371.00" x2="4115.58" y2="7371.00" style="stroke:#000000;stroke-width:19.32"/>
+	<line x1="4146.36" y1="7497.36" x2="4167.96" y2="7497.36" style="stroke:#000000;stroke-width:19.32"/>
+	<line x1="4155.00" y1="7623.45" x2="4172.55" y2="7623.45" style="stroke:#000000;stroke-width:19.32"/>
+	<line x1="4037.82" y1="7749.54" x2="4061.04" y2="7749.54" style="stroke:#000000;stroke-width:19.32"/>
+	<line x1="4145.55" y1="7875.90" x2="4162.83" y2="7875.90" style="stroke:#000000;stroke-width:19.32"/>
+	<line x1="4141.77" y1="8001.99" x2="4152.30" y2="8001.99" style="stroke:#000000;stroke-width:19.32"/>
+	<text x="434.43" y="1082.29" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">severe</text>
+	<text x="434.43" y="1208.66" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">Crude</text>
+	<text x="434.43" y="2596.45" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">Age-sex</text>
+	<text x="434.43" y="3984.53" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">Age-sex-IMD</text>
+	<text x="434.43" y="5372.60" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">+ co-morbidities</text>
+	<text x="434.43" y="6760.66" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">+ household size</text>
+	<text x="434.43" y="830.11" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">adjusted</text>
+	<text x="1551.95" y="1208.66" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">British or Mixed British</text>
+	<text x="1551.95" y="1334.74" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">Irish</text>
+	<text x="1551.95" y="1460.83" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">Other White</text>
+	<text x="1551.95" y="1587.20" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">Indian</text>
+	<text x="1551.95" y="1713.28" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">Pakistani</text>
+	<text x="1551.95" y="1839.37" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">Bangladeshi</text>
+	<text x="1551.95" y="1965.74" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">Caribbean</text>
+	<text x="1551.95" y="2091.82" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">African</text>
+	<text x="1551.95" y="2217.91" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">Chinese</text>
+	<text x="1551.95" y="2344.28" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">All mixed</text>
+	<text x="1551.95" y="2470.36" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">All Other</text>
+	<text x="1551.95" y="2596.45" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">British or Mixed British</text>
+	<text x="1551.95" y="2722.82" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">Irish</text>
+	<text x="1551.95" y="2848.91" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">Other White</text>
+	<text x="1551.95" y="2975.27" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">Indian</text>
+	<text x="1551.95" y="3101.36" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">Pakistani</text>
+	<text x="1551.95" y="3227.45" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">Bangladeshi</text>
+	<text x="1551.95" y="3353.81" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">Caribbean</text>
+	<text x="1551.95" y="3479.90" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">African</text>
+	<text x="1551.95" y="3605.99" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">Chinese</text>
+	<text x="1551.95" y="3732.35" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">All mixed</text>
+	<text x="1551.95" y="3858.44" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">All Other</text>
+	<text x="1551.95" y="3984.53" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">British or Mixed British</text>
+	<text x="1551.95" y="4110.89" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">Irish</text>
+	<text x="1551.95" y="4236.98" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">Other White</text>
+	<text x="1551.95" y="4363.07" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">Indian</text>
+	<text x="1551.95" y="4489.43" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">Pakistani</text>
+	<text x="1551.95" y="4615.52" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">Bangladeshi</text>
+	<text x="1551.95" y="4741.60" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">Caribbean</text>
+	<text x="1551.95" y="4867.97" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">African</text>
+	<text x="1551.95" y="4994.06" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">Chinese</text>
+	<text x="1551.95" y="5120.15" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">All mixed</text>
+	<text x="1551.95" y="5246.51" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">All Other</text>
+	<text x="1551.95" y="5372.60" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">British or Mixed British</text>
+	<text x="1551.95" y="5498.69" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">Irish</text>
+	<text x="1551.95" y="5625.05" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">Other White</text>
+	<text x="1551.95" y="5751.14" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">Indian</text>
+	<text x="1551.95" y="5877.23" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">Pakistani</text>
+	<text x="1551.95" y="6003.59" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">Bangladeshi</text>
+	<text x="1551.95" y="6129.68" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">Caribbean</text>
+	<text x="1551.95" y="6255.77" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">African</text>
+	<text x="1551.95" y="6382.13" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">Chinese</text>
+	<text x="1551.95" y="6508.22" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">All mixed</text>
+	<text x="1551.95" y="6634.31" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">All Other</text>
+	<text x="1551.95" y="6760.66" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">British or Mixed British</text>
+	<text x="1551.95" y="6886.76" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">Irish</text>
+	<text x="1551.95" y="7012.85" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">Other White</text>
+	<text x="1551.95" y="7139.20" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">Indian</text>
+	<text x="1551.95" y="7265.30" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">Pakistani</text>
+	<text x="1551.95" y="7391.39" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">Bangladeshi</text>
+	<text x="1551.95" y="7517.74" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">Caribbean</text>
+	<text x="1551.95" y="7643.84" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">African</text>
+	<text x="1551.95" y="7769.93" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">Chinese</text>
+	<text x="1551.95" y="7896.28" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">All mixed</text>
+	<text x="1551.95" y="8022.38" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">All Other</text>
+	<text x="1551.95" y="830.11" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">eth16</text>
+	<text x="5018.73" y="1208.66" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">1.00 (1.00, 1.00)</text>
+	<text x="5018.73" y="1334.74" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">1.03 (0.99, 1.07)</text>
+	<text x="5018.73" y="1460.83" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.65 (0.64, 0.65)</text>
+	<text x="5018.73" y="1587.20" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.63 (0.62, 0.65)</text>
+	<text x="5018.73" y="1713.28" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.83 (0.81, 0.84)</text>
+	<text x="5018.73" y="1839.37" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.70 (0.67, 0.74)</text>
+	<text x="5018.73" y="1965.74" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.94 (0.90, 0.97)</text>
+	<text x="5018.73" y="2091.82" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.73 (0.71, 0.75)</text>
+	<text x="5018.73" y="2217.91" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.23 (0.22, 0.25)</text>
+	<text x="5018.73" y="2344.28" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.76 (0.74, 0.78)</text>
+	<text x="5018.73" y="2470.36" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.67 (0.66, 0.68)</text>
+	<text x="5018.73" y="2596.45" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">1.00 (1.00, 1.00)</text>
+	<text x="5018.73" y="2722.82" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">1.05 (1.01, 1.09)</text>
+	<text x="5018.73" y="2848.91" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.77 (0.76, 0.77)</text>
+	<text x="5018.73" y="2975.27" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.80 (0.79, 0.82)</text>
+	<text x="5018.73" y="3101.36" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.99 (0.97, 1.01)</text>
+	<text x="5018.73" y="3227.45" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.92 (0.87, 0.96)</text>
+	<text x="5018.73" y="3353.81" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">1.10 (1.06, 1.14)</text>
+	<text x="5018.73" y="3479.90" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.96 (0.94, 0.99)</text>
+	<text x="5018.73" y="3605.99" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.28 (0.26, 0.30)</text>
+	<text x="5018.73" y="3732.35" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.94 (0.92, 0.97)</text>
+	<text x="5018.73" y="3858.44" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.86 (0.84, 0.88)</text>
+	<text x="5018.73" y="3984.53" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">1.00 (1.00, 1.00)</text>
+	<text x="5018.73" y="4110.89" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">1.01 (0.98, 1.05)</text>
+	<text x="5018.73" y="4236.98" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.72 (0.71, 0.73)</text>
+	<text x="5018.73" y="4363.07" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.76 (0.74, 0.77)</text>
+	<text x="5018.73" y="4489.43" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.85 (0.84, 0.87)</text>
+	<text x="5018.73" y="4615.52" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.80 (0.76, 0.84)</text>
+	<text x="5018.73" y="4741.60" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.97 (0.94, 1.01)</text>
+	<text x="5018.73" y="4867.97" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.84 (0.82, 0.87)</text>
+	<text x="5018.73" y="4994.06" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.28 (0.26, 0.30)</text>
+	<text x="5018.73" y="5120.15" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.88 (0.86, 0.91)</text>
+	<text x="5018.73" y="5246.51" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.79 (0.78, 0.81)</text>
+	<text x="5018.73" y="5372.60" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">1.00 (1.00, 1.00)</text>
+	<text x="5018.73" y="5498.69" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">1.05 (1.01, 1.10)</text>
+	<text x="5018.73" y="5625.05" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.89 (0.88, 0.90)</text>
+	<text x="5018.73" y="5751.14" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.89 (0.87, 0.91)</text>
+	<text x="5018.73" y="5877.23" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.87 (0.85, 0.90)</text>
+	<text x="5018.73" y="6003.59" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.82 (0.78, 0.87)</text>
+	<text x="5018.73" y="6129.68" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.99 (0.95, 1.03)</text>
+	<text x="5018.73" y="6255.77" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">1.03 (1.00, 1.07)</text>
+	<text x="5018.73" y="6382.13" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.57 (0.53, 0.62)</text>
+	<text x="5018.73" y="6508.22" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.98 (0.95, 1.02)</text>
+	<text x="5018.73" y="6634.31" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.97 (0.95, 0.99)</text>
+	<text x="5018.73" y="6760.66" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">1.00 (1.00, 1.00)</text>
+	<text x="5018.73" y="6886.76" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">1.05 (1.01, 1.09)</text>
+	<text x="5018.73" y="7012.85" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.88 (0.87, 0.90)</text>
+	<text x="5018.73" y="7139.20" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.86 (0.84, 0.88)</text>
+	<text x="5018.73" y="7265.30" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.83 (0.81, 0.85)</text>
+	<text x="5018.73" y="7391.39" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.78 (0.74, 0.83)</text>
+	<text x="5018.73" y="7517.74" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.99 (0.95, 1.03)</text>
+	<text x="5018.73" y="7643.84" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">1.01 (0.98, 1.05)</text>
+	<text x="5018.73" y="7769.93" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.56 (0.52, 0.61)</text>
+	<text x="5018.73" y="7896.28" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.98 (0.94, 1.01)</text>
+	<text x="5018.73" y="8022.38" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.95 (0.93, 0.97)</text>
+	<text x="5018.73" y="830.11" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">Ratio (95% CI)</text>
+	<text x="5018.73" y="703.75" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">Hazard</text>
+	<text x="5018.73" y="1208.66" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">1.00 (1.00, 1.00)</text>
+	<text x="5018.73" y="1334.74" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">1.03 (0.99, 1.07)</text>
+	<text x="5018.73" y="1460.83" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.65 (0.64, 0.65)</text>
+	<text x="5018.73" y="1587.20" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.63 (0.62, 0.65)</text>
+	<text x="5018.73" y="1713.28" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.83 (0.81, 0.84)</text>
+	<text x="5018.73" y="1839.37" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.70 (0.67, 0.74)</text>
+	<text x="5018.73" y="1965.74" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.94 (0.90, 0.97)</text>
+	<text x="5018.73" y="2091.82" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.73 (0.71, 0.75)</text>
+	<text x="5018.73" y="2217.91" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.23 (0.22, 0.25)</text>
+	<text x="5018.73" y="2344.28" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.76 (0.74, 0.78)</text>
+	<text x="5018.73" y="2470.36" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.67 (0.66, 0.68)</text>
+	<text x="5018.73" y="2596.45" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">1.00 (1.00, 1.00)</text>
+	<text x="5018.73" y="2722.82" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">1.05 (1.01, 1.09)</text>
+	<text x="5018.73" y="2848.91" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.77 (0.76, 0.77)</text>
+	<text x="5018.73" y="2975.27" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.80 (0.79, 0.82)</text>
+	<text x="5018.73" y="3101.36" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.99 (0.97, 1.01)</text>
+	<text x="5018.73" y="3227.45" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.92 (0.87, 0.96)</text>
+	<text x="5018.73" y="3353.81" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">1.10 (1.06, 1.14)</text>
+	<text x="5018.73" y="3479.90" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.96 (0.94, 0.99)</text>
+	<text x="5018.73" y="3605.99" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.28 (0.26, 0.30)</text>
+	<text x="5018.73" y="3732.35" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.94 (0.92, 0.97)</text>
+	<text x="5018.73" y="3858.44" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.86 (0.84, 0.88)</text>
+	<text x="5018.73" y="3984.53" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">1.00 (1.00, 1.00)</text>
+	<text x="5018.73" y="4110.89" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">1.01 (0.98, 1.05)</text>
+	<text x="5018.73" y="4236.98" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.72 (0.71, 0.73)</text>
+	<text x="5018.73" y="4363.07" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.76 (0.74, 0.77)</text>
+	<text x="5018.73" y="4489.43" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.85 (0.84, 0.87)</text>
+	<text x="5018.73" y="4615.52" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.80 (0.76, 0.84)</text>
+	<text x="5018.73" y="4741.60" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.97 (0.94, 1.01)</text>
+	<text x="5018.73" y="4867.97" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.84 (0.82, 0.87)</text>
+	<text x="5018.73" y="4994.06" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.28 (0.26, 0.30)</text>
+	<text x="5018.73" y="5120.15" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.88 (0.86, 0.91)</text>
+	<text x="5018.73" y="5246.51" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.79 (0.78, 0.81)</text>
+	<text x="5018.73" y="5372.60" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">1.00 (1.00, 1.00)</text>
+	<text x="5018.73" y="5498.69" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">1.05 (1.01, 1.10)</text>
+	<text x="5018.73" y="5625.05" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.89 (0.88, 0.90)</text>
+	<text x="5018.73" y="5751.14" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.89 (0.87, 0.91)</text>
+	<text x="5018.73" y="5877.23" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.87 (0.85, 0.90)</text>
+	<text x="5018.73" y="6003.59" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.82 (0.78, 0.87)</text>
+	<text x="5018.73" y="6129.68" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.99 (0.95, 1.03)</text>
+	<text x="5018.73" y="6255.77" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">1.03 (1.00, 1.07)</text>
+	<text x="5018.73" y="6382.13" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.57 (0.53, 0.62)</text>
+	<text x="5018.73" y="6508.22" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.98 (0.95, 1.02)</text>
+	<text x="5018.73" y="6634.31" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.97 (0.95, 0.99)</text>
+	<text x="5018.73" y="6760.66" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">1.00 (1.00, 1.00)</text>
+	<text x="5018.73" y="6886.76" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">1.05 (1.01, 1.09)</text>
+	<text x="5018.73" y="7012.85" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.88 (0.87, 0.90)</text>
+	<text x="5018.73" y="7139.20" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.86 (0.84, 0.88)</text>
+	<text x="5018.73" y="7265.30" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.83 (0.81, 0.85)</text>
+	<text x="5018.73" y="7391.39" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.78 (0.74, 0.83)</text>
+	<text x="5018.73" y="7517.74" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.99 (0.95, 1.03)</text>
+	<text x="5018.73" y="7643.84" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">1.01 (0.98, 1.05)</text>
+	<text x="5018.73" y="7769.93" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.56 (0.52, 0.61)</text>
+	<text x="5018.73" y="7896.28" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.98 (0.94, 1.01)</text>
+	<text x="5018.73" y="8022.38" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">0.95 (0.93, 0.97)</text>
+	<text x="5018.73" y="830.11" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">Ratio (95% CI)</text>
+	<text x="5018.73" y="703.75" style="font-family:'Helvetica';font-size:58.05px;fill:#000000">Hazard</text>
+	<polygon points="4122.44,1188.27 4159.86,1150.85 4197.29,1188.27 4159.86,1225.69" style="fill:#000000"/>
+	<polygon points="4136.10,1188.27 4159.86,1164.51 4183.62,1188.27 4159.86,1212.03" style="fill:none;stroke:#000000;stroke-width:19.32"/>
+	<polygon points="4129.73,1314.63 4167.15,1277.21 4204.58,1314.63 4167.15,1352.05" style="fill:#000000"/>
+	<polygon points="4143.39,1314.63 4167.15,1290.87 4190.91,1314.63 4167.15,1338.39" style="fill:none;stroke:#000000;stroke-width:19.32"/>
+	<polygon points="4032.80,1440.72 4070.22,1403.30 4107.65,1440.72 4070.22,1478.14" style="fill:#000000"/>
+	<polygon points="4046.46,1440.72 4070.22,1416.96 4093.98,1440.72 4070.22,1464.48" style="fill:none;stroke:#000000;stroke-width:19.32"/>
+	<polygon points="4029.29,1566.81 4066.71,1529.39 4104.14,1566.81 4066.71,1604.23" style="fill:#000000"/>
+	<polygon points="4042.95,1566.81 4066.71,1543.05 4090.47,1566.81 4066.71,1590.57" style="fill:none;stroke:#000000;stroke-width:19.32"/>
+	<polygon points="4077.89,1693.17 4115.31,1655.75 4152.74,1693.17 4115.31,1730.59" style="fill:#000000"/>
+	<polygon points="4091.55,1693.17 4115.31,1669.41 4139.07,1693.17 4115.31,1716.93" style="fill:none;stroke:#000000;stroke-width:19.32"/>
+	<polygon points="4046.84,1819.26 4084.26,1781.84 4121.69,1819.26 4084.26,1856.68" style="fill:#000000"/>
+	<polygon points="4060.50,1819.26 4084.26,1795.50 4108.02,1819.26 4084.26,1843.02" style="fill:none;stroke:#000000;stroke-width:19.32"/>
+	<polygon points="4106.24,1945.35 4143.66,1907.93 4181.09,1945.35 4143.66,1982.77" style="fill:#000000"/>
+	<polygon points="4119.90,1945.35 4143.66,1921.59 4167.42,1945.35 4143.66,1969.11" style="fill:none;stroke:#000000;stroke-width:19.32"/>
+	<polygon points="4054.67,2071.71 4092.09,2034.29 4129.52,2071.71 4092.09,2109.13" style="fill:#000000"/>
+	<polygon points="4068.33,2071.71 4092.09,2047.95 4115.85,2071.71 4092.09,2095.47" style="fill:none;stroke:#000000;stroke-width:19.32"/>
+	<polygon points="3927.23,2197.80 3964.66,2160.38 4002.08,2197.80 3964.66,2235.22" style="fill:#000000"/>
+	<polygon points="3940.90,2197.80 3964.66,2174.04 3988.42,2197.80 3964.66,2221.56" style="fill:none;stroke:#000000;stroke-width:19.32"/>
+	<polygon points="4062.23,2323.89 4099.65,2286.47 4137.08,2323.89 4099.65,2361.31" style="fill:#000000"/>
+	<polygon points="4075.89,2323.89 4099.65,2300.13 4123.41,2323.89 4099.65,2347.65" style="fill:none;stroke:#000000;stroke-width:19.32"/>
+	<polygon points="4038.20,2450.25 4075.62,2412.83 4113.05,2450.25 4075.62,2487.67" style="fill:#000000"/>
+	<polygon points="4051.86,2450.25 4075.62,2426.49 4099.38,2450.25 4075.62,2474.01" style="fill:none;stroke:#000000;stroke-width:19.32"/>
+	<polygon points="4122.44,2576.34 4159.86,2538.92 4197.29,2576.34 4159.86,2613.76" style="fill:#000000"/>
+	<polygon points="4136.10,2576.34 4159.86,2552.58 4183.62,2576.34 4159.86,2600.10" style="fill:none;stroke:#000000;stroke-width:19.32"/>
+	<polygon points="4134.86,2702.43 4172.28,2665.01 4209.71,2702.43 4172.28,2739.85" style="fill:#000000"/>
+	<polygon points="4148.52,2702.43 4172.28,2678.67 4196.04,2702.43 4172.28,2726.19" style="fill:none;stroke:#000000;stroke-width:19.32"/>
+	<polygon points="4062.77,2828.79 4100.19,2791.37 4137.62,2828.79 4100.19,2866.21" style="fill:#000000"/>
+	<polygon points="4076.43,2828.79 4100.19,2805.03 4123.95,2828.79 4100.19,2852.55" style="fill:none;stroke:#000000;stroke-width:19.32"/>
+	<polygon points="4072.76,2954.88 4110.18,2917.46 4147.61,2954.88 4110.18,2992.30" style="fill:#000000"/>
+	<polygon points="4086.42,2954.88 4110.18,2931.12 4133.94,2954.88 4110.18,2978.64" style="fill:none;stroke:#000000;stroke-width:19.32"/>
+	<polygon points="4118.93,3080.97 4156.35,3043.55 4193.78,3080.97 4156.35,3118.39" style="fill:#000000"/>
+	<polygon points="4132.59,3080.97 4156.35,3057.21 4180.11,3080.97 4156.35,3104.73" style="fill:none;stroke:#000000;stroke-width:19.32"/>
+	<polygon points="4101.11,3207.33 4138.53,3169.91 4175.96,3207.33 4138.53,3244.75" style="fill:#000000"/>
+	<polygon points="4114.77,3207.33 4138.53,3183.57 4162.29,3207.33 4138.53,3231.09" style="fill:none;stroke:#000000;stroke-width:19.32"/>
+	<polygon points="4147.28,3333.42 4184.70,3296.00 4222.13,3333.42 4184.70,3370.84" style="fill:#000000"/>
+	<polygon points="4160.94,3333.42 4184.70,3309.66 4208.46,3333.42 4184.70,3357.18" style="fill:none;stroke:#000000;stroke-width:19.32"/>
+	<polygon points="4112.72,3459.51 4150.14,3422.09 4187.57,3459.51 4150.14,3496.93" style="fill:#000000"/>
+	<polygon points="4126.38,3459.51 4150.14,3435.75 4173.90,3459.51 4150.14,3483.27" style="fill:none;stroke:#000000;stroke-width:19.32"/>
+	<polygon points="3939.38,3585.87 3976.81,3548.45 4014.23,3585.87 3976.81,3623.29" style="fill:#000000"/>
+	<polygon points="3953.05,3585.87 3976.81,3562.11 4000.57,3585.87 3976.81,3609.63" style="fill:none;stroke:#000000;stroke-width:19.32"/>
+	<polygon points="4107.86,3711.96 4145.28,3674.54 4182.71,3711.96 4145.28,3749.38" style="fill:#000000"/>
+	<polygon points="4121.52,3711.96 4145.28,3688.20 4169.04,3711.96 4145.28,3735.72" style="fill:none;stroke:#000000;stroke-width:19.32"/>
+	<polygon points="4086.80,3838.05 4124.22,3800.63 4161.65,3838.05 4124.22,3875.47" style="fill:#000000"/>
+	<polygon points="4100.46,3838.05 4124.22,3814.29 4147.98,3838.05 4124.22,3861.81" style="fill:none;stroke:#000000;stroke-width:19.32"/>
+	<polygon points="4122.44,3964.41 4159.86,3926.99 4197.29,3964.41 4159.86,4001.83" style="fill:#000000"/>
+	<polygon points="4136.10,3964.41 4159.86,3940.65 4183.62,3964.41 4159.86,3988.17" style="fill:none;stroke:#000000;stroke-width:19.32"/>
+	<polygon points="4125.68,4090.50 4163.10,4053.08 4200.53,4090.50 4163.10,4127.92" style="fill:#000000"/>
+	<polygon points="4139.34,4090.50 4163.10,4066.74 4186.86,4090.50 4163.10,4114.26" style="fill:none;stroke:#000000;stroke-width:19.32"/>
+	<polygon points="4051.97,4216.59 4089.39,4179.17 4126.82,4216.59 4089.39,4254.01" style="fill:#000000"/>
+	<polygon points="4065.63,4216.59 4089.39,4192.83 4113.15,4216.59 4089.39,4240.35" style="fill:none;stroke:#000000;stroke-width:19.32"/>
+	<polygon points="4060.88,4342.95 4098.30,4305.53 4135.73,4342.95 4098.30,4380.37" style="fill:#000000"/>
+	<polygon points="4074.54,4342.95 4098.30,4319.19 4122.06,4342.95 4098.30,4366.71" style="fill:none;stroke:#000000;stroke-width:19.32"/>
+	<polygon points="4085.18,4469.04 4122.60,4431.62 4160.03,4469.04 4122.60,4506.46" style="fill:#000000"/>
+	<polygon points="4098.84,4469.04 4122.60,4445.28 4146.36,4469.04 4122.60,4492.80" style="fill:none;stroke:#000000;stroke-width:19.32"/>
+	<polygon points="4071.14,4595.13 4108.56,4557.71 4145.99,4595.13 4108.56,4632.55" style="fill:#000000"/>
+	<polygon points="4084.80,4595.13 4108.56,4571.37 4132.32,4595.13 4108.56,4618.89" style="fill:none;stroke:#000000;stroke-width:19.32"/>
+	<polygon points="4114.88,4721.49 4152.30,4684.07 4189.73,4721.49 4152.30,4758.91" style="fill:#000000"/>
+	<polygon points="4128.54,4721.49 4152.30,4697.73 4176.06,4721.49 4152.30,4745.25" style="fill:none;stroke:#000000;stroke-width:19.32"/>
+	<polygon points="4082.75,4847.58 4120.17,4810.16 4157.60,4847.58 4120.17,4885.00" style="fill:#000000"/>
+	<polygon points="4096.41,4847.58 4120.17,4823.82 4143.93,4847.58 4120.17,4871.34" style="fill:none;stroke:#000000;stroke-width:19.32"/>
+	<polygon points="3939.11,4973.67 3976.54,4936.25 4013.96,4973.67 3976.54,5011.09" style="fill:#000000"/>
+	<polygon points="3952.78,4973.67 3976.54,4949.91 4000.30,4973.67 3976.54,4997.43" style="fill:none;stroke:#000000;stroke-width:19.32"/>
+	<polygon points="4092.74,5100.03 4130.16,5062.61 4167.59,5100.03 4130.16,5137.45" style="fill:#000000"/>
+	<polygon points="4106.40,5100.03 4130.16,5076.27 4153.92,5100.03 4130.16,5123.79" style="fill:none;stroke:#000000;stroke-width:19.32"/>
+	<polygon points="4070.06,5226.12 4107.48,5188.70 4144.91,5226.12 4107.48,5263.54" style="fill:#000000"/>
+	<polygon points="4083.72,5226.12 4107.48,5202.36 4131.24,5226.12 4107.48,5249.88" style="fill:none;stroke:#000000;stroke-width:19.32"/>
+	<polygon points="4122.44,5352.48 4159.86,5315.06 4197.29,5352.48 4159.86,5389.90" style="fill:#000000"/>
+	<polygon points="4136.10,5352.48 4159.86,5328.72 4183.62,5352.48 4159.86,5376.24" style="fill:none;stroke:#000000;stroke-width:19.32"/>
+	<polygon points="4135.67,5478.57 4173.09,5441.15 4210.52,5478.57 4173.09,5515.99" style="fill:#000000"/>
+	<polygon points="4149.33,5478.57 4173.09,5454.81 4196.85,5478.57 4173.09,5502.33" style="fill:none;stroke:#000000;stroke-width:19.32"/>
+	<polygon points="4094.36,5604.66 4131.78,5567.24 4169.21,5604.66 4131.78,5642.08" style="fill:#000000"/>
+	<polygon points="4108.02,5604.66 4131.78,5580.90 4155.54,5604.66 4131.78,5628.42" style="fill:none;stroke:#000000;stroke-width:19.32"/>
+	<polygon points="4094.09,5731.02 4131.51,5693.60 4168.94,5731.02 4131.51,5768.44" style="fill:#000000"/>
+	<polygon points="4107.75,5731.02 4131.51,5707.26 4155.27,5731.02 4131.51,5754.78" style="fill:none;stroke:#000000;stroke-width:19.32"/>
+	<polygon points="4090.31,5857.11 4127.73,5819.69 4165.16,5857.11 4127.73,5894.53" style="fill:#000000"/>
+	<polygon points="4103.97,5857.11 4127.73,5833.35 4151.49,5857.11 4127.73,5880.87" style="fill:none;stroke:#000000;stroke-width:19.32"/>
+	<polygon points="4077.89,5983.20 4115.31,5945.78 4152.74,5983.20 4115.31,6020.62" style="fill:#000000"/>
+	<polygon points="4091.55,5983.20 4115.31,5959.44 4139.07,5983.20 4115.31,6006.96" style="fill:none;stroke:#000000;stroke-width:19.32"/>
+	<polygon points="4119.20,6109.56 4156.62,6072.14 4194.05,6109.56 4156.62,6146.98" style="fill:#000000"/>
+	<polygon points="4132.86,6109.56 4156.62,6085.80 4180.38,6109.56 4156.62,6133.32" style="fill:none;stroke:#000000;stroke-width:19.32"/>
+	<polygon points="4130.81,6235.65 4168.23,6198.23 4205.66,6235.65 4168.23,6273.07" style="fill:#000000"/>
+	<polygon points="4144.47,6235.65 4168.23,6211.89 4191.99,6235.65 4168.23,6259.41" style="fill:none;stroke:#000000;stroke-width:19.32"/>
+	<polygon points="4012.82,6361.74 4050.24,6324.32 4087.67,6361.74 4050.24,6399.16" style="fill:#000000"/>
+	<polygon points="4026.48,6361.74 4050.24,6337.98 4074.00,6361.74 4050.24,6385.50" style="fill:none;stroke:#000000;stroke-width:19.32"/>
+	<polygon points="4117.85,6488.10 4155.27,6450.68 4192.70,6488.10 4155.27,6525.52" style="fill:#000000"/>
+	<polygon points="4131.51,6488.10 4155.27,6464.34 4179.03,6488.10 4155.27,6511.86" style="fill:none;stroke:#000000;stroke-width:19.32"/>
+	<polygon points="4114.07,6614.19 4151.49,6576.77 4188.92,6614.19 4151.49,6651.61" style="fill:#000000"/>
+	<polygon points="4127.73,6614.19 4151.49,6590.43 4175.25,6614.19 4151.49,6637.95" style="fill:none;stroke:#000000;stroke-width:19.32"/>
+	<polygon points="4122.44,6740.28 4159.86,6702.86 4197.29,6740.28 4159.86,6777.70" style="fill:#000000"/>
+	<polygon points="4136.10,6740.28 4159.86,6716.52 4183.62,6740.28 4159.86,6764.04" style="fill:none;stroke:#000000;stroke-width:19.32"/>
+	<polygon points="4135.67,6866.64 4173.09,6829.22 4210.52,6866.64 4173.09,6904.06" style="fill:#000000"/>
+	<polygon points="4149.33,6866.64 4173.09,6842.88 4196.85,6866.64 4173.09,6890.40" style="fill:none;stroke:#000000;stroke-width:19.32"/>
+	<polygon points="4092.74,6992.73 4130.16,6955.31 4167.59,6992.73 4130.16,7030.15" style="fill:#000000"/>
+	<polygon points="4106.40,6992.73 4130.16,6968.97 4153.92,6992.73 4130.16,7016.49" style="fill:none;stroke:#000000;stroke-width:19.32"/>
+	<polygon points="4087.61,7118.82 4125.03,7081.40 4162.46,7118.82 4125.03,7156.24" style="fill:#000000"/>
+	<polygon points="4101.27,7118.82 4125.03,7095.06 4148.79,7118.82 4125.03,7142.58" style="fill:none;stroke:#000000;stroke-width:19.32"/>
+	<polygon points="4078.43,7245.18 4115.85,7207.76 4153.28,7245.18 4115.85,7282.60" style="fill:#000000"/>
+	<polygon points="4092.09,7245.18 4115.85,7221.42 4139.61,7245.18 4115.85,7268.94" style="fill:none;stroke:#000000;stroke-width:19.32"/>
+	<polygon points="4067.09,7371.27 4104.51,7333.85 4141.94,7371.27 4104.51,7408.69" style="fill:#000000"/>
+	<polygon points="4080.75,7371.27 4104.51,7347.51 4128.27,7371.27 4104.51,7395.03" style="fill:none;stroke:#000000;stroke-width:19.32"/>
+	<polygon points="4119.47,7497.36 4156.89,7459.94 4194.32,7497.36 4156.89,7534.78" style="fill:#000000"/>
+	<polygon points="4133.13,7497.36 4156.89,7473.60 4180.65,7497.36 4156.89,7521.12" style="fill:none;stroke:#000000;stroke-width:19.32"/>
+	<polygon points="4125.95,7623.72 4163.37,7586.30 4200.80,7623.72 4163.37,7661.14" style="fill:#000000"/>
+	<polygon points="4139.61,7623.72 4163.37,7599.96 4187.13,7623.72 4163.37,7647.48" style="fill:none;stroke:#000000;stroke-width:19.32"/>
+	<polygon points="4011.47,7749.81 4048.89,7712.39 4086.32,7749.81 4048.89,7787.23" style="fill:#000000"/>
+	<polygon points="4025.13,7749.81 4048.89,7726.05 4072.65,7749.81 4048.89,7773.57" style="fill:none;stroke:#000000;stroke-width:19.32"/>
+	<polygon points="4116.50,7875.90 4153.92,7838.48 4191.35,7875.90 4153.92,7913.32" style="fill:#000000"/>
+	<polygon points="4130.16,7875.90 4153.92,7852.14 4177.68,7875.90 4153.92,7899.66" style="fill:none;stroke:#000000;stroke-width:19.32"/>
+	<polygon points="4109.48,8002.26 4146.90,7964.84 4184.33,8002.26 4146.90,8039.68" style="fill:#000000"/>
+	<polygon points="4123.14,8002.26 4146.90,7978.50 4170.66,8002.26 4146.90,8026.02" style="fill:none;stroke:#000000;stroke-width:19.32"/>
+	<line x1="340.47" y1="8380.53" x2="6166.76" y2="8380.53" style="stroke:#000000;stroke-width:12.88"/>
+	<text x="3522.94" y="8465.85" style="font-family:'Helvetica';font-size:58.05px;fill:#000000" text-anchor="middle"> </text>
+	<text x="4542.45" y="8465.85" style="font-family:'Helvetica';font-size:58.05px;fill:#000000" text-anchor="middle"> </text>
+	<line x1="4160.13" y1="8380.53" x2="4160.13" y2="8469.90" style="stroke:#000000;stroke-width:12.88"/>
+	<text x="4160.13" y="8555.22" style="font-family:'Helvetica';font-size:58.05px;fill:#000000" text-anchor="middle">1</text>
+	<line x1="3968.98" y1="8380.53" x2="3968.98" y2="8469.90" style="stroke:#000000;stroke-width:12.88"/>
+	<text x="3968.98" y="8555.22" style="font-family:'Helvetica';font-size:58.05px;fill:#000000" text-anchor="middle">.25</text>
+	<line x1="4032.69" y1="8380.53" x2="4032.69" y2="8469.90" style="stroke:#000000;stroke-width:12.88"/>
+	<text x="4032.69" y="8555.22" style="font-family:'Helvetica';font-size:58.05px;fill:#000000" text-anchor="middle">.5</text>
+	<line x1="4160.13" y1="8380.53" x2="4160.13" y2="8469.90" style="stroke:#000000;stroke-width:12.88"/>
+	<text x="4160.13" y="8555.22" style="font-family:'Helvetica';font-size:58.05px;fill:#000000" text-anchor="middle">1</text>
+	<line x1="4415.01" y1="8380.53" x2="4415.01" y2="8469.90" style="stroke:#000000;stroke-width:12.88"/>
+	<text x="4415.01" y="8555.22" style="font-family:'Helvetica';font-size:58.05px;fill:#000000" text-anchor="middle">2</text>
+	<line x1="4924.77" y1="8380.53" x2="4924.77" y2="8469.90" style="stroke:#000000;stroke-width:12.88"/>
+	<text x="4924.77" y="8555.22" style="font-family:'Helvetica';font-size:58.05px;fill:#000000" text-anchor="middle">4</text>
+	<line x1="4160.13" y1="8380.53" x2="4160.13" y2="8469.90" style="stroke:#000000;stroke-width:12.88"/>
+	<text x="3253.48" y="464.91" style="font-family:'Helvetica';font-size:178.74px;fill:#000000" text-anchor="middle">complete case analysis</text>
+	<text x="3253.48" y="195.24" style="font-family:'Helvetica';font-size:223.56px;fill:#000000" text-anchor="middle">severe</text>
+</svg>

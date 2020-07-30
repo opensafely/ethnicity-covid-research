@@ -75,7 +75,7 @@ do "$Dodir/08b_eth_an_multivariable_eth5_mi.do"
 do "$Dodir/07_eth_cr_forestplots.do"
 
 *Table 3: Odds of receiving ventilation - in those admitted to ICU
-do "$Dodir/09a_eth_an_ventilation_eth16"
+*do "$Dodir/09a_eth_an_ventilation_eth16" /* model did not converge:  clogit ventilated i.eth16 i.male age1 age2 age3, strata(stp) or*/
 do "$Dodir/09b_eth_an_ventilation_eth5"
 
 *Table 5: Odds of testing positive amongst those with SGSS testing data
