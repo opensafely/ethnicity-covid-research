@@ -145,7 +145,7 @@ syntax, variable(varname)
 	file write tablecontent  %3.1f (r(mean)) (" (") %3.1f (r(sd)) (")") _tab
 	}
 	
-	qui summarize `variable' if eth5 == .u, d
+	qui summarize `variable' if eth5 ==. , d
 	file write tablecontent  %3.1f (r(mean)) (" (") %3.1f (r(sd)) (")") _n
 	
 	qui summarize `variable', d
@@ -157,11 +157,8 @@ syntax, variable(varname)
 	file write tablecontent %3.1f (r(p50)) (" (") %3.1f (r(p25)) ("-") %3.1f (r(p75)) (")") _tab
 	}
 	
-	qui summarize `variable' if eth5 == .u, d
+	qui summarize `variable' if eth5 ==. , d
 	file write tablecontent %3.1f (r(p50)) (" (") %3.1f (r(p25)) ("-") %3.1f (r(p75)) (")") _n
-
-qui summarize `variable' if eth5 == ., d
-file write tablecontent %3.1f (r(min)) (", ") %3.1f (r(max)) ("") _n
 
 	
 /*
@@ -172,6 +169,11 @@ file write tablecontent %3.1f (r(min)) (", ") %3.1f (r(max)) ("") _n
 	forvalues i=1/5{							
 	qui summarize `variable' if eth5 == `i', d
 	file write tablecontent %3.1f (r(min)) (", ") %3.1f (r(max)) ("") _tab
+	
+	qui summarize `variable' if eth5==. , d
+	file write tablecontent ("Min, Max") _tab 
+	file write tablecontent %3.1f (r(min)) (", ") %3.1f (r(max)) ("") _tab
+
 	}
 	
 */
