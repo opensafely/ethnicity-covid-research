@@ -274,8 +274,6 @@ foreach comorb of varlist 		///
 	stroke						///
 	esrf						///
 	cancer						///
-	perm_immunodef				///
-	temp_immunodef				///
 	ra_sle_psoriasis			///
 	other_immuno				///
 	chronic_liver_disease		///
