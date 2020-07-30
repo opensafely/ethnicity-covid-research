@@ -412,15 +412,18 @@ order obese4cat, after(bmicat)
 gen bmicat_sa=bmicat
 replace bmicat_sa = 2 if bmi>=18.5 & bmi <23 & ethnicity  ==3
 replace bmicat_sa = 3 if bmi>=23 & bmi < 27.5 & ethnicity ==3
-replace bmicat_sa = 4 if bmi>=27.5 & bmi < 35 & ethnicity ==3
+replace bmicat_sa = 4 if bmi>=27.5 & bmi < 32.5 & ethnicity ==3
+replace bmicat_sa = 5 if bmi>=32.5 & bmi < 37.5 & ethnicity ==3
+replace bmicat_sa = 6 if bmi>=37.5 & bmi < . & ethnicity ==3
+
 safetab bmicat_sa
 
 label define bmicat_sa 1 "Underweight (<18.5)" 	///
 					2 "Normal (18.5-24.9 / 22.9)"		///
 					3 "Overweight (25-29.9 / 23-27.4)"	///
-					4 "Obese I (30-34.9 / 27.4-34.9)"		///
-					5 "Obese II (35-39.9)"		///
-					6 "Obese III (40+)"			///
+					4 "Obese I (30-34.9 / 27.4-32.4)"		///
+					5 "Obese II (35-39.9 / 32.5- 37.4)"		///
+					6 "Obese III (40+ / 37.5+)"			///
 					.u "Unknown (.u)"
 label values bmicat bmicat
 
@@ -428,9 +431,9 @@ label values bmicat bmicat
 recode bmicat_sa 1/3 .u = 1 4=2 5=3 6=4, gen(obese4cat_sa)
 
 label define obese4cat_sa 	1 "No record of obesity" 	///
-						2 "Obese I (30-34.9 / 27.5-34.9)"		///
-						3 "Obese II (35-39.9)"		///
-						4 "Obese III (40+)"		
+						2 "Obese I (30-34.9 / 27.5-32.5)"		///
+						3 "Obese II (35-39.9 / 32.5- 37.4)"		///
+						4 "Obese III (40+ / 37.5+)"		
 label values obese4cat_sa obese4cat_sa
 order obese4cat_sa, after(bmicat_sa)
 
