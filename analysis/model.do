@@ -79,11 +79,11 @@ do "$Dodir/07_eth_cr_forestplots.do"
 do "$Dodir/09b_eth_an_ventilation_eth5"
 
 *Table 5: Odds of testing positive amongst those with SGSS testing data
-do "$Dodir/11a_eth_an_testedpop_eth16"
-do "$Dodir/11b_eth_an_testedpop_eth5"
+*do "$Dodir/11a_eth_an_testedpop_eth16" /* did not run in server , same issue likely as above */
+*do "$Dodir/11b_eth_an_testedpop_eth5" /* did not run in server , same issue likely as above */
 
 *Table 6: seconday care outcomes amongs those with evidence of infection prior to hospitalisation (may be weird as many people tested in hospital)
-do "$Dodir/12a_eth_an_infected_eth16"
+do "$Dodir/12a_eth_an_infected_eth16" 
 do "$Dodir/12b_eth_an_infected_eth5"
 
 
@@ -91,11 +91,11 @@ do "$Dodir/12b_eth_an_infected_eth5"
 Secondary Objectives
 **********************/
 *Table 7: Household size
-do "$Dodir/13a_eth_an_household_eth16"
+*do "$Dodir/13a_eth_an_household_eth16" /* did not run in server , failed at ICU*/
 do "$Dodir/13b_eth_an_household_eth5"
 
 *Table 3: Diabetes
-do "$Dodir/14a_eth_an_diabetes_eth16"
+do "$Dodir/14a_eth_an_diabetes_eth16" 
 do "$Dodir/14b_eth_an_diabetes_eth5"
 
 *By calendar period
@@ -104,6 +104,6 @@ do "$Dodir/14b_eth_an_diabetes_eth5"
 *Hypertension
 
 *Table 4: Rates - crude, age, and age-sex stratified
-do "$Dodir/10a_eth_an_rates_eth16"
+do "$Dodir/10a_eth_an_rates_eth16" 
 do "$Dodir/10b_eth_an_rates_eth5"
 
