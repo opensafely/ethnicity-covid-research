@@ -137,7 +137,7 @@ safetab smoke smoke_nomiss, m
 * Diabetes
 safetab dm_type
 safetab dm_type_exeter_os
-safetab dm_type dm_type_exeter_os, row col
+tab dm_type dm_type_exeter_os, row col
 safetab diabcat, row col
 
 * CKD
