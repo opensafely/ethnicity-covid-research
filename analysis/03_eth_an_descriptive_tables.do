@@ -125,6 +125,10 @@ foreach outvar of global outcomes {
 	safetab imd  								`outvar', col m
 	safetab rural_urban							`outvar', col
 	safetab region 								`outvar', col
+	safetab hh_size 							`outvar', col
+	safetab carehome							`outvar', col
+
+
 }
 
 

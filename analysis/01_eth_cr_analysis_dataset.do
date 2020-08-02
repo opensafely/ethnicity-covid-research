@@ -644,6 +644,7 @@ drop care_home_type
 gen carehome=0
 replace carehome=1 if carehometype<4
 safetab  carehometype carehome
+
 /* OUTCOME AND SURVIVAL TIME==================================================*/
 
 	
@@ -760,8 +761,7 @@ label var age3 						"Age spline 3"
 lab var hh_total					"calculated No of ppl in household"
 lab var region						"Region of England"
 lab var rural_urban					"Rural-Urban Indicator"
-lab var carehometype				"Care home type"
-lab var carehometype				"Care home y/n"
+lab var carehome					"Care home y/n"
 lab var hba1c_mmol_per_mol			"HbA1c mmo/mol"
 lab var hba1c_percentage			"HbA1c %"
 lab var gp_consult_count			"Number of GP consultations in the 12 months prior to baseline"

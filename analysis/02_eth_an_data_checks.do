@@ -138,6 +138,7 @@ safetab smoke smoke_nomiss, m
 safetab dm_type
 safetab dm_type_exeter_os
 safetab dm_type dm_type_exeter_os, row col
+safetab diabcat, row col
 
 * CKD
 safetab reduced egfr_cat, m
@@ -165,6 +166,13 @@ safetab smoke hypertension, row
                       
 safetab ethnicity imd, 		row 
 safetab ethnicity_16 imd, 		row 
+
+safetab ethnicity carehome, 		row 
+safetab ethnicity_16 carehome, 		row 
+
+safetab ethnicity hh_size, 		row 
+safetab ethnicity_16 hh_size, 		row 
+
 
 
 
@@ -205,46 +213,6 @@ foreach var of varlist 	chronic_respiratory_disease ///
 					safetab eth16 `var', row 
 }
 
-
-* Relationships with age
-
-foreach var of varlist 	chronic_respiratory_disease ///
-						chronic_cardiac_disease  ///
-						cancer  ///
-						perm_immunodef  ///
-						temp_immunodef  ///
-						chronic_liver_disease  ///
-						other_neuro  ///
-						stroke			///
-						dementia ///
-						esrf  ///
-						hypertension  ///
-						asthma ///
-						ra_sle_psoriasis  ///
-						dm_type ///
-					{
-						safetab agegroup `var', row 
- }
-
-
- * Relationships with sex
-foreach var of varlist 	chronic_respiratory_disease ///
-						chronic_cardiac_disease  ///
-						cancer  ///
-						perm_immunodef  ///
-						temp_immunodef  ///
-						chronic_liver_disease  ///
-						other_neuro  ///
-						stroke			///
-						dementia ///
-						esrf  ///
-						hypertension  ///
-						asthma ///
-						ra_sle_psoriasis  ///
-						dm_type ///
-					{
-						safetab male `var', row 
-}
 
 
 * Close log file 
