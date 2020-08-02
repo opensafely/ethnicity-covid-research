@@ -160,7 +160,7 @@ local lab11: label eth16 11
 	file write tablecontent  ("`lab1'") _tab (`event') _tab ("1.00 (ref)") _tab _tab ("1.00 (ref)") _tab _tab ("1.00 (ref)") _tab _tab ("1.00 (ref)")  _tab _tab ("1.00 (ref)") _n
 	
 * Subsequent ethnic groups
-forvalues eth=2/11 {
+forvalues eth=3/11 {
 	
 	count if eth16 == `eth' & ventilated == 1
 	local event = r(N)
