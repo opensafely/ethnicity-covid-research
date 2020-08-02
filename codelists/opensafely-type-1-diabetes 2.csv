@@ -1,0 +1,65 @@
+CTV3ID,CTV3PreferredTermDesc,CTV3Source
+7L100,Continuous subcutaneous infusion of insulin,CTV3Map_Code_And_Term
+7L100,Continuous subcutaneous infusion of insulin,CTV3Map_Code_Only
+C1010,Type 1 diabetes mellitus with ketoacidosis,CTV3Map_Code_And_Term
+C1010,Type 1 diabetes mellitus with ketoacidosis,CTV3Map_Code_Only
+C1030,Type 1 diabetes mellitus with ketoacidotic coma,CTV3Map_Code_And_Term
+C1030,Type 1 diabetes mellitus with ketoacidotic coma,CTV3Map_Code_Only
+C1080,Type I diabetes mellitus with renal complications,CTV3Map_Code_And_Term
+C1080,Type I diabetes mellitus with renal complications,CTV3Map_Code_Only
+C1081,Type I diabetes mellitus with ophthalmic complications,CTV3Map_Code_And_Term
+C1081,Type I diabetes mellitus with ophthalmic complications,CTV3Map_Code_Only
+C1082,Type I diabetes mellitus with neurological complications,CTV3Map_Code_And_Term
+C1082,Type I diabetes mellitus with neurological complications,CTV3Map_Code_Only
+C1083,Type I diabetes mellitus with multiple complications,CTV3Map_Code_And_Term
+C1083,Type I diabetes mellitus with multiple complications,CTV3Map_Code_Only
+C1085,Type I diabetes mellitus with ulcer,CTV3Map_Code_And_Term
+C1085,Type I diabetes mellitus with ulcer,CTV3Map_Code_Only
+C1086,Type I diabetes mellitus with gangrene,CTV3Map_Code_And_Term
+C1086,Type I diabetes mellitus with gangrene,CTV3Map_Code_Only
+C1087,Type I diabetes mellitus with retinopathy,CTV3Map_Code_And_Term
+C1087,Type I diabetes mellitus with retinopathy,CTV3Map_Code_Only
+C1088,Type I diabetes mellitus - poor control,CTV3Map_Code_And_Term
+C1088,Type I diabetes mellitus - poor control,CTV3Map_Code_Only
+C1089,Type I diabetes mellitus maturity onset,CTV3Map_Code_And_Term
+C1089,Type I diabetes mellitus maturity onset,CTV3Map_Code_Only
+X40J4,Type I diabetes mellitus,CTV3Map_Code_And_Term
+X40J4,Type I diabetes mellitus,CTV3Map_Code_Only
+XM19i,[EDTA]Diabetes Type I associated with renal failure,CTV3_Children
+Xa2h9,Dietary advice for type I diabetes,High_Level_SNOMED
+Xa4g7,Unstable type I diabetes mellitus,CTV3Map_Code_And_Term
+Xa4g7,Unstable type I diabetes mellitus,CTV3Map_Code_Only
+XaELP,Type I diabetes mellitus without complication,CTV3Map_Code_And_Term
+XaELP,Type I diabetes mellitus without complication,CTV3Map_Code_Only
+XaEnn,Type I diabetes mellitus with mononeuropathy,CTV3Map_Code_And_Term
+XaEnn,Type I diabetes mellitus with mononeuropathy,CTV3Map_Code_Only
+XaEno,Type I diabetes mellitus with polyneuropathy,CTV3Map_Code_And_Term
+XaEno,Type I diabetes mellitus with polyneuropathy,CTV3Map_Code_Only
+XaF04,Type I diabetes mellitus with nephropathy,CTV3Map_Code_And_Term
+XaF04,Type I diabetes mellitus with nephropathy,CTV3Map_Code_Only
+XaFWG,Type I diabetes mellitus with hypoglycaemic coma,CTV3Map_Code_And_Term
+XaFWG,Type I diabetes mellitus with hypoglycaemic coma,CTV3Map_Code_Only
+XaFm8,Type I diabetes mellitus with diabetic cataract,CTV3Map_Code_And_Term
+XaFm8,Type I diabetes mellitus with diabetic cataract,CTV3Map_Code_Only
+XaFmK,Type I diabetes mellitus with peripheral angiopathy,CTV3Map_Code_And_Term
+XaFmK,Type I diabetes mellitus with peripheral angiopathy,CTV3Map_Code_Only
+XaFmL,Type I diabetes mellitus with arthropathy,CTV3Map_Code_And_Term
+XaFmL,Type I diabetes mellitus with arthropathy,CTV3Map_Code_Only
+XaFmM,Type I diabetes mellitus with neuropathic arthropathy,CTV3Map_Code_And_Term
+XaFmM,Type I diabetes mellitus with neuropathic arthropathy,CTV3Map_Code_Only
+XaIzM,Type 1 diabetes mellitus with persistent proteinuria,CTV3Map_Code_And_Term
+XaIzM,Type 1 diabetes mellitus with persistent proteinuria,CTV3Map_Code_Only
+XaIzN,Type 1 diabetes mellitus with persistent microalbuminuria,CTV3Map_Code_And_Term
+XaIzN,Type 1 diabetes mellitus with persistent microalbuminuria,CTV3Map_Code_Only
+XaJSr,Type 1 diabetes mellitus with exudative maculopathy,CTV3Map_Code_And_Term
+XaJSr,Type 1 diabetes mellitus with exudative maculopathy,CTV3Map_Code_Only
+XaKyW,Type 1 diabetes mellitus with gastroparesis,CTV3Map_Code_And_Term
+XaKyW,Type 1 diabetes mellitus with gastroparesis,CTV3Map_Code_Only
+XaMhJ,Diabetes type 1 review,CTV3Map_Code_And_Term
+XaX3p,Type I diabetic dietary review,CTV3Map_Code_And_Term
+XaX3p,Type I diabetic dietary review,CTV3Map_Code_Only
+XaX49,Referral to type I diabetes structured education programme,QOF
+XaXZv,H/O: diabetes mellitus type 1,QOF
+Xaage,Type I diabetes mellitus in remission,CTV3Map_Code_And_Term
+Xaage,Type I diabetes mellitus in remission,CTV3Map_Code_Only
+XafjT,Eating disorder co-occurrent with diabetes mellitus type 1,QOF

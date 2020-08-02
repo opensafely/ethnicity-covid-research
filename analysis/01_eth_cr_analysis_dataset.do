@@ -201,7 +201,8 @@ label define hh_total_cat 	0 "1-2" ///
 						3 "10+" 					
 label values hh_total_cat hh_total_cat
 
-tab hh_total_cat,m
+safetab hh_total_cat,m
+
 ****************************
 *  Create required cohort  *
 ****************************
@@ -637,9 +638,12 @@ label values asthmacat asthmacat
 gen asthma = (asthmacat==2|asthmacat==3)
 
 **care home
-encode care_home_type, gen(carehome)
+encode care_home_type, gen(carehometype)
 drop care_home_type
 
+gen carehome=0
+replace carehome=1 if carehometype<4
+safetab  carehometype carehome
 /* OUTCOME AND SURVIVAL TIME==================================================*/
 
 	
@@ -655,6 +659,8 @@ ren died_date_ons				onsdeath_date
 
 * Date of Covid death in ONS
 gen onscoviddeath_date = onsdeath_date if died_ons_covid_flag_any == 1
+gen onsconfirmeddeath_date = onsdeath_date if died_ons_confirmedcovid_flag_any ==1
+gen onssuspecteddeath_date = onsdeath_date if died_ons_suspectedcovid_flag_any ==1
 
 * Date of non-COVID death in ONS 
 * If missing date of death resulting died_date will also be missing
@@ -754,7 +760,8 @@ label var age3 						"Age spline 3"
 lab var hh_total					"calculated No of ppl in household"
 lab var region						"Region of England"
 lab var rural_urban					"Rural-Urban Indicator"
-lab var carehome					"Care home type"
+lab var carehometype				"Care home type"
+lab var carehometype				"Care home y/n"
 lab var hba1c_mmol_per_mol			"HbA1c mmo/mol"
 lab var hba1c_percentage			"HbA1c %"
 lab var gp_consult_count			"Number of GP consultations in the 12 months prior to baseline"
