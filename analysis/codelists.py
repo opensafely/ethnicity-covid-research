@@ -5,6 +5,10 @@ from cohortextractor import (
 
 covid_codelist = codelist(["U071", "U072"], system="icd10")
 
+confirmed_covid_codelist = codelist(["U071"]), system="icd10"
+
+suspected_covid_codelist = codelist(["U072"]), system="icd10"
+
 covid_primary_care_positive_test=codelist_from_csv(
     "codelists/opensafely-covid-identification-in-primary-care-probable-covid-positive-test.csv",
     system="ctv3", 
