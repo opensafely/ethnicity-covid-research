@@ -239,7 +239,7 @@ outsheet using "$Tabfigdir/FP_postest_eth16.txt", replace
 *Create one graph 
 metan estimate min95 max95  if eth16!=1 ///
  , effect(Odds Ratio) null(1) lcols(adjusted) dp(2) by(eth16)  ///
-	 nowt nosubgroup nooverall nobox graphregion(color(white)) scheme(sj)  	///
+	random nowt nosubgroup nooverall nobox graphregion(color(white)) scheme(sj)  	///
 	title("Positive test amongst those tested", size(medsmall)) 	///
 	t2title("complete case analysis", size(small)) 	///
 	graphregion(margin(zero))  textsize(300)
