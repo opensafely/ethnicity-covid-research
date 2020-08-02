@@ -32,6 +32,10 @@ file write tablecontent _tab _tab ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% 
 * Open Stata dataset
 use "$Tempdir/analysis_dataset.dta", clear
 
+*drop irish for icu due to small numbers
+drop if eth16==2 
+
+
 gen ventilated=0
 replace ventilated=1 if was_ventilated_flag==1
 

@@ -30,6 +30,10 @@ foreach i of global outcomes2 {
 * Open Stata dataset
 use "$Tempdir/analysis_dataset_STSET_`i'_infected.dta", clear
 
+*drop irish for icu due to small numbers
+drop if eth16==2 & `i'=="icu"
+
+
 /* Sense check outcomes=======================================================*/ 
 
 safetab eth16 `i', missing row

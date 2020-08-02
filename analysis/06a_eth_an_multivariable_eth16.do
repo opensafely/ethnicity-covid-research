@@ -31,6 +31,9 @@ foreach i of global outcomes {
 * Open Stata dataset
 use "$Tempdir/analysis_dataset_STSET_`i'.dta", clear
 
+*drop irish for icu due to small numbers
+drop if eth16==2 & `i'=="icu"
+
 /* Sense check outcomes=======================================================*/ 
 
 *safetab eth16 `i', missing row
@@ -66,7 +69,7 @@ local hr "`hr' "$Tempdir/model1_`i'_eth16" "
 else di "WARNING MODEL1 DID NOT FIT (OUTCOME `i')"
 
 
-* Age, Gender, IMD and Comorbidities  
+* Age, Gender, IMD and Comorbidities 
 noi cap stcox i.eth16 i.male age1 age2 age3 	i.imd			///
 										bmi							///
 										gp_consult_count			///
@@ -95,7 +98,7 @@ else di "WARNING MODEL2 DID NOT FIT (OUTCOME `i')"
 
 										
 * Age, Gender, IMD and Comorbidities  and household size
-noi cap stcox i.eth16 i.male age1 age2 age3 i.imd i.hh_total_cat					///
+noi cap stcox i.eth16 i.male age1 age2 age3 i.imd i.hh_total_cat	///
 										bmi							///
 										gp_consult_count			///
 										i.smoke_nomiss				///

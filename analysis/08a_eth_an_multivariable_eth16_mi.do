@@ -32,6 +32,10 @@ foreach i of global outcomes {
 * Open Stata dataset
 use "$Tempdir/analysis_dataset_STSET_`i'.dta", clear
 
+*drop irish for icu due to small numbers
+drop if eth16==2 & `i'=="icu"
+
+
 
 *mi set the data
 mi set mlong
