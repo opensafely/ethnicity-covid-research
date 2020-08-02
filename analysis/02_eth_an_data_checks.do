@@ -138,7 +138,7 @@ safetab smoke smoke_nomiss, m
 safetab dm_type
 safetab dm_type_exeter_os
 tab dm_type dm_type_exeter_os, row col
-safetab diabcat, row col
+safetab diabcat
 
 * CKD
 safetab reduced egfr_cat, m

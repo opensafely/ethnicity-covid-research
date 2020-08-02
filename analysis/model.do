@@ -59,9 +59,9 @@ do "$Dodir/03_eth_an_descriptive_tables.do"
 ETHNICITY IN 5 CATEGORIES
 **********************/
 *Table 1 baseline characteristics
-do "$Dodir/05a_eth_table1_descriptives_eth5.do"
+do "$Dodir/05b_eth_table1_descriptives_eth5.do"
 *Table 2: multivariable analysis - complete case 
-do "$Dodir/06a_eth_an_multivariable_eth5.do" 
+do "$Dodir/06b_eth_an_multivariable_eth5.do" 
 *Table 3: Odds of receiving ventilation - in those admitted to ICU
 do "$Dodir/09b_eth_an_ventilation_eth5"
 *Table 4: Rates - crude, age, and age-sex stratified
@@ -83,17 +83,17 @@ do "$Dodir/05a_eth_table1_descriptives_eth16.do"
 *Table 2: multivariable analysis - complete case 
 do "$Dodir/06a_eth_an_multivariable_eth16.do" 
 *Table 3: Odds of receiving ventilation - in those admitted to ICU
-do "$Dodir/09b_eth_an_ventilation_eth16"
+do "$Dodir/09a_eth_an_ventilation_eth16"
 *Table 4: Rates - crude, age, and age-sex stratified
-do "$Dodir/10b_eth_an_rates_eth16"
+do "$Dodir/10a_eth_an_rates_eth16"
 *Table 5: Odds of testing positive amongst those with SGSS testing data
-do "$Dodir/11b_eth_an_testedpop_eth16" 
+do "$Dodir/11a_eth_an_testedpop_eth16" 
 *Table 6: seconday care outcomes amongs those with evidence of infection 
-do "$Dodir/12b_eth_an_infected_eth16"
+do "$Dodir/12a_eth_an_infected_eth16"
 *Table 8: Household size
-do "$Dodir/13b_eth_an_household_eth16"
+do "$Dodir/13a_eth_an_household_eth16"
 *Table 9: Diabetes
-do "$Dodir/14b_eth_an_diabetes_eth16"
+do "$Dodir/14a_eth_an_diabetes_eth16"
 
 
 /**********************
