@@ -31,7 +31,7 @@ foreach i of global outcomes2 {
 use "$Tempdir/analysis_dataset_STSET_`i'_infected.dta", clear
 
 *drop irish for icu due to small numbers
-drop if eth16==2 & `i'=="icu"
+drop if eth16==2 & "`i'"=="icu"
 
 
 /* Sense check outcomes=======================================================*/ 

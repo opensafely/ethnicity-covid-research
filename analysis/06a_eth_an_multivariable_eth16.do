@@ -28,15 +28,16 @@ file write tablecontent _tab _tab _tab _tab   ("HR") _tab ("95% CI") _tab ("HR")
 
 
 foreach i of global outcomes {
+	di "`i'"
 * Open Stata dataset
 use "$Tempdir/analysis_dataset_STSET_`i'.dta", clear
 
 *drop irish for icu due to small numbers
-drop if eth16==2 & `i'=="icu"
+drop if eth16==2 & "`i'"=="icu"
 
 /* Sense check outcomes=======================================================*/ 
 
-*safetab eth16 `i', missing row
+safetab eth16 `i', missing row
 
 
 /* Main Model=================================================================*/
