@@ -95,7 +95,7 @@ Secondary Objectives
 do "$Dodir/13b_eth_an_household_eth5"
 
 *Table 3: Diabetes
-do "$Dodir/14a_eth_an_diabetes_eth16" 
+*do "$Dodir/14a_eth_an_diabetes_eth16" /* did not run in server , failed at ICU*/
 do "$Dodir/14b_eth_an_diabetes_eth5"
 
 *By calendar period

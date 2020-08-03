@@ -1,0 +1,228 @@
+Table 6: Ethnicity and diabetes type - Complete Case Analysis
+	Number of events	Total person-weeks	Rate per 1,000	Crude		Age/Sex Adjusted		Age/Sex/IMD Adjusted		+ co-morbidities		
+				HR	95% CI	HR	95% CI	HR	95% CI	HR	95% CI	HR	95% CI
+Ethnic group: White, Outcome: suspected
+0	0	         .	  .	1.00 (ref)		1.00 (ref)		1.00 (ref)		1.00 (ref)
+No diabetes	344227	 231099282	1.49	1.00	   . -    .	1.00	   . -    .	1.00	   . -    .	   .	   . -    .
+T1DM, controlled	776	    363744	2.13	1.43	1.34 - 1.54	1.51	1.41 - 1.62	1.51	1.41 - 1.62	   .	   . -    .
+T1DM, uncontrolled	3114	   1001779	3.11	2.09	2.02 - 2.16	2.21	2.14 - 2.29	2.19	2.12 - 2.27	   .	   . -    .
+Ethnic group: South Asian, Outcome: suspected
+0	0	         .	  .	1.00 (ref)		1.00 (ref)		1.00 (ref)		1.00 (ref)
+No diabetes	24606	  19616393	1.25	1.00	   . -    .	1.00	   . -    .	1.00	   . -    .	   .	   . -    .
+T1DM, controlled	54	     15895	3.40	2.71	2.07 - 3.54	2.37	1.81 - 3.09	2.30	1.75 - 3.02	   .	   . -    .
+T1DM, uncontrolled	129	     40055	3.22	2.57	2.16 - 3.05	2.43	2.04 - 2.89	2.46	2.07 - 2.93	   .	   . -    .
+Ethnic group: Black, Outcome: suspected
+0	0	         .	  .	1.00 (ref)		1.00 (ref)		1.00 (ref)		1.00 (ref)
+No diabetes	9175	   6871612	1.34	1.00	   . -    .	1.00	   . -    .	1.00	   . -    .	   .	   . -    .
+T1DM, controlled	31	      8981	3.45	2.59	1.82 - 3.68	2.50	1.76 - 3.56	2.51	1.76 - 3.57	   .	   . -    .
+T1DM, uncontrolled	80	     20942	3.82	2.86	2.29 - 3.56	2.88	2.31 - 3.59	2.81	2.25 - 3.51	   .	   . -    .
+Ethnic group: Mixed, Outcome: suspected
+0	0	         .	  .	1.00 (ref)		1.00 (ref)		1.00 (ref)		1.00 (ref)
+No diabetes	4655	   3666570	1.27	1.00	   . -    .	1.00	   . -    .	1.00	   . -    .	   .	   . -    .
+T1DM, controlled	14	      3586	3.90	3.07	1.82 - 5.19	3.00	1.77 - 5.07	2.83	1.64 - 4.88	   .	   . -    .
+T1DM, uncontrolled	38	     10462	3.63	2.87	2.09 - 3.95	2.90	2.10 - 3.99	2.92	2.12 - 4.02	   .	   . -    .
+Ethnic group: Other, Outcome: suspected
+0	0	         .	  .	1.00 (ref)		1.00 (ref)		1.00 (ref)		1.00 (ref)
+No diabetes	5624	   6999504	0.80	1.00	   . -    .	1.00	   . -    .	1.00	   . -    .	   .	   . -    .
+T1DM, controlled	7	      4106	1.70	2.12	1.01 - 4.45	1.80	0.86 - 3.77	1.79	0.85 - 3.75	   .	   . -    .
+T1DM, uncontrolled	25	     10510	2.38	2.96	2.00 - 4.38	2.85	1.92 - 4.22	2.81	1.90 - 4.16	   .	   . -    .
+Ethnic group: White, Outcome: confirmed
+0	0	         .	  .	1.00 (ref)		1.00 (ref)		1.00 (ref)		1.00 (ref)
+No diabetes	21223	 234773449	0.09	1.00	   . -    .	1.00	   . -    .	1.00	   . -    .	   .	   . -    .
+T1DM, controlled	52	    371949	0.14	1.55	1.18 - 2.03	1.60	1.22 - 2.10	1.63	1.24 - 2.13	   .	   . -    .
+T1DM, uncontrolled	234	   1034893	0.23	2.50	2.20 - 2.85	2.80	2.46 - 3.19	2.78	2.44 - 3.16	   .	   . -    .
+Ethnic group: South Asian, Outcome: confirmed
+0	0	         .	  .	1.00 (ref)		1.00 (ref)		1.00 (ref)		1.00 (ref)
+No diabetes	3805	  19866085	0.19	1.00	   . -    .	1.00	   . -    .	1.00	   . -    .	   .	   . -    .
+T1DM, controlled	10	     16433	0.61	3.19	1.72 - 5.93	2.95	1.58 - 5.49	2.97	1.59 - 5.52	   .	   . -    .
+T1DM, uncontrolled	13	     41400	0.31	1.64	0.95 - 2.83	1.55	0.90 - 2.67	1.57	0.91 - 2.70	   .	   . -    .
+Ethnic group: Black, Outcome: confirmed
+0	0	         .	  .	1.00 (ref)		1.00 (ref)		1.00 (ref)		1.00 (ref)
+No diabetes	829	   6969703	0.12	1.00	   . -    .	1.00	   . -    .	1.00	   . -    .	   .	   . -    .
+T1DM, controlled	.	      9323	  .	1.81	0.45 - 7.23	1.44	0.36 - 5.78	1.44	0.36 - 5.76	   .	   . -    .
+T1DM, uncontrolled	6	     21820	0.27	2.31	1.04 - 5.17	2.14	0.96 - 4.78	2.14	0.96 - 4.77	   .	   . -    .
+Ethnic group: Mixed, Outcome: confirmed
+0	0	         .	  .	1.00 (ref)		1.00 (ref)		1.00 (ref)		1.00 (ref)
+No diabetes	330	   3717369	0.09	1.00	   . -    .	1.00	   . -    .	1.00	   . -    .	   .	   . -    .
+T1DM, controlled	.	      3737	  .	3.01	0.42 - 21.45	2.76	0.39 - 19.66	2.81	0.39 - 20.04	   .	   . -    .
+T1DM, uncontrolled	7	     10854	0.64	7.28	3.44 - 15.40	7.11	3.36 - 15.06	7.12	3.36 - 15.09	   .	   . -    .
+Ethnic group: Other, Outcome: confirmed
+0	0	         .	  .	1.00 (ref)		1.00 (ref)		1.00 (ref)		1.00 (ref)
+No diabetes	523	   7062045	0.07	1.00	   . -    .	1.00	   . -    .	1.00	   . -    .	   .	   . -    .
+T1DM, controlled	0	      4197	0.00	0.00	0.00 -    .	0.00	   . -    .	0.00	   . -    .	   .	   . -    .
+T1DM, uncontrolled	.	     10717	  .	6.31	2.61 - 15.22	5.83	2.42 - 14.09	5.75	2.38 - 13.90	   .	   . -    .
+Ethnic group: White, Outcome: tested
+0	0	         .	  .	1.00 (ref)		1.00 (ref)		1.00 (ref)		1.00 (ref)
+No diabetes	543160	 242743698	2.24	1.00	   . -    .	1.00	   . -    .	1.00	   . -    .	   .	   . -    .
+T1DM, controlled	1343	    381203	3.52	1.59	1.51 - 1.68	1.65	1.56 - 1.74	1.67	1.58 - 1.76	   .	   . -    .
+T1DM, uncontrolled	4422	   1056173	4.19	1.90	1.84 - 1.95	2.02	1.96 - 2.08	2.01	1.95 - 2.07	   .	   . -    .
+Ethnic group: South Asian, Outcome: tested
+0	0	         .	  .	1.00 (ref)		1.00 (ref)		1.00 (ref)		1.00 (ref)
+No diabetes	49063	  20553102	2.39	1.00	   . -    .	1.00	   . -    .	1.00	   . -    .	   .	   . -    .
+T1DM, controlled	80	     16751	4.78	2.04	1.64 - 2.54	1.90	1.53 - 2.37	1.93	1.55 - 2.40	   .	   . -    .
+T1DM, uncontrolled	210	     42077	4.99	2.13	1.86 - 2.44	2.09	1.83 - 2.40	2.10	1.83 - 2.40	   .	   . -    .
+Ethnic group: Black, Outcome: tested
+0	0	         .	  .	1.00 (ref)		1.00 (ref)		1.00 (ref)		1.00 (ref)
+No diabetes	14831	   7209545	2.06	1.00	   . -    .	1.00	   . -    .	1.00	   . -    .	   .	   . -    .
+T1DM, controlled	45	      9496	4.74	2.33	1.74 - 3.13	2.26	1.69 - 3.03	2.27	1.70 - 3.05	   .	   . -    .
+T1DM, uncontrolled	90	     22241	4.05	1.99	1.62 - 2.45	2.06	1.68 - 2.54	2.06	1.67 - 2.54	   .	   . -    .
+Ethnic group: Mixed, Outcome: tested
+0	0	         .	  .	1.00 (ref)		1.00 (ref)		1.00 (ref)		1.00 (ref)
+No diabetes	7819	   3847531	2.03	1.00	   . -    .	1.00	   . -    .	1.00	   . -    .	   .	   . -    .
+T1DM, controlled	8	      3852	2.08	1.02	0.51 - 2.05	1.03	0.51 - 2.06	1.05	0.52 - 2.09	   .	   . -    .
+T1DM, uncontrolled	43	     11094	3.88	1.94	1.44 - 2.61	2.02	1.50 - 2.72	2.00	1.48 - 2.72	   .	   . -    .
+Ethnic group: Other, Outcome: tested
+0	0	         .	  .	1.00 (ref)		1.00 (ref)		1.00 (ref)		1.00 (ref)
+No diabetes	10047	   7336232	1.37	1.00	   . -    .	1.00	   . -    .	1.00	   . -    .	   .	   . -    .
+T1DM, controlled	9	      4328	2.08	1.53	0.79 - 2.94	1.38	0.72 - 2.65	1.40	0.73 - 2.69	   .	   . -    .
+T1DM, uncontrolled	39	     11036	3.53	2.61	1.91 - 3.58	2.59	1.89 - 3.55	2.62	1.91 - 3.59	   .	   . -    .
+Ethnic group: White, Outcome: positivetest
+0	0	         .	  .	1.00 (ref)		1.00 (ref)		1.00 (ref)		1.00 (ref)
+No diabetes	36495	 244493257	0.15	1.00	   . -    .	1.00	   . -    .	1.00	   . -    .	   .	   . -    .
+T1DM, controlled	75	    387417	0.19	1.30	1.03 - 1.63	1.35	1.08 - 1.70	1.38	1.10 - 1.73	   .	   . -    .
+T1DM, uncontrolled	298	   1077994	0.28	1.85	1.65 - 2.08	2.01	1.79 - 2.25	2.00	1.79 - 2.24	   .	   . -    .
+Ethnic group: South Asian, Outcome: positivetest
+0	0	         .	  .	1.00 (ref)		1.00 (ref)		1.00 (ref)		1.00 (ref)
+No diabetes	6718	  20673440	0.32	1.00	   . -    .	1.00	   . -    .	1.00	   . -    .	   .	   . -    .
+T1DM, controlled	16	     17071	0.94	2.89	1.77 - 4.73	2.75	1.68 - 4.49	2.77	1.69 - 4.52	   .	   . -    .
+T1DM, uncontrolled	27	     43027	0.63	1.93	1.33 - 2.82	1.87	1.28 - 2.72	1.89	1.29 - 2.75	   .	   . -    .
+Ethnic group: Black, Outcome: positivetest
+0	0	         .	  .	1.00 (ref)		1.00 (ref)		1.00 (ref)		1.00 (ref)
+No diabetes	1650	   7253718	0.23	1.00	   . -    .	1.00	   . -    .	1.00	   . -    .	   .	   . -    .
+T1DM, controlled	.	      9675	  .	2.28	0.95 - 5.47	1.88	0.78 - 4.53	1.89	0.78 - 4.55	   .	   . -    .
+T1DM, uncontrolled	13	     22641	0.57	2.53	1.47 - 4.37	2.36	1.37 - 4.08	2.37	1.37 - 4.09	   .	   . -    .
+Ethnic group: Mixed, Outcome: positivetest
+0	0	         .	  .	1.00 (ref)		1.00 (ref)		1.00 (ref)		1.00 (ref)
+No diabetes	659	   3870130	0.17	1.00	   . -    .	1.00	   . -    .	1.00	   . -    .	   .	   . -    .
+T1DM, controlled	.	      3888	  .	3.02	0.75 - 12.08	2.73	0.68 - 10.94	2.79	0.70 - 11.19	   .	   . -    .
+T1DM, uncontrolled	9	     11296	0.80	4.69	2.43 - 9.05	4.41	2.28 - 8.51	4.41	2.28 - 8.52	   .	   . -    .
+Ethnic group: Other, Outcome: positivetest
+0	0	         .	  .	1.00 (ref)		1.00 (ref)		1.00 (ref)		1.00 (ref)
+No diabetes	963	   7354570	0.13	1.00	   . -    .	1.00	   . -    .	1.00	   . -    .	   .	   . -    .
+T1DM, controlled	0	      4374	0.00	0.00	   . -    .	0.00	0.00 -    .	0.00	   . -    .	   .	   . -    .
+T1DM, uncontrolled	.	     11176	  .	2.05	0.66 - 6.38	1.85	0.60 - 5.76	1.83	0.59 - 5.70	   .	   . -    .
+Ethnic group: White, Outcome: ae
+0	0	         .	  .	1.00 (ref)		1.00 (ref)		1.00 (ref)		1.00 (ref)
+No diabetes	299483	 107091941	2.80	1.00	   . -    .	1.00	   . -    .	1.00	   . -    .	   .	   . -    .
+T1DM, controlled	770	    168232	4.58	1.63	1.52 - 1.75	1.68	1.56 - 1.80	1.69	1.58 - 1.82	   .	   . -    .
+T1DM, uncontrolled	2994	    461862	6.48	2.31	2.23 - 2.39	2.37	2.29 - 2.46	2.35	2.26 - 2.43	   .	   . -    .
+Ethnic group: South Asian, Outcome: ae
+0	0	         .	  .	1.00 (ref)		1.00 (ref)		1.00 (ref)		1.00 (ref)
+No diabetes	18423	   9102622	2.02	1.00	   . -    .	1.00	   . -    .	1.00	   . -    .	   .	   . -    .
+T1DM, controlled	44	      7415	5.93	2.92	2.17 - 3.92	2.68	1.99 - 3.60	2.69	2.00 - 3.62	   .	   . -    .
+T1DM, uncontrolled	127	     18429	6.89	3.38	2.84 - 4.03	3.23	2.72 - 3.85	3.26	2.74 - 3.88	   .	   . -    .
+Ethnic group: Black, Outcome: ae
+0	0	         .	  .	1.00 (ref)		1.00 (ref)		1.00 (ref)		1.00 (ref)
+No diabetes	7532	   3187083	2.36	1.00	   . -    .	1.00	   . -    .	1.00	   . -    .	   .	   . -    .
+T1DM, controlled	28	      4171	6.71	2.82	1.95 - 4.09	2.70	1.86 - 3.92	2.70	1.86 - 3.92	   .	   . -    .
+T1DM, uncontrolled	72	      9718	7.41	3.12	2.47 - 3.93	3.08	2.44 - 3.88	3.09	2.45 - 3.89	   .	   . -    .
+Ethnic group: Mixed, Outcome: ae
+0	0	         .	  .	1.00 (ref)		1.00 (ref)		1.00 (ref)		1.00 (ref)
+No diabetes	4170	   1697078	2.46	1.00	   . -    .	1.00	   . -    .	1.00	   . -    .	   .	   . -    .
+T1DM, controlled	8	      1686	4.74	1.93	0.96 - 3.85	1.89	0.94 - 3.77	1.97	0.98 - 3.93	   .	   . -    .
+T1DM, uncontrolled	20	      4929	4.06	1.65	1.06 - 2.56	1.60	1.03 - 2.48	1.53	0.97 - 2.40	   .	   . -    .
+Ethnic group: Other, Outcome: ae
+0	0	         .	  .	1.00 (ref)		1.00 (ref)		1.00 (ref)		1.00 (ref)
+No diabetes	5106	   3243436	1.57	1.00	   . -    .	1.00	   . -    .	1.00	   . -    .	   .	   . -    .
+T1DM, controlled	6	      1911	3.14	1.99	0.89 - 4.44	1.76	0.79 - 3.93	1.76	0.79 - 3.92	   .	   . -    .
+T1DM, uncontrolled	24	      4823	4.98	3.15	2.11 - 4.70	2.97	1.99 - 4.43	2.79	1.85 - 4.20	   .	   . -    .
+Ethnic group: White, Outcome: icu
+0	0	         .	  .	1.00 (ref)		1.00 (ref)		1.00 (ref)		1.00 (ref)
+No diabetes	725	 133197760	0.01	1.00	   . -    .	1.00	   . -    .	1.00	   . -    .	   .	   . -    .
+T1DM, controlled	.	    211484	  .	3.48	1.30 - 9.29	3.00	1.12 - 8.02	3.02	1.13 - 8.06	   .	   . -    .
+T1DM, uncontrolled	12	    588761	0.02	3.75	2.12 - 6.63	3.56	2.01 - 6.30	3.54	2.00 - 6.26	   .	   . -    .
+Ethnic group: South Asian, Outcome: icu
+0	0	         .	  .	1.00 (ref)		1.00 (ref)		1.00 (ref)		1.00 (ref)
+No diabetes	126	  11267240	0.01	1.00	   . -    .	1.00	   . -    .	1.00	   . -    .	   .	   . -    .
+T1DM, controlled	0	      9388	0.00	0.00	   . -    .	0.00	   . -    .	0.00	0.00 -    .	   .	   . -    .
+T1DM, uncontrolled	.	     23559	  .	3.80	0.53 - 27.18	3.18	0.44 - 22.78	3.16	0.44 - 22.64	   .	   . -    .
+Ethnic group: Black, Outcome: icu
+0	0	         .	  .	1.00 (ref)		1.00 (ref)		1.00 (ref)		1.00 (ref)
+No diabetes	57	   3952686	0.01	1.00	   . -    .	1.00	   . -    .	1.00	   . -    .	   .	   . -    .
+T1DM, controlled	0	      5317	0.00	0.00	   . -    .	0.00	   . -    .	0.00	0.00 -    .	   .	   . -    .
+T1DM, uncontrolled	.	     12432	  .	5.58	0.77 - 40.28	4.51	0.62 - 32.66	4.44	0.61 - 32.14	   .	   . -    .
+Ethnic group: Mixed, Outcome: icu
+0	0	         .	  .	1.00 (ref)		1.00 (ref)		1.00 (ref)		1.00 (ref)
+No diabetes	19	   2107231	0.01	1.00	   . -    .	1.00	   . -    .	1.00	   . -    .	   .	   . -    .
+T1DM, controlled	0	      2122	0.00	0.00	0.00 -    .	0.00	   . -    .	0.00	   . -    .	   .	   . -    .
+T1DM, uncontrolled	0	      6206	0.00	0.00	0.00 -    .	0.00	   . -    .	0.00	   . -    .	   .	   . -    .
+Ethnic group: Other, Outcome: icu
+0	0	         .	  .	1.00 (ref)		1.00 (ref)		1.00 (ref)		1.00 (ref)
+No diabetes	31	   4002652	0.01	1.00	   . -    .	1.00	   . -    .	1.00	   . -    .	   .	   . -    .
+T1DM, controlled	0	      2377	0.00	0.00	   . -    .	0.00	   . -    .	0.00	   . -    .	   .	   . -    .
+T1DM, uncontrolled	0	      6110	0.00	0.00	   . -    .	0.00	   . -    .	0.00	   . -    .	   .	   . -    .
+Ethnic group: White, Outcome: cpnsdeath
+0	0	         .	  .	1.00 (ref)		1.00 (ref)		1.00 (ref)		1.00 (ref)
+No diabetes	3705	 244863982	0.02	1.00	   . -    .	1.00	   . -    .	1.00	   . -    .	   .	   . -    .
+T1DM, controlled	21	    388099	0.05	3.58	2.33 - 5.49	3.62	2.36 - 5.56	3.58	2.33 - 5.50	   .	   . -    .
+T1DM, uncontrolled	60	   1080698	0.06	3.67	2.84 - 4.74	4.89	3.79 - 6.31	4.82	3.73 - 6.22	   .	   . -    .
+Ethnic group: South Asian, Outcome: cpnsdeath
+0	0	         .	  .	1.00 (ref)		1.00 (ref)		1.00 (ref)		1.00 (ref)
+No diabetes	196	  20731262	0.01	1.00	   . -    .	1.00	   . -    .	1.00	   . -    .	   .	   . -    .
+T1DM, controlled	.	     17207	  .	12.28	3.05 - 49.46	3.76	0.93 - 15.16	3.64	0.90 - 14.71	   .	   . -    .
+T1DM, uncontrolled	.	     43277	  .	4.89	1.21 - 19.68	2.37	0.59 - 9.53	2.32	0.58 - 9.37	   .	   . -    .
+Ethnic group: Black, Outcome: cpnsdeath
+0	0	         .	  .	1.00 (ref)		1.00 (ref)		1.00 (ref)		1.00 (ref)
+No diabetes	75	   7272422	0.01	1.00	   . -    .	1.00	   . -    .	1.00	   . -    .	   .	   . -    .
+T1DM, controlled	.	      9743	  .	9.94	1.38 - 71.51	3.05	0.42 - 22.06	2.92	0.40 - 21.08	   .	   . -    .
+T1DM, uncontrolled	.	     22787	  .	17.01	6.22 - 46.50	8.39	3.05 - 23.07	8.32	3.03 - 22.87	   .	   . -    .
+Ethnic group: Mixed, Outcome: cpnsdeath
+0	0	         .	  .	1.00 (ref)		1.00 (ref)		1.00 (ref)		1.00 (ref)
+No diabetes	23	   3877446	0.01	1.00	   . -    .	1.00	   . -    .	1.00	   . -    .	   .	   . -    .
+T1DM, controlled	0	      3905	0.00	0.00	   . -    .	0.00	   . -    .	0.00	0.00 -    .	   .	   . -    .
+T1DM, uncontrolled	.	     11397	  .	29.59	6.98 - 125.50	14.04	3.22 - 61.28	13.87	3.16 - 60.83	   .	   . -    .
+Ethnic group: Other, Outcome: cpnsdeath
+0	0	         .	  .	1.00 (ref)		1.00 (ref)		1.00 (ref)		1.00 (ref)
+No diabetes	34	   7365403	0.00	1.00	   . -    .	1.00	   . -    .	1.00	   . -    .	   .	   . -    .
+T1DM, controlled	0	      4374	0.00	0.00	   . -    .	0.00	   . -    .	0.00	   . -    .	   .	   . -    .
+T1DM, uncontrolled	.	     11213	  .	19.33	2.65 - 141.19	12.01	1.63 - 88.64	11.71	1.58 - 86.59	   .	   . -    .
+Ethnic group: White, Outcome: onsdeath
+0	0	         .	  .	1.00 (ref)		1.00 (ref)		1.00 (ref)		1.00 (ref)
+No diabetes	42644	 230737865	0.18	1.00	   . -    .	1.00	   . -    .	1.00	   . -    .	   .	   . -    .
+T1DM, controlled	175	    365777	0.48	2.59	2.23 - 3.00	2.87	2.47 - 3.33	2.86	2.46 - 3.31	   .	   . -    .
+T1DM, uncontrolled	453	   1018536	0.44	2.41	2.19 - 2.64	3.31	3.02 - 3.64	3.26	2.97 - 3.57	   .	   . -    .
+Ethnic group: South Asian, Outcome: onsdeath
+0	0	         .	  .	1.00 (ref)		1.00 (ref)		1.00 (ref)		1.00 (ref)
+No diabetes	878	  19533525	0.04	1.00	   . -    .	1.00	   . -    .	1.00	   . -    .	   .	   . -    .
+T1DM, controlled	12	     16220	0.74	16.45	9.31 - 29.08	4.96	2.80 - 8.78	4.86	2.75 - 8.61	   .	   . -    .
+T1DM, uncontrolled	15	     40785	0.37	8.18	4.91 - 13.63	3.98	2.39 - 6.63	3.92	2.35 - 6.53	   .	   . -    .
+Ethnic group: Black, Outcome: onsdeath
+0	0	         .	  .	1.00 (ref)		1.00 (ref)		1.00 (ref)		1.00 (ref)
+No diabetes	383	   6852303	0.06	1.00	   . -    .	1.00	   . -    .	1.00	   . -    .	   .	   . -    .
+T1DM, controlled	7	      9186	0.76	13.63	6.45 - 28.77	3.98	1.88 - 8.43	3.37	1.50 - 7.57	   .	   . -    .
+T1DM, uncontrolled	13	     21477	0.61	10.82	6.23 - 18.81	5.18	2.97 - 9.03	5.24	3.01 - 9.14	   .	   . -    .
+Ethnic group: Mixed, Outcome: onsdeath
+0	0	         .	  .	1.00 (ref)		1.00 (ref)		1.00 (ref)		1.00 (ref)
+No diabetes	120	   3653411	0.03	1.00	   . -    .	1.00	   . -    .	1.00	   . -    .	   .	   . -    .
+T1DM, controlled	0	      3679	0.00	0.00	   . -    .	0.00	0.00 -    .	0.00	0.00 -    .	   .	   . -    .
+T1DM, uncontrolled	.	     10740	  .	8.50	2.70 - 26.74	4.62	1.46 - 14.66	4.48	1.41 - 14.23	   .	   . -    .
+Ethnic group: Other, Outcome: onsdeath
+0	0	         .	  .	1.00 (ref)		1.00 (ref)		1.00 (ref)		1.00 (ref)
+No diabetes	210	   6939787	0.03	1.00	   . -    .	1.00	   . -    .	1.00	   . -    .	   .	   . -    .
+T1DM, controlled	0	      4122	0.00	0.00	   . -    .	0.00	   . -    .	0.00	   . -    .	   .	   . -    .
+T1DM, uncontrolled	.	     10567	  .	15.63	6.44 - 37.94	9.55	3.91 - 23.35	9.50	3.88 - 23.26	   .	   . -    .
+Ethnic group: White, Outcome: onscoviddeath
+0	0	         .	  .	1.00 (ref)		1.00 (ref)		1.00 (ref)		1.00 (ref)
+No diabetes	6723	 229325166	0.03	1.00	   . -    .	1.00	   . -    .	1.00	   . -    .	   .	   . -    .
+T1DM, controlled	25	    363545	0.07	2.35	1.58 - 3.47	2.55	1.72 - 3.78	2.54	1.71 - 3.76	   .	   . -    .
+T1DM, uncontrolled	80	   1012316	0.08	2.70	2.16 - 3.36	3.82	3.06 - 4.76	3.78	3.03 - 4.71	   .	   . -    .
+Ethnic group: South Asian, Outcome: onscoviddeath
+0	0	         .	  .	1.00 (ref)		1.00 (ref)		1.00 (ref)		1.00 (ref)
+No diabetes	254	  19413746	0.01	1.00	   . -    .	1.00	   . -    .	1.00	   . -    .	   .	   . -    .
+T1DM, controlled	.	     16121	  .	9.48	2.36 - 38.10	2.90	0.72 - 11.67	2.82	0.70 - 11.34	   .	   . -    .
+T1DM, uncontrolled	.	     40536	  .	5.66	1.81 - 17.65	2.76	0.88 - 8.63	2.71	0.87 - 8.45	   .	   . -    .
+Ethnic group: Black, Outcome: onscoviddeath
+0	0	         .	  .	1.00 (ref)		1.00 (ref)		1.00 (ref)		1.00 (ref)
+No diabetes	105	   6810289	0.02	1.00	   . -    .	1.00	   . -    .	1.00	   . -    .	   .	   . -    .
+T1DM, controlled	.	      9130	  .	7.10	0.99 - 50.89	2.14	0.30 - 15.41	2.06	0.29 - 14.79	   .	   . -    .
+T1DM, uncontrolled	6	     21346	0.28	18.22	8.01 - 41.49	9.03	3.94 - 20.66	9.07	3.96 - 20.74	   .	   . -    .
+Ethnic group: Mixed, Outcome: onscoviddeath
+0	0	         .	  .	1.00 (ref)		1.00 (ref)		1.00 (ref)		1.00 (ref)
+No diabetes	28	   3631005	0.01	1.00	   . -    .	1.00	   . -    .	1.00	   . -    .	   .	   . -    .
+T1DM, controlled	0	      3657	0.00	0.00	   . -    .	0.00	0.00 -    .	0.00	   . -    .	   .	   . -    .
+T1DM, uncontrolled	.	     10674	  .	24.31	5.79 - 102.04	12.24	2.86 - 52.41	11.44	2.66 - 49.23	   .	   . -    .
+Ethnic group: Other, Outcome: onscoviddeath
+0	0	         .	  .	1.00 (ref)		1.00 (ref)		1.00 (ref)		1.00 (ref)
+No diabetes	53	   6897224	0.01	1.00	   . -    .	1.00	   . -    .	1.00	   . -    .	   .	   . -    .
+T1DM, controlled	0	      4096	0.00	0.00	   . -    .	0.00	   . -    .	0.00	   . -    .	   .	   . -    .
+T1DM, uncontrolled	.	     10502	  .	12.40	1.71 - 89.64	7.86	1.08 - 57.41	7.81	1.07 - 57.23	   .	   . - 
