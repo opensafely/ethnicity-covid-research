@@ -40,8 +40,8 @@ global outcomes "suspected confirmed  tested positivetest ae icu cpnsdeath  onsd
 
 global outcomes2 "ae icu cpnsdeath  onsdeath onscoviddeath onsconfirmeddeath onssuspecteddeath ons_noncoviddeath severe "
 
-* all variables included in fully adjusted models
-global varlist "imd male agegroup hh_total_cat carehome smoke_nomiss htdiag_or_highbp asthma	chronic_respiratory_disease chronic_cardiac_disease	diabcat cancer chronic_liver_disease stroke	dementia other_neuro ckd esrf other_immuno	ra_sle_psoriasis"
+* all binary variables included in fully adjusted models - doesn't include age spline, bmi, go consult count
+global varlist  "male imd hh_total_cat carehome smoke_nomiss htdiag_or_highbp asthma chronic_respiratory_disease chronic_cardiac_disease	diabcat cancer chronic_liver_disease stroke	dementia other_neuro egfr60 esrf other_immuno	ra_sle_psoriasis"
 
 
 /**********************
@@ -50,14 +50,8 @@ Data cleaning
 
 *Create analysis dataset
 do "$Dodir/01_eth_cr_analysis_dataset.do"
-
 *Checks 
 do "$Dodir/02_eth_an_data_checks.do"
-
-*  Descriptives
-do "$Dodir/03_eth_an_descriptive_tables.do"
-*do "$Dodir/04_eth_an_descriptive_plots.do"  - works locally and on server  
-
 
 /**********************
 ETHNICITY IN 5 CATEGORIES
@@ -99,6 +93,10 @@ do "$Dodir/13a_eth_an_household_eth16"
 *Table 9: Diabetes
 do "$Dodir/14a_eth_an_diabetes_eth16"
 
+/**********************
+PLOTS
+**********************/
+do "$Dodir/04_eth_an_descriptive_plots.do" 
 
 /**********************
 DON'T RUN ON SERVER

@@ -116,6 +116,33 @@ foreach var of varlist  *date {
 	summ `var', format
 }
 
+**********************************
+*  Distribution in whole cohort  *
+**********************************
+
+* Comorbidities
+safetab bpcat
+safetab bpcat, m
+safetab htdiag_or_highbp
+safetab chronic_respiratory_disease
+safetab asthma
+safetab chronic_cardiac_disease
+safetab cancer
+safetab chronic_liver_disease
+safetab diabcat
+safetab perm_immunodef
+safetab temp_immunodef
+safetab other_neuro
+safetab dementia
+safetab stroke
+safetab esrf
+safetab hypertension
+safetab reduced_kidney_function_cat
+safetab ra_sle_psoriasis
+safetab stp
+safetab region
+safetab rural_urban
+
 
 /* LOGICAL RELATIONSHIPS======================================================*/ 
 
@@ -169,7 +196,6 @@ foreach i of global outcomes {
 		safetab `i' `var', row 
 } //end varlist
 } //end outcomes
-
 
 
 * Close log file 

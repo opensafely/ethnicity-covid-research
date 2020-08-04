@@ -220,15 +220,17 @@ file write tablecontent _n
 tabulatevariable, variable(male) min(0) max(1) 
 file write tablecontent _n 
 
+qui summarizevariable, variable(gp_consult_count) 
+file write tablecontent _n 
+
 tabulatevariable, variable(imd) min(1) max(5) 
 file write tablecontent _n 
 
-tabulatevariable, variable(hh_total_cat) min(0) max(3) 
+tabulatevariable, variable(hh_total_cat) min(0) max(2) 
 file write tablecontent _n 
 
 tabulatevariable, variable(carehome) min(0) max(1) 
 file write tablecontent _n 
-
 
 qui summarizevariable, variable(bmi)
 file write tablecontent _n
@@ -236,7 +238,7 @@ file write tablecontent _n
 tabulatevariable, variable(obese4cat_sa) min(1) max(4) 
 file write tablecontent _n 
 
-tabulatevariable, variable(smoke) min(1) max(3) missing 
+tabulatevariable, variable(smoke_nomiss) min(1) max(3)  
 file write tablecontent _n 
 
 tabulatevariable, variable(dm_type) min(0) max(3)  
@@ -249,7 +251,6 @@ tabulatevariable, variable(diabcat) min(1) max(6)
 file write tablecontent _n 
 
 file write tablecontent _n _n
-
 
 ** COMORBIDITIES (categorical and continous)
 
@@ -266,6 +267,7 @@ foreach comorb of varlist 		///
 	htdiag_or_highbp			///
 	chronic_cardiac_disease		///
 	stroke						///
+	egfr60							///
 	esrf						///
 	cancer						///
 	ra_sle_psoriasis			///

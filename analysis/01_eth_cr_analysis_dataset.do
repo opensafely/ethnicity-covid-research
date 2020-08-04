@@ -547,23 +547,18 @@ replace egfr=egfr*1.018 if male==0
 label var egfr "egfr calculated using CKD-EPI formula with no eth"
 
 * Categorise into ckd stages
-egen egfr_cat = cut(egfr), at(0, 15, 30, 45, 60, 5000)
-recode egfr_cat 0=5 15=4 30=3 45=2 60=0, generate(ckd)
-* 0 = "No CKD" 	2 "stage 3a" 3 "stage 3b" 4 "stage 4" 5 "stage 5"
-label define ckd 0 "No CKD" 1 "CKD"
-label values ckd ckd
-*label var ckd "CKD stage calc without eth"
+egen egfr_cat = cut(egfr), at(0, 30, 60, 5000)
 
-* Convert into CKD group
-*recode ckd 2/5=1, gen(chronic_kidney_disease)
-*replace chronic_kidney_disease = 0 if creatinine==. 
-	
-recode ckd 0=1 2/3=2 4/5=3, gen(reduced_kidney_function_cat)
-replace reduced_kidney_function_cat = 1 if creatinine==. 
-label define reduced_kidney_function_catlab ///
-	1 "None" 2 "Stage 3a/3b egfr 30-60	" 3 "Stage 4/5 egfr<30"
-label values reduced_kidney_function_cat reduced_kidney_function_catlab 
-lab var  reduced "Reduced kidney function"
+label define egfr_cat 5000 "None" 60 "Stage 3 egfr 30-6" 30 "Stage 4/5 egfr<30"
+label values egfr_cat egfr_cat 
+lab var  egfr_cat "CKD category"
+safetab egfr_cat
+
+gen egfr60=0
+replace egfr60=1 if egfr<60
+lab define egfr60 0"egfr >=60" 1"eGFR <60"
+label values egfr60 egfr60
+tab egfr60
 
 /* Hb1AC */
 
@@ -740,6 +735,12 @@ foreach i of global outcomes {
 * Format date variables
 format  stime* %td 
 
+*distribution of outcome dates
+foreach i of global outcomes {
+	histogram `i'_date, discrete width(15) frequency ytitle(`i') xtitle(Date) scheme(meta) 
+graph export "$Tabfigdir/outcome_`i'_freq.svg", as(svg) replace
+}
+
 /* LABEL VARIABLES============================================================*/
 *  Label variables you are intending to keep, drop the rest 
 
@@ -783,7 +784,6 @@ lab var gp_consult_count			"Number of GP consultations in the 12 months prior to
 * Comorbidities of interest 
 label var asthma						"Asthma category"
 lab var asthmacat						"Asthma detailed categories"
-label var egfr_cat						"Calculated eGFR"
 label var hypertension				    "Diagnosed hypertension"
 label var chronic_respiratory_disease 	"Chronic Respiratory Diseases"
 label var chronic_cardiac_disease 		"Chronic Cardiac Diseases"
@@ -797,6 +797,8 @@ label var stroke		 			    "Stroke"
 lab var dementia						"Dementia"							
 label var ra_sle_psoriasis				"Autoimmune disease"
 lab var egfr							"eGFR"
+lab var egfr_cat						"CKD category defined by eGFR"
+lab var egfr60							"CKD defined by egfr<60"
 lab var perm_immunodef  				"Permanent immunosuppression"
 lab var temp_immunodef  				"Temporary immunosuppression"
 lab var  bphigh 						"non-missing indicator of known high blood pressure"
@@ -822,6 +824,8 @@ lab var hba1c_pct							"HbA1c %"
 lab var hba1ccat							"HbA1c category"
 lab var hba1c75								"HbA1c >= 7.5%"
 lab var diabcat								"Diabetes and HbA1c combined" 
+
+
 *medications
 lab var statin								"Statin in last 6 months"
 lab var insulin								"Insulin in last 6 months"
