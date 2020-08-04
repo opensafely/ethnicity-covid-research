@@ -352,11 +352,11 @@ study = StudyDefinition(
 
     ### GP CONSULTATION RATE IN 12 MONTH BEFORE FEB 1 2020
     gp_consult_count=patients.with_gp_consultations(
-        between=["2019-02-01", "2020-01-31"],
+        between=["2019-02-01", "2020-02-01"],
         returning="number_of_matches_in_period",
         return_expectations={
             "int": {"distribution": "normal", "mean": 4, "stddev": 2},
-            "date": {"earliest": "2019-03-01", "latest": "2020-02-29"},
+            "date": {"earliest": "2019-03-01", "latest": "2020-02-01"},
             "incidence": 0.7,
         },
     ),
@@ -366,14 +366,14 @@ study = StudyDefinition(
 
 
 
-    # CONTINUOUS MEASURED COVARIATES
+    # CONTINUOUS MEASURED COVARIATES IN 12 MONTHS PRIOR TO BASELINE
     bmi=patients.most_recent_bmi(
         on_or_after="2010-02-01",
         minimum_age_at_measurement=16,
         include_measurement_date=True,
         include_month=True,
         return_expectations={
-            "date": {},
+            "date": {"earliest": "2019-03-01", "latest": "2020-02-01"},
             "float": {"distribution": "normal", "mean": 35, "stddev": 10},
             "incidence": 0.95,
         },
@@ -388,7 +388,7 @@ study = StudyDefinition(
         include_month=True,
         return_expectations={
             "float": {"distribution": "normal", "mean": 80, "stddev": 10},
-            "date": {"latest": "2020-02-29"},
+            "date": {"earliest": "2019-03-01", "latest": "2020-02-01"},
             "incidence": 0.95,
         },
     ),
@@ -401,7 +401,7 @@ study = StudyDefinition(
         include_month=True,
         return_expectations={
             "float": {"distribution": "normal", "mean": 120, "stddev": 10},
-            "date": {"latest": "2020-02-29"},
+            "date": {"earliest": "2019-03-01", "latest": "2020-02-01"},
             "incidence": 0.95,
         },
     ),
@@ -415,7 +415,7 @@ study = StudyDefinition(
         include_date_of_match=True,
         include_month=True,
         return_expectations={
-            "date": {"latest": "2020-02-29"},
+            "date": {"earliest": "2019-03-01", "latest": "2020-02-01"},
             "float": {"distribution": "normal", "mean": 40.0, "stddev": 20},
             "incidence": 0.95,
         },
@@ -429,7 +429,7 @@ study = StudyDefinition(
         include_date_of_match=True,
         include_month=True,
         return_expectations={
-            "date": {"latest": "2020-02-29"},
+            "date": {"earliest": "2019-03-01", "latest": "2020-02-01"},
             "float": {"distribution": "normal", "mean": 5, "stddev": 2},
             "incidence": 0.95,
         },
@@ -445,12 +445,12 @@ study = StudyDefinition(
         include_month=True,
         return_expectations={
             "float": {"distribution": "normal", "mean": 60.0, "stddev": 15},
-            "date": {"earliest": "2019-02-28", "latest": "2020-02-29"},
+            "date": {"earliest": "2019-03-01", "latest": "2020-02-01"},
             "incidence": 0.95,
         },
     ),
 
-    # COVARIATES
+    # COVARIATES EVER
     smoking_status=patients.categorised_as(
         {
             "S": "most_recent_smoking_code = 'S'",
@@ -773,10 +773,10 @@ study = StudyDefinition(
     ),
 
 
-     # MEDICATION COVARIATES
+     # MEDICATION COVARIATES IN THE LAST 12 MONTHS
     ace_inhibitors=patients.with_these_medications(
         ace_codes,
-        between=["2019-08-01", "2020-02-01"],
+        between=["2019-02-01", "2020-02-01"],
         returning="number_of_matches_in_period",
         return_expectations={
             "int": {"distribution": "normal", "mean": 3, "stddev": 2},
@@ -786,7 +786,7 @@ study = StudyDefinition(
 
     alpha_blockers=patients.with_these_medications(
         alpha_blocker_codes,
-        between=["2019-08-01", "2020-02-01"],
+        between=["2019-02-01", "2020-02-01"],
         returning="number_of_matches_in_period",
         return_expectations={
             "int": {"distribution": "normal", "mean": 3, "stddev": 2},
@@ -796,7 +796,7 @@ study = StudyDefinition(
 
     arbs=patients.with_these_medications(
         arb_codes,
-        between=["2019-08-01", "2020-02-01"],
+        between=["2019-02-01", "2020-02-01"],
         returning="number_of_matches_in_period",
         return_expectations={
             "int": {"distribution": "normal", "mean": 3, "stddev": 2},
@@ -806,7 +806,7 @@ study = StudyDefinition(
 
     betablockers=patients.with_these_medications(
         betablocker_codes,
-        between=["2019-08-01", "2020-02-01"],
+        between=["2019-02-01", "2020-02-01"],
         returning="number_of_matches_in_period",
         return_expectations={
             "int": {"distribution": "normal", "mean": 3, "stddev": 2},
@@ -816,7 +816,7 @@ study = StudyDefinition(
 
     calcium_channel_blockers=patients.with_these_medications(
         calcium_channel_blockers_codes,
-        between=["2019-08-01", "2020-02-01"],
+        between=["2019-02-01", "2020-02-01"],
         returning="number_of_matches_in_period",
         return_expectations={
             "int": {"distribution": "normal", "mean": 3, "stddev": 2},
@@ -826,7 +826,7 @@ study = StudyDefinition(
 
     combination_bp_meds=patients.with_these_medications(
         combination_bp_med_codes,
-        between=["2019-08-01", "2020-02-01"],
+        between=["2019-02-01", "2020-02-01"],
         returning="number_of_matches_in_period",
         return_expectations={
             "int": {"distribution": "normal", "mean": 3, "stddev": 2},
@@ -836,7 +836,7 @@ study = StudyDefinition(
 
     spironolactone=patients.with_these_medications(
         spironolactone_codes,
-        between=["2019-08-01", "2020-02-01"],
+        between=["2019-02-01", "2020-02-01"],
         returning="number_of_matches_in_period",
         return_expectations={
             "int": {"distribution": "normal", "mean": 3, "stddev": 2},
@@ -846,7 +846,7 @@ study = StudyDefinition(
 
     thiazide_diuretics=patients.with_these_medications(
         thiazide_type_diuretic_codes,
-        between=["2019-08-01", "2020-02-01"],
+        between=["2019-02-01", "2020-02-01"],
         returning="number_of_matches_in_period",
         return_expectations={
             "int": {"distribution": "normal", "mean": 3, "stddev": 2},
@@ -857,7 +857,7 @@ study = StudyDefinition(
     ### INSULIN USE
     insulin=patients.with_these_medications(
         insulin_med_codes,
-        between=["2019-08-01", "2020-02-01"],
+        between=["2019-02-01", "2020-02-01"],
         return_last_date_in_period=True,
         include_month=True,
         return_expectations={
@@ -867,7 +867,7 @@ study = StudyDefinition(
     ### STATIN USE
     statin=patients.with_these_medications(
         statin_med_codes,
-        between=["2019-11-01", "2020-02-29"],
+        between=["2019-02-01", "2020-02-01"],
         return_last_date_in_period=True,
         include_month=True,
         return_expectations={
