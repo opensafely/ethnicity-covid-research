@@ -188,21 +188,27 @@ label values agegroup agegroup
 
 
 *Total number people in household (to check hh size)
+*maximum of 10 people in a household
 bysort hh_id: gen hh_total=_N
 
-recode hh_total 	///
+*gen categories of household size.
+recode hh_size 	///
 			1/2=0 ///
 			3/5 = 1 /// 
-		    6/9 = 2 /// 
-			10/max = 3, gen(hh_total_cat) 
+		    6/10 = 2 /// 
+			11/max = .u, gen(hh_total_cat) 
+			
+*remove people from hh_cat if they live in a care home
+replace hh_total_cat=. if care_home_type!="U"
 			
 label define hh_total_cat 	0 "1-2" ///
 						1 "3-5" ///
-						2 "6-9" ///
-						3 "10+" 					
+						2 "6-10" ///
+						.u "10+" 					
 label values hh_total_cat hh_total_cat
 
 safetab hh_total_cat,m
+safetab hh_total_cat care_home_type,m
 
 ****************************
 *  Create required cohort  *
@@ -687,6 +693,13 @@ foreach var of global outcomes {
 *Date of first severe outcome
 replace severe_date = min(ae_date, icu_date, cpnsdeath_date, onsdeath_date)
 
+*If outcome occurs on the first day of follow-up add one day
+foreach i of global outcomes {
+	di "`i'"
+	count if `i'_date==indexdate
+	replace `i'_date=`i'_date+1 if `i'_date==indexdate
+}
+*date of deregistration
 rename dereg_date dereg_dstr
 	gen dereg_date = date(dereg_dstr, "YMD")
 	drop dereg_dstr
