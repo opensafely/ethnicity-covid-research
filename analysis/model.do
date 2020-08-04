@@ -16,9 +16,9 @@ di "$Tabfigdir"
 
 cd  "`c(pwd)'/analysis"
 
-adopath + "$Dodir"
+adopath + "$Dodir/adofiles"
 sysdir
-sysdir set PLUS "$Dodir"
+sysdir set PLUS "$Dodir/adofiles"
 
 cd  "$Projectdir"
 
@@ -39,6 +39,10 @@ global tempdir    "$Tempdir"
 global outcomes "suspected confirmed  tested positivetest ae icu cpnsdeath  onsdeath onscoviddeath onsconfirmeddeath onssuspecteddeath ons_noncoviddeath severe"  
 
 global outcomes2 "ae icu cpnsdeath  onsdeath onscoviddeath onsconfirmeddeath onssuspecteddeath ons_noncoviddeath severe "
+
+* all variables included in fully adjusted models
+global varlist "imd male agegroup hh_total_cat carehome smoke_nomiss htdiag_or_highbp asthma	chronic_respiratory_disease chronic_cardiac_disease	diabcat cancer chronic_liver_disease stroke	dementia other_neuro ckd esrf other_immuno	ra_sle_psoriasis"
+
 
 /**********************
 Data cleaning
