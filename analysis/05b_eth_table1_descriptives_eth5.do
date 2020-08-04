@@ -247,8 +247,9 @@ file write tablecontent _n
 tabulatevariable, variable(dm_type_exeter_os) min(0) max(2)  
 file write tablecontent _n 
 
-tabulatevariable, variable(diabcat) min(1) max(6)  
+tabulatevariable, variable(diabcat) min(1) max(6) 
 file write tablecontent _n 
+
 
 file write tablecontent _n _n
 
@@ -282,7 +283,7 @@ foreach comorb of varlist 		///
 	local lab: variable label `comorb'
 	file write tablecontent ("`lab'") _n 
 								
-	*generaterow, variable(`comorb') condition("==0")
+	generaterow, variable(`comorb') condition("==0")
 	generaterow, variable(`comorb') condition("==1")
 	file write tablecontent _n
 }
@@ -299,7 +300,7 @@ foreach treat of varlist ///
 local lab: variable label `treat'
 file write tablecontent ("`lab'") _n 
 	
-*generaterow, variable(`treat') condition("==0")
+generaterow, variable(`treat') condition("==0")
 generaterow, variable(`treat') condition("==1")
 
 file write tablecontent _n

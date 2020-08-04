@@ -293,7 +293,7 @@ foreach comorb of varlist 		///
 	local lab: variable label `comorb'
 	file write tablecontent ("`lab'") _n 
 								
-	*generaterow, variable(`comorb') condition("==0")
+	generaterow, variable(`comorb') condition("==0")
 	generaterow, variable(`comorb') condition("==1")
 	file write tablecontent _n
 }
@@ -310,7 +310,7 @@ foreach treat of varlist ///
 local lab: variable label `treat'
 file write tablecontent ("`lab'") _n 
 	
-*generaterow, variable(`treat') condition("==0")
+generaterow, variable(`treat') condition("==0")
 generaterow, variable(`treat') condition("==1")
 
 file write tablecontent _n
