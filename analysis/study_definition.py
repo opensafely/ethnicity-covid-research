@@ -366,14 +366,14 @@ study = StudyDefinition(
 
 
 
-    # CONTINUOUS MEASURED COVARIATES IN 12 MONTHS PRIOR TO BASELINE
+    # CONTINUOUS MEASURED COVARIATES IN 12 MONTHS PRIOR TO BASELINE (10 years for BMI)
     bmi=patients.most_recent_bmi(
-        between=["2019-02-01", "2020-01-31"],
+        between=["2010-02-01", "2020-01-31"],
         minimum_age_at_measurement=16,
         include_measurement_date=True,
         include_month=True,
         return_expectations={
-            "date": {"earliest": "2019-03-01", "latest": "2020-01-31"},
+            "date": {"earliest": "2010-02-01", "latest": "2020-01-31"},
             "float": {"distribution": "normal", "mean": 35, "stddev": 10},
             "incidence": 0.95,
         },
@@ -388,7 +388,7 @@ study = StudyDefinition(
         include_month=True,
         return_expectations={
             "float": {"distribution": "normal", "mean": 80, "stddev": 10},
-            "date": {"earliest": "2019-03-01", "latest": "2020-01-31"},
+            "date": {"earliest": "2019-02-01", "latest": "2020-01-31"},
             "incidence": 0.95,
         },
     ),
@@ -401,7 +401,7 @@ study = StudyDefinition(
         include_month=True,
         return_expectations={
             "float": {"distribution": "normal", "mean": 120, "stddev": 10},
-            "date": {"earliest": "2019-03-01", "latest": "2020-01-31"},
+            "date": {"earliest": "2019-02-01", "latest": "2020-01-31"},
             "incidence": 0.95,
         },
     ),
@@ -415,7 +415,7 @@ study = StudyDefinition(
         include_date_of_match=True,
         include_month=True,
         return_expectations={
-            "date": {"earliest": "2019-03-01", "latest": "2020-01-31"},
+            "date": {"earliest": "2019-02-01", "latest": "2020-01-31"},
             "float": {"distribution": "normal", "mean": 40.0, "stddev": 20},
             "incidence": 0.95,
         },
@@ -429,7 +429,7 @@ study = StudyDefinition(
         include_date_of_match=True,
         include_month=True,
         return_expectations={
-            "date": {"earliest": "2019-03-01", "latest": "2020-01-31"},
+            "date": {"earliest": "2019-02-01", "latest": "2020-01-31"},
             "float": {"distribution": "normal", "mean": 5, "stddev": 2},
             "incidence": 0.95,
         },
@@ -445,7 +445,7 @@ study = StudyDefinition(
         include_month=True,
         return_expectations={
             "float": {"distribution": "normal", "mean": 60.0, "stddev": 15},
-            "date": {"earliest": "2019-03-01", "latest": "2020-01-31"},
+            "date": {"earliest": "2019-02-01", "latest": "2020-01-31"},
             "incidence": 0.95,
         },
     ),
@@ -861,7 +861,7 @@ study = StudyDefinition(
         return_last_date_in_period=True,
         include_month=True,
         return_expectations={
-            "date": {"earliest": "2019-11-01", "latest": "2020-01-31"}
+            "date": {"earliest": "2019-02-01", "latest": "2020-01-31"}
         },
     ),
     ### STATIN USE
@@ -871,7 +871,7 @@ study = StudyDefinition(
         return_last_date_in_period=True,
         include_month=True,
         return_expectations={
-            "date": {"earliest": "2019-11-01", "latest": "2020-02-29"}
+            "date": {"earliest": "2019-02-01", "latest": "2020-01-31"}
         },
     ),
 
