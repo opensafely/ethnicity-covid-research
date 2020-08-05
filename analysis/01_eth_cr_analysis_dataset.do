@@ -712,13 +712,36 @@ gen severe=1 if ae==1 | icu==1 | onscoviddeath==1
 
 /* CENSORING */
 /* SET FU DATES===============================================================*/ 
+
 * Censoring dates for each outcome (last date outcome data available)
-foreach i of global outcomes {
-qui summ `i'_date, format
-gen `i'_censor_date = r(max)
-format `i'_censor_date %d
-summ `i'_date `i'_censor_date, format
-}
+*https://github.com/opensafely/rapid-reports/blob/latest-dates/notebooks/latest-dates.ipynb
+
+gen suspected_censor_date = d("05/08/2020")
+gen confirmed_censor_date  = d("05/08/2020")
+gen tested_censor_date = d("27/07/2020")
+gen positivetest_censor_date = d("27/07/2020")
+gen ae_censor_date = d("27/07/2020")
+gen icu_censor_date = d("30/07/2020")
+gen cpnsdeath_censor_date  = d("27/07/2020")
+gen onsdeath_censor_date = d("24/07/2020")
+gen onscoviddeath_censor_date = d("24/07/2020")
+gen onsconfirmeddeath_censor_date = d("24/07/2020")
+gen onssuspecteddeath_censor_date = d("24/07/2020")
+gen ons_noncoviddeath_censor_date = d("24/07/2020")
+gen severe_censor_date  = d("24/07/2020")
+
+*******************************************************************************
+format *censor_date %d
+sum *censor_date, format
+*******************************
+*  Recode implausible values  *
+*******************************
+
+
+* BMI 
+* Set implausible BMIs to missing:
+replace bmi = . if !inrange(bmi, 15, 50)
+
 
 /**** Create survival times  ****/
 * For looping later, name must be stime_binary_outcome_name
