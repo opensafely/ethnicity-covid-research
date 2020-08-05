@@ -90,7 +90,15 @@ do "$Dodir/14b_eth_an_diabetes_eth5"
 do "$Dodir/14a_eth_an_diabetes_eth16"
 
 /**********************
-PLOTS
+MULTIPLE IMPUTATION
+**********************/
+*Table 2: multiple imputation
+do "$Dodir/08b_eth_an_multivariable_eth5_mi.do" 
+do "$Dodir/08a_eth_an_multivariable_eth16_mi.do" 
+
+
+/**********************
+PLOTS & RATES
 **********************/
 do "$Dodir/04_eth_an_descriptive_plots.do" 
 

@@ -171,7 +171,6 @@ tab dm_type dm_type_exeter_os, row col
 safetab diabcat
 
 * CKD
-safetab reduced_egfr_cat, m
 safetab egfr60, m
 
 /* EXPECTED RELATIONSHIPS WITH ETHNICITY =======================================*/ 
