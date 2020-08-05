@@ -20,6 +20,8 @@ OTHER OUTPUT: 			Log file: $logdir\02_an_data_checks
 capture log close
 log using $logdir/02_an_data_checks, replace t
 
+numlabel, add
+
 * Open Stata dataset
 use "$Tempdir/analysis_dataset.dta", clear
 
@@ -50,70 +52,98 @@ cap assert inlist(imd, 1, 2, 3, 4, 5)
 /* EXPECTED VALUES============================================================*/ 
 
 *HH
+summ hh_size
 datacheck inlist(hh_size, 1, 2, 3, 4, 5,6, 7, 8, 9, 10), nol
 
+safetab hh_total_cat, m
+datacheck inlist(hh_total_cat, 0, 1, 2), nol
+
+*Care home
+safetab carehome
+safetab carehome hh_total_cat, m
+
 * Age
+summ age
 datacheck age<., nol
-datacheck inlist(agegroup, 1, 2, 3, 4, 5, 6), nol
+datacheck inlist(agegroup, 1, 2, 3, 4, 5, 6, 7), nol
 datacheck inlist(age66, 0, 1), nol
 
 * Sex
+safetab male, m
 datacheck inlist(male, 0, 1), nol
 
 * BMI 
+summ bmi
+safetab obese4cat, m 
 datacheck inlist(obese4cat, 1, 2, 3, 4), nol
+
+safetab obese4cat_sa, m
 datacheck inlist(obese4cat_sa, 1, 2, 3, 4), nol
 
+safetab bmicat, m
 datacheck inlist(bmicat, 1, 2, 3, 4, 5, 6, .u), nol
+
+safetab bmicat_sa, m
 datacheck inlist(bmicat_sa, 1, 2, 3, 4, 5, 6, .u), nol
 
 * IMD
+summ imd
+safetab imd, m
 datacheck inlist(imd, 1, 2, 3, 4, 5), nol
 
 * Ethnicity
+safetab ethnicity
 datacheck inlist(ethnicity, 1, 2, 3, 4, 5), nol
-datacheck inlist(ethnicity_16, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16), nol
+
+safetab eth5,m
+datacheck inlist(eth5, 1, 2, 3, 4, 5, .), nol
+
+safetab ethnicity_16,m
+datacheck inlist(ethnicity_16, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, .), nol
+
+safetab eth16,m
+datacheck inlist(eth16, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, .), nol
 
 * Smoking
 datacheck inlist(smoke, 1, 2, 3, .u), nol
 datacheck inlist(smoke_nomiss, 1, 2, 3), nol 
 
 
-* Check date ranges for all comorbidities - keep in mind they'll all be 15th of the month!
+* Check date ranges for all variables - keep in mind they'll all be 15th of the month!
 
-foreach var of varlist  chronic_respiratory_disease 	///
-					chronic_cardiac_disease		///
-					cancer ///
-					perm_immunodef  ///
-					temp_immunodef  ///
-					chronic_liver_disease  		///
-					other_neuro 			///
-					stroke ///
-					dementia ///
-					hypertension	///
-					ra_sle_psoriasis				///
-					insulin ///
-					statin ///
-					asthma ///
-					combination_bp_meds ///
-					{
-						summ `var'_date, format
-
+foreach var of varlist  *date {
+	format `var' %d
+	summ `var', format
 }
 
-summ diabetes_date, format
+**********************************
+*  Distribution in whole cohort  *
+**********************************
 
+* Comorbidities
+safetab bpcat
+safetab bpcat, m
+safetab htdiag_or_highbp
+safetab chronic_respiratory_disease
+safetab asthma
+safetab chronic_cardiac_disease
+safetab cancer
+safetab chronic_liver_disease
+safetab diabcat
+safetab perm_immunodef
+safetab temp_immunodef
+safetab other_neuro
+safetab dementia
+safetab stroke
+safetab egfr_cat
+safetab egfr60
+safetab esrf
+safetab hypertension
+safetab ra_sle_psoriasis
+safetab stp
+safetab region
+safetab rural_urban
 
-foreach comorb in $varlist { 
-
-	local comorb: subinstr local comorb "i." ""
-	safetab `comorb', m
-	
-}
-
-foreach i of global outcomes {
-	 summ `i'_date, format
-}
 
 /* LOGICAL RELATIONSHIPS======================================================*/ 
 
@@ -137,114 +167,35 @@ safetab smoke smoke_nomiss, m
 * Diabetes
 safetab dm_type
 safetab dm_type_exeter_os
-safetab dm_type dm_type_exeter_os, row col
+tab dm_type dm_type_exeter_os, row col
+safetab diabcat
 
 * CKD
-safetab reduced egfr_cat, m
+safetab egfr60, m
 
+/* EXPECTED RELATIONSHIPS WITH ETHNICITY =======================================*/ 
 
-/* EXPECTED RELATIONSHIPS=====================================================*/ 
-
-/*  Relationships between demographic/lifestyle variables  */
-safetab agegroup bmicat, 	row 
-safetab agegroup smoke, 	row  
-safetab agegroup ethnicity, row 
-safetab agegroup ethnicity_16, row 
-safetab agegroup imd, 		row 
-
-safetab bmicat smoke, 		 row   
-safetab bmicat ethnicity, 	 row 
-safetab bmicat ethnicity_16, 	 row 
-safetab bmicat imd, 	 	 row 
-safetab bmicat hypertension, row 
-
-safetab smoke ethnicity, 	row 
-safetab smoke ethnicity_16, 	row 
-safetab smoke imd, 			row 
-safetab smoke hypertension, row 
-                      
-safetab ethnicity imd, 		row 
-safetab ethnicity_16 imd, 		row 
-
-
-
- * Relationships with ethnicity
-foreach var of varlist 	chronic_respiratory_disease ///
-						chronic_cardiac_disease  ///
-						cancer  ///
-						perm_immunodef  ///
-						temp_immunodef  ///
-						chronic_liver_disease  ///
-						other_neuro  ///
-						stroke			///
-						dementia ///
-						esrf  ///
-						hypertension  ///
-						asthma ///
-						ra_sle_psoriasis  ///
-						dm_type ///
-					{	
-					safetab ethnicity `var', row 
-}
-
-foreach var of varlist 	chronic_respiratory_disease ///
-						chronic_cardiac_disease  ///
-						cancer  ///
-						perm_immunodef  ///
-						temp_immunodef  ///
-						chronic_liver_disease  ///
-						other_neuro  ///
-						stroke			///
-						dementia ///
-						esrf  ///
-						hypertension  ///
-						asthma ///
-						ra_sle_psoriasis  ///
-						dm_type ///
-					{	
-					safetab eth16 `var', row 
+foreach var in $varlist {	
+	safetab `var'
+	safetab eth5 `var', row 
+	safetab eth16 `var', row
 }
 
 
-* Relationships with age
-
-foreach var of varlist 	chronic_respiratory_disease ///
-						chronic_cardiac_disease  ///
-						cancer  ///
-						perm_immunodef  ///
-						temp_immunodef  ///
-						chronic_liver_disease  ///
-						other_neuro  ///
-						stroke			///
-						dementia ///
-						esrf  ///
-						hypertension  ///
-						asthma ///
-						ra_sle_psoriasis  ///
-						dm_type ///
-					{
-						safetab agegroup `var', row 
- }
-
-
- * Relationships with sex
-foreach var of varlist 	chronic_respiratory_disease ///
-						chronic_cardiac_disease  ///
-						cancer  ///
-						perm_immunodef  ///
-						temp_immunodef  ///
-						chronic_liver_disease  ///
-						other_neuro  ///
-						stroke			///
-						dementia ///
-						esrf  ///
-						hypertension  ///
-						asthma ///
-						ra_sle_psoriasis  ///
-						dm_type ///
-					{
-						safetab male `var', row 
+/* SENSE CHECK OUTCOMES=======================================================*/
+foreach i of global outcomes {
+		safetab `i'
+		safetab eth5 `i', row
+		safetab eth16 `i', row
 }
+
+/* ENSURE ENOUGH OUTCOMES IN EACH CATEGORY INCLUDED IN FULLY ADJUSTED MODEL ====*/
+foreach i of global outcomes {
+	foreach var in $varlist 				{
+		local var: subinstr local var "i." ""	
+		safetab `i' `var', row 
+} //end varlist
+} //end outcomes
 
 
 * Close log file 

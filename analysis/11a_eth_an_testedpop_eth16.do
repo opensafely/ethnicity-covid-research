@@ -91,8 +91,6 @@ clogit positivetest i.eth16 i.male age1 age2 age3 	i.imd							///
 										i.other_neuro				///
 										i.ckd						///
 										i.esrf						///
-										i.perm_immunodef 			///
-										i.temp_immunodef 			///
 										i.other_immuno		 		///
 										i.ra_sle_psoriasis, strata(stp)				
 										
@@ -122,8 +120,6 @@ clogit positivetest i.eth16 i.male age1 age2 age3 i.imd hh_size					///
 										i.other_neuro				///
 										i.ckd						///
 										i.esrf						///
-										i.perm_immunodef 			///
-										i.temp_immunodef 			///
 										i.other_immuno		 		///
 										i.ra_sle_psoriasis, strata(stp)				
 										
@@ -233,17 +229,20 @@ gen num=[_n]
 sum num
 
 gen adjusted="Age-sex" if model=="model0"
-replace adjusted="Age-sex-IMD" if model=="model1"
+replace adjusted="+ IMD" if model=="model1"
 replace adjusted="+ co-morbidities" if model=="model2"
 replace adjusted="+ household size" if model=="model3"
 
+*save dataset for later
+outsheet using "$Tabfigdir/FP_postest_eth16.txt", replace
+
 *Create one graph 
 metan estimate min95 max95  if eth16!=1 ///
- , effect(Odds Ratio) null(1) lcols(eth16) dp(2) by(adjusted)  ///
+ , effect(Odds Ratio) null(1) lcols(adjusted) dp(2) by(eth16)  ///
 	random nowt nosubgroup nooverall nobox graphregion(color(white)) scheme(sj)  	///
 	title("Positive test amongst those tested", size(medsmall)) 	///
 	t2title("complete case analysis", size(small)) 	///
-	graphregion(margin(zero)) 
+	graphregion(margin(zero))  textsize(300)
 	graph export "$Tabfigdir\Forestplot_postest_eth16_tested.svg", replace  
 
 

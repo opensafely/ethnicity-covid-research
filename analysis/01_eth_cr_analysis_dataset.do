@@ -184,24 +184,32 @@ label values agegroup agegroup
 
 
 **************************** HOUSEHOLD VARS*******************************************
+*update with UPRN data
 
 
 *Total number people in household (to check hh size)
+*maximum of 10 people in a household
 bysort hh_id: gen hh_total=_N
 
-recode hh_total 	///
-			1/2=0 ///
-			3/5 = 1 /// 
-		    6/9 = 2 /// 
-			10/max = 3, gen(hh_total_cat) 
+sum hh_total hh_size
+*gen categories of household size.
+gen hh_total_cat=.
+replace hh_total_cat=1 if hh_size >=1 & hh_size<=2
+replace hh_total_cat=2 if hh_size >=3 & hh_size<=5
+replace hh_total_cat=2 if hh_size >=6 & hh_size<=10
+		
+*remove people from hh_cat if they live in a care home
+replace hh_total_cat=. if care_home_type!="U"
 			
-label define hh_total_cat 	0 "1-2" ///
-						1 "3-5" ///
-						2 "6-9" ///
-						3 "10+" 					
+label define hh_total_cat 1 "1-2" ///
+						2 "3-5" ///
+						3 "6-10" 
+											
 label values hh_total_cat hh_total_cat
 
-tab hh_total_cat,m
+safetab hh_total_cat,m
+safetab hh_total_cat care_home_type,m
+
 ****************************
 *  Create required cohort  *
 ****************************
@@ -412,15 +420,18 @@ order obese4cat, after(bmicat)
 gen bmicat_sa=bmicat
 replace bmicat_sa = 2 if bmi>=18.5 & bmi <23 & ethnicity  ==3
 replace bmicat_sa = 3 if bmi>=23 & bmi < 27.5 & ethnicity ==3
-replace bmicat_sa = 4 if bmi>=27.5 & bmi < 35 & ethnicity ==3
+replace bmicat_sa = 4 if bmi>=27.5 & bmi < 32.5 & ethnicity ==3
+replace bmicat_sa = 5 if bmi>=32.5 & bmi < 37.5 & ethnicity ==3
+replace bmicat_sa = 6 if bmi>=37.5 & bmi < . & ethnicity ==3
+
 safetab bmicat_sa
 
 label define bmicat_sa 1 "Underweight (<18.5)" 	///
 					2 "Normal (18.5-24.9 / 22.9)"		///
 					3 "Overweight (25-29.9 / 23-27.4)"	///
-					4 "Obese I (30-34.9 / 27.4-34.9)"		///
-					5 "Obese II (35-39.9)"		///
-					6 "Obese III (40+)"			///
+					4 "Obese I (30-34.9 / 27.4-32.4)"		///
+					5 "Obese II (35-39.9 / 32.5- 37.4)"		///
+					6 "Obese III (40+ / 37.5+)"			///
 					.u "Unknown (.u)"
 label values bmicat bmicat
 
@@ -428,9 +439,9 @@ label values bmicat bmicat
 recode bmicat_sa 1/3 .u = 1 4=2 5=3 6=4, gen(obese4cat_sa)
 
 label define obese4cat_sa 	1 "No record of obesity" 	///
-						2 "Obese I (30-34.9 / 27.5-34.9)"		///
-						3 "Obese II (35-39.9)"		///
-						4 "Obese III (40+)"		
+						2 "Obese I (30-34.9 / 27.5-32.5)"		///
+						3 "Obese II (35-39.9 / 32.5- 37.4)"		///
+						4 "Obese III (40+ / 37.5+)"		
 label values obese4cat_sa obese4cat_sa
 order obese4cat_sa, after(bmicat_sa)
 
@@ -536,23 +547,18 @@ replace egfr=egfr*1.018 if male==0
 label var egfr "egfr calculated using CKD-EPI formula with no eth"
 
 * Categorise into ckd stages
-egen egfr_cat = cut(egfr), at(0, 15, 30, 45, 60, 5000)
-recode egfr_cat 0=5 15=4 30=3 45=2 60=0, generate(ckd)
-* 0 = "No CKD" 	2 "stage 3a" 3 "stage 3b" 4 "stage 4" 5 "stage 5"
-label define ckd 0 "No CKD" 1 "CKD"
-label values ckd ckd
-*label var ckd "CKD stage calc without eth"
+egen egfr_cat = cut(egfr), at(0, 30, 60, 5000)
 
-* Convert into CKD group
-*recode ckd 2/5=1, gen(chronic_kidney_disease)
-*replace chronic_kidney_disease = 0 if creatinine==. 
-	
-recode ckd 0=1 2/3=2 4/5=3, gen(reduced_kidney_function_cat)
-replace reduced_kidney_function_cat = 1 if creatinine==. 
-label define reduced_kidney_function_catlab ///
-	1 "None" 2 "Stage 3a/3b egfr 30-60	" 3 "Stage 4/5 egfr<30"
-label values reduced_kidney_function_cat reduced_kidney_function_catlab 
-lab var  reduced "Reduced kidney function"
+label define egfr_cat 5000 "None" 60 "Stage 3 egfr 30-6" 30 "Stage 4/5 egfr<30"
+label values egfr_cat egfr_cat 
+lab var  egfr_cat "CKD category"
+safetab egfr_cat
+
+gen egfr60=0
+replace egfr60=1 if egfr<60
+lab define egfr60 0"egfr >=60" 1"eGFR <60"
+label values egfr60 egfr60
+tab egfr60
 
 /* Hb1AC */
 
@@ -634,8 +640,12 @@ label values asthmacat asthmacat
 gen asthma = (asthmacat==2|asthmacat==3)
 
 **care home
-encode care_home_type, gen(carehome)
+encode care_home_type, gen(carehometype)
 drop care_home_type
+
+gen carehome=0
+replace carehome=1 if carehometype<4
+safetab  carehometype carehome
 
 /* OUTCOME AND SURVIVAL TIME==================================================*/
 
@@ -652,6 +662,8 @@ ren died_date_ons				onsdeath_date
 
 * Date of Covid death in ONS
 gen onscoviddeath_date = onsdeath_date if died_ons_covid_flag_any == 1
+gen onsconfirmeddeath_date = onsdeath_date if died_ons_confirmedcovid_flag_any ==1
+gen onssuspecteddeath_date = onsdeath_date if died_ons_suspectedcovid_flag_any ==1
 
 * Date of non-COVID death in ONS 
 * If missing date of death resulting died_date will also be missing
@@ -674,8 +686,15 @@ foreach var of global outcomes {
 }
 
 *Date of first severe outcome
-replace severe_date = min(ae_date, icu_date, cpnsdeath_date, onsdeath_date)
+replace severe_date = min(ae_date, icu_date, onscoviddeath_date)
 
+*If outcome occurs on the first day of follow-up add one day
+foreach i of global outcomes {
+	di "`i'"
+	count if `i'_date==indexdate
+	replace `i'_date=`i'_date+1 if `i'_date==indexdate
+}
+*date of deregistration
 rename dereg_date dereg_dstr
 	gen dereg_date = date(dereg_dstr, "YMD")
 	drop dereg_dstr
@@ -688,15 +707,41 @@ foreach i of global outcomes {
 		safetab `i'
 }
 
+drop severe
+gen severe=1 if ae==1 | icu==1 | onscoviddeath==1
+
 /* CENSORING */
 /* SET FU DATES===============================================================*/ 
+
 * Censoring dates for each outcome (last date outcome data available)
-foreach i of global outcomes {
-qui summ `i'_date, format
-gen `i'_censor_date = r(max)
-format `i'_censor_date %d
-summ `i'_date `i'_censor_date, format
-}
+*https://github.com/opensafely/rapid-reports/blob/latest-dates/notebooks/latest-dates.ipynb
+
+gen suspected_censor_date = d("05/08/2020")
+gen confirmed_censor_date  = d("05/08/2020")
+gen tested_censor_date = d("27/07/2020")
+gen positivetest_censor_date = d("27/07/2020")
+gen ae_censor_date = d("27/07/2020")
+gen icu_censor_date = d("30/07/2020")
+gen cpnsdeath_censor_date  = d("27/07/2020")
+gen onsdeath_censor_date = d("24/07/2020")
+gen onscoviddeath_censor_date = d("24/07/2020")
+gen onsconfirmeddeath_censor_date = d("24/07/2020")
+gen onssuspecteddeath_censor_date = d("24/07/2020")
+gen ons_noncoviddeath_censor_date = d("24/07/2020")
+gen severe_censor_date  = d("24/07/2020")
+
+*******************************************************************************
+format *censor_date %d
+sum *censor_date, format
+*******************************
+*  Recode implausible values  *
+*******************************
+
+
+* BMI 
+* Set implausible BMIs to missing:
+replace bmi = . if !inrange(bmi, 15, 50)
+
 
 /**** Create survival times  ****/
 * For looping later, name must be stime_binary_outcome_name
@@ -707,7 +752,7 @@ foreach i of global outcomes {
 	gen stime_`i' = min(`i'_censor_date, onsdeath_date, `i'_date, dereg_date)
 }
 
-* If outcome was after censoring occurred, set to zero
+* If outcome occurs after censoring, set to zero
 foreach i of global outcomes {
 	replace `i'=0 if `i'_date>stime_`i'
 	tab `i'
@@ -715,6 +760,12 @@ foreach i of global outcomes {
 
 * Format date variables
 format  stime* %td 
+
+*distribution of outcome dates
+foreach i of global outcomes {
+	histogram `i'_date, discrete width(15) frequency ytitle(`i') xtitle(Date) scheme(meta) 
+graph export "$Tabfigdir/outcome_`i'_freq.svg", as(svg) replace
+}
 
 /* LABEL VARIABLES============================================================*/
 *  Label variables you are intending to keep, drop the rest 
@@ -751,7 +802,7 @@ label var age3 						"Age spline 3"
 lab var hh_total					"calculated No of ppl in household"
 lab var region						"Region of England"
 lab var rural_urban					"Rural-Urban Indicator"
-lab var carehome					"Care home type"
+lab var carehome					"Care home y/n"
 lab var hba1c_mmol_per_mol			"HbA1c mmo/mol"
 lab var hba1c_percentage			"HbA1c %"
 lab var gp_consult_count			"Number of GP consultations in the 12 months prior to baseline"
@@ -759,7 +810,6 @@ lab var gp_consult_count			"Number of GP consultations in the 12 months prior to
 * Comorbidities of interest 
 label var asthma						"Asthma category"
 lab var asthmacat						"Asthma detailed categories"
-label var egfr_cat						"Calculated eGFR"
 label var hypertension				    "Diagnosed hypertension"
 label var chronic_respiratory_disease 	"Chronic Respiratory Diseases"
 label var chronic_cardiac_disease 		"Chronic Cardiac Diseases"
@@ -773,6 +823,8 @@ label var stroke		 			    "Stroke"
 lab var dementia						"Dementia"							
 label var ra_sle_psoriasis				"Autoimmune disease"
 lab var egfr							"eGFR"
+lab var egfr_cat						"CKD category defined by eGFR"
+lab var egfr60							"CKD defined by egfr<60"
 lab var perm_immunodef  				"Permanent immunosuppression"
 lab var temp_immunodef  				"Temporary immunosuppression"
 lab var  bphigh 						"non-missing indicator of known high blood pressure"
@@ -798,43 +850,45 @@ lab var hba1c_pct							"HbA1c %"
 lab var hba1ccat							"HbA1c category"
 lab var hba1c75								"HbA1c >= 7.5%"
 lab var diabcat								"Diabetes and HbA1c combined" 
-*medications
-lab var statin								"Statin in last 6 months"
-lab var insulin								"Insulin in last 6 months"
-lab var ace_inhibitors 						"ACE in last 6 months"
-lab var alpha_blockers 						"Alpha blocker in last 6 months"
-lab var arbs 								"ARB in last 6 months"
-lab var betablockers 						"Beta blocker in last 6 months"
-lab var calcium_channel_blockers 			"CCB in last 6 months"
-lab var combination_bp_meds 				"BP med in last 6 months"
-lab var spironolactone 						"Spironolactone in last 6 months"
-lab var thiazide_diuretics					"TZD in last 6 months"
 
-lab var statin_date							"Statin in last 6 months"
-lab var insulin_date						"Insulin in last 6 months"
-lab var ace_inhibitors_date 				"ACE in last 6 months"
-lab var alpha_blockers_date 				"Alpha blocker in last 6 months"
-lab var arbs_date 							"ARB in last 6 months"
-lab var betablockers_date 					"Beta blocker in last 6 months"
-lab var calcium_channel_blockers_date 		"CCB in last 6 months"
-lab var combination_bp_meds_date 			"BP med in last 6 months"
-lab var spironolactone_date 				"Spironolactone in last 6 months"
-lab var thiazide_diuretics_date				"TZD in last 6 months"
+
+*medications
+lab var statin								"Statin in last 12 months"
+lab var insulin								"Insulin in last 12 months"
+lab var ace_inhibitors 						"ACE in last 12 months"
+lab var alpha_blockers 						"Alpha blocker in last 12 months"
+lab var arbs 								"ARB in last 12 months"
+lab var betablockers 						"Beta blocker in last 12 months"
+lab var calcium_channel_blockers 			"CCB in last 12 months"
+lab var combination_bp_meds 				"BP med in last 12 months"
+lab var spironolactone 						"Spironolactone in last 12 months"
+lab var thiazide_diuretics					"TZD in last 12 months"
+
+lab var statin_date							"Statin in last 12 months"
+lab var insulin_date						"Insulin in last 12 months"
+lab var ace_inhibitors_date 				"ACE in last 12 months"
+lab var alpha_blockers_date 				"Alpha blocker in last 12 months"
+lab var arbs_date 							"ARB in last 12 months"
+lab var betablockers_date 					"Beta blocker in last 12 months"
+lab var calcium_channel_blockers_date 		"CCB in last 12 months"
+lab var combination_bp_meds_date 			"BP med in last 12 months"
+lab var spironolactone_date 				"Spironolactone in last 12 months"
+lab var thiazide_diuretics_date				"TZD in last 12 months"
 
 * Outcomes and follow-up
-label var indexdate					"Date of study start (feb 1 2020)"
+label var indexdate					"Date of study start (Feb 1 2020)"
 foreach i of global outcomes {
 	label var `i'_censor_date		 "Date of admin censoring"
 }
 *Outcome dates
 foreach i of global outcomes {
-	label var `i'_date					"Failure date: outcome `i'"
+	label var `i'_date					"Failure date:  `i'"
 	d `i'_date
 }
 
 * Survival times
 foreach i of global outcomes {
-	lab var stime_`i' 					"Survival time (date);outcome `i'"
+	lab var stime_`i' 					"Survivatime (date): `i'"
 	d stime_`i'
 }
 

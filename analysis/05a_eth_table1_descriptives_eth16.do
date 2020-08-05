@@ -145,7 +145,7 @@ syntax, variable(varname)
 	file write tablecontent  %3.1f (r(mean)) (" (") %3.1f (r(sd)) (")") _tab
 	}
 	
-	qui summarize `variable' if eth16 == .u, d
+	qui summarize `variable' if eth16 ==. , d
 	file write tablecontent  %3.1f (r(mean)) (" (") %3.1f (r(sd)) (")") _n
 	
 	qui summarize `variable', d
@@ -157,11 +157,9 @@ syntax, variable(varname)
 	file write tablecontent %3.1f (r(p50)) (" (") %3.1f (r(p25)) ("-") %3.1f (r(p75)) (")") _tab
 	}
 	
-	qui summarize `variable' if eth16 == .u, d
+	qui summarize `variable' if eth16 == ., d
 	file write tablecontent %3.1f (r(p50)) (" (") %3.1f (r(p25)) ("-") %3.1f (r(p75)) (")") _n
 	
-qui summarize `variable' if eth16 == ., d
-file write tablecontent %3.1f (r(min)) (", ") %3.1f (r(max)) ("") _n
 	
 /*
 	qui summarize `variable', d
@@ -171,6 +169,10 @@ file write tablecontent %3.1f (r(min)) (", ") %3.1f (r(max)) ("") _n
 	forvalues i=1/5{							
 	qui summarize `variable' if eth16 == `i', d
 	file write tablecontent %3.1f (r(min)) (", ") %3.1f (r(max)) ("") _tab
+	
+		qui summarize `variable' if eth16 ==. , d
+	file write tablecontent %3.1f (r(min)) (", ") %3.1f (r(max)) ("") _n
+
 	}
 	
 */
@@ -222,38 +224,44 @@ file write tablecontent _n
 qui summarizevariable, variable(age) 
 file write tablecontent _n
 
-tabulatevariable, variable(agegroup) min(1) max(6) 
+tabulatevariable, variable(agegroup) min(1) max(7) 
 file write tablecontent _n 
 
 tabulatevariable, variable(male) min(0) max(1) 
 file write tablecontent _n 
 
-tabulatevariable, variable(imd) min(1) max(5) missing
+qui summarizevariable, variable(gp_consult_count) 
 file write tablecontent _n 
 
-tabulatevariable, variable(hh_total_cat) min(0) max(3) missing
+tabulatevariable, variable(imd) min(1) max(5) 
+file write tablecontent _n 
+
+tabulatevariable, variable(hh_total_cat) min(0) max(2) 
+file write tablecontent _n 
+
+tabulatevariable, variable(carehome) min(0) max(1) 
 file write tablecontent _n 
 
 qui summarizevariable, variable(bmi)
 file write tablecontent _n
 
-tabulatevariable, variable(obese4cat_sa) min(1) max(4) missing
+tabulatevariable, variable(obese4cat_sa) min(1) max(4) 
 file write tablecontent _n 
 
-tabulatevariable, variable(smoke) min(1) max(3) missing 
+tabulatevariable, variable(smoke_nomiss) min(1) max(3)  
 file write tablecontent _n 
 
-tabulatevariable, variable(dm_type) min(0) max(3) missing 
+tabulatevariable, variable(dm_type) min(0) max(3)  
 file write tablecontent _n 
 
-tabulatevariable, variable(dm_type_exeter_os) min(0) max(2) missing 
+tabulatevariable, variable(dm_type_exeter_os) min(0) max(2)  
 file write tablecontent _n 
 
-tabulatevariable, variable(diabcat) min(1) max(6) missing 
+tabulatevariable, variable(diabcat) min(1) max(6) 
 file write tablecontent _n 
+
 
 file write tablecontent _n _n
-
 
 ** COMORBIDITIES (categorical and continous)
 
@@ -270,10 +278,9 @@ foreach comorb of varlist 		///
 	htdiag_or_highbp			///
 	chronic_cardiac_disease		///
 	stroke						///
+	egfr60							///
 	esrf						///
 	cancer						///
-	perm_immunodef				///
-	temp_immunodef				///
 	ra_sle_psoriasis			///
 	other_immuno				///
 	chronic_liver_disease		///
@@ -286,7 +293,7 @@ foreach comorb of varlist 		///
 	local lab: variable label `comorb'
 	file write tablecontent ("`lab'") _n 
 								
-	*generaterow, variable(`comorb') condition("==0")
+	generaterow, variable(`comorb') condition("==0")
 	generaterow, variable(`comorb') condition("==1")
 	file write tablecontent _n
 }
@@ -303,13 +310,14 @@ foreach treat of varlist ///
 local lab: variable label `treat'
 file write tablecontent ("`lab'") _n 
 	
-*generaterow, variable(`treat') condition("==0")
+generaterow, variable(`treat') condition("==0")
 generaterow, variable(`treat') condition("==1")
 
 file write tablecontent _n
 }
 
 file close tablecontent
+
 
 * Close log file 
 log close

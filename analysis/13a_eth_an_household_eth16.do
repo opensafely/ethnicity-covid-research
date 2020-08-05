@@ -29,7 +29,7 @@ file write tablecontent _tab _tab _tab _tab   ("HR") _tab ("95% CI") _tab ("HR")
 
 foreach i of global outcomes {
 	forvalues eth=1/11 {
-		
+		if  `eth'==2  & "`i'"=="icu", continue
 * Open Stata dataset
 use "$Tempdir/analysis_dataset_STSET_`i'.dta", clear
 keep if eth16==`eth'
@@ -85,8 +85,6 @@ noi cap stcox i.hh_total_cat i.male age1 age2 age3 	i.imd							///
 										i.other_neuro				///
 										i.ckd						///
 										i.esrf						///
-										i.perm_immunodef 			///
-										i.temp_immunodef 			///
 										i.other_immuno		 		///
 										i.ra_sle_psoriasis, strata(stp)		
 if _rc==0{

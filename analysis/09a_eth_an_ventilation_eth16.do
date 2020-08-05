@@ -32,6 +32,10 @@ file write tablecontent _tab _tab ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% 
 * Open Stata dataset
 use "$Tempdir/analysis_dataset.dta", clear
 
+*drop irish for icu due to small numbers
+drop if eth16==2 
+
+
 gen ventilated=0
 replace ventilated=1 if was_ventilated_flag==1
 
@@ -89,8 +93,6 @@ noi cap clogit ventilated  i.eth16 i.male age1 age2 age3 	i.imd			///
 										i.other_neuro				///
 										i.ckd						///
 										i.esrf						///
-										i.perm_immunodef 			///
-										i.temp_immunodef 			///
 										i.other_immuno		 		///
 										i.ra_sle_psoriasis, strata(stp) or				
 										
@@ -119,8 +121,6 @@ noi cap clogit ventilated i.eth16 i.male age1 age2 age3 i.imd i.hh_total_cat				
 										i.other_neuro				///
 										i.ckd						///
 										i.esrf						///
-										i.perm_immunodef 			///
-										i.temp_immunodef 			///
 										i.other_immuno		 		///
 										i.ra_sle_psoriasis, strata(stp) or	iter(100)			
 										
@@ -160,7 +160,7 @@ local lab11: label eth16 11
 	file write tablecontent  ("`lab1'") _tab (`event') _tab ("1.00 (ref)") _tab _tab ("1.00 (ref)") _tab _tab ("1.00 (ref)") _tab _tab ("1.00 (ref)")  _tab _tab ("1.00 (ref)") _n
 	
 * Subsequent ethnic groups
-forvalues eth=2/11 {
+forvalues eth=3/11 {
 	
 	count if eth16 == `eth' & ventilated == 1
 	local event = r(N)
