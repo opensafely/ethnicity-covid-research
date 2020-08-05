@@ -72,9 +72,6 @@ do "$Dodir/07b_eth_an_nocarehomes_eth5.do"
 do "$Dodir/09b_eth_an_ventilation_eth5"
 do "$Dodir/09a_eth_an_ventilation_eth16"
 
-*Table 4: Rates - crude, age, and age-sex stratified
-do "$Dodir/10b_eth_an_rates_eth5"
-do "$Dodir/10a_eth_an_rates_eth16"
 
 *Table 5: Odds of testing positive amongst those with SGSS testing data
 do "$Dodir/11b_eth_an_testedpop_eth5" 
@@ -96,4 +93,9 @@ do "$Dodir/14a_eth_an_diabetes_eth16"
 PLOTS
 **********************/
 do "$Dodir/04_eth_an_descriptive_plots.do" 
+
+*Table 4: Rates - crude, age, and age-sex stratified
+do "$Dodir/10b_eth_an_rates_eth5"
+do "$Dodir/10a_eth_an_rates_eth16"
+
 

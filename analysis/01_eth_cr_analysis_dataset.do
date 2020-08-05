@@ -708,7 +708,8 @@ foreach i of global outcomes {
 }
 
 drop severe
-replace severe=1 if ae==1 | icu==1 | onscoviddeath==1
+gen severe=1 if ae==1 | icu==1 | onscoviddeath==1
+
 /* CENSORING */
 /* SET FU DATES===============================================================*/ 
 * Censoring dates for each outcome (last date outcome data available)
@@ -728,7 +729,7 @@ foreach i of global outcomes {
 	gen stime_`i' = min(`i'_censor_date, onsdeath_date, `i'_date, dereg_date)
 }
 
-* If outcome was after censoring occurred, set to zero
+* If outcome occurs after censoring, set to zero
 foreach i of global outcomes {
 	replace `i'=0 if `i'_date>stime_`i'
 	tab `i'
