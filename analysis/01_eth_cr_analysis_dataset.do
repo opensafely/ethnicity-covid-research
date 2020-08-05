@@ -191,20 +191,20 @@ label values agegroup agegroup
 *maximum of 10 people in a household
 bysort hh_id: gen hh_total=_N
 
+sum hh_total hh_size
 *gen categories of household size.
-recode hh_size 	///
-			1/2=0 ///
-			3/5 = 1 /// 
-		    6/10 = 2 /// 
-			11/max = .u, gen(hh_total_cat) 
-			
+gen hh_total_cat=.
+replace hh_total_cat=1 if hh_size >=1 & hh_size<=2
+replace hh_total_cat=2 if hh_size >=3 & hh_size<=5
+replace hh_total_cat=2 if hh_size >=6 & hh_size<=10
+		
 *remove people from hh_cat if they live in a care home
 replace hh_total_cat=. if care_home_type!="U"
 			
-label define hh_total_cat 	0 "1-2" ///
-						1 "3-5" ///
-						2 "6-10" ///
-						.u "10+" 					
+label define hh_total_cat 1 "1-2" ///
+						2 "3-5" ///
+						3 "6-10" 
+											
 label values hh_total_cat hh_total_cat
 
 safetab hh_total_cat,m

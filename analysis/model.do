@@ -40,9 +40,6 @@ global outcomes "suspected confirmed  tested positivetest ae icu cpnsdeath  onsd
 
 global outcomes2 "ae icu cpnsdeath  onsdeath onscoviddeath onsconfirmeddeath onssuspecteddeath ons_noncoviddeath severe "
 
-* all binary variables included in fully adjusted models - doesn't include age spline, bmi, go consult count
-global varlist  "male imd hh_total_cat carehome smoke_nomiss htdiag_or_highbp asthma chronic_respiratory_disease chronic_cardiac_disease	diabcat cancer chronic_liver_disease stroke	dementia other_neuro egfr60 esrf other_immuno	ra_sle_psoriasis"
-
 
 /**********************
 Data cleaning
@@ -64,7 +61,7 @@ do "$Dodir/05a_eth_table1_descriptives_eth16.do"
 do "$Dodir/06b_eth_an_multivariable_eth5.do" 
 do "$Dodir/06a_eth_an_multivariable_eth16.do" 
 
-*Table 2 sens  analysis: excluding care home residents
+*Table 2 sens analysis: excluding care home residents
 do "$Dodir/07b_eth_an_nocarehomes_eth5.do"
 do "$Dodir/07b_eth_an_nocarehomes_eth5.do"
 
