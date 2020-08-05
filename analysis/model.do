@@ -60,6 +60,8 @@ ETHNICITY IN 5 CATEGORIES
 do "$Dodir/05b_eth_table1_descriptives_eth5.do"
 *Table 2: multivariable analysis - complete case 
 do "$Dodir/06b_eth_an_multivariable_eth5.do" 
+*Table 2 sens  analysis: excluding care home residents
+do "$Dodir/07b_eth_an_nocarehomes_eth5.do"
 *Table 3: Odds of receiving ventilation - in those admitted to ICU
 do "$Dodir/09b_eth_an_ventilation_eth5"
 *Table 4: Rates - crude, age, and age-sex stratified
@@ -80,6 +82,8 @@ ETHNICITY IN 16 CATEGORIES
 do "$Dodir/05a_eth_table1_descriptives_eth16.do"
 *Table 2: multivariable analysis - complete case 
 do "$Dodir/06a_eth_an_multivariable_eth16.do" 
+*Table 2 sens  analysis: excluding care home residents
+do "$Dodir/07b_eth_an_nocarehomes_eth5.do"
 *Table 3: Odds of receiving ventilation - in those admitted to ICU
 do "$Dodir/09a_eth_an_ventilation_eth16"
 *Table 4: Rates - crude, age, and age-sex stratified

@@ -1,11 +1,11 @@
 /*==============================================================================
-DO FILE NAME:			06a_eth_an_multivariable_eth16
+DO FILE NAME:			07a_eth_an_nocarehomes_eth16
 PROJECT:				Ethnicity and COVID
 AUTHOR:					R Mathur (modified from A wong and A Schultze)
 DATE: 					15 July 2020					
 DESCRIPTION OF FILE:	program 06 
 						univariable regression
-						multivariable regression 
+						nocarehomes regression 
 DATASETS USED:			data in memory ($tempdir/analysis_dataset_STSET_outcome)
 DATASETS CREATED: 		none
 OTHER OUTPUT: 			logfiles, printed to folder analysis/$logdir
@@ -17,11 +17,12 @@ OTHER OUTPUT: 			logfiles, printed to folder analysis/$logdir
 
 cap log close
 macro drop hr
-log using $logdir\06a_eth_an_multivariable_eth16, replace t 
+estimates clear
+log using $logdir\07a_eth_an_nocarehomes_eth16, replace t 
 
 cap file close tablecontent
-file open tablecontent using $Tabfigdir/table2_eth16.txt, write text replace
-file write tablecontent ("Table 2: Association between ethnicity in 16 categories and COVID-19 outcomes - Complete Case Analysis") _n
+file open tablecontent using $Tabfigdir/table2_nocarehomes_eth16.txt, write text replace
+file write tablecontent ("Table 2: Association between ethnicity COVID-19 outcomes - Complete Case Analysis excluding care home residents") _n
 file write tablecontent _tab ("No event") _tab ("Event") _tab ("Total person-weeks") _tab ("Rate per 1,000") _tab ("Crude") _tab _tab ("Age/Sex Adjusted") _tab _tab ("Age/Sex/IMD Adjusted") _tab _tab 	("plus co-morbidities") _tab _tab 	("plus hh size/carehome")  _tab _tab  _n
 file write tablecontent _tab _tab _tab _tab _tab   ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _n
 
@@ -31,6 +32,10 @@ foreach i of global outcomes {
 	di "`i'"
 * Open Stata dataset
 use "$Tempdir/analysis_dataset_STSET_`i'.dta", clear
+
+*drop those in care homes
+safetab carehome, m
+drop if carehome==1
 
 *drop irish for icu due to small numbers
 drop if eth16==2 & "`i'"=="icu"
@@ -50,7 +55,7 @@ parmest, label eform format(estimate p lb ub) saving("$Tempdir/crude_`i'_eth16",
 local hr "`hr' "$Tempdir/crude_`i'_eth16" "
 
 
-/* Multivariable models */ 
+/* nocarehomes models */ 
 *Age and gender
 stcox i.eth16 i.male age1 age2 age3, strata(stp) nolog
 estimates save "$Tempdir/model0_`i'_eth16", replace 
@@ -99,7 +104,7 @@ else di "WARNING MODEL2 DID NOT FIT (OUTCOME `i')"
 
 										
 * Age, Gender, IMD and Comorbidities  and household size and carehome
-stcox i.eth16 i.male age1 age2 age3 i.imd i.hh_total_cat i.carehome	///
+stcox i.eth16 i.male age1 age2 age3 i.imd i.hh_total_cat 	///
 										bmi							///
 										gp_consult_count			///
 										i.smoke_nomiss				///
@@ -241,14 +246,14 @@ gen adjusted="Crude" if model=="crude"
 replace adjusted="Age-sex" if model=="model0"
 replace adjusted="Age-sex-IMD" if model=="model1"
 replace adjusted="+ co-morbidities" if model=="model2"
-replace adjusted="+ household size & carehome" if model=="model3"
+replace adjusted="+ household size" if model=="model3"
 
 *save dataset for later
-outsheet using "$Tabfigdir/FP_multivariable_eth16.txt", replace
-save "$Tabfigdir/FP_multivariable_eth16.dta", replace
+outsheet using "$Tabfigdir/FP_nocarehomes_eth16.txt", replace
+save "$Tabfigdir/FP_nocarehomes_eth16.dta", replace
 
 * Close log file 
 log close
 
-insheet using $Tabfigdir/table2_eth16.txt, clear
+insheet using $Tabfigdir/table2_nocarehomes_eth16.txt, clear
 
