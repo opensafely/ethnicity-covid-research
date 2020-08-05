@@ -827,42 +827,42 @@ lab var diabcat								"Diabetes and HbA1c combined"
 
 
 *medications
-lab var statin								"Statin in last 6 months"
-lab var insulin								"Insulin in last 6 months"
-lab var ace_inhibitors 						"ACE in last 6 months"
-lab var alpha_blockers 						"Alpha blocker in last 6 months"
-lab var arbs 								"ARB in last 6 months"
-lab var betablockers 						"Beta blocker in last 6 months"
-lab var calcium_channel_blockers 			"CCB in last 6 months"
-lab var combination_bp_meds 				"BP med in last 6 months"
-lab var spironolactone 						"Spironolactone in last 6 months"
-lab var thiazide_diuretics					"TZD in last 6 months"
+lab var statin								"Statin in last 12 months"
+lab var insulin								"Insulin in last 12 months"
+lab var ace_inhibitors 						"ACE in last 12 months"
+lab var alpha_blockers 						"Alpha blocker in last 12 months"
+lab var arbs 								"ARB in last 12 months"
+lab var betablockers 						"Beta blocker in last 12 months"
+lab var calcium_channel_blockers 			"CCB in last 12 months"
+lab var combination_bp_meds 				"BP med in last 12 months"
+lab var spironolactone 						"Spironolactone in last 12 months"
+lab var thiazide_diuretics					"TZD in last 12 months"
 
-lab var statin_date							"Statin in last 6 months"
-lab var insulin_date						"Insulin in last 6 months"
-lab var ace_inhibitors_date 				"ACE in last 6 months"
-lab var alpha_blockers_date 				"Alpha blocker in last 6 months"
-lab var arbs_date 							"ARB in last 6 months"
-lab var betablockers_date 					"Beta blocker in last 6 months"
-lab var calcium_channel_blockers_date 		"CCB in last 6 months"
-lab var combination_bp_meds_date 			"BP med in last 6 months"
-lab var spironolactone_date 				"Spironolactone in last 6 months"
-lab var thiazide_diuretics_date				"TZD in last 6 months"
+lab var statin_date							"Statin in last 12 months"
+lab var insulin_date						"Insulin in last 12 months"
+lab var ace_inhibitors_date 				"ACE in last 12 months"
+lab var alpha_blockers_date 				"Alpha blocker in last 12 months"
+lab var arbs_date 							"ARB in last 12 months"
+lab var betablockers_date 					"Beta blocker in last 12 months"
+lab var calcium_channel_blockers_date 		"CCB in last 12 months"
+lab var combination_bp_meds_date 			"BP med in last 12 months"
+lab var spironolactone_date 				"Spironolactone in last 12 months"
+lab var thiazide_diuretics_date				"TZD in last 12 months"
 
 * Outcomes and follow-up
-label var indexdate					"Date of study start (feb 1 2020)"
+label var indexdate					"Date of study start (Feb 1 2020)"
 foreach i of global outcomes {
 	label var `i'_censor_date		 "Date of admin censoring"
 }
 *Outcome dates
 foreach i of global outcomes {
-	label var `i'_date					"Failure date: outcome `i'"
+	label var `i'_date					"Failure date:  `i'"
 	d `i'_date
 }
 
 * Survival times
 foreach i of global outcomes {
-	lab var stime_`i' 					"Survival time (date);outcome `i'"
+	lab var stime_`i' 					"Survivatime (date): `i'"
 	d stime_`i'
 }
 

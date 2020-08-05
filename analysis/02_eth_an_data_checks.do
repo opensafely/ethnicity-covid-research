@@ -135,9 +135,10 @@ safetab temp_immunodef
 safetab other_neuro
 safetab dementia
 safetab stroke
+safetab egfr_cat
+safetab egfr60
 safetab esrf
 safetab hypertension
-safetab reduced_kidney_function_cat
 safetab ra_sle_psoriasis
 safetab stp
 safetab region
