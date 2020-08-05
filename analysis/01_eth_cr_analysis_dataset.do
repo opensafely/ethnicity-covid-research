@@ -686,7 +686,7 @@ foreach var of global outcomes {
 }
 
 *Date of first severe outcome
-replace severe_date = min(ae_date, icu_date, cpnsdeath_date, onsdeath_date)
+replace severe_date = min(ae_date, icu_date, onscoviddeath_date)
 
 *If outcome occurs on the first day of follow-up add one day
 foreach i of global outcomes {
@@ -707,6 +707,8 @@ foreach i of global outcomes {
 		safetab `i'
 }
 
+drop severe
+replace severe=1 if ae==1 | icu==1 | onscoviddeath==1
 /* CENSORING */
 /* SET FU DATES===============================================================*/ 
 * Censoring dates for each outcome (last date outcome data available)
