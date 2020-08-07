@@ -6,7 +6,7 @@ DATE: 					15 July 2020
 DESCRIPTION OF FILE:	Risk of test positive in people receiving a test 
 						univariable regression
 						multivariable regression 
-DATASETS USED:			data in memory ($tempdir/analysis_dataset_STSET_outcome)
+DATASETS USED:			data in memory ($tempdir/analysis_dataset)
 DATASETS CREATED: 		none
 OTHER OUTPUT: 			logfiles, printed to folder analysis/$logdir
 						table2, printed to analysis/$outdir
@@ -20,10 +20,10 @@ cap log close
 log using $logdir\11a_eth_an_testedpop_eth16, replace t
 
 cap file close tablecontent
-file open tablecontent using $Tabfigdir/table5_eth16.txt, write text replace
-file write tablecontent ("Table 2: Risk of testing positive amongst those receiving a test - Complete Case Analysis") _n
-file write tablecontent _tab ("Number of events") _tab ("Total person-weeks") _tab ("Rate per 1,000") _tab ("Crude") _tab _tab ("Age/Sex/IMD Adjusted") _tab _tab 	("+ co-morbidities") _tab _tab 	("+ household size)") _tab _tab _n
-file write tablecontent _tab _tab _tab _tab   ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _n
+file open tablecontent using $Tabfigdir/table5_testedpop_eth16.txt, write text replace
+file write tablecontent ("Table 2: Odds of testing positive amongst those receiving a test - Complete Case Analysis") _n
+file write tablecontent _tab ("Denominator") _tab ("Event") _tab ("%") _tab ("Crude") _tab _tab ("Age/Sex Adjusted") _tab _tab ("Age/Sex/IMD Adjusted") _tab _tab 	("plus co-morbidities") _tab _tab 	("plus hh size/carehome")  _tab _tab  _n
+file write tablecontent _tab _tab _tab _tab   ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _n
 
 
 
@@ -49,33 +49,32 @@ safetab eth16 positivetest, missing row
 
 /* Univariable model */ 
 
-logistic positivetest i.eth16 
-estimates save "$Tempdir/crude_postest_eth16", replace 
-parmest, label eform format(estimate p lb ub) saving("$Tempdir/crude_postest_eth16", replace) idstr("crude_postest_eth16") 
+logistic positivetest i.eth16, nolog
+estimates save "$Tempdir/crude_positivetest_eth16", replace 
+parmest, label eform format(estimate p lb ub) saving("$Tempdir/crude_positivetest_eth16", replace) idstr("crude_positivetest_eth16") 
 
 /* Multivariable models */ 
-*Age gender
-clogit positivetest i.eth16 i.male age1 age2 age3, strata(stp) or
+*Age Gender
+clogit positivetest i.eth16 i.male age1 age2 age3, strata(stp) or nolog
 if _rc==0{
 estimates
-estimates save "$Tempdir/model0_postest_eth16", replace 
-parmest, label eform format(estimate p lb ub) saving("$Tempdir/model0_postest_eth16", replace) idstr("model0_postest_eth16") 
+estimates save "$Tempdir/model0_positivetest_eth16", replace 
+parmest, label eform format(estimate p lb ub) saving("$Tempdir/model0_positivetest_eth16", replace) idstr("model0_positivetest_eth16") 
 }
-else di "WARNING MODEL1 DID NOT FIT (OUTCOME `outcome')"
+else di "WARNING MODEL0 DID NOT FIT (OUTCOME `outcome')"
 
 * Age, Gender, IMD
-* Age fit as spline in first instance, categorical below 
-
-clogit positivetest i.eth16 i.male age1 age2 age3 i.imd, strata(stp) or
+clogit positivetest i.eth16 i.male age1 age2 age3 i.imd, strata(stp) or nolog
 if _rc==0{
 estimates
-estimates save "$Tempdir/model1_postest_eth16", replace 
-parmest, label eform format(estimate p lb ub) saving("$Tempdir/model1_postest_eth16", replace) idstr("model1_postest_eth16") 
+estimates save "$Tempdir/model1_positivetest_eth16", replace 
+parmest, label eform format(estimate p lb ub) saving("$Tempdir/model1_positivetest_eth16", replace) idstr("model1_positivetest_eth16") 
 }
 else di "WARNING MODEL1 DID NOT FIT (OUTCOME `outcome')"
 
+
 * Age, Gender, IMD and Comorbidities  
-clogit positivetest i.eth16 i.male age1 age2 age3 	i.imd							///
+clogit positivetest  i.eth16 i.male age1 age2 age3 i.imd 							///
 										bmi							///
 										gp_consult_count			///
 										i.smoke_nomiss				///
@@ -89,22 +88,22 @@ clogit positivetest i.eth16 i.male age1 age2 age3 	i.imd							///
 										i.stroke					///
 										i.dementia					///
 										i.other_neuro				///
-										i.ckd						///
+										i.egfr60					///
 										i.esrf						///
 										i.other_immuno		 		///
-										i.ra_sle_psoriasis, strata(stp)				
+										i.ra_sle_psoriasis, strata(stp) nolog				
 										
-
 if _rc==0{
 estimates
-estimates save "$Tempdir/model2_postest_eth16", replace 
-parmest, label eform format(estimate p lb ub) saving("$Tempdir/model2_postest_eth16", replace) idstr("model2_postest_eth16") 
+estimates save "$Tempdir/model2_positivetest_eth16", replace 
+parmest, label eform format(estimate p lb ub) saving("$Tempdir/model2_positivetest_eth16", replace) idstr("model2_positivetest_eth16") 
 }
 else di "WARNING MODEL2 DID NOT FIT (OUTCOME `outcome')"
 
 * Age, Gender, IMD and Comorbidities and household size
 
-clogit positivetest i.eth16 i.male age1 age2 age3 i.imd hh_size					///
+* Age, Gender, IMD and Comorbidities  and household size and carehome
+clogit positivetest  i.eth16 i.male age1 age2 age3 i.imd i.hh_total_cat i.carehome	///
 										bmi							///
 										gp_consult_count			///
 										i.smoke_nomiss				///
@@ -118,15 +117,15 @@ clogit positivetest i.eth16 i.male age1 age2 age3 i.imd hh_size					///
 										i.stroke					///
 										i.dementia					///
 										i.other_neuro				///
-										i.ckd						///
+										i.egfr60					///
 										i.esrf						///
 										i.other_immuno		 		///
-										i.ra_sle_psoriasis, strata(stp)				
+										i.ra_sle_psoriasis, strata(stp) nolog				
 										
 if _rc==0{
 estimates
-estimates save "$Tempdir/model3_postest_eth16", replace 
-parmest, label eform format(estimate p lb ub) saving("$Tempdir/model3_postest_eth16", replace) idstr("model3_postest_eth16") 
+estimates save "$Tempdir/model3_positivetest_eth16", replace 
+parmest, label eform format(estimate p lb ub) saving("$Tempdir/model3_positivetest_eth16", replace) idstr("model3_positivetest_eth16") 
 }
 else di "WARNING MODEL3 DID NOT FIT (OUTCOME `outcome')"
 
@@ -153,35 +152,41 @@ local lab11: label eth16 11
 /* Counts */
  
 * First row, eth16 = 1 (White) reference cat
-	count if eth16 == 1 & positivetest == 1
+	qui safecount if eth16==1
+	local denominator = r(N)
+	qui safecount if eth16 == 1 & positivetest == 1
 	local event = r(N)
-	file write tablecontent  ("`lab1'") _tab (`event') _tab ("1.00 (ref)") _tab _tab ("1.00 (ref)") _tab _tab ("1.00 (ref)")  _tab _tab ("1.00 (ref)") _n
+	local pct =(`event'/`denominator')
+	file write tablecontent  ("`lab1'") _tab (`denominator') _tab (`event') _tab %3.2f (`pct') _tab
+	file write tablecontent ("1.00") _tab _tab ("1.00") _tab _tab ("1.00")  _tab _tab ("1.00") _tab _tab ("1.00") _n
 	
 * Subsequent ethnic groups
 forvalues eth=2/11 {
-	
-	count if eth16 == `eth' & positivetest == 1
+	qui safecount if eth16==`eth'
+	local denominator = r(N)
+	qui safecount if eth16 == `eth' & positivetest == 1
 	local event = r(N)
-	file write tablecontent  ("`lab`eth''") _tab   (`event') _tab
-	cap estimates use "$Tempdir/crude_postest_eth16" 
+	local pct =(`event'/`denominator')
+	file write tablecontent  ("`lab`eth''") _tab (`denominator') _tab (`event') _tab %3.2f (`pct') _tab
+	cap estimates use "$Tempdir/crude_positivetest_eth16" 
 	cap lincom `eth'.eth16, eform
-	file write tablecontent  %4.2f (r(estimate)) _tab %4.2f (r(lb)) (" - ") %4.2f (r(ub)) _tab 
+	file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (" - ") %4.2f (r(ub)) (")") _tab 
 	cap estimates clear
-	cap estimates use "$Tempdir/model0_postest_eth16" 
+	cap estimates use "$Tempdir/model0_positivetest_eth16" 
 	cap lincom `eth'.eth16, eform
-	file write tablecontent  %4.2f (r(estimate)) _tab %4.2f (r(lb)) (" - ") %4.2f (r(ub)) _tab 
+	file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (" - ") %4.2f (r(ub)) (")") _tab 
 	cap estimates clear
-	cap estimates use "$Tempdir/model1_postest_eth16" 
+	cap estimates use "$Tempdir/model1_positivetest_eth16" 
 	cap lincom `eth'.eth16, eform
-	file write tablecontent  %4.2f (r(estimate)) _tab %4.2f (r(lb)) (" - ") %4.2f (r(ub)) _tab 
+	file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (" - ") %4.2f (r(ub)) (")") _tab 
 	cap estimates clear
-	cap estimates use "$Tempdir/model2_postest_eth16" 
+	cap estimates use "$Tempdir/model2_positivetest_eth16" 
 	cap lincom `eth'.eth16, eform
-	file write tablecontent  %4.2f (r(estimate)) _tab %4.2f (r(lb)) (" - ") %4.2f (r(ub)) _tab 
+	file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (" - ") %4.2f (r(ub)) (")") _tab 
 	cap estimates clear
-	cap estimates use "$Tempdir/model3_postest_eth16" 
+	cap estimates use "$Tempdir/model3_positivetest_eth16" 
 	cap lincom `eth'.eth16, eform
-	file write tablecontent  %4.2f (r(estimate)) _tab %4.2f (r(lb)) (" - ") %4.2f (r(ub)) _n
+	file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (" - ") %4.2f (r(ub)) (")") _n
 }  //end ethnic group
 
 
@@ -189,7 +194,7 @@ file close tablecontent
 
 /* Foresplot================================================================*/ 
 
-dsconcat "$Tempdir/model0_postest_eth16"  "$Tempdir/model1_postest_eth16" "$Tempdir/model2_postest_eth16" "$Tempdir/model3_postest_eth16"
+dsconcat "$Tempdir/model0_positivetest_eth16"  "$Tempdir/model1_positivetest_eth16" "$Tempdir/model2_positivetest_eth16" "$Tempdir/model3_positivetest_eth16"
 duplicates drop
 
 split idstr, p(_)
@@ -197,60 +202,13 @@ drop idstr
 ren idstr1 model
 drop idstr2 idstr3 eq
 
-
-*keep ORs for ethnic group
-keep if label=="Eth 16 collapsed"
-drop label
-
-gen eth16=1 if regexm(parm, "1b")
-forvalues i=2/11 {
-	replace eth16=`i' if regexm(parm, "`i'.eth16")
-}
-
-drop parm 
-order  model eth16
-label define eth16 	///
-						1 "British or Mixed British" ///
-						2 "Irish" ///
-						3 "Other White" ///
-						4 "Indian" ///
-						5 "Pakistani" ///
-						6 "Bangladeshi" ///					
-						7 "Caribbean" ///
-						8 "African" ///
-						9 "Chinese" ///
-						10 "All mixed" ///
-						11 "All Other" 
-label values eth16 eth16
-tab eth16,m
-
-graph set window 
-gen num=[_n]
-sum num
-
-gen adjusted="Age-sex" if model=="model0"
-replace adjusted="+ IMD" if model=="model1"
-replace adjusted="+ co-morbidities" if model=="model2"
-replace adjusted="+ household size" if model=="model3"
-
 *save dataset for later
-outsheet using "$Tabfigdir/FP_postest_eth16.txt", replace
-
-*Create one graph 
-metan estimate min95 max95  if eth16!=1 ///
- , effect(Odds Ratio) null(1) lcols(adjusted) dp(2) by(eth16)  ///
-	random nowt nosubgroup nooverall nobox graphregion(color(white)) scheme(sj)  	///
-	title("Positive test amongst those tested", size(medsmall)) 	///
-	t2title("complete case analysis", size(small)) 	///
-	graphregion(margin(zero))  textsize(300)
-	graph export "$Tabfigdir\Forestplot_postest_eth16_tested.svg", replace  
+outsheet using "$Tabfigdir/FP_testedpop_eth16.txt", replace
 
 
 * Close log file 
 log close
-
-
-insheet using "$Tabfigdir/table5_eth16.txt", clear
+insheet using "$Tabfigdir/table5_testedpop_eth16.txt", clear
 
 
 
