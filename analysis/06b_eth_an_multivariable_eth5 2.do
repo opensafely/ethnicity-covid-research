@@ -17,10 +17,10 @@ OTHER OUTPUT: 			logfiles, printed to folder analysis/$logdir
 
 cap log close
 macro drop hr
-log using $logdir\06b_eth_an_multivariable_eth5, replace t 
+log using "$Logdir/06b_eth_an_multivariable_eth5", replace t 
 
 cap file close tablecontent
-file open tablecontent using $Tabfigdir/table2_eth5.txt, write text replace
+file open tablecontent using "$Tabfigdir/table2_eth5.txt", write text replace
 file write tablecontent ("Table 2: Association between ethnicity in 16 categories and COVID-19 outcomes - Complete Case Analysis") _n
 file write tablecontent _tab ("Number of events") _tab ("Total person-weeks") _tab ("Rate per 1,000") _tab ("Crude") _tab _tab ("Age/Sex Adjusted") _tab _tab ("Age/Sex/IMD Adjusted") _tab _tab 	("plus co-morbidities") _tab _tab 	("plus household size") _tab _tab _n
 file write tablecontent _tab _tab _tab _tab   ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _n
@@ -189,42 +189,9 @@ ren idstr2 outcome
 drop idstr idstr3
 tab model
 
-*keep ORs for ethnicity
-keep if regexm(label, "Eth")
-drop label
-
-gen eth5=1 if regexm(parm, "1b")
-forvalues i=2/5 {
-	replace eth5=`i' if regexm(parm, "`i'.eth5")
-}
-
-drop parm  stderr z 
-order outcome model eth5 
-
-destring eth5, replace
-
- label define eth5	 	1 "White"  					///
-						2 "South Asian"				///						
-						3 "Black"  					///
-						4 "Mixed"					///
-						5 "Other"					
-					
-
-label values eth5 eth5
-
-graph set window 
-gen num=[_n]
-sum num
-
-gen adjusted="Crude" if model=="crude"
-replace adjusted="Age-sex" if model=="model0"
-replace adjusted="Age-sex-IMD" if model=="model1"
-replace adjusted="+ co-morbidities" if model=="model2"
-replace adjusted="+ household size" if model=="model3"
 
 *save dataset for later
 outsheet using "$Tabfigdir/FP_multivariable_eth5.txt", replace
-save  "$Tabfigdir/FP_multivariable_eth5.dta", replace
 
 
 * Close log file 
