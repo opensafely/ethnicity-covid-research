@@ -17,7 +17,7 @@ OTHER OUTPUT: 			logfiles, printed to folder analysis/$logdir
 * Open a log file
 
 cap log close
-log using $logdir\09b_eth_an_ventilation_eth5, replace text
+log using "$Logdir/09b_eth_an_ventilation_eth5", replace text
 
 cap file close tablecontent
 file open tablecontent using $Tabfigdir/table3_ventilated_eth5.txt, write text replace

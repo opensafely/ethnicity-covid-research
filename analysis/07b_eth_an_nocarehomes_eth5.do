@@ -17,7 +17,7 @@ OTHER OUTPUT: 			logfiles, printed to folder analysis/$logdir
 
 cap log close
 macro drop hr
-log using $logdir\07b_eth_an_nocarehomes_eth5, replace t 
+log using "$Logdir/07b_eth_an_nocarehomes_eth5", replace t 
 
 cap file close tablecontent
 file open tablecontent using $Tabfigdir/table2_nocarehomes_eth5.txt, write text replace
