@@ -6,7 +6,7 @@ DATE: 					15 July 2020
 DESCRIPTION OF FILE:	program 06 
 						univariable regression
 						multivariable regression 
-DATASETS USED:			data in memory ($tempdir/analysis_dataset_STSET_outcome)
+DATASETS USED:			data in memory ($tempdir/analysis_dataset)
 
 DATASETS CREATED: 		none
 OTHER OUTPUT: 			logfiles, printed to folder analysis/$logdir
@@ -17,15 +17,13 @@ OTHER OUTPUT: 			logfiles, printed to folder analysis/$logdir
 * Open a log file
 
 cap log close
-log using $logdir\09a_eth_an_ventilation_eth16, replace text
+log using "$Logdir/09a_eth_an_ventilation_eth16", replace text
 
 cap file close tablecontent
-file open tablecontent using $Tabfigdir/table3_eth16.txt, write text replace
-file write tablecontent ("Table 3: Association between ethnicity and Ventilation - Complete Case Analysis") _n
-
-file write tablecontent _tab ("Number of events") _tab ("Univariable") _tab _tab ("Age/SexAdjusted") _tab _tab ("Age/Sex/IMD Adjusted") _tab _tab 	("+ co-morbidities") _tab _tab 	("+ household size)") _tab _tab _n
-
-file write tablecontent _tab _tab ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _n
+file open tablecontent using $Tabfigdir/table3_ventilated_eth16.txt, write text replace
+file write tablecontent ("Table 3: Odds of receiving invasive mechanical ventilation - Complete Case Analysis") _n
+file write tablecontent _tab ("Denominator") _tab ("Event") _tab ("%") _tab ("Crude") _tab _tab ("Age/Sex Adjusted") _tab _tab ("Age/Sex/IMD Adjusted") _tab _tab 	("plus co-morbidities") _tab _tab 	("plus hh size/carehome")  _tab _tab  _n
+file write tablecontent _tab _tab _tab _tab   ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _n
 
 
 
@@ -46,19 +44,19 @@ count
 
 /* Sense check outcomes=======================================================*/ 
 
-tab eth16 ventilated , missing row
+safetab eth16 ventilated , missing row
 
 /* Main Model=================================================================*/
 
 /* Univariable model */ 
 
-logistic ventilated i.eth16
+logistic ventilated i.eth16, nolog
 estimates save "$Tempdir/crude_ventilated_eth16", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/crude_ventilated_eth16", replace) idstr("crude_ventilated_eth16") 
 
 /* Multivariable models */ 
 *Age Gender
-clogit ventilated i.eth16 i.male age1 age2 age3, strata(stp) or
+clogit ventilated i.eth16 i.male age1 age2 age3, strata(stp) or nolog
 if _rc==0{
 estimates
 estimates save "$Tempdir/model0_ventilated_eth16", replace 
@@ -67,7 +65,7 @@ parmest, label eform format(estimate p lb ub) saving("$Tempdir/model0_ventilated
 else di "WARNING MODEL0 DID NOT FIT (OUTCOME `outcome')"
 
 * Age, Gender, IMD
-noi cap clogit ventilated i.eth16 i.male age1 age2 age3 i.imd, strata(stp) or
+clogit ventilated i.eth16 i.male age1 age2 age3 i.imd, strata(stp) or nolog
 if _rc==0{
 estimates
 estimates save "$Tempdir/model1_ventilated_eth16", replace 
@@ -77,7 +75,7 @@ else di "WARNING MODEL1 DID NOT FIT (OUTCOME `outcome')"
 
 
 * Age, Gender, IMD and Comorbidities  
-noi cap clogit ventilated  i.eth16 i.male age1 age2 age3 	i.imd			///
+clogit ventilated  i.eth16 i.male age1 age2 age3 i.imd 							///
 										bmi							///
 										gp_consult_count			///
 										i.smoke_nomiss				///
@@ -91,27 +89,28 @@ noi cap clogit ventilated  i.eth16 i.male age1 age2 age3 	i.imd			///
 										i.stroke					///
 										i.dementia					///
 										i.other_neuro				///
-										i.ckd						///
+										i.egfr60					///
 										i.esrf						///
 										i.other_immuno		 		///
-										i.ra_sle_psoriasis, strata(stp) or				
+										i.ra_sle_psoriasis, strata(stp) or nolog				
 										
 if _rc==0{
 estimates
 estimates save "$Tempdir/model2_ventilated_eth16", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model2_ventilated_eth16", replace) idstr("model2_ventilated_eth16") 
 }
-else di "WARNING MODEL1 DID NOT FIT (OUTCOME `outcome')"
+else di "WARNING MODEL2 DID NOT FIT (OUTCOME `outcome')"
 
 * Age, Gender, IMD and Comorbidities and household size
 
-noi cap clogit ventilated i.eth16 i.male age1 age2 age3 i.imd i.hh_total_cat					///
+* Age, Gender, IMD and Comorbidities  and household size and carehome
+clogit ventilated  i.eth16 i.male age1 age2 age3 i.imd i.hh_total_cat i.carehome	///
 										bmi							///
 										gp_consult_count			///
 										i.smoke_nomiss				///
 										i.htdiag_or_highbp		 	///	
 										i.asthma					///
-										i.chronic_respiratory_disease /// 
+										i.chronic_respiratory_disease ///
 										i.chronic_cardiac_disease	///
 										i.diabcat 					///	
 										i.cancer                    ///
@@ -119,24 +118,24 @@ noi cap clogit ventilated i.eth16 i.male age1 age2 age3 i.imd i.hh_total_cat				
 										i.stroke					///
 										i.dementia					///
 										i.other_neuro				///
-										i.ckd						///
+										i.egfr60					///
 										i.esrf						///
 										i.other_immuno		 		///
-										i.ra_sle_psoriasis, strata(stp) or	iter(100)			
+										i.ra_sle_psoriasis, strata(stp) or nolog				
 										
 if _rc==0{
 estimates
 estimates save "$Tempdir/model3_ventilated_eth16", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model3_ventilated_eth16", replace) idstr("model3_ventilated_eth16") 
 }
-else di "WARNING MODEL1 DID NOT FIT (OUTCOME `outcome')"
+else di "WARNING MODEL3 DID NOT FIT (OUTCOME `outcome')"
 
 /* Print table================================================================*/ 
 *  Print the results for the main model 
 
 
 * Column headings 
-file write tablecontent ("Outcome: ventilated") _n
+file write tablecontent ("ventilated") _n
 
 * Row headings 
 local lab1: label eth16 1
@@ -154,36 +153,42 @@ local lab11: label eth16 11
 /* Counts */
  
 * First row, eth16 = 1 (White) reference cat
-	count if eth16 == 1 & ventilated == 1
+	qui safecount if eth16==1
+	local denominator = r(N)
+	qui safecount if eth16 == 1 & ventilated == 1
 	local event = r(N)
+	local pct =(`event'/`denominator')
 	
-	file write tablecontent  ("`lab1'") _tab (`event') _tab ("1.00 (ref)") _tab _tab ("1.00 (ref)") _tab _tab ("1.00 (ref)") _tab _tab ("1.00 (ref)")  _tab _tab ("1.00 (ref)") _n
+	file write tablecontent  ("`lab1'") _tab (`denominator') _tab (`event') _tab %3.2f (`pct') _tab
+	file write tablecontent ("1.00") _tab _tab ("1.00") _tab _tab ("1.00")  _tab _tab ("1.00") _tab _tab ("1.00") _n
 	
 * Subsequent ethnic groups
 forvalues eth=3/11 {
-	
-	count if eth16 == `eth' & ventilated == 1
+	qui safecount if eth16==`eth'
+	local denominator = r(N)
+	qui safecount if eth16 == `eth' & ventilated == 1
 	local event = r(N)
-	file write tablecontent  ("`lab`eth''") _tab   (`event') _tab
+	local pct =(`event'/`denominator')
+	file write tablecontent  ("`lab`eth''") _tab (`denominator') _tab (`event') _tab %3.2f (`pct') _tab
 	estimates use "$Tempdir/crude_ventilated_eth16" 
 	lincom `eth'.eth16, eform
-	file write tablecontent  %4.2f (r(estimate)) _tab %4.2f (r(lb)) (" - ") %4.2f (r(ub)) _tab 
+	file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (" - ") %4.2f (r(ub)) (")") _tab 
 	cap estimates clear
 	cap estimates use "$Tempdir/model0_ventilated_eth16" 
 	cap lincom `eth'.eth16, eform
-	file write tablecontent  %4.2f (r(estimate)) _tab %4.2f (r(lb)) (" - ") %4.2f (r(ub)) _tab 
+	file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (" - ") %4.2f (r(ub)) (")") _tab 
 	cap estimates clear
 	cap estimates use "$Tempdir/model1_ventilated_eth16" 
 	cap lincom `eth'.eth16, eform
-	file write tablecontent  %4.2f (r(estimate)) _tab %4.2f (r(lb)) (" - ") %4.2f (r(ub)) _tab 
+	file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (" - ") %4.2f (r(ub)) (")") _tab 
 	cap estimates clear
 	cap estimates use "$Tempdir/model2_ventilated_eth16" 
 	cap lincom `eth'.eth16, eform
-	file write tablecontent  %4.2f (r(estimate)) _tab %4.2f (r(lb)) (" - ") %4.2f (r(ub)) _tab 
+	file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (" - ") %4.2f (r(ub)) (")") _tab 
 	cap estimates clear
 	cap estimates use "$Tempdir/model3_ventilated_eth16" 
 	cap lincom `eth'.eth16, eform
-	file write tablecontent  %4.2f (r(estimate)) _tab %4.2f (r(lb)) (" - ") %4.2f (r(ub)) _n
+	file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (" - ") %4.2f (r(ub)) (")") _n
 }  //end ethnic group
 
 file close tablecontent
@@ -191,7 +196,7 @@ file close tablecontent
 
 /* Foresplot================================================================*/ 
 
-dsconcat "$Tempdir/model0_ventilated_eth16" "$Tempdir/model1_ventilated_eth16" "$Tempdir/model2_ventilated_eth16" "$Tempdir/model3_ventilated_eth16"
+dsconcat "$Tempdir/crude_ventilated_eth16" "$Tempdir/model0_ventilated_eth16" "$Tempdir/model1_ventilated_eth16" "$Tempdir/model2_ventilated_eth16" "$Tempdir/model3_ventilated_eth16"
 duplicates drop
 
 split idstr, p(_)
@@ -201,59 +206,13 @@ ren idstr2 outcome
 drop idstr3 
 
 
-*keep ORs for ethnic group
-keep if label=="Eth 16 collapsed"
-drop label
-
-gen eth16=1 if regexm(parm, "1b")
-forvalues i=2/11 {
-	replace eth16=`i' if regexm(parm, "`i'.eth16")
-}
-
-drop parm eq
-order outcome model eth16
-
-label define eth16 	///
-						1 "British or Mixed British" ///
-						2 "Irish" ///
-						3 "Other White" ///
-						4 "Indian" ///
-						5 "Pakistani" ///
-						6 "Bangladeshi" ///					
-						7 "Caribbean" ///
-						8 "African" ///
-						9 "Chinese" ///
-						10 "All mixed" ///
-						11 "All Other" 
-label values eth16 eth16
-
-graph set window 
-gen num=[_n]
-sum num
-
-
-gen adjusted="Age-sex" if model=="model0"
-replace adjusted="Age-sex-IMD" if model=="model1"
-replace adjusted="+ co-morbidities" if model=="model2"
-replace adjusted="+ household size" if model=="model3"
-
 *save dataset for later
 outsheet using "$Tabfigdir/FP_ventilated_eth16.txt", replace
-
-*Create one graph 
-metan estimate min95 max95  if eth16!=1 ///
- , random effect(Odds Ratio) null(1) lcols(eth16) dp(2) by(adjusted)  ///
-	nowt nosubgroup nooverall nobox graphregion(color(white)) scheme(sj)  	///
-	title("Ventilation", size(medsmall)) 	///
-	t2title("complete case analysis", size(small)) 	///
-	graphregion(margin(zero)) 
-	graph export "$Tabfigdir\Forestplot_ventilated_eth16_cc.svg", replace  
-
 
 * Close log file 
 log close
 
-
+insheet using $Tabfigdir/table3_ventilated_eth16.txt, clear
 
 
 

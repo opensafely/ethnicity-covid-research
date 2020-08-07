@@ -18,7 +18,7 @@ OTHER OUTPUT: 			Log file: $logdir\02_an_data_checks
 * Open a log file
 
 capture log close
-log using $logdir/02_an_data_checks, replace t
+log using "$Logdir/02_an_data_checks", replace t
 
 numlabel, add
 
@@ -188,15 +188,6 @@ foreach i of global outcomes {
 		safetab eth5 `i', row
 		safetab eth16 `i', row
 }
-
-/* ENSURE ENOUGH OUTCOMES IN EACH CATEGORY INCLUDED IN FULLY ADJUSTED MODEL ====*/
-foreach i of global outcomes {
-	foreach var in $varlist 				{
-		local var: subinstr local var "i." ""	
-		safetab `i' `var', row 
-} //end varlist
-} //end outcomes
-
 
 * Close log file 
 log close

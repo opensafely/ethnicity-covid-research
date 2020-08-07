@@ -28,7 +28,7 @@ USER-INSTALLED ADO:
 
 * Open a log file
 capture log close
-log using $Logdir/05a_eth_table1_descriptives_eth16, replace t
+log using "$Logdir/05a_eth_table1_descriptives_eth16", replace t
 
 * Open Stata dataset
 use $Tempdir/analysis_dataset, clear
@@ -323,4 +323,4 @@ file close tablecontent
 log close
 
 clear
-insheet using $Tabfigdir/table1_eth16.txt
+insheet using "$Tabfigdir/table1_eth16.txt", clear

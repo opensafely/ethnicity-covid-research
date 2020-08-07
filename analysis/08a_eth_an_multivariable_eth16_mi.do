@@ -147,7 +147,7 @@ else di "WARNING MODEL3 DID NOT FIT (OUTCOME `i')"
 /* Print table================================================================*/ 
 
 * Column headings 
-file write tablecontent ("Outcome: `i'") _n
+file write tablecontent ("`i'") _n
 
 * Row headings 
 local lab1: label eth16 1

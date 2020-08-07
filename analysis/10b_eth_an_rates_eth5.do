@@ -15,7 +15,7 @@ OTHER OUTPUT: 			logfiles, printed to folder analysis/$logdir
 * Open a log file
 
 cap log close
-log using $logdir\10b_eth_an_rates_eth5, replace text
+log using "$Logdir/10b_eth_an_rates_eth5", replace text
 
 *CALCULATE RATES
 

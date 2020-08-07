@@ -15,7 +15,7 @@ OTHER OUTPUT: 			logfiles, printed to folder analysis/$logdir
 * Open a log file
 
 cap log close
-log using $logdir\10a_eth_an_rates_eth16, replace text
+log using "$Logdir/10a_eth_an_rates_eth16", replace text
 
 *CALCULATE RATES
 
@@ -126,17 +126,17 @@ ren _Rate rate_`i'
 ren _Lower lb_`i'
 ren _Upper ub_`i'
 gen unique=_n
-save $Tempdir/table4_`i'_eth16.dta, replace
+save "$Tempdir/table4_`i'_eth16.dta", replace
 
 } //end outcomes
 
 *MERGE ALL TABLES INTO ONE DATASET
-use $Tempdir/table4_tested_eth16.dta, clear
+use "$Tempdir/table4_tested_eth16.dta", clear
 foreach i of global outcomes {
-	merge 1:1 unique using  $Tempdir/table4_`i'_eth16.dta, nogen
+	merge 1:1 unique using  "$Tempdir/table4_`i'_eth16.dta", nogen
 }
-save $Tabfigdir/table4_eth16, replace
-outsheet using $Tabfigdir/table4_eth16.txt, replace
+save "$Tabfigdir/table4_eth16.dta", replace
+outsheet using "$Tabfigdir/table4_eth16.txt", replace
 
 
 
