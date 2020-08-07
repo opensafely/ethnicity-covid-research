@@ -189,14 +189,5 @@ foreach i of global outcomes {
 		safetab eth16 `i', row
 }
 
-/* ENSURE ENOUGH OUTCOMES IN EACH CATEGORY INCLUDED IN FULLY ADJUSTED MODEL ====*/
-foreach i of global outcomes {
-	foreach var in $varlist 				{
-		local var: subinstr local var "i." ""	
-		safetab `i' `var', row 
-} //end varlist
-} //end outcomes
-
-
 * Close log file 
 log close
