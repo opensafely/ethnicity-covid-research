@@ -17,7 +17,7 @@ OTHER OUTPUT: 			logfiles, printed to folder analysis/$logdir
 * Open a log file
 
 cap log close
-log using $logdir\11b_eth_an_testedpop_eth5, replace t
+log using "$Logdir/11b_eth_an_testedpop_eth5", replace t
 
 cap file close tablecontent
 file open tablecontent using $Tabfigdir/table5_testedpop_eth5.txt, write text replace
