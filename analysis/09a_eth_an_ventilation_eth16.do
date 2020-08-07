@@ -135,7 +135,7 @@ else di "WARNING MODEL3 DID NOT FIT (OUTCOME `outcome')"
 
 
 * Column headings 
-file write tablecontent ("Outcome: ventilated") _n
+file write tablecontent ("ventilated") _n
 
 * Row headings 
 local lab1: label eth16 1

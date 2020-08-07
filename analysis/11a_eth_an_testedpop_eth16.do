@@ -134,7 +134,7 @@ else di "WARNING MODEL3 DID NOT FIT (OUTCOME `outcome')"
 
 
 * Column headings 
-file write tablecontent ("Outcome: Positive Test") _n
+file write tablecontent ("Positive Test") _n
 
 * Row headings 
 local lab1: label eth16 1
