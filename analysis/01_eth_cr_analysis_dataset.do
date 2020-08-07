@@ -714,10 +714,9 @@ gen severe=1 if ae==1 | icu==1 | onscoviddeath==1
 /* SET FU DATES===============================================================*/ 
 
 * Censoring dates for each outcome (last date outcome data available)
-*https://github.com/opensafely/rapid-reports/blob/latest-dates/notebooks/latest-dates.ipynb
-
-gen suspected_censor_date = d("05/08/2020")
-gen confirmed_censor_date  = d("05/08/2020")
+*https://github.com/opensafely/rapid-reports/blob/master/notebooks/latest-dates.ipynb
+gen suspected_censor_date = d("31/07/2020")
+gen confirmed_censor_date  = d("31/07/2020")
 gen tested_censor_date = d("27/07/2020")
 gen positivetest_censor_date = d("27/07/2020")
 gen ae_censor_date = d("27/07/2020")
