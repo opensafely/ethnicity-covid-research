@@ -48,7 +48,7 @@ Data cleaning
 *Create analysis dataset
 do "$Dodir/01_eth_cr_analysis_dataset.do"
 
-/*
+
 *Checks 
 do "$Dodir/02_eth_an_data_checks.do"
 
@@ -65,8 +65,6 @@ do "$Dodir/06a_eth_an_multivariable_eth16.do"
 
 *Table 2 sens analysis: excluding care home residents
 do "$Dodir/07b_eth_an_nocarehomes_eth5.do"
-*/
-
 do "$Dodir/07a_eth_an_nocarehomes_eth16.do"
 
 *Table 3: Odds of receiving ventilation - in those admitted to ICU
@@ -77,11 +75,11 @@ do "$Dodir/09a_eth_an_ventilation_eth16"
 do "$Dodir/11b_eth_an_testedpop_eth5" 
 do "$Dodir/11a_eth_an_testedpop_eth16" 
 
-/*Table 6: seconday care outcomes amongs those with evidence of infection 
+*Table 6: seconday care outcomes amongs those with evidence of infection 
 do "$Dodir/12b_eth_an_infected_eth5"
 do "$Dodir/12a_eth_an_infected_eth16"
 
-*Table 8: Household size
+/*Table 8: Household size
 do "$Dodir/13b_eth_an_household_eth5"
 do "$Dodir/13a_eth_an_household_eth16"
 
