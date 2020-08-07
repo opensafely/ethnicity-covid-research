@@ -1,5 +1,5 @@
 /*==============================================================================
-DO FILE NAME:			09a_eth_an_ventilation_eth5
+DO FILE NAME:			09b_eth_an_ventilation_eth5
 PROJECT:				Ethnicity and COVID
 AUTHOR:					R Mathur (modified from A wong and A Schultze)
 DATE: 					15 July 2020					
@@ -17,15 +17,13 @@ OTHER OUTPUT: 			logfiles, printed to folder analysis/$logdir
 * Open a log file
 
 cap log close
-log using $logdir\09a_eth_an_ventilation_eth5, replace text
+log using $logdir\09b_eth_an_ventilation_eth5, replace text
 
 cap file close tablecontent
 file open tablecontent using $Tabfigdir/table3_ventilated_eth5.txt, write text replace
-file write tablecontent ("Table 3: Association between ethnicity and Ventilation - Complete Case Analysis") _n
-
-file write tablecontent _tab ("Number of events") _tab ("Univariable") _tab _tab ("Age/SexAdjusted") _tab _tab ("Age/Sex/IMD Adjusted") _tab _tab 	("+ co-morbidities") _tab _tab 	("+ household size)") _tab _tab _n
-
-file write tablecontent _tab _tab ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _n
+file write tablecontent ("Table 3: Odds of receiving invasive mechanical ventilation - Complete Case Analysis") _n
+file write tablecontent _tab ("Denominator") _tab ("Event") _tab ("%") _tab ("Crude") _tab _tab ("Age/Sex Adjusted") _tab _tab ("Age/Sex/IMD Adjusted") _tab _tab 	("plus co-morbidities") _tab _tab 	("plus hh size/carehome")  _tab _tab  _n
+file write tablecontent _tab _tab _tab _tab   ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _n
 
 
 
@@ -90,7 +88,7 @@ clogit ventilated  i.eth5 i.male age1 age2 age3 i.imd 							///
 										i.egfr60					///
 										i.esrf						///
 										i.other_immuno		 		///
-										i.ra_sle_psoriasis, strata(stp) nolog				
+										i.ra_sle_psoriasis, strata(stp) or nolog				
 										
 if _rc==0{
 estimates
@@ -119,7 +117,7 @@ clogit ventilated  i.eth5 i.male age1 age2 age3 i.imd i.hh_total_cat i.carehome	
 										i.egfr60					///
 										i.esrf						///
 										i.other_immuno		 		///
-										i.ra_sle_psoriasis, strata(stp) nolog				
+										i.ra_sle_psoriasis, strata(stp) or nolog				
 										
 if _rc==0{
 estimates
@@ -145,17 +143,23 @@ local lab5: label eth5 5
 /* Counts */
  
 * First row, eth5 = 1 (White) reference cat
-	count if eth5 == 1 & ventilated == 1
+	qui safecount if eth5==1
+	local denominator = r(N)
+	qui safecount if eth5 == 1 & ventilated == 1
 	local event = r(N)
+	local pct =(`event'/`denominator')
 	
-	file write tablecontent  ("`lab1'") _tab (`event') _tab ("1.00") _tab _tab ("1.00") _tab _tab ("1.00") _tab _tab ("1.00")  _tab _tab ("1.00") _n
+	file write tablecontent  ("`lab1'") _tab (`denominator') _tab (`event') _tab %3.2f (`pct') _tab
+	file write tablecontent ("1.00") _tab _tab ("1.00") _tab _tab ("1.00")  _tab _tab ("1.00") _tab _tab ("1.00") _n
 	
 * Subsequent ethnic groups
 forvalues eth=2/5 {
-	
-	count if eth5 == `eth' & ventilated == 1
+	qui safecount if eth5==`eth'
+	local denominator = r(N)
+	qui safecount if eth5 == `eth' & ventilated == 1
 	local event = r(N)
-	file write tablecontent  ("`lab`eth''") _tab   (`event') _tab
+	local pct =(`event'/`denominator')
+	file write tablecontent  ("`lab`eth''") _tab (`denominator') _tab (`event') _tab %3.2f (`pct') _tab
 	estimates use "$Tempdir/crude_ventilated_eth5" 
 	lincom `eth'.eth5, eform
 	file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (" - ") %4.2f (r(ub)) (")") _tab 
@@ -190,38 +194,6 @@ drop idstr
 ren idstr1 model
 ren idstr2 outcome
 drop idstr3 
-
-
-*keep ORs for ethnic group
-keep if label=="Eth 16 collapsed"
-drop label
-
-gen eth5=1 if regexm(parm, "1b")
-forvalues i=2/5 {
-	replace eth5=`i' if regexm(parm, "`i'.eth5")
-}
-
-drop parm eq
-order outcome model eth5
-
-label define eth5 	///
-						1 "White" ///
-						2 "South Asian" ///
-						3 "Black" ///
-						4 "Mixed" ///
-						5 "Other" 
-label values eth5 eth5
-
-graph set window 
-gen num=[_n]
-sum num
-
-
-gen adjusted="Age-sex" if model=="model0"
-replace adjusted="Age-sex-IMD" if model=="model1"
-replace adjusted="+ co-morbidities" if model=="model2"
-replace adjusted="+ hh-size/carehome" if model=="model3"
-replace adjusted="Crude" if model=="crude"
 
 *save dataset for later
 outsheet using "$Tabfigdir/FP_ventilated_eth5.txt", replace
