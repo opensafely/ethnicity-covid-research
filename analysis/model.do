@@ -53,17 +53,18 @@ do "$Dodir/02_eth_an_data_checks.do"
 /**********************
 MAIN ANALYSES
 **********************/
-*Table 1 baseline characteristics
+/*Table 1 baseline characteristics
 do "$Dodir/05b_eth_table1_descriptives_eth5.do"
 do "$Dodir/05a_eth_table1_descriptives_eth16.do"
 
 *Table 2: multivariable analysis - complete case 
 do "$Dodir/06b_eth_an_multivariable_eth5.do" 
+*/
 do "$Dodir/06a_eth_an_multivariable_eth16.do" 
 
 *Table 2 sens analysis: excluding care home residents
 do "$Dodir/07b_eth_an_nocarehomes_eth5.do"
-do "$Dodir/07b_eth_an_nocarehomes_eth5.do"
+do "$Dodir/07a_eth_an_nocarehomes_eth16.do"
 
 /*Table 3: Odds of receiving ventilation - in those admitted to ICU
 do "$Dodir/09b_eth_an_ventilation_eth5"
