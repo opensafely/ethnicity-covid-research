@@ -73,7 +73,6 @@ do "$Dodir/07a_eth_an_nocarehomes_eth16.do"
 do "$Dodir/09b_eth_an_ventilation_eth5"
 do "$Dodir/09a_eth_an_ventilation_eth16"
 
-
 *Table 5: Odds of testing positive amongst those with SGSS testing data
 do "$Dodir/11b_eth_an_testedpop_eth5" 
 do "$Dodir/11a_eth_an_testedpop_eth16" 
