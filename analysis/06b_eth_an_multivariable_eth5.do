@@ -17,13 +17,13 @@ OTHER OUTPUT: 			logfiles, printed to folder analysis/$logdir
 
 cap log close
 macro drop hr
-log using $logdir\06b_eth_an_multivariable_eth5, replace t 
+log using "$Logdir/06b_eth_an_multivariable_eth5", replace t 
 
 cap file close tablecontent
-file open tablecontent using $Tabfigdir/table2_eth5.txt, write text replace
+file open tablecontent using "$Tabfigdir/table2_eth5.txt", write text replace
 file write tablecontent ("Table 2: Association between ethnicity in 16 categories and COVID-19 outcomes - Complete Case Analysis") _n
-file write tablecontent _tab ("No event") _tab ("Event") _tab ("Total person-weeks") _tab ("Rate per 1,000") _tab ("Crude") _tab _tab ("Age/Sex Adjusted") _tab _tab ("Age/Sex/IMD Adjusted") _tab _tab 	("plus co-morbidities") _tab _tab 	("plus hh size/carehome")  _tab _tab _n
-file write tablecontent _tab _tab _tab _tab _tab   ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI")  _n
+file write tablecontent _tab ("Denominator") _tab ("Event") _tab ("Total person-weeks") _tab ("Rate per 1,000") _tab ("Crude") _tab _tab ("Age/Sex Adjusted") _tab _tab ("Age/Sex/IMD Adjusted") _tab _tab 	("plus co-morbidities") _tab _tab 	("plus hh size/carehome")  _tab _tab  _n
+file write tablecontent _tab _tab _tab _tab _tab   ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _n
 
 
 
@@ -31,6 +31,7 @@ foreach i of global outcomes {
 	di "`i'"
 * Open Stata dataset
 use "$Tempdir/analysis_dataset_STSET_`i'.dta", clear
+
 
 /* Sense check outcomes=======================================================*/ 
 
@@ -57,7 +58,7 @@ local hr "`hr' "$Tempdir/model0_`i'_eth5" "
 
 * Age, Gender, IMD
 
-noi cap stcox i.eth5 i.male age1 age2 age3 i.imd, strata(stp) nolog
+stcox i.eth5 i.male age1 age2 age3 i.imd, strata(stp) nolog
 if _rc==0{
 estimates
 estimates save "$Tempdir/model1_`i'_eth5", replace 
@@ -122,14 +123,13 @@ local hr "`hr' "$Tempdir/model3_`i'_eth5" "
 }
 else di "WARNING MODEL3 DID NOT FIT (OUTCOME `i')"
 
-
 										
 /* Print table================================================================*/ 
 *  Print the results for the main model 
 
 
 * Column headings 
-file write tablecontent ("Outcome: `i'") _n
+file write tablecontent ("`i'") _n
 
 * Row headings 
 local lab1: label eth5 1
@@ -140,9 +140,9 @@ local lab5: label eth5 5
 
 /* counts */
  
-* First row, eth5 = 1 (White ) reference cat
-	qui safecount if eth5 == 1 & `i' == 0
-	local noevent = r(N)
+* First row, eth5 = 1 (White British) reference cat
+	qui safecount if eth5==1
+	local denominator = r(N)
 	qui safecount if eth5 == 1 & `i' == 1
 	local event = r(N)
     bysort eth5: egen total_follow_up = total(_t)
@@ -150,19 +150,19 @@ local lab5: label eth5 5
 	local person_week = r(mean)/7
 	local rate = 1000*(`event'/`person_week')
 	
-	file write tablecontent  ("`lab1'") _tab (`noevent') _tab (`event') _tab %10.0f (`person_week') _tab %3.2f (`rate') _tab
-	file write tablecontent ("1.00") _tab _tab ("1.00") _tab _tab ("1.00")  _tab _tab ("1.00") _tab _tab ("1.00") _tab _tab _n
+	file write tablecontent  ("`lab1'") _tab (`denominator') _tab (`event') _tab %10.0f (`person_week') _tab %3.2f (`rate') _tab
+	file write tablecontent ("1.00") _tab _tab ("1.00") _tab _tab ("1.00")  _tab _tab ("1.00") _tab _tab ("1.00") _n
 	
 * Subsequent ethnic groups
 forvalues eth=2/5 {
-	qui safecount if eth5 == `eth' & `i' == 0
-	local noevent = r(N)
+	qui safecount if eth5==`eth'
+	local denominator = r(N)
 	qui safecount if eth5 == `eth' & `i' == 1
 	local event = r(N)
 	qui su total_follow_up if eth5 == `eth'
 	local person_week = r(mean)/7
 	local rate = 1000*(`event'/`person_week')
-	file write tablecontent  ("`lab`eth''") _tab (`noevent') _tab (`event') _tab %10.0f (`person_week') _tab %3.2f (`rate') _tab  
+	file write tablecontent  ("`lab`eth''") _tab (`denominator') _tab (`event') _tab %10.0f (`person_week') _tab %3.2f (`rate') _tab  
 	cap estimates use "$Tempdir/crude_`i'_eth5" 
 	cap cap lincom `eth'.eth5, eform
 	file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (" - ") %4.2f (r(ub)) (")") _tab 
@@ -182,8 +182,6 @@ forvalues eth=2/5 {
 	cap estimates use "$Tempdir/model3_`i'_eth5" 
 	cap cap lincom `eth'.eth5, eform
 	file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (" - ") %4.2f (r(ub)) (")") _n
-	cap estimates clear
-
 }  //end ethnic group
 
 
@@ -200,40 +198,8 @@ ren idstr2 outcome
 drop idstr idstr3
 tab model
 
-*keep ORs for ethnicity
-keep if regexm(label, "Eth")
-drop label
-
-gen eth5=1 if regexm(parm, "1b")
-forvalues i=2/11 {
-	replace eth5=`i' if regexm(parm, "`i'.eth5")
-}
-
-drop parm  stderr z 
-order outcome model eth5 
-
-destring eth5, replace
-label define eth5 	///
-						1 "White" ///
-						2 "South Asian" ///
-						3 "Black" ///
-						4 "Mixed" ///
-						5 "Other" 
-label values eth5 eth5
-
-graph set window 
-gen num=[_n]
-sum num
-
-gen adjusted="Crude" if model=="crude"
-replace adjusted="Age-sex" if model=="model0"
-replace adjusted="Age-sex-IMD" if model=="model1"
-replace adjusted="+ co-morbidities" if model=="model2"
-replace adjusted="+ household size & carehome" if model=="model3"
-
 *save dataset for later
 outsheet using "$Tabfigdir/FP_multivariable_eth5.txt", replace
-save "$Tabfigdir/FP_multivariable_eth5.dta", replace
 
 * Close log file 
 log close
