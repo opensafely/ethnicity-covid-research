@@ -38,8 +38,8 @@ global tempdir    "$Tempdir"
 * Set globals for  outcomes
 global outcomes "suspected confirmed  tested positivetest ae icu cpnsdeath  onsdeath onscoviddeath onsconfirmeddeath onssuspecteddeath ons_noncoviddeath severe"  
 
-global outcomes2 "ae icu cpnsdeath  onsdeath onscoviddeath onsconfirmeddeath onssuspecteddeath ons_noncoviddeath severe "
-
+global outcomes2 "ae icu cpnsdeath  onsdeath onscoviddeath onsconfirmeddeath  ons_noncoviddeath severe " ///onssuspecteddeath
+ 
 
 /**********************
 Data cleaning
@@ -49,8 +49,8 @@ Data cleaning
 do "$Dodir/01_eth_cr_analysis_dataset.do"
 
 
-/*Checks 
-do "$Dodir/02_eth_an_data_checks.do"
+*Checks 
+*do "$Dodir/02_eth_an_data_checks.do"
 
 /**********************
 ETH 5
@@ -63,7 +63,7 @@ do "$Dodir/06b_eth_an_multivariable_eth5.do"
 
 *Table 2 sens analysis: excluding care home residents
 do "$Dodir/07b_eth_an_nocarehomes_eth5.do"
-*/
+
 *Table 3: Odds of receiving ventilation - in those admitted to ICU
 do "$Dodir/09b_eth_an_ventilation_eth5"
 
@@ -95,6 +95,7 @@ do "$Dodir/11a_eth_an_testedpop_eth16"
 
 *Table 6: seconday care outcomes amongs those with evidence of infection 
 do "$Dodir/12a_eth_an_infected_eth16"
+*/
 
 /*Table 8: Household size
 do "$Dodir/13b_eth_an_household_eth5"
