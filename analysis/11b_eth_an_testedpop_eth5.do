@@ -55,7 +55,7 @@ parmest, label eform format(estimate p lb ub) saving("$Tempdir/crude_positivetes
 
 /* Multivariable models */ 
 *Age Gender
-clogit positivetest i.eth5 i.male age1 age2 age3, strata(stp) or nolog
+melogit positivetest i.eth5 i.male age1 age2 age3 || stp: , nolog
 if _rc==0{
 estimates
 estimates save "$Tempdir/model0_positivetest_eth5", replace 
@@ -64,7 +64,7 @@ parmest, label eform format(estimate p lb ub) saving("$Tempdir/model0_positivete
 else di "WARNING MODEL0 DID NOT FIT (OUTCOME `outcome')"
 
 * Age, Gender, IMD
-clogit positivetest i.eth5 i.male age1 age2 age3 i.imd, strata(stp) or nolog
+melogit positivetest i.eth5 i.male age1 age2 age3 i.imd || stp: , nolog
 if _rc==0{
 estimates
 estimates save "$Tempdir/model1_positivetest_eth5", replace 
@@ -74,7 +74,7 @@ else di "WARNING MODEL1 DID NOT FIT (OUTCOME `outcome')"
 
 
 * Age, Gender, IMD and Comorbidities  
-clogit positivetest  i.eth5 i.male age1 age2 age3 i.imd 							///
+melogit positivetest  i.eth5 i.male age1 age2 age3 i.imd 							///
 										bmi							///
 										gp_consult_count			///
 										i.smoke_nomiss				///
@@ -91,7 +91,7 @@ clogit positivetest  i.eth5 i.male age1 age2 age3 i.imd 							///
 										i.egfr60					///
 										i.esrf						///
 										i.other_immuno		 		///
-										i.ra_sle_psoriasis, strata(stp) nolog				
+										i.ra_sle_psoriasis || stp: , nolog				
 										
 if _rc==0{
 estimates
@@ -100,10 +100,8 @@ parmest, label eform format(estimate p lb ub) saving("$Tempdir/model2_positivete
 }
 else di "WARNING MODEL2 DID NOT FIT (OUTCOME `outcome')"
 
-* Age, Gender, IMD and Comorbidities and household size
-
 * Age, Gender, IMD and Comorbidities  and household size and carehome
-clogit positivetest  i.eth5 i.male age1 age2 age3 i.imd i.hh_total_cat i.carehome	///
+melogit positivetest  i.eth5 i.male age1 age2 age3 i.imd i.hh_total_cat i.carehome	///
 										bmi							///
 										gp_consult_count			///
 										i.smoke_nomiss				///
@@ -120,7 +118,7 @@ clogit positivetest  i.eth5 i.male age1 age2 age3 i.imd i.hh_total_cat i.carehom
 										i.egfr60					///
 										i.esrf						///
 										i.other_immuno		 		///
-										i.ra_sle_psoriasis, strata(stp) nolog				
+										i.ra_sle_psoriasis || stp: , nolog			
 										
 if _rc==0{
 estimates
@@ -146,18 +144,25 @@ local lab5: label eth5 5
 /* Counts */
  
 * First row, eth5 = 1 (White) reference cat
-	count if eth5 == 1 & positivetest == 1
+	qui safecount if eth5==1
+	local denominator = r(N)
+	qui safecount if eth5 == 1 & positivetest == 1
 	local event = r(N)
-	file write tablecontent  ("`lab1'") _tab (`event') _tab ("1.00") _tab _tab ("1.00") _tab _tab ("1.00")  _tab _tab ("1.00") _tab _tab ("1.00") _n
+	local pct =(`event'/`denominator')
+	
+	file write tablecontent  ("`lab1'") _tab (`denominator') _tab (`event') _tab %3.2f (`pct') _tab
+	file write tablecontent ("1.00") _tab _tab ("1.00") _tab _tab ("1.00")  _tab _tab ("1.00") _tab _tab ("1.00") _n
 	
 * Subsequent ethnic groups
 forvalues eth=2/5 {
-	
-	count if eth5 == `eth' & positivetest == 1
+	qui safecount if eth5==`eth'
+	local denominator = r(N)
+	qui safecount if eth5 == `eth' & positivetest == 1
 	local event = r(N)
-	file write tablecontent  ("`lab`eth''") _tab   (`event') _tab
-	cap estimates use "$Tempdir/crude_positivetest_eth5" 
-	cap lincom `eth'.eth5, eform
+	local pct =(`event'/`denominator')
+	file write tablecontent  ("`lab`eth''") _tab (`denominator') _tab (`event') _tab %3.2f (`pct') _tab
+	estimates use "$Tempdir/crude_positivetest_eth5" 
+	lincom `eth'.eth5, eform
 	file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (" - ") %4.2f (r(ub)) (")") _tab 
 	cap estimates clear
 	cap estimates use "$Tempdir/model0_positivetest_eth5" 
@@ -177,8 +182,9 @@ forvalues eth=2/5 {
 	file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (" - ") %4.2f (r(ub)) (")") _n
 }  //end ethnic group
 
-
 file close tablecontent
+
+
 
 /* Foresplot================================================================*/ 
 

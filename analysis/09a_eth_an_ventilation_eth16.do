@@ -56,7 +56,7 @@ parmest, label eform format(estimate p lb ub) saving("$Tempdir/crude_ventilated_
 
 /* Multivariable models */ 
 *Age Gender
-clogit ventilated i.eth16 i.male age1 age2 age3, strata(stp) or nolog
+melogit ventilated i.eth16 i.male age1 age2 age3 || stp: , nolog
 if _rc==0{
 estimates
 estimates save "$Tempdir/model0_ventilated_eth16", replace 
@@ -65,7 +65,7 @@ parmest, label eform format(estimate p lb ub) saving("$Tempdir/model0_ventilated
 else di "WARNING MODEL0 DID NOT FIT (OUTCOME `outcome')"
 
 * Age, Gender, IMD
-clogit ventilated i.eth16 i.male age1 age2 age3 i.imd, strata(stp) or nolog
+melogit ventilated i.eth16 i.male age1 age2 age3 i.imd || stp: , nolog
 if _rc==0{
 estimates
 estimates save "$Tempdir/model1_ventilated_eth16", replace 
@@ -75,7 +75,7 @@ else di "WARNING MODEL1 DID NOT FIT (OUTCOME `outcome')"
 
 
 * Age, Gender, IMD and Comorbidities  
-clogit ventilated  i.eth16 i.male age1 age2 age3 i.imd 							///
+melogit ventilated  i.eth16 i.male age1 age2 age3 i.imd 							///
 										bmi							///
 										gp_consult_count			///
 										i.smoke_nomiss				///
@@ -92,7 +92,7 @@ clogit ventilated  i.eth16 i.male age1 age2 age3 i.imd 							///
 										i.egfr60					///
 										i.esrf						///
 										i.other_immuno		 		///
-										i.ra_sle_psoriasis, strata(stp) or nolog				
+										i.ra_sle_psoriasis || stp: , nolog			
 										
 if _rc==0{
 estimates
@@ -101,10 +101,9 @@ parmest, label eform format(estimate p lb ub) saving("$Tempdir/model2_ventilated
 }
 else di "WARNING MODEL2 DID NOT FIT (OUTCOME `outcome')"
 
-* Age, Gender, IMD and Comorbidities and household size
 
 * Age, Gender, IMD and Comorbidities  and household size and carehome
-clogit ventilated  i.eth16 i.male age1 age2 age3 i.imd i.hh_total_cat i.carehome	///
+melogit ventilated  i.eth16 i.male age1 age2 age3 i.imd i.hh_total_cat i.carehome	///
 										bmi							///
 										gp_consult_count			///
 										i.smoke_nomiss				///
@@ -121,7 +120,7 @@ clogit ventilated  i.eth16 i.male age1 age2 age3 i.imd i.hh_total_cat i.carehome
 										i.egfr60					///
 										i.esrf						///
 										i.other_immuno		 		///
-										i.ra_sle_psoriasis, strata(stp) or nolog				
+										i.ra_sle_psoriasis || stp: , nolog				
 										
 if _rc==0{
 estimates
