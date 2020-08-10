@@ -49,7 +49,7 @@ Data cleaning
 do "$Dodir/01_eth_cr_analysis_dataset.do"
 
 
-*Checks 
+/*Checks 
 do "$Dodir/02_eth_an_data_checks.do"
 
 /**********************
@@ -63,7 +63,7 @@ do "$Dodir/06b_eth_an_multivariable_eth5.do"
 
 *Table 2 sens analysis: excluding care home residents
 do "$Dodir/07b_eth_an_nocarehomes_eth5.do"
-
+*/
 *Table 3: Odds of receiving ventilation - in those admitted to ICU
 do "$Dodir/09b_eth_an_ventilation_eth5"
 
