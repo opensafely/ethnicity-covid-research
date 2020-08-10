@@ -45,11 +45,11 @@ global outcomes2 "ae icu cpnsdeath  onsdeath onscoviddeath onsconfirmeddeath ons
 Data cleaning
 **********************/
 
-/*Create analysis dataset
+*Create analysis dataset
 do "$Dodir/01_eth_cr_analysis_dataset.do"
 
 
-*Checks 
+/*Checks 
 do "$Dodir/02_eth_an_data_checks.do"
 
 /**********************
