@@ -50,7 +50,7 @@ do "$Dodir/01_eth_cr_analysis_dataset.do"
 
 
 *Checks 
-do "$Dodir/02_eth_an_data_checks.do"
+*do "$Dodir/02_eth_an_data_checks.do"
 
 /**********************
 ETH 5
@@ -100,7 +100,7 @@ do "$Dodir/12a_eth_an_infected_eth16"
 /*Table 8: Household size
 do "$Dodir/13b_eth_an_household_eth5"
 do "$Dodir/13a_eth_an_household_eth16"
-*/
+
 *Table 9: Diabetes
 do "$Dodir/14b_eth_an_diabetes_eth5"
 do "$Dodir/14a_eth_an_diabetes_eth16"
