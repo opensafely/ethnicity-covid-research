@@ -113,6 +113,7 @@ file write tablecontent ("`labeth': `i'") _n
 local lab1: label hh_total_cat 1
 local lab2: label hh_total_cat 2
 local lab3: label hh_total_cat 3
+local lab4: label hh_total_cat 4
 
 /* counts */
  
@@ -131,7 +132,7 @@ local lab3: label hh_total_cat 3
 	
 * Subsequent household categories
 
-forvalues hh=2/3 {
+forvalues hh=2/4 {
 	safecount if hh_total_cat==`hh'
 	local denominator = r(N)
 	safecount if hh_total_cat == `hh' & `i' == 1
