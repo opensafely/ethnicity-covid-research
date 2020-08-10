@@ -120,11 +120,11 @@ stcox i.diabcat i.male age1 age2 age3 	i.imd i.hh_total_cat i.carehome			///
 										i.ra_sle_psoriasis, strata(stp) nolog		
 if _rc==0{
 estimates
-estimates save "$Tempdir/dm_model2_`i'_eth16_`eth'", replace 
-parmest, label eform format(estimate p lb ub) saving("$Tempdir/model2_`i'_eth16_`eth'", replace) idstr("model2_`i'_eth16_`eth'") 
-local hr "`hr' "$Tempdir/model2_`i'_eth16_`eth'" "
+estimates save "$Tempdir/dm_model3_`i'_eth16_`eth'", replace 
+parmest, label eform format(estimate p lb ub) saving("$Tempdir/model3_`i'_eth16_`eth'", replace) idstr("model3_`i'_eth16_`eth'") 
+local hr "`hr' "$Tempdir/model3_`i'_eth16_`eth'" "
 }
-else di "WARNING MODEL2 DID NOT FIT (OUTCOME `i')"
+else di "WARNING MODEL3 DID NOT FIT (OUTCOME `i')"
 										
 									
 /* Print table================================================================*/ 
