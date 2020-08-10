@@ -38,8 +38,10 @@ global tempdir    "$Tempdir"
 * Set globals for  outcomes
 global outcomes "suspected confirmed  tested positivetest ae icu cpnsdeath  onsdeath onscoviddeath onsconfirmeddeath onssuspecteddeath ons_noncoviddeath severe"  
 
-global outcomes2 "ae icu cpnsdeath  onsdeath onscoviddeath onsconfirmeddeath onssuspecteddeath ons_noncoviddeath severe "
+*global outcomes2 "ae icu cpnsdeath  onsdeath onscoviddeath onsconfirmeddeath onssuspecteddeath ons_noncoviddeath severe "
+/* onssuspecteddeath didnt run in 12b*/
 
+global outcomes2 "ae icu cpnsdeath  onsdeath onscoviddeath onsconfirmeddeath  ons_noncoviddeath severe "
 
 /**********************
 Data cleaning
