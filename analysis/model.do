@@ -38,8 +38,8 @@ global tempdir    "$Tempdir"
 * Set globals for  outcomes
 global outcomes "suspected confirmed  tested positivetest ae icu cpnsdeath  onsdeath onscoviddeath onsconfirmeddeath onssuspecteddeath ons_noncoviddeath severe"  
 
-global outcomes2 "ae icu cpnsdeath  onsdeath onscoviddeath onsconfirmeddeath onssuspecteddeath ons_noncoviddeath severe "
-
+global outcomes2 "ae icu cpnsdeath  onsdeath onscoviddeath onsconfirmeddeath  ons_noncoviddeath severe " ///onssuspecteddeath
+ 
 
 /**********************
 Data cleaning
@@ -49,7 +49,7 @@ Data cleaning
 do "$Dodir/01_eth_cr_analysis_dataset.do"
 
 
-/*Checks 
+*Checks 
 do "$Dodir/02_eth_an_data_checks.do"
 
 /**********************
@@ -97,10 +97,10 @@ do "$Dodir/11a_eth_an_testedpop_eth16"
 do "$Dodir/12a_eth_an_infected_eth16"
 */
 
-*Table 8: Household size
+/*Table 8: Household size
 do "$Dodir/13b_eth_an_household_eth5"
 do "$Dodir/13a_eth_an_household_eth16"
-
+*/
 *Table 9: Diabetes
 do "$Dodir/14b_eth_an_diabetes_eth5"
 do "$Dodir/14a_eth_an_diabetes_eth16"
