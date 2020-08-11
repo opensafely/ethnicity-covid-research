@@ -197,13 +197,15 @@ gen hh_total_cat=.
 replace hh_total_cat=1 if hh_size >=1 & hh_size<=2
 replace hh_total_cat=2 if hh_size >=3 & hh_size<=5
 replace hh_total_cat=3 if hh_size >=6 & hh_size<=10
+replace hh_total_cat=4 if hh_size >=11
 		
 *remove people from hh_cat if they live in a care home
 replace hh_total_cat=. if care_home_type!="U"
 			
 label define hh_total_cat 1 "1-2" ///
 						2 "3-5" ///
-						3 "6-10" 
+						3 "6-10" ///
+						4 "11+"
 											
 label values hh_total_cat hh_total_cat
 

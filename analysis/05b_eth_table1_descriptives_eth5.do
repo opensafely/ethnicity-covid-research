@@ -226,7 +226,7 @@ file write tablecontent _n
 tabulatevariable, variable(imd) min(1) max(5) 
 file write tablecontent _n 
 
-tabulatevariable, variable(hh_total_cat) min(0) max(2) 
+tabulatevariable, variable(hh_total_cat) min(1) max(4) 
 file write tablecontent _n 
 
 tabulatevariable, variable(carehome) min(0) max(1) 
@@ -277,7 +277,6 @@ foreach comorb of varlist 		///
 	dementia					///
 	other_neuro					///
 	chronic_respiratory_disease ///
-	asthma						///
 	{ 
 	local comorb: subinstr local comorb "i." ""
 	local lab: variable label `comorb'
@@ -292,7 +291,6 @@ foreach comorb of varlist 		///
 
 ** OTHER TREATMENT VARIABLES (binary)
 foreach treat of varlist ///
-	combination_bp_meds ///
 	statin 				///
 	insulin				///
 						{    		
