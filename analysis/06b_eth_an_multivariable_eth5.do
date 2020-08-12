@@ -28,15 +28,15 @@ file write tablecontent _tab _tab _tab _tab _tab   ("HR") _tab ("95% CI") _tab (
 
 
 foreach i of global outcomes {
+use "$Tempdir/analysis_dataset_STSET_`i'.dta", clear
+safetab eth5 `i', missing row
+} //end outcomes
+
+foreach i of global outcomes {
 	di "`i'"
+
 * Open Stata dataset
 use "$Tempdir/analysis_dataset_STSET_`i'.dta", clear
-
-
-/* Sense check outcomes=======================================================*/ 
-
-safetab eth5 `i', missing row
-
 
 /* Main Model=================================================================*/
 
