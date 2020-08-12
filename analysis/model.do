@@ -74,10 +74,10 @@ do "$Dodir/11b_eth_an_testedpop_eth5"
 *Table 6: seconday care outcomes amongs those with evidence of infection 
 do "$Dodir/12b_eth_an_infected_eth5"
 
-*Table 8: Household size 
-do "$Dodir/13b_eth_an_household_eth5"
+*Table 8: Household size - dummy data has missing data in some categories - should run on server
+*do "$Dodir/13b_eth_an_household_eth5"
 
-*Table 9: Diabetes
+*Table 9: Diabetes - dummy data has missing data in some categories - should run on server
 do "$Dodir/14b_eth_an_diabetes_eth5"
 
 
