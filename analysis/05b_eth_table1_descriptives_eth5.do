@@ -226,6 +226,12 @@ file write tablecontent _n
 tabulatevariable, variable(imd) min(1) max(5) 
 file write tablecontent _n 
 
+qui summarizevariable, variable(hh_size) 
+file write tablecontent _n
+
+qui summarizevariable, variable(hh_total) 
+
+
 tabulatevariable, variable(hh_total_cat) min(1) max(4) 
 file write tablecontent _n 
 
