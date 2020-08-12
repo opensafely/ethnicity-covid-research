@@ -197,7 +197,7 @@ gen hh_total_cat=.
 replace hh_total_cat=1 if hh_size >=1 & hh_size<=2
 replace hh_total_cat=2 if hh_size >=3 & hh_size<=5
 replace hh_total_cat=3 if hh_size >=6 & hh_size<=10
-replace hh_total_cat=4 if hh_size >=11
+replace hh_total_cat=4 if hh_size >=11 & hh_size!=.
 		
 *remove people from hh_cat if they live in a care home
 replace hh_total_cat=. if care_home_type!="U"
@@ -211,6 +211,16 @@ label values hh_total_cat hh_total_cat
 
 safetab hh_total_cat,m
 safetab hh_total_cat care_home_type,m
+
+**care home
+encode care_home_type, gen(carehometype)
+drop care_home_type
+
+gen carehome=0
+replace carehome=1 if carehometype<4
+safetab  carehometype carehome
+
+safetab hh_total_cat carehome,m 
 
 ****************************
 *  Create required cohort  *
@@ -637,13 +647,6 @@ safetab diabcat, m
 replace asthma=1 if asthma==2
 safetab asthma
 
-**care home
-encode care_home_type, gen(carehometype)
-drop care_home_type
-
-gen carehome=0
-replace carehome=1 if carehometype<4
-safetab  carehometype carehome
 
 /* OUTCOME AND SURVIVAL TIME==================================================*/
 
