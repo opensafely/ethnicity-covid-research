@@ -62,9 +62,6 @@ do "$Dodir/05b_eth_table1_descriptives_eth5.do"
 *Table 2: multivariable analysis - complete case 
 do "$Dodir/06b_eth_an_multivariable_eth5.do" 
 
-*Table 2 sens analysis: excluding care home residents
-do "$Dodir/07b_eth_an_nocarehomes_eth5.do"
-
 *Table 3: Odds of receiving ventilation - in those admitted to ICU
 do "$Dodir/09b_eth_an_ventilation_eth5"
 
@@ -92,7 +89,6 @@ do "$Dodir/05a_eth_table1_descriptives_eth16.do"
 do "$Dodir/06a_eth_an_multivariable_eth16.do" 
 
 *Table 2 sens analysis: excluding care home residents
-do "$Dodir/07a_eth_an_nocarehomes_eth16.do"
 
 *Table 3: Odds of receiving ventilation - in those admitted to ICU
 do "$Dodir/09a_eth_an_ventilation_eth16"
@@ -110,6 +106,16 @@ do "$Dodir/13a_eth_an_household_eth16"
 *Table 9: Diabetes
 do "$Dodir/14b_eth_an_diabetes_eth5"
 do "$Dodir/14a_eth_an_diabetes_eth16"
+
+/**********************
+SENSITIVITY  ANALYSIS
+**********************/
+
+
+*Table 2 sens analysis: excluding care home residents
+do "$Dodir/07b_eth_an_nocarehomes_eth5.do"
+do "$Dodir/07a_eth_an_nocarehomes_eth16.do"
+
 
 /**********************
 MULTIPLE IMPUTATION
