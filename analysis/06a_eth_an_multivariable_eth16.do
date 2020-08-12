@@ -28,17 +28,19 @@ file write tablecontent _tab _tab _tab _tab _tab   ("HR") _tab ("95% CI") _tab (
 
 
 foreach i of global outcomes {
-	di "`i'"
-* Open Stata dataset
 use "$Tempdir/analysis_dataset_STSET_`i'.dta", clear
 
 *drop irish for icu due to small numbers
 drop if eth16==2 & "`i'"=="icu"
 
-/* Sense check outcomes=======================================================*/ 
-
 safetab eth16 `i', missing row
+} //end outcomes
 
+foreach i of global outcomes {
+	di "`i'"
+	
+* Open Stata dataset
+use "$Tempdir/analysis_dataset_STSET_`i'.dta", clear
 
 /* Main Model=================================================================*/
 
@@ -68,7 +70,6 @@ parmest, label eform format(estimate p lb ub) saving("$Tempdir/model1_`i'_eth16"
 local hr "`hr' "$Tempdir/model1_`i'_eth16" "
 }
 else di "WARNING MODEL1 DID NOT FIT (OUTCOME `i')"
-
 
 * Age, Gender, IMD and Comorbidities 
 stcox i.eth16 i.male age1 age2 age3 	i.imd			///

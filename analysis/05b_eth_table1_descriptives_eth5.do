@@ -276,6 +276,7 @@ foreach comorb of varlist 		///
 	chronic_liver_disease		///
 	dementia					///
 	other_neuro					///
+	asthma ///
 	chronic_respiratory_disease ///
 	{ 
 	local comorb: subinstr local comorb "i." ""
@@ -291,6 +292,7 @@ foreach comorb of varlist 		///
 
 ** OTHER TREATMENT VARIABLES (binary)
 foreach treat of varlist ///
+	combination_bp_meds ///
 	statin 				///
 	insulin				///
 						{    		
