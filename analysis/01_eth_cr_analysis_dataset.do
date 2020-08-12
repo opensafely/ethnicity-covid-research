@@ -634,12 +634,8 @@ safetab diabcat, m
 
 /*  Asthma  */
 * Asthma  (coded: 0 No, 1 Yes no OCS, 2 Yes with OCS)
-rename asthma asthmacat
-recode asthmacat 0=1 1=2 2=3
-label define asthmacat 1 "No" 2 "Yes, no OCS" 3 "Yes with OCS"
-label values asthmacat asthmacat
-
-gen asthma = (asthmacat==2|asthmacat==3)
+replace asthma=1 if asthma==2
+safetab asthma
 
 **care home
 encode care_home_type, gen(carehometype)
@@ -676,7 +672,7 @@ gen ons_noncoviddeath_date = onsdeath_date if died_ons_covid_flag_any != 1
 /* CONVERT STRINGS TO DATE FOR OUTCOME VARIABLES =============================*/
 * Recode to dates from the strings 
 *gen dummy date for severe and replace later on
-gen severe_date=ae_date
+*gen severe_date=ae_date
 
 foreach var of global outcomes {
 	confirm string variable `var'_date
@@ -688,7 +684,7 @@ foreach var of global outcomes {
 }
 
 *Date of first severe outcome
-replace severe_date = min(ae_date, icu_date, onscoviddeath_date)
+*replace severe_date = min(ae_date, icu_date, onscoviddeath_date)
 
 *If outcome occurs on the first day of follow-up add one day
 foreach i of global outcomes {
@@ -709,8 +705,8 @@ foreach i of global outcomes {
 		safetab `i'
 }
 
-drop severe
-gen severe=1 if ae==1 | icu==1 | onscoviddeath==1
+*drop severe
+*gen severe=1 if ae==1 | icu==1 | onscoviddeath==1
 
 /* CENSORING */
 /* SET FU DATES===============================================================*/ 
@@ -729,7 +725,7 @@ gen onscoviddeath_censor_date = d("24/07/2020")
 gen onsconfirmeddeath_censor_date = d("24/07/2020")
 gen onssuspecteddeath_censor_date = d("24/07/2020")
 gen ons_noncoviddeath_censor_date = d("24/07/2020")
-gen severe_censor_date  = d("24/07/2020")
+*gen severe_censor_date  = d("24/07/2020")
 
 *******************************************************************************
 format *censor_date %d
@@ -762,12 +758,12 @@ foreach i of global outcomes {
 * Format date variables
 format  stime* %td 
 
-*distribution of outcome dates
+/*distribution of outcome dates
 foreach i of global outcomes {
 	histogram `i'_date, discrete width(15) frequency ytitle(`i') xtitle(Date) scheme(meta) 
 graph export "$Tabfigdir/outcome_`i'_freq.svg", as(svg) replace
 }
-
+*/
 /* LABEL VARIABLES============================================================*/
 *  Label variables you are intending to keep, drop the rest 
 
@@ -810,7 +806,6 @@ lab var gp_consult_count			"Number of GP consultations in the 12 months prior to
 
 * Comorbidities of interest 
 label var asthma						"Asthma category"
-lab var asthmacat						"Asthma detailed categories"
 label var hypertension				    "Diagnosed hypertension"
 label var chronic_respiratory_disease 	"Chronic Respiratory Diseases"
 label var chronic_cardiac_disease 		"Chronic Cardiac Diseases"
