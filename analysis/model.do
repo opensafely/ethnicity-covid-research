@@ -74,6 +74,12 @@ do "$Dodir/11b_eth_an_testedpop_eth5"
 *Table 6: seconday care outcomes amongs those with evidence of infection 
 do "$Dodir/12b_eth_an_infected_eth5"
 
+*Table 8: Household size 
+do "$Dodir/13b_eth_an_household_eth5"
+
+*Table 9: Diabetes
+do "$Dodir/14b_eth_an_diabetes_eth5"
+
 
 /**********************
 ETH 16
@@ -96,10 +102,9 @@ do "$Dodir/11a_eth_an_testedpop_eth16"
 
 *Table 6: seconday care outcomes amongs those with evidence of infection 
 do "$Dodir/12a_eth_an_infected_eth16"
-*/
 
-/*Table 8: Household size
-do "$Dodir/13b_eth_an_household_eth5"
+/* I think cell counts too small to look at household size and diabetes by eth16
+Table 8: Household size
 do "$Dodir/13a_eth_an_household_eth16"
 
 *Table 9: Diabetes
