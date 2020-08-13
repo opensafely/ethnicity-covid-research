@@ -187,6 +187,14 @@ foreach i of global outcomes {
 		safetab `i'
 		safetab eth5 `i', row
 		safetab eth16 `i', row
+		
+		*proportion with diabetes who have the outcome x ethnicity
+		bysort eth5:safetab  diabcat `i', col
+		bysort eth16: safetab  diabcat `i', col
+		
+		*proportion of household size who have the outcome x ethnicity
+		bysort eth5: safetab  hh_total_cat `i', col
+		bysort eth16: safetab  hh_total_cat `i', col
 }
 
 * Close log file 

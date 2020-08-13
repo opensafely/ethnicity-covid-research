@@ -52,7 +52,7 @@ do "$Dodir/01_eth_cr_analysis_dataset.do"
 
 
 *Checks 
-*do "$Dodir/02_eth_an_data_checks.do"
+do "$Dodir/02_eth_an_data_checks.do"
 
 /**********************
 ETH 5
