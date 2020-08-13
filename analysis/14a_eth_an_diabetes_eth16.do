@@ -43,6 +43,18 @@ safetab diabcat `i', missing row
 safetab diabcat carehome
 drop if carehome==1
 safetab diabcat `i', missing row
+	}
+}
+
+foreach i of global outcomes3 {
+	forvalues eth=1/11 {
+		
+* Open Stata dataset
+use "$Tempdir/analysis_dataset_STSET_`i'.dta", clear
+keep if eth16==`eth'
+drop if  `eth'==2  & "`i'"=="icu"
+
+
 
 /* Main dm_model=================================================================*/
 

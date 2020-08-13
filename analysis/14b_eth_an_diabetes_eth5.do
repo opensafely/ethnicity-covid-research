@@ -37,11 +37,16 @@ keep if eth5==`eth'
 /* Sense check outcomes=======================================================*/ 
 safetab eth5
 safetab diabcat `i', missing row
+	}
+}
 
-*household category should exclude people living in a care home but double check
-safetab diabcat carehome
-drop if carehome==1
-safetab diabcat `i', missing row
+foreach i of global outcomes3 {
+	forvalues eth=1/5 {
+		
+* Open Stata dataset
+use "$Tempdir/analysis_dataset_STSET_`i'.dta", clear
+keep if eth5==`eth'
+
 
 /* Main dm_model=================================================================*/
 
