@@ -40,8 +40,9 @@ global outcomes "suspected confirmed  tested positivetest ae icu cpnsdeath  onsd
 //severe  
 
 global outcomes2 "ae icu cpnsdeath  onsdeath onscoviddeath onsconfirmeddeath  ons_noncoviddeath" ///onssuspecteddeath severe
- 
 
+*outcomes for hh and diabetes
+global outcomes3 "suspected confirmed  tested positivetest ae icu cpnsdeath  onsdeath onscoviddeath onsconfirmeddeath  ons_noncoviddeath"
 /**********************
 Data cleaning
 **********************/
