@@ -40,8 +40,9 @@ global outcomes "suspected confirmed  tested positivetest ae icu cpnsdeath  onsd
 //severe  
 
 global outcomes2 "ae icu cpnsdeath  onsdeath onscoviddeath onsconfirmeddeath  ons_noncoviddeath" ///onssuspecteddeath severe
- 
 
+*outcomes for hh and diabetes
+global outcomes3 "suspected confirmed  tested positivetest ae icu cpnsdeath  onsdeath onscoviddeath onsconfirmeddeath  ons_noncoviddeath"
 /**********************
 Data cleaning
 **********************/
@@ -51,7 +52,7 @@ do "$Dodir/01_eth_cr_analysis_dataset.do"
 
 
 *Checks 
-*do "$Dodir/02_eth_an_data_checks.do"
+do "$Dodir/02_eth_an_data_checks.do"
 
 /**********************
 ETH 5
@@ -61,9 +62,6 @@ do "$Dodir/05b_eth_table1_descriptives_eth5.do"
 
 *Table 2: multivariable analysis - complete case 
 do "$Dodir/06b_eth_an_multivariable_eth5.do" 
-
-*Table 2 sens analysis: excluding care home residents
-do "$Dodir/07b_eth_an_nocarehomes_eth5.do"
 
 *Table 3: Odds of receiving ventilation - in those admitted to ICU
 do "$Dodir/09b_eth_an_ventilation_eth5"
@@ -92,9 +90,8 @@ do "$Dodir/05a_eth_table1_descriptives_eth16.do"
 do "$Dodir/06a_eth_an_multivariable_eth16.do" 
 
 *Table 2 sens analysis: excluding care home residents
-do "$Dodir/07a_eth_an_nocarehomes_eth16.do"
 
-*Table 3: Odds of receiving ventilation - in those admitted to ICU
+*Table 3: Odds of receiving ventilation - in those admitted to ICU 
 do "$Dodir/09a_eth_an_ventilation_eth16"
 
 *Table 5: Odds of testing positive amongst those with SGSS testing data
@@ -108,12 +105,21 @@ Table 8: Household size
 do "$Dodir/13a_eth_an_household_eth16"
 
 *Table 9: Diabetes
-do "$Dodir/14b_eth_an_diabetes_eth5"
 do "$Dodir/14a_eth_an_diabetes_eth16"
+*/
+/**********************
+SENSITIVITY  ANALYSIS
+**********************/
+
+
+*Table 2 sens analysis: excluding care home residents
+do "$Dodir/07b_eth_an_nocarehomes_eth5.do"
+do "$Dodir/07a_eth_an_nocarehomes_eth16.do"
+
 
 /**********************
 MULTIPLE IMPUTATION
-**********************/
+**********************
 *Table 2: multiple imputation
 do "$Dodir/08b_eth_an_multivariable_eth5_mi.do" 
 do "$Dodir/08a_eth_an_multivariable_eth16_mi.do" 

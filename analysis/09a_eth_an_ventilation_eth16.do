@@ -103,7 +103,7 @@ else di "WARNING MODEL2 DID NOT FIT (OUTCOME `outcome')"
 
 
 * Age, Gender, IMD and Comorbidities  and household size and carehome
-melogit ventilated  i.eth16 i.male age1 age2 age3 i.imd i.hh_total_cat i.carehome	///
+cap melogit ventilated  i.eth16 i.male age1 age2 age3 i.imd i.hh_total_cat i.carehome	///
 										bmi							///
 										gp_consult_count			///
 										i.smoke_nomiss				///

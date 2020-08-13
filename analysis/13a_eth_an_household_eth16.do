@@ -27,7 +27,7 @@ file write tablecontent _tab _tab _tab _tab _tab   ("HR") _tab ("95% CI") _tab (
 
 
 
-foreach i of global outcomes {
+foreach i of global outcomes3 {
 	forvalues eth=1/11 {
 		drop if  `eth'==2  & "`i'"=="icu"
 		
