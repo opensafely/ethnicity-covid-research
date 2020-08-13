@@ -105,9 +105,8 @@ Table 8: Household size
 do "$Dodir/13a_eth_an_household_eth16"
 
 *Table 9: Diabetes
-do "$Dodir/14b_eth_an_diabetes_eth5"
 do "$Dodir/14a_eth_an_diabetes_eth16"
-
+*/
 /**********************
 SENSITIVITY  ANALYSIS
 **********************/
@@ -120,7 +119,7 @@ do "$Dodir/07a_eth_an_nocarehomes_eth16.do"
 
 /**********************
 MULTIPLE IMPUTATION
-**********************/
+**********************
 *Table 2: multiple imputation
 do "$Dodir/08b_eth_an_multivariable_eth5_mi.do" 
 do "$Dodir/08a_eth_an_multivariable_eth16_mi.do" 
