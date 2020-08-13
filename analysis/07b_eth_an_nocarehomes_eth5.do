@@ -29,18 +29,24 @@ file write tablecontent _tab _tab _tab _tab _tab   ("HR") _tab ("95% CI") _tab (
 
 foreach i of global outcomes {
 	di "`i'"
-* Open Stata dataset
 use "$Tempdir/analysis_dataset_STSET_`i'.dta", clear
 
 *drop those in care homes
 safetab carehome, m
 drop if carehome==1
 
-
 /* Sense check outcomes=======================================================*/ 
 
 safetab eth5 `i', missing row
+}
 
+foreach i of global outcomes {
+	di "`i'"
+* Open Stata dataset
+use "$Tempdir/analysis_dataset_STSET_`i'.dta", clear
+
+*drop those in care homes
+drop if carehome==1
 
 /* Main Model=================================================================*/
 
