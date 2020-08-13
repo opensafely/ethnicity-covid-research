@@ -29,8 +29,6 @@ file write tablecontent _tab _tab _tab _tab _tab   ("HR") _tab ("95% CI") _tab (
 
 foreach i of global outcomes3 {
 	forvalues eth=1/11 {
-		drop if  `eth'==2  & "`i'"=="icu"
-		
 * Open Stata dataset
 use "$Tempdir/analysis_dataset_STSET_`i'.dta", clear
 keep if eth16==`eth'
@@ -43,6 +41,18 @@ safetab hh_total_cat `i', missing row
 safetab hh_total_cat carehome
 drop if carehome==1
 safetab hh_total_cat `i', missing row
+}
+}	
+
+foreach i of global outcomes3 {
+	forvalues eth=1/11 {
+		
+* Open Stata dataset
+use "$Tempdir/analysis_dataset_STSET_`i'.dta", clear
+keep if eth16==`eth'
+
+drop if  `eth'==2  & "`i'"=="icu"
+drop if carehome==1
 
 /* Main hh_model=================================================================*/
 

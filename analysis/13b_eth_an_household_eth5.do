@@ -42,6 +42,15 @@ safetab hh_total_cat `i', missing row
 safetab hh_total_cat carehome
 drop if carehome==1
 safetab hh_total_cat `i', missing row
+	}
+}
+
+foreach i of global outcomes3 {
+	forvalues eth=1/5 {
+		
+* Open Stata dataset
+use "$Tempdir/analysis_dataset_STSET_`i'.dta", clear
+keep if eth5==`eth'
 
 /* Main hh_model=================================================================*/
 
