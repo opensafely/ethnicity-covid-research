@@ -181,6 +181,8 @@ foreach var in $varlist {
 	safetab eth16 `var', row
 }
 
+/* AGE DISTRUBUTION OF HOUSEHOLDS=======================================================*/
+bysort eth5: tab agegroup hh_total_cat, col
 
 /* SENSE CHECK OUTCOMES=======================================================*/
 foreach i of global outcomes {
