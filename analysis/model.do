@@ -91,7 +91,7 @@ do "$Dodir/06a_eth_an_multivariable_eth16.do"
 
 *Table 2 sens analysis: excluding care home residents
 
-*Table 3: Odds of receiving ventilation - in those admitted to ICU
+*Table 3: Odds of receiving ventilation - in those admitted to ICU 
 do "$Dodir/09a_eth_an_ventilation_eth16"
 
 *Table 5: Odds of testing positive amongst those with SGSS testing data
