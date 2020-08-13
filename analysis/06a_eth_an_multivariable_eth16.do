@@ -29,10 +29,6 @@ file write tablecontent _tab _tab _tab _tab _tab   ("HR") _tab ("95% CI") _tab (
 
 foreach i of global outcomes {
 use "$Tempdir/analysis_dataset_STSET_`i'.dta", clear
-
-*drop irish for icu due to small numbers
-drop if eth16==2 & "`i'"=="icu"
-
 safetab eth16 `i', missing row
 } //end outcomes
 
@@ -41,6 +37,10 @@ foreach i of global outcomes {
 	
 * Open Stata dataset
 use "$Tempdir/analysis_dataset_STSET_`i'.dta", clear
+
+*drop irish for icu due to small numbers
+drop if eth16==2 & "`i'"=="icu"
+
 
 /* Main Model=================================================================*/
 

@@ -34,11 +34,7 @@ use "$Tempdir/analysis_dataset_STSET_`i'.dta", clear
 *drop those in care homes
 safetab carehome, m
 drop if carehome==1
-
-*drop irish for icu due to small numbers
-drop if eth16==2 & "`i'"=="icu"
 /* Sense check outcomes=======================================================*/ 
-
 safetab eth16 `i', missing row
 }
 

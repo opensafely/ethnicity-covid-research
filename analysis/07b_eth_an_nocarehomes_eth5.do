@@ -36,7 +36,6 @@ safetab carehome, m
 drop if carehome==1
 
 /* Sense check outcomes=======================================================*/ 
-
 safetab eth5 `i', missing row
 }
 
