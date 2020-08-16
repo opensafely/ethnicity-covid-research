@@ -860,12 +860,13 @@ label var stp 						"Sustainability and Transformation Partnership"
 label var age1 						"Age spline 1"
 label var age2 						"Age spline 2"
 label var age3 						"Age spline 3"
-lab var hh_total					"calculated No of ppl in household"
 lab var region						"Region of England"
 lab var rural_urban					"Rural-Urban Indicator"
 lab var carehome					"Care home y/n"
 lab var hba1c_mmol_per_mol			"HbA1c mmo/mol"
-lab var hba1c_percentage			"HbA1c %"
+lab var hba1c_pct					"HbA1c %"
+lab var hba1ccat					"HbA1c category"
+lab var hba1c75						"HbA1c >= 7.5%"
 lab var gp_consult_count			"Number of GP consultations in the 12 months prior to baseline"
 
 * Comorbidities of interest 
@@ -903,9 +904,6 @@ label var dementia_date						"DDementia date"
 label var ra_sle_psoriasis_date 			"Autoimmune disease  Date"
 lab var esrf_date 							"end stage renal failure"
 lab var hba1c_percentage_date				"HbA1c % date"
-lab var hba1c_pct							"HbA1c %"
-lab var hba1ccat							"HbA1c category"
-lab var hba1c75								"HbA1c >= 7.5%"
 
 
 *medications
