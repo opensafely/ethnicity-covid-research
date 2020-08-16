@@ -58,13 +58,14 @@ safetab ethnicity
  replace eth5=3 if ethnicity==4
  replace eth5=4 if ethnicity==2
  replace eth5=5 if ethnicity==5
- replace eth5=. if ethnicity==.
+ replace eth5=6 if ethnicity==.
 
  label define eth5	 	1 "White"  					///
 						2 "South Asian"				///						
 						3 "Black"  					///
 						4 "Mixed"					///
-						5 "Other"					
+						5 "Other"					///
+						6 "Unknown"
 					
 
 label values eth5 eth5
@@ -73,7 +74,7 @@ safetab eth5, m
 
 
 * Ethnicity (16 category)
-replace ethnicity_16 = . if ethnicity==.
+replace ethnicity_16 = 17 if ethnicity_16==.
 label define ethnicity_16 									///
 						1 "British or Mixed British" 		///
 						2 "Irish" 							///
@@ -90,7 +91,8 @@ label define ethnicity_16 									///
 						13 "African" 						///
 						14 "Other Black" 					///
 						15 "Chinese" 						///
-						16 "Other" 							
+						16 "Other" 							///
+						17 "Unknown"
 						
 label values ethnicity_16 ethnicity_16
 safetab ethnicity_16,m
@@ -110,6 +112,7 @@ recode eth16 13 = 8
 recode eth16 15 = 9
 recode eth16 99 = 10
 recode eth16 16 = 11
+recode eth16 17 = 12
 
 
 
@@ -126,10 +129,10 @@ label define eth16 	///
 						8 "African" ///
 						9 "Chinese" ///
 						10 "All mixed" ///
-						11 "All Other" 
+						11 "All Other" ///
+						12 "Unknown"
 label values eth16 eth16
 safetab eth16,m
-
 
 * STP 
 rename stp stp_old
@@ -211,6 +214,13 @@ label values hh_total_cat hh_total_cat
 
 safetab hh_total_cat,m
 safetab hh_total_cat care_home_type,m
+
+*log linear household size
+gen hh_linear=hh_size
+replace hh_linear=11 if hh_linear>=11 & hh_linear!=.
+replace hh_linear=. if care_home_type!="U"
+gen hh_log_linear=log(hh_linear)
+sum hh_log_linear hh_linear
 
 **care home
 encode care_home_type, gen(carehometype)
