@@ -191,10 +191,10 @@ label values agegroup agegroup
 
 
 *Total number people in household (to check hh size)
-*maximum of 10 people in a household
-bysort hh_id: gen hh_total=_N
 
-sum hh_total hh_size
+*check for missing household size values
+summ  hh_size
+
 *gen categories of household size.
 gen hh_total_cat=.
 replace hh_total_cat=1 if hh_size >=1 & hh_size<=2
@@ -232,6 +232,22 @@ safetab  carehometype carehome
 
 safetab hh_total_cat carehome,m 
 
+
+*add prison flag data
+************************************************************************************
+*  Tabluate size of linked datasets before applying inclusion criter  *
+************************************************************************************
+
+*TPP
+safecount
+
+*SGSS
+safetab tested
+
+*ICNARC
+safetab icu
+
+
 ****************************
 *  Create required cohort  *
 ****************************
@@ -239,18 +255,34 @@ safetab hh_total_cat carehome,m
 /* DROP ALL KIDS, AS HH COMPOSITION VARS ARE NOW MADE */
 noi di "DROPPING AGE<18:" 
 drop if age<18
+
+*TPP
 safecount
+
+*SGSS
+safetab tested
+
+*ICNARC
+safetab icu
 
 * Age: Exclude those with implausible ages
 cap assert age<.
 noi di "DROPPING AGE<105:" 
 drop if age>105
+
+*TPP
 safecount
+
+*SGSS
+safetab tested
+
+*ICNARC
+safetab icu
+
 * Sex: Exclude categories other than M and F
 cap assert inlist(sex, "M", "F", "I", "U")
 noi di "DROPPING GENDER NOT M/F:" 
 drop if inlist(sex, "I", "U")
-safecount
 
 gen male = 1 if sex == "M"
 replace male = 0 if sex == "F"
@@ -258,15 +290,15 @@ label define male 0"Female" 1"Male"
 label values male male
 safetab male
 
+*TPP
+safecount
 
-* Create binary age (for age stratification)
-recode age min/65.999999999 = 0 ///
-           66/max = 1, gen(age66)
+*SGSS
+safetab tested
 
-* Check there are no missing ages
-cap assert age < .
-cap assert agegroup < .
-cap assert age66 < .
+*ICNARC
+safetab icu
+
 
 * Create restricted cubic splines for age
 mkspline age = age, cubic nknots(4)
