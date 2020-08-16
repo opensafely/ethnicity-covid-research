@@ -499,6 +499,30 @@ foreach var of varlist 	chronic_respiratory_disease ///
 }
 
 
+*gen count of co-morbidities
+gen comorbidity_count=0
+
+foreach var of varlist 	chronic_respiratory_disease ///
+						chronic_cardiac_disease  ///
+						cancer  ///
+						perm_immunodef  ///
+						temp_immunodef  ///
+						chronic_liver_disease  ///
+						other_neuro  ///
+						stroke			///
+						dementia ///
+						esrf  ///
+						hypertension  ///
+						asthma ///
+						ra_sle_psoriasis  ///
+						{
+replace comorbidity_count=comorbidity_count+1 if `var'==1
+						}
+
+summ comorbidity_count
+
+
+
 /*  Body Mass Index  */
 * NB: watch for missingness
 
@@ -613,9 +637,6 @@ replace cancer_cat = 2 if inrange(cancer_date, d(1/2/2019), d(1/2/2020))
 recode  cancer_cat . = 1
 label values cancer_cat cancer
 
-
-
-
 /*  Immunosuppression  */
 
 * Immunosuppressed:
@@ -624,9 +645,10 @@ label values cancer_cat cancer
 gen temp1  = 1 if perm_immunodef_date!=.
 gen temp2  = inrange(temp_immunodef_date, (indexdate - 365), indexdate)
 
-egen other_immuno = rowmax(temp1 temp2)
-drop temp1 temp2 
-order other_immuno, after(temp_immunodef)
+
+gen immunosuppressed=0
+replace immunosuppressed=1 if perm_immunodef==1 | temp_immunodef==1
+safetab immunosuppressed
 
 /*  Blood pressure   */
 
@@ -847,6 +869,7 @@ lab var hba1c_percentage			"HbA1c %"
 lab var gp_consult_count			"Number of GP consultations in the 12 months prior to baseline"
 
 * Comorbidities of interest 
+label var comorbidity_count   			"Count of co-morbid conditions"
 label var asthma						"Asthma category"
 label var hypertension				    "Diagnosed hypertension"
 label var chronic_respiratory_disease 	"Chronic Respiratory Diseases"
@@ -854,7 +877,7 @@ label var chronic_cardiac_disease 		"Chronic Cardiac Diseases"
 label var dm_type						"Diabetes Type"
 label var dm_type_exeter_os				"Diabetes type (Exeter definition)"
 label var cancer						"Cancer"
-label var other_immuno					"Immunosuppressed (combination algorithm)"
+label var immunosuppressed				"Immunosuppressed (perm or temp)"
 label var chronic_liver_disease 		"Chronic liver disease"
 label var other_neuro 					"Neurological disease"			
 label var stroke		 			    "Stroke"
@@ -863,8 +886,6 @@ label var ra_sle_psoriasis				"Autoimmune disease"
 lab var egfr							"eGFR"
 lab var egfr_cat						"CKD category defined by eGFR"
 lab var egfr60							"CKD defined by egfr<60"
-lab var perm_immunodef  				"Permanent immunosuppression"
-lab var temp_immunodef  				"Temporary immunosuppression"
 lab var  bphigh 						"non-missing indicator of known high blood pressure"
 lab var bpcat 							"Blood pressure four levels, non-missing"
 lab var htdiag_or_highbp 				"High blood pressure or hypertension diagnosis"
@@ -880,14 +901,11 @@ label var other_neuro_date 					"Neurological disease  Date"
 label var stroke_date			    		"Stroke date"		
 label var dementia_date						"DDementia date"					
 label var ra_sle_psoriasis_date 			"Autoimmune disease  Date"
-lab var perm_immunodef_date  				"Permanent immunosuppression date"
-lab var temp_immunodef_date   				"Temporary immunosuppression date"
 lab var esrf_date 							"end stage renal failure"
 lab var hba1c_percentage_date				"HbA1c % date"
 lab var hba1c_pct							"HbA1c %"
 lab var hba1ccat							"HbA1c category"
 lab var hba1c75								"HbA1c >= 7.5%"
-lab var diabcat								"Diabetes and HbA1c combined" 
 
 
 *medications
