@@ -142,7 +142,7 @@ safetab ethnicity
  replace eth5=6 if ethnicity==.
 
  label define eth5	 	1 "White"  					///
-						2 "South Asian"				///						
+						2 "South Asian"		  ///						
 						3 "Black"  					///
 						4 "Mixed"					///
 						5 "Other"					///
@@ -813,12 +813,13 @@ label var  hh_size "# people in household"
 label var  hh_id "Household ID"
 label var hh_total "# people in household calculated"
 label var hh_total_cat "Number of people in household"
+label var hh_log_linear "Log linear household size"
+labe var hh_linear "Linear household size"
 
 * Demographics
 label var patient_id				"Patient ID"
 label var age 						"Age (years)"
 label var agegroup					"Grouped age"
-label var age66 					"66 years and older"
 label var sex 						"Sex"
 label var male 						"Male"
 label var bmi 						"Body Mass Index (BMI, kg/m2)"
