@@ -39,6 +39,87 @@ format indexdate %d
 
 /* CREATE VARIABLES===========================================================*/
 
+/* OUTCOME AND SURVIVAL TIME==================================================*/
+
+	
+/****   Outcome definitions   ****/
+ren primary_care_suspect_case	suspected_date
+ren primary_care_case			confirmed_date
+ren first_tested_for_covid		tested_date
+ren first_positive_test_date	positivetest_date
+ren a_e_consult_date 			ae_date
+ren icu_date_admitted			icu_date
+ren died_date_cpns				cpnsdeath_date
+ren died_date_ons				onsdeath_date
+
+* Date of Covid death in ONS
+gen onscoviddeath_date = onsdeath_date if died_ons_covid_flag_any == 1
+gen onsconfirmeddeath_date = onsdeath_date if died_ons_confirmedcovid_flag_any ==1
+gen onssuspecteddeath_date = onsdeath_date if died_ons_suspectedcovid_flag_any ==1
+
+* Date of non-COVID death in ONS 
+* If missing date of death resulting died_date will also be missing
+gen ons_noncoviddeath_date = onsdeath_date if died_ons_covid_flag_any != 1
+
+
+
+/* CONVERT STRINGS TO DATE FOR OUTCOME VARIABLES =============================*/
+* Recode to dates from the strings 
+*gen dummy date for severe and replace later on
+*gen severe_date=ae_date
+
+foreach var of global outcomes {
+	confirm string variable `var'_date
+	rename `var'_date `var'_dstr
+	gen `var'_date = date(`var'_dstr, "YMD")
+	drop `var'_dstr
+	format `var'_date %td 
+
+}
+
+*If outcome occurs on the first day of follow-up add one day
+foreach i of global outcomes {
+	di "`i'"
+	count if `i'_date==indexdate
+	replace `i'_date=`i'_date+1 if `i'_date==indexdate
+}
+*date of deregistration
+rename dereg_date dereg_dstr
+	gen dereg_date = date(dereg_dstr, "YMD")
+	drop dereg_dstr
+	format dereg_date %td 
+
+* Binary indicators for outcomes
+foreach i of global outcomes {
+		gen `i'=0
+		replace  `i'=1 if `i'_date < .
+		safetab `i'
+}
+
+
+/* CENSORING */
+/* SET FU DATES===============================================================*/ 
+
+* Censoring dates for each outcome (last date outcome data available)
+*https://github.com/opensafely/rapid-reports/blob/master/notebooks/latest-dates.ipynb
+gen suspected_censor_date = d("07/08/2020")
+gen confirmed_censor_date  = d("07/08/2020")
+gen tested_censor_date = d("03/08/2020")
+gen positivetest_censor_date = d("03/08/2020")
+gen ae_censor_date = d("03/08/2020")
+gen icu_censor_date = d("30/07/2020")
+gen cpnsdeath_censor_date  = d("03/08/2020")
+gen onsdeath_censor_date = d("03/08/2020")
+gen onscoviddeath_censor_date = d("03/08/2020")
+gen onsconfirmeddeath_censor_date = d("03/08/2020")
+gen onssuspecteddeath_censor_date = d("03/08/2020")
+gen ons_noncoviddeath_censor_date = d("03/08/2020")
+
+*******************************************************************************
+format *censor_date %d
+sum *censor_date, format
+
+
 /* DEMOGRAPHICS */ 
 
 * Ethnicity (5 category)
@@ -690,91 +771,6 @@ replace asthma=1 if asthma==2
 safetab asthma
 
 
-/* OUTCOME AND SURVIVAL TIME==================================================*/
-
-	
-/****   Outcome definitions   ****/
-ren primary_care_suspect_case	suspected_date
-ren primary_care_case			confirmed_date
-ren first_tested_for_covid		tested_date
-ren first_positive_test_date	positivetest_date
-ren a_e_consult_date 			ae_date
-ren icu_date_admitted			icu_date
-ren died_date_cpns				cpnsdeath_date
-ren died_date_ons				onsdeath_date
-
-* Date of Covid death in ONS
-gen onscoviddeath_date = onsdeath_date if died_ons_covid_flag_any == 1
-gen onsconfirmeddeath_date = onsdeath_date if died_ons_confirmedcovid_flag_any ==1
-gen onssuspecteddeath_date = onsdeath_date if died_ons_suspectedcovid_flag_any ==1
-
-* Date of non-COVID death in ONS 
-* If missing date of death resulting died_date will also be missing
-gen ons_noncoviddeath_date = onsdeath_date if died_ons_covid_flag_any != 1
-
-
-
-/* CONVERT STRINGS TO DATE FOR OUTCOME VARIABLES =============================*/
-* Recode to dates from the strings 
-*gen dummy date for severe and replace later on
-*gen severe_date=ae_date
-
-foreach var of global outcomes {
-	confirm string variable `var'_date
-	rename `var'_date `var'_dstr
-	gen `var'_date = date(`var'_dstr, "YMD")
-	drop `var'_dstr
-	format `var'_date %td 
-
-}
-
-*Date of first severe outcome
-*replace severe_date = min(ae_date, icu_date, onscoviddeath_date)
-
-*If outcome occurs on the first day of follow-up add one day
-foreach i of global outcomes {
-	di "`i'"
-	count if `i'_date==indexdate
-	replace `i'_date=`i'_date+1 if `i'_date==indexdate
-}
-*date of deregistration
-rename dereg_date dereg_dstr
-	gen dereg_date = date(dereg_dstr, "YMD")
-	drop dereg_dstr
-	format dereg_date %td 
-
-* Binary indicators for outcomes
-foreach i of global outcomes {
-		gen `i'=0
-		replace  `i'=1 if `i'_date < .
-		safetab `i'
-}
-
-*drop severe
-*gen severe=1 if ae==1 | icu==1 | onscoviddeath==1
-
-/* CENSORING */
-/* SET FU DATES===============================================================*/ 
-
-* Censoring dates for each outcome (last date outcome data available)
-*https://github.com/opensafely/rapid-reports/blob/master/notebooks/latest-dates.ipynb
-gen suspected_censor_date = d("31/07/2020")
-gen confirmed_censor_date  = d("31/07/2020")
-gen tested_censor_date = d("27/07/2020")
-gen positivetest_censor_date = d("27/07/2020")
-gen ae_censor_date = d("27/07/2020")
-gen icu_censor_date = d("30/07/2020")
-gen cpnsdeath_censor_date  = d("27/07/2020")
-gen onsdeath_censor_date = d("24/07/2020")
-gen onscoviddeath_censor_date = d("24/07/2020")
-gen onsconfirmeddeath_censor_date = d("24/07/2020")
-gen onssuspecteddeath_censor_date = d("24/07/2020")
-gen ons_noncoviddeath_censor_date = d("24/07/2020")
-*gen severe_censor_date  = d("24/07/2020")
-
-*******************************************************************************
-format *censor_date %d
-sum *censor_date, format
 *******************************
 *  Recode implausible values  *
 *******************************
