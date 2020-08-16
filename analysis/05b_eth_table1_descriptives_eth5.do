@@ -32,7 +32,7 @@ log using "$Logdir/05b_eth_table1_descriptives_eth5", replace t
 
 * Open Stata dataset
 use $Tempdir/analysis_dataset, clear
-
+safetab eth5,m 
 
  /* PROGRAMS TO AUTOMATE TABULATIONS===========================================*/ 
 
@@ -55,7 +55,7 @@ syntax, variable(varname) condition(string)
 	local colpct = 100*(r(N)/`overalldenom')
 	file write tablecontent %9.0gc (`rowdenom')  (" (") %3.1f (`colpct') (")") _tab
 
-	forvalues i=1/5{
+	forvalues i=1/6{
 	cou if eth5 == `i'
 	local rowdenom = r(N)
 	cou if eth5 == `i' & `variable' `condition'
@@ -63,13 +63,35 @@ syntax, variable(varname) condition(string)
 	file write tablecontent %9.0gc (r(N)) (" (") %3.1f (`pct') (")") _tab
 	}
 	
-	cou if eth5 == .
-	local rowdenom = r(N)
-	cou if eth5 == . & `variable' `condition'
-	local pct = 100*(r(N)/`rowdenom')
-	file write tablecontent %9.0gc (r(N)) (" (") %3.1f (`pct') (")") _n
-	
+	file write tablecontent _n
 end
+
+
+* Output one row of table for co-morbidities and meds
+
+cap prog drop generaterow2
+program define generaterow2
+syntax, variable(varname) condition(string) 
+	
+	cou
+	local overalldenom=r(N)
+	
+	cou if `variable' `condition'
+	local rowdenom = r(N)
+	local colpct = 100*(r(N)/`overalldenom')
+	file write tablecontent %9.0gc (`rowdenom')  (" (") %3.1f (`colpct') (")") _tab
+
+	forvalues i=1/6{
+	cou if eth5 == `i'
+	local rowdenom = r(N)
+	cou if eth5 == `i' & `variable' `condition'
+	local pct = 100*(r(N)/`rowdenom') 
+	file write tablecontent %9.0gc (r(N)) (" (") %3.1f (`pct') (")") _tab
+	}
+	
+	file write tablecontent _n
+end
+
 
 
 /* Explanatory Notes 
@@ -104,6 +126,8 @@ syntax, variable(varname) min(real) max(real) [missing]
 	}
 	
 	if "`missing'"!="" generaterow, variable(`variable') condition("== 12")
+	
+
 
 end
 
@@ -140,43 +164,25 @@ syntax, variable(varname)
 	file write tablecontent ("Mean (SD)") _tab 
 	file write tablecontent  %3.1f (r(mean)) (" (") %3.1f (r(sd)) (")") _tab
 	
-	forvalues i=1/5{							
+	forvalues i=1/6{							
 	qui summarize `variable' if eth5 == `i', d
 	file write tablecontent  %3.1f (r(mean)) (" (") %3.1f (r(sd)) (")") _tab
 	}
-	
-	qui summarize `variable' if eth5 ==. , d
-	file write tablecontent  %3.1f (r(mean)) (" (") %3.1f (r(sd)) (")") _n
+
+file write tablecontent _n
+
 	
 	qui summarize `variable', d
 	file write tablecontent ("Median (IQR)") _tab 
 	file write tablecontent %3.1f (r(p50)) (" (") %3.1f (r(p25)) ("-") %3.1f (r(p75)) (")") _tab
 	
-	forvalues i=1/5{
+	forvalues i=1/6{
 	qui summarize `variable' if eth5 == `i', d
 	file write tablecontent %3.1f (r(p50)) (" (") %3.1f (r(p25)) ("-") %3.1f (r(p75)) (")") _tab
 	}
 	
-	qui summarize `variable' if eth5 ==. , d
-	file write tablecontent %3.1f (r(p50)) (" (") %3.1f (r(p25)) ("-") %3.1f (r(p75)) (")") _n
-
+file write tablecontent _n
 	
-/*
-	qui summarize `variable', d
-	file write tablecontent ("Min, Max") _tab 
-	file write tablecontent %3.1f (r(min)) (", ") %3.1f (r(max)) ("") _tab
-	
-	forvalues i=1/5{							
-	qui summarize `variable' if eth5 == `i', d
-	file write tablecontent %3.1f (r(min)) (", ") %3.1f (r(max)) ("") _tab
-	
-	qui summarize `variable' if eth5==. , d
-	file write tablecontent ("Min, Max") _tab 
-	file write tablecontent %3.1f (r(min)) (", ") %3.1f (r(max)) ("") _tab
-
-	}
-	
-*/
 end
 
 /* INVOKE PROGRAMS FOR TABLE 1================================================*/ 
@@ -194,7 +200,8 @@ local lab2: label eth5 2
 local lab3: label eth5 3
 local lab4: label eth5 4
 local lab5: label eth5 5
-local lab6: label eth5 .u
+local lab6: label eth5 6
+
 
 
 file write tablecontent _tab ("Total")				  			  _tab ///
@@ -203,13 +210,28 @@ file write tablecontent _tab ("Total")				  			  _tab ///
 							 ("`lab3'")  						  _tab ///
 							 ("`lab4'")  						  _tab ///
 							 ("`lab5'")  						  _tab ///
-							 ("`lab6'")  						  _n 
+							 ("`lab6'")  						  _n 							 
+							 
+
 
 * DEMOGRAPHICS (more than one level, potentially missing) 
+
+format hba1c_pct bmi egfr %9.2f
+
 
 gen byte cons=1
 tabulatevariable, variable(cons) min(1) max(1) 
 file write tablecontent _n 
+
+*SIZE OF LINKED DATASETS
+gen  byte SGSS=1 if tested==1
+
+file write tablecontent ("SGSS data") _tab
+generaterow2, variable(SGSS) condition("==1")
+
+gen  byte ICNARC=1 if tested==1
+file write tablecontent ("ICNARC data") _tab
+generaterow2, variable(ICNARC) condition("==1")
 
 qui summarizevariable, variable(age) 
 file write tablecontent _n
@@ -226,16 +248,13 @@ file write tablecontent _n
 tabulatevariable, variable(imd) min(1) max(5) 
 file write tablecontent _n 
 
-qui summarizevariable, variable(hh_size) 
-file write tablecontent _n
-
-qui summarizevariable, variable(hh_total) 
-
-
-tabulatevariable, variable(hh_total_cat) min(1) max(4) 
+tabulatevariable, variable(hh_total_cat) min(1) max(4) missing
 file write tablecontent _n 
 
 tabulatevariable, variable(carehome) min(0) max(1) 
+file write tablecontent _n 
+
+tabulatevariable, variable(smoke_nomiss) min(1) max(3)  
 file write tablecontent _n 
 
 qui summarizevariable, variable(bmi)
@@ -244,8 +263,11 @@ file write tablecontent _n
 tabulatevariable, variable(obese4cat_sa) min(1) max(4) 
 file write tablecontent _n 
 
-tabulatevariable, variable(smoke_nomiss) min(1) max(3)  
-file write tablecontent _n 
+qui summarizevariable, variable(hba1c_pct)
+file write tablecontent _n
+
+qui summarizevariable, variable(hba1c_mmol_per_mol)
+file write tablecontent _n
 
 tabulatevariable, variable(dm_type) min(0) max(3)  
 file write tablecontent _n 
@@ -253,21 +275,11 @@ file write tablecontent _n
 tabulatevariable, variable(dm_type_exeter_os) min(0) max(2)  
 file write tablecontent _n 
 
-tabulatevariable, variable(diabcat) min(1) max(6) 
-file write tablecontent _n 
-
-
 file write tablecontent _n _n
 
-** COMORBIDITIES (categorical and continous)
-
-* COMORBIDITIES (continous)
-format hba1c_pct bmi egfr %9.2f
-
-qui summarizevariable, variable(hba1c_pct)
-file write tablecontent _n
-
 ** COMORBIDITIES (binary)
+qui summarizevariable, variable(comorbidity_count)
+file write tablecontent _n
 
 foreach comorb of varlist 		///
 	hypertension 				///
@@ -278,44 +290,43 @@ foreach comorb of varlist 		///
 	esrf						///
 	cancer						///
 	ra_sle_psoriasis			///
-	other_immuno				///
+	immunosuppressed			///
 	chronic_liver_disease		///
 	dementia					///
 	other_neuro					///
-	asthma ///
+	asthma						///
 	chronic_respiratory_disease ///
 	{ 
 	local comorb: subinstr local comorb "i." ""
 	local lab: variable label `comorb'
-	file write tablecontent ("`lab'") _n 
+	file write tablecontent ("`lab'") _tab
 								
-	generaterow, variable(`comorb') condition("==0")
-	generaterow, variable(`comorb') condition("==1")
+	generaterow2, variable(`comorb') condition("==1")
 	file write tablecontent _n
 }
 
-
-
 ** OTHER TREATMENT VARIABLES (binary)
 foreach treat of varlist ///
-	combination_bp_meds ///
+	combination_bp_meds	///
 	statin 				///
 	insulin				///
 						{    		
 
 local lab: variable label `treat'
-file write tablecontent ("`lab'") _n 
+file write tablecontent ("`lab'") _tab
 	
-generaterow, variable(`treat') condition("==0")
-generaterow, variable(`treat') condition("==1")
+generaterow2, variable(`treat') condition("==1")
 
 file write tablecontent _n
 }
 
+
+
 file close tablecontent
+
 
 * Close log file 
 log close
 
 clear
-insheet using $Tabfigdir/table1_eth5.txt, clear
+insheet using "$Tabfigdir/table1_eth5.txt", clear
