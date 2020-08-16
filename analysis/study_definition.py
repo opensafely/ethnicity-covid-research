@@ -118,7 +118,7 @@ study = StudyDefinition(
 
     # cpns
     died_date_cpns=patients.with_death_recorded_in_cpns(
-        on_or_before="2020-08-01",
+        on_or_after="2020-02-01",
         returning="date_of_death",
         include_month=True,
         include_day=True,
@@ -129,33 +129,33 @@ study = StudyDefinition(
     # ons
     died_ons_covid_flag_any=patients.with_these_codes_on_death_certificate(
         covid_codelist,
-        on_or_before="2020-08-01",
+        on_or_after="2020-02-01",
         match_only_underlying_cause=False,
         return_expectations={"date": {"earliest" : "2020-02-01"},
         "rate" : "exponential_increase"},
     ),
     died_ons_confirmedcovid_flag_any=patients.with_these_codes_on_death_certificate(
         confirmed_covid_codelist,
-        on_or_before="2020-08-01",
+        on_or_after="2020-02-01",
         match_only_underlying_cause=False,
         return_expectations={"date": {"earliest" : "2020-02-01"},
         "rate" : "exponential_increase"},
     ),
     died_ons_suspectedcovid_flag_any=patients.with_these_codes_on_death_certificate(
         suspected_covid_codelist,
-        on_or_before="2020-08-01",
+        on_or_after="2020-02-01",
         match_only_underlying_cause=False,
         return_expectations={"date": {"earliest" : "2020-02-01"},
         "rate" : "exponential_increase"},
     ),
     died_ons_covid_flag_underlying=patients.with_these_codes_on_death_certificate(
         covid_codelist,
-        on_or_before="2020-08-01",
+        on_or_after="2020-02-01",
         match_only_underlying_cause=True,
         return_expectations={"date": {"earliest": "2020-02-01"}},
     ),
     died_date_ons=patients.died_from_any_cause(
-        on_or_before="2020-08-01",
+        on_or_after="2020-02-01",
         returning="date_of_death",
         include_month=True,
         include_day=True,
@@ -165,6 +165,7 @@ study = StudyDefinition(
     first_tested_for_covid=patients.with_test_result_in_sgss(
         pathogen="SARS-CoV-2",
         test_result="any",
+        on_or_after="2020-02-01",
         find_first_match_in_period=True,
         returning="date",
         date_format="YYYY-MM-DD",
@@ -174,6 +175,7 @@ study = StudyDefinition(
     first_positive_test_date=patients.with_test_result_in_sgss(
         pathogen="SARS-CoV-2",
         test_result="positive",
+        on_or_after="2020-02-01",
         find_first_match_in_period=True,
         returning="date",
         date_format="YYYY-MM-DD",
