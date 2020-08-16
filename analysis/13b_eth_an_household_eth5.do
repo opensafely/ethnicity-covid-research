@@ -83,24 +83,23 @@ else di "WARNING MODEL1 DID NOT FIT (OUTCOME `i')"
 
 
 * Age, Gender, IMD and Comorbidities 
-stcox i.hh_total_cat i.male age1 age2 age3 	i.imd			///
-										bmi							///
+stcox i.hh_total_cat i.male age1 age2 age3 	i.imd						///
+										bmi	hba1c_pct				///
 										gp_consult_count			///
 										i.smoke_nomiss				///
 										i.htdiag_or_highbp		 	///	
 										i.asthma					///
 										chronic_respiratory_disease ///
 										i.chronic_cardiac_disease	///
-										i.diabcat 					///	
+										i.dm_type 					///	
 										i.cancer                    ///
 										i.chronic_liver_disease		///
 										i.stroke					///
 										i.dementia					///
 										i.other_neuro				///
-										i.egfr60						///
+										i.egfr60					///
 										i.esrf						///
-										i.other_immuno		 		///
-										i.ra_sle_psoriasis, strata(stp) nolog		
+										i.immunosuppressed , strata(stp) nolog		
 if _rc==0{
 estimates
 estimates save "$Tempdir/hh_model2_`i'_eth5_`eth'", replace 

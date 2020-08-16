@@ -78,24 +78,25 @@ else di "WARNING MODEL1 DID NOT FIT (OUTCOME `i')"
 
 
 * Age, Gender, IMD and Comorbidities 
-stcox i.eth5 i.male age1 age2 age3 	i.imd			///
-										bmi							///
+stcox i.eth16 i.male age1 age2 age3 	i.imd						///
+										bmi	hba1c_pct				///
 										gp_consult_count			///
 										i.smoke_nomiss				///
 										i.htdiag_or_highbp		 	///	
 										i.asthma					///
 										chronic_respiratory_disease ///
 										i.chronic_cardiac_disease	///
-										i.diabcat 					///	
+										i.dm_type 					///	
 										i.cancer                    ///
 										i.chronic_liver_disease		///
 										i.stroke					///
 										i.dementia					///
 										i.other_neuro				///
-										i.egfr60						///
+										i.egfr60					///
 										i.esrf						///
-										i.other_immuno		 		///
-										i.ra_sle_psoriasis, strata(stp) nolog		
+										i.immunosuppressed	 		///
+										i.ra_sle_psoriasis			///
+										, strata(stp) nolog		
 if _rc==0{
 estimates
 estimates save "$Tempdir/model2_`i'_eth5", replace 
@@ -106,15 +107,15 @@ else di "WARNING MODEL2 DID NOT FIT (OUTCOME `i')"
 
 										
 * Age, Gender, IMD and Comorbidities  and household size and carehome
-stcox i.eth5 i.male age1 age2 age3 i.imd i.hh_total_cat i.carehome	///
-										bmi							///
+stcox i.eth16 i.male age1 age2 age3 	i.imd						///
+										bmi	hba1c_pct				///
 										gp_consult_count			///
 										i.smoke_nomiss				///
 										i.htdiag_or_highbp		 	///	
 										i.asthma					///
-										i.chronic_respiratory_disease ///
+										chronic_respiratory_disease ///
 										i.chronic_cardiac_disease	///
-										i.diabcat 					///	
+										i.dm_type 					///	
 										i.cancer                    ///
 										i.chronic_liver_disease		///
 										i.stroke					///
@@ -122,8 +123,9 @@ stcox i.eth5 i.male age1 age2 age3 i.imd i.hh_total_cat i.carehome	///
 										i.other_neuro				///
 										i.egfr60					///
 										i.esrf						///
-										i.other_immuno		 		///
-										i.ra_sle_psoriasis, strata(stp) nolog				
+										i.immunosuppressed	 		///
+										i.ra_sle_psoriasis			///
+										i.hh_total_cat i.carehome, strata(stp) nolog		
 if _rc==0{
 estimates
 estimates save "$Tempdir/model3_`i'_eth5", replace
