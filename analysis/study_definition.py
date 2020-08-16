@@ -347,9 +347,9 @@ study = StudyDefinition(
         "2020-02-01",
         returning="household_size",
         return_expectations={
-            "int": {"distribution": "normal", "mean": 4, "stddev": 2},
+            "int": {"distribution": "normal", "mean": 8, "stddev": 1},
             "incidence": 1,
-        },
+        }
     ),
 
     ### GP CONSULTATION RATE IN 12 MONTH BEFORE FEB 1 2020
@@ -385,7 +385,7 @@ study = StudyDefinition(
     bp_sys=patients.mean_recorded_value(
         systolic_blood_pressure_codes,
         on_most_recent_day_of_measurement=True,
-        between=["2019-02-01", "2020-01-31"],
+        between=["2017-02-01", "2020-01-31"],
         include_measurement_date=True,
         include_month=True,
         return_expectations={
@@ -398,7 +398,7 @@ study = StudyDefinition(
     bp_dias=patients.mean_recorded_value(
         diastolic_blood_pressure_codes,
         on_most_recent_day_of_measurement=True,
-        between=["2019-02-01", "2020-01-31"],
+        between=["2017-02-01", "2020-01-31"],
         include_measurement_date=True,
         include_month=True,
         return_expectations={
@@ -412,7 +412,7 @@ study = StudyDefinition(
     hba1c_mmol_per_mol=patients.with_these_clinical_events(
         hba1c_new_codes,
         find_last_match_in_period=True,
-        between=["2019-02-01", "2020-01-31"],
+        between=["2017-02-01", "2020-01-31"],
         returning="numeric_value",
         include_date_of_match=True,
         include_month=True,
@@ -426,7 +426,7 @@ study = StudyDefinition(
     hba1c_percentage=patients.with_these_clinical_events(
         hba1c_old_codes,
         find_last_match_in_period=True,
-        between=["2019-02-01", "2020-01-31"],
+        between=["2017-02-01", "2020-01-31"],
         returning="numeric_value",
         include_date_of_match=True,
         include_month=True,
@@ -441,7 +441,7 @@ study = StudyDefinition(
     creatinine=patients.with_these_clinical_events(
         creatinine_codes,
         find_last_match_in_period=True,
-        between=["2019-02-01", "2020-01-31"],
+        between=["2017-02-01", "2020-01-31"],
         returning="numeric_value",
         include_date_of_match=True,
         include_month=True,
