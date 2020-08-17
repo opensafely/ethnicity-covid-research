@@ -162,7 +162,7 @@ end
 
 
 /*OUTCOMES IN GENERAL POPULATION*/
-local p"confirmed tested"
+local p"suspected confirmed tested"
 foreach  outcome of local p {
 * Open Stata dataset
 use $Tempdir/analysis_dataset, clear
