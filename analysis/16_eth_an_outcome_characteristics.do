@@ -321,7 +321,7 @@ file close tablecontent
 clear
 
 /*OUTCOMES IN INFECTED POPULATION*/
-local p"ae icu cpnsdeath  onscoviddeath ons_noncoviddeath"
+local p"ae icu cpnsdeath  onscoviddeath ons_noncoviddeath onsdeath"
 foreach  outcome of local p {
 * Open Stata dataset
 use $Tempdir/analysis_dataset, clear
@@ -511,4 +511,3 @@ merge 1:1 order using "$Tabfigdir/table1_ventilated.dta", nogen
 drop order
 outsheet using "$Tabfigdir/table1_outcomes.txt", replace
 
-insheet using "$Tabfigdir/table1_outcomes.txt", clear
