@@ -56,7 +56,7 @@ parmest, label eform format(estimate p lb ub) saving("$Tempdir/crude_ventilated_
 
 /* Multivariable models */ 
 *Age Gender
-melogit ventilated i.eth16 i.male age1 age2 age3 || stp: , nolog
+cap melogit ventilated i.eth16 i.male age1 age2 age3 || stp: , nolog
 if _rc==0{
 estimates
 estimates save "$Tempdir/model0_ventilated_eth16", replace 
@@ -65,7 +65,7 @@ parmest, label eform format(estimate p lb ub) saving("$Tempdir/model0_ventilated
 else di "WARNING MODEL0 DID NOT FIT (OUTCOME `outcome')"
 
 * Age, Gender, IMD
-melogit ventilated i.eth16 i.male age1 age2 age3 i.imd || stp: , nolog
+cap melogit ventilated i.eth16 i.male age1 age2 age3 i.imd || stp: , nolog
 if _rc==0{
 estimates
 estimates save "$Tempdir/model1_ventilated_eth16", replace 
@@ -75,15 +75,15 @@ else di "WARNING MODEL1 DID NOT FIT (OUTCOME `outcome')"
 
 
 * Age, Gender, IMD and Comorbidities  
-melogit ventilated  i.eth16 i.male age1 age2 age3 i.imd 							///
-										bmi							///
+cap melogit ventilated i.eth16 i.male age1 age2 age3 	i.imd						///
+										bmi	hba1c_pct				///
 										gp_consult_count			///
 										i.smoke_nomiss				///
-										i.htdiag_or_highbp		 	///	
+										i.hypertension bp_map		 	///	
 										i.asthma					///
-										i.chronic_respiratory_disease ///
+										chronic_respiratory_disease ///
 										i.chronic_cardiac_disease	///
-										i.diabcat 					///	
+										i.dm_type 					///	
 										i.cancer                    ///
 										i.chronic_liver_disease		///
 										i.stroke					///
@@ -91,8 +91,8 @@ melogit ventilated  i.eth16 i.male age1 age2 age3 i.imd 							///
 										i.other_neuro				///
 										i.egfr60					///
 										i.esrf						///
-										i.other_immuno		 		///
-										i.ra_sle_psoriasis || stp: , nolog			
+										i.immunosuppressed	 		///
+										i.ra_sle_psoriasis || stp:, nolog		
 										
 if _rc==0{
 estimates
@@ -103,15 +103,15 @@ else di "WARNING MODEL2 DID NOT FIT (OUTCOME `outcome')"
 
 
 * Age, Gender, IMD and Comorbidities  and household size and carehome
-cap melogit ventilated  i.eth16 i.male age1 age2 age3 i.imd i.hh_total_cat i.carehome	///
-										bmi							///
+cap melogit ventilated i.eth16 i.male age1 age2 age3 	i.imd						///
+										bmi	hba1c_pct				///
 										gp_consult_count			///
 										i.smoke_nomiss				///
-										i.htdiag_or_highbp		 	///	
+										i.hypertension bp_map		 	///	
 										i.asthma					///
-										i.chronic_respiratory_disease ///
+										chronic_respiratory_disease ///
 										i.chronic_cardiac_disease	///
-										i.diabcat 					///	
+										i.dm_type 					///	
 										i.cancer                    ///
 										i.chronic_liver_disease		///
 										i.stroke					///
@@ -119,8 +119,9 @@ cap melogit ventilated  i.eth16 i.male age1 age2 age3 i.imd i.hh_total_cat i.car
 										i.other_neuro				///
 										i.egfr60					///
 										i.esrf						///
-										i.other_immuno		 		///
-										i.ra_sle_psoriasis || stp: , nolog				
+										i.immunosuppressed	 		///
+										i.ra_sle_psoriasis			///
+										i.hh_total_cat i.carehome || stp:, nolog		
 										
 if _rc==0{
 estimates

@@ -39,6 +39,87 @@ format indexdate %d
 
 /* CREATE VARIABLES===========================================================*/
 
+/* OUTCOME AND SURVIVAL TIME==================================================*/
+
+	
+/****   Outcome definitions   ****/
+ren primary_care_suspect_case	suspected_date
+ren primary_care_case			confirmed_date
+ren first_tested_for_covid		tested_date
+ren first_positive_test_date	positivetest_date
+ren a_e_consult_date 			ae_date
+ren icu_date_admitted			icu_date
+ren died_date_cpns				cpnsdeath_date
+ren died_date_ons				onsdeath_date
+
+* Date of Covid death in ONS
+gen onscoviddeath_date = onsdeath_date if died_ons_covid_flag_any == 1
+gen onsconfirmeddeath_date = onsdeath_date if died_ons_confirmedcovid_flag_any ==1
+gen onssuspecteddeath_date = onsdeath_date if died_ons_suspectedcovid_flag_any ==1
+
+* Date of non-COVID death in ONS 
+* If missing date of death resulting died_date will also be missing
+gen ons_noncoviddeath_date = onsdeath_date if died_ons_covid_flag_any != 1
+
+
+
+/* CONVERT STRINGS TO DATE FOR OUTCOME VARIABLES =============================*/
+* Recode to dates from the strings 
+*gen dummy date for severe and replace later on
+*gen severe_date=ae_date
+
+foreach var of global outcomes {
+	confirm string variable `var'_date
+	rename `var'_date `var'_dstr
+	gen `var'_date = date(`var'_dstr, "YMD")
+	drop `var'_dstr
+	format `var'_date %td 
+
+}
+
+*If outcome occurs on the first day of follow-up add one day
+foreach i of global outcomes {
+	di "`i'"
+	count if `i'_date==indexdate
+	replace `i'_date=`i'_date+1 if `i'_date==indexdate
+}
+*date of deregistration
+rename dereg_date dereg_dstr
+	gen dereg_date = date(dereg_dstr, "YMD")
+	drop dereg_dstr
+	format dereg_date %td 
+
+* Binary indicators for outcomes
+foreach i of global outcomes {
+		gen `i'=0
+		replace  `i'=1 if `i'_date < .
+		safetab `i'
+}
+
+
+/* CENSORING */
+/* SET FU DATES===============================================================*/ 
+
+* Censoring dates for each outcome (last date outcome data available)
+*https://github.com/opensafely/rapid-reports/blob/master/notebooks/latest-dates.ipynb
+gen suspected_censor_date = d("07/08/2020")
+gen confirmed_censor_date  = d("07/08/2020")
+gen tested_censor_date = d("03/08/2020")
+gen positivetest_censor_date = d("03/08/2020")
+gen ae_censor_date = d("03/08/2020")
+gen icu_censor_date = d("30/07/2020")
+gen cpnsdeath_censor_date  = d("03/08/2020")
+gen onsdeath_censor_date = d("03/08/2020")
+gen onscoviddeath_censor_date = d("03/08/2020")
+gen onsconfirmeddeath_censor_date = d("03/08/2020")
+gen onssuspecteddeath_censor_date = d("03/08/2020")
+gen ons_noncoviddeath_censor_date = d("03/08/2020")
+
+*******************************************************************************
+format *censor_date %d
+sum *censor_date, format
+
+
 /* DEMOGRAPHICS */ 
 
 * Ethnicity (5 category)
@@ -58,13 +139,14 @@ safetab ethnicity
  replace eth5=3 if ethnicity==4
  replace eth5=4 if ethnicity==2
  replace eth5=5 if ethnicity==5
- replace eth5=. if ethnicity==.
+ replace eth5=6 if ethnicity==.
 
  label define eth5	 	1 "White"  					///
-						2 "South Asian"				///						
+						2 "South Asian"		  ///						
 						3 "Black"  					///
 						4 "Mixed"					///
-						5 "Other"					
+						5 "Other"					///
+						6 "Unknown"
 					
 
 label values eth5 eth5
@@ -73,7 +155,7 @@ safetab eth5, m
 
 
 * Ethnicity (16 category)
-replace ethnicity_16 = . if ethnicity==.
+replace ethnicity_16 = 17 if ethnicity_16==.
 label define ethnicity_16 									///
 						1 "British or Mixed British" 		///
 						2 "Irish" 							///
@@ -90,7 +172,8 @@ label define ethnicity_16 									///
 						13 "African" 						///
 						14 "Other Black" 					///
 						15 "Chinese" 						///
-						16 "Other" 							
+						16 "Other" 							///
+						17 "Unknown"
 						
 label values ethnicity_16 ethnicity_16
 safetab ethnicity_16,m
@@ -110,6 +193,7 @@ recode eth16 13 = 8
 recode eth16 15 = 9
 recode eth16 99 = 10
 recode eth16 16 = 11
+recode eth16 17 = 12
 
 
 
@@ -126,10 +210,10 @@ label define eth16 	///
 						8 "African" ///
 						9 "Chinese" ///
 						10 "All mixed" ///
-						11 "All Other" 
+						11 "All Other" ///
+						12 "Unknown"
 label values eth16 eth16
 safetab eth16,m
-
 
 * STP 
 rename stp stp_old
@@ -188,10 +272,10 @@ label values agegroup agegroup
 
 
 *Total number people in household (to check hh size)
-*maximum of 10 people in a household
-bysort hh_id: gen hh_total=_N
 
-sum hh_total hh_size
+*check for missing household size values
+summ  hh_size
+
 *gen categories of household size.
 gen hh_total_cat=.
 replace hh_total_cat=1 if hh_size >=1 & hh_size<=2
@@ -212,6 +296,13 @@ label values hh_total_cat hh_total_cat
 safetab hh_total_cat,m
 safetab hh_total_cat care_home_type,m
 
+*log linear household size
+gen hh_linear=hh_size
+replace hh_linear=11 if hh_linear>=11 & hh_linear!=.
+replace hh_linear=. if care_home_type!="U"
+gen hh_log_linear=log(hh_linear)
+sum hh_log_linear hh_linear
+
 **care home
 encode care_home_type, gen(carehometype)
 drop care_home_type
@@ -222,6 +313,9 @@ safetab  carehometype carehome
 
 safetab hh_total_cat carehome,m 
 
+
+*add prison flag data
+
 ****************************
 *  Create required cohort  *
 ****************************
@@ -229,18 +323,17 @@ safetab hh_total_cat carehome,m
 /* DROP ALL KIDS, AS HH COMPOSITION VARS ARE NOW MADE */
 noi di "DROPPING AGE<18:" 
 drop if age<18
-safecount
 
 * Age: Exclude those with implausible ages
 cap assert age<.
 noi di "DROPPING AGE<105:" 
 drop if age>105
-safecount
+
+
 * Sex: Exclude categories other than M and F
 cap assert inlist(sex, "M", "F", "I", "U")
 noi di "DROPPING GENDER NOT M/F:" 
 drop if inlist(sex, "I", "U")
-safecount
 
 gen male = 1 if sex == "M"
 replace male = 0 if sex == "F"
@@ -249,14 +342,6 @@ label values male male
 safetab male
 
 
-* Create binary age (for age stratification)
-recode age min/65.999999999 = 0 ///
-           66/max = 1, gen(age66)
-
-* Check there are no missing ages
-cap assert age < .
-cap assert agegroup < .
-cap assert age66 < .
 
 * Create restricted cubic splines for age
 mkspline age = age, cubic nknots(4)
@@ -376,6 +461,30 @@ foreach var of varlist 	chronic_respiratory_disease ///
 }
 
 
+*gen count of co-morbidities
+gen comorbidity_count=0
+
+foreach var of varlist 	chronic_respiratory_disease ///
+						chronic_cardiac_disease  ///
+						cancer  ///
+						perm_immunodef  ///
+						temp_immunodef  ///
+						chronic_liver_disease  ///
+						other_neuro  ///
+						stroke			///
+						dementia ///
+						esrf  ///
+						hypertension  ///
+						asthma ///
+						ra_sle_psoriasis  ///
+						{
+replace comorbidity_count=comorbidity_count+1 if `var'==1
+						}
+
+summ comorbidity_count
+
+
+
 /*  Body Mass Index  */
 * NB: watch for missingness
 
@@ -490,9 +599,6 @@ replace cancer_cat = 2 if inrange(cancer_date, d(1/2/2019), d(1/2/2020))
 recode  cancer_cat . = 1
 label values cancer_cat cancer
 
-
-
-
 /*  Immunosuppression  */
 
 * Immunosuppressed:
@@ -501,9 +607,10 @@ label values cancer_cat cancer
 gen temp1  = 1 if perm_immunodef_date!=.
 gen temp2  = inrange(temp_immunodef_date, (indexdate - 365), indexdate)
 
-egen other_immuno = rowmax(temp1 temp2)
-drop temp1 temp2 
-order other_immuno, after(temp_immunodef)
+
+gen immunosuppressed=0
+replace immunosuppressed=1 if perm_immunodef==1 | temp_immunodef==1
+safetab immunosuppressed
 
 /*  Blood pressure   */
 
@@ -529,7 +636,8 @@ gen bphigh = (bpcat==4)
 gen htdiag_or_highbp = bphigh
 recode htdiag_or_highbp 0 = 1 if hypertension==1 
 
-
+*Mean arterial pressure MAP = (SBP+(DBP*2))/3
+gen bp_map=(bp_sys + (bp_dias*2))/3
 ************
 *   eGFR   *
 ************
@@ -648,91 +756,6 @@ replace asthma=1 if asthma==2
 safetab asthma
 
 
-/* OUTCOME AND SURVIVAL TIME==================================================*/
-
-	
-/****   Outcome definitions   ****/
-ren primary_care_suspect_case	suspected_date
-ren primary_care_case			confirmed_date
-ren first_tested_for_covid		tested_date
-ren first_positive_test_date	positivetest_date
-ren a_e_consult_date 			ae_date
-ren icu_date_admitted			icu_date
-ren died_date_cpns				cpnsdeath_date
-ren died_date_ons				onsdeath_date
-
-* Date of Covid death in ONS
-gen onscoviddeath_date = onsdeath_date if died_ons_covid_flag_any == 1
-gen onsconfirmeddeath_date = onsdeath_date if died_ons_confirmedcovid_flag_any ==1
-gen onssuspecteddeath_date = onsdeath_date if died_ons_suspectedcovid_flag_any ==1
-
-* Date of non-COVID death in ONS 
-* If missing date of death resulting died_date will also be missing
-gen ons_noncoviddeath_date = onsdeath_date if died_ons_covid_flag_any != 1
-
-
-
-/* CONVERT STRINGS TO DATE FOR OUTCOME VARIABLES =============================*/
-* Recode to dates from the strings 
-*gen dummy date for severe and replace later on
-*gen severe_date=ae_date
-
-foreach var of global outcomes {
-	confirm string variable `var'_date
-	rename `var'_date `var'_dstr
-	gen `var'_date = date(`var'_dstr, "YMD")
-	drop `var'_dstr
-	format `var'_date %td 
-
-}
-
-*Date of first severe outcome
-*replace severe_date = min(ae_date, icu_date, onscoviddeath_date)
-
-*If outcome occurs on the first day of follow-up add one day
-foreach i of global outcomes {
-	di "`i'"
-	count if `i'_date==indexdate
-	replace `i'_date=`i'_date+1 if `i'_date==indexdate
-}
-*date of deregistration
-rename dereg_date dereg_dstr
-	gen dereg_date = date(dereg_dstr, "YMD")
-	drop dereg_dstr
-	format dereg_date %td 
-
-* Binary indicators for outcomes
-foreach i of global outcomes {
-		gen `i'=0
-		replace  `i'=1 if `i'_date < .
-		safetab `i'
-}
-
-*drop severe
-*gen severe=1 if ae==1 | icu==1 | onscoviddeath==1
-
-/* CENSORING */
-/* SET FU DATES===============================================================*/ 
-
-* Censoring dates for each outcome (last date outcome data available)
-*https://github.com/opensafely/rapid-reports/blob/master/notebooks/latest-dates.ipynb
-gen suspected_censor_date = d("31/07/2020")
-gen confirmed_censor_date  = d("31/07/2020")
-gen tested_censor_date = d("27/07/2020")
-gen positivetest_censor_date = d("27/07/2020")
-gen ae_censor_date = d("27/07/2020")
-gen icu_censor_date = d("30/07/2020")
-gen cpnsdeath_censor_date  = d("27/07/2020")
-gen onsdeath_censor_date = d("24/07/2020")
-gen onscoviddeath_censor_date = d("24/07/2020")
-gen onsconfirmeddeath_censor_date = d("24/07/2020")
-gen onssuspecteddeath_censor_date = d("24/07/2020")
-gen ons_noncoviddeath_censor_date = d("24/07/2020")
-*gen severe_censor_date  = d("24/07/2020")
-
-*******************************************************************************
-format *censor_date %d
-sum *censor_date, format
 *******************************
 *  Recode implausible values  *
 *******************************
@@ -775,12 +798,13 @@ label var  hh_size "# people in household"
 label var  hh_id "Household ID"
 label var hh_total "# people in household calculated"
 label var hh_total_cat "Number of people in household"
+label var hh_log_linear "Log linear household size"
+labe var hh_linear "Linear household size"
 
 * Demographics
 label var patient_id				"Patient ID"
 label var age 						"Age (years)"
 label var agegroup					"Grouped age"
-label var age66 					"66 years and older"
 label var sex 						"Sex"
 label var male 						"Male"
 label var bmi 						"Body Mass Index (BMI, kg/m2)"
@@ -799,15 +823,17 @@ label var stp 						"Sustainability and Transformation Partnership"
 label var age1 						"Age spline 1"
 label var age2 						"Age spline 2"
 label var age3 						"Age spline 3"
-lab var hh_total					"calculated No of ppl in household"
 lab var region						"Region of England"
 lab var rural_urban					"Rural-Urban Indicator"
 lab var carehome					"Care home y/n"
 lab var hba1c_mmol_per_mol			"HbA1c mmo/mol"
-lab var hba1c_percentage			"HbA1c %"
+lab var hba1c_pct					"HbA1c %"
+lab var hba1ccat					"HbA1c category"
+lab var hba1c75						"HbA1c >= 7.5%"
 lab var gp_consult_count			"Number of GP consultations in the 12 months prior to baseline"
 
 * Comorbidities of interest 
+label var comorbidity_count   			"Count of co-morbid conditions"
 label var asthma						"Asthma category"
 label var hypertension				    "Diagnosed hypertension"
 label var chronic_respiratory_disease 	"Chronic Respiratory Diseases"
@@ -815,7 +841,7 @@ label var chronic_cardiac_disease 		"Chronic Cardiac Diseases"
 label var dm_type						"Diabetes Type"
 label var dm_type_exeter_os				"Diabetes type (Exeter definition)"
 label var cancer						"Cancer"
-label var other_immuno					"Immunosuppressed (combination algorithm)"
+label var immunosuppressed				"Immunosuppressed (perm or temp)"
 label var chronic_liver_disease 		"Chronic liver disease"
 label var other_neuro 					"Neurological disease"			
 label var stroke		 			    "Stroke"
@@ -824,11 +850,12 @@ label var ra_sle_psoriasis				"Autoimmune disease"
 lab var egfr							"eGFR"
 lab var egfr_cat						"CKD category defined by eGFR"
 lab var egfr60							"CKD defined by egfr<60"
-lab var perm_immunodef  				"Permanent immunosuppression"
-lab var temp_immunodef  				"Temporary immunosuppression"
 lab var  bphigh 						"non-missing indicator of known high blood pressure"
-lab var bpcat 							"Blood pressure four levels, non-missing"
+lab var bpcat 							"Blood pressure four levels non-missing"
 lab var htdiag_or_highbp 				"High blood pressure or hypertension diagnosis"
+lab var bp_sys							"Systolic BP"
+lab var bp_dias							"Diastolic BP"
+lab var bp_map							"Mean Arterial Pressure"
 lab var esrf 							"end stage renal failure"
 lab var asthma_date 						"Diagnosed Asthma Date"
 label var hypertension_date			   		"Diagnosed hypertension Date"
@@ -841,14 +868,8 @@ label var other_neuro_date 					"Neurological disease  Date"
 label var stroke_date			    		"Stroke date"		
 label var dementia_date						"DDementia date"					
 label var ra_sle_psoriasis_date 			"Autoimmune disease  Date"
-lab var perm_immunodef_date  				"Permanent immunosuppression date"
-lab var temp_immunodef_date   				"Temporary immunosuppression date"
 lab var esrf_date 							"end stage renal failure"
 lab var hba1c_percentage_date				"HbA1c % date"
-lab var hba1c_pct							"HbA1c %"
-lab var hba1ccat							"HbA1c category"
-lab var hba1c75								"HbA1c >= 7.5%"
-lab var diabcat								"Diabetes and HbA1c combined" 
 
 
 *medications

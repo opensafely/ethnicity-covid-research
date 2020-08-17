@@ -40,6 +40,7 @@ study = StudyDefinition(
     primary_care_case=patients.with_these_clinical_events(
         combine_codelists(covid_primary_care_code,
                           covid_primary_care_positive_test,
+                          covid_primary_care_sequalae,
                           ),        
         returning="date",
         find_first_match_in_period=True,
@@ -47,17 +48,11 @@ study = StudyDefinition(
         return_expectations={"rate" : "exponential_increase"},
     ),
 
-    primary_care_sequalae=patients.with_these_clinical_events(
-        covid_primary_care_sequalae,
-        returning="date",
-        find_first_match_in_period=True,
-        date_format="YYYY-MM-DD",
-        return_expectations={"rate" : "exponential_increase"},
-    ),
+
     primary_care_historic_case=patients.with_these_clinical_events(
         combine_codelists(covid_primary_care_historic_case,
                         covid_primary_care_potential_historic_case,
-                        ),
+                         ),
         returning="date",
         date_format="YYYY-MM-DD",
         find_first_match_in_period=True,
@@ -118,7 +113,7 @@ study = StudyDefinition(
 
     # cpns
     died_date_cpns=patients.with_death_recorded_in_cpns(
-        on_or_before="2020-08-01",
+        on_or_after="2020-02-01",
         returning="date_of_death",
         include_month=True,
         include_day=True,
@@ -129,33 +124,33 @@ study = StudyDefinition(
     # ons
     died_ons_covid_flag_any=patients.with_these_codes_on_death_certificate(
         covid_codelist,
-        on_or_before="2020-08-01",
+        on_or_after="2020-02-01",
         match_only_underlying_cause=False,
         return_expectations={"date": {"earliest" : "2020-02-01"},
         "rate" : "exponential_increase"},
     ),
     died_ons_confirmedcovid_flag_any=patients.with_these_codes_on_death_certificate(
         confirmed_covid_codelist,
-        on_or_before="2020-08-01",
+        on_or_after="2020-02-01",
         match_only_underlying_cause=False,
         return_expectations={"date": {"earliest" : "2020-02-01"},
         "rate" : "exponential_increase"},
     ),
     died_ons_suspectedcovid_flag_any=patients.with_these_codes_on_death_certificate(
         suspected_covid_codelist,
-        on_or_before="2020-08-01",
+        on_or_after="2020-02-01",
         match_only_underlying_cause=False,
         return_expectations={"date": {"earliest" : "2020-02-01"},
         "rate" : "exponential_increase"},
     ),
     died_ons_covid_flag_underlying=patients.with_these_codes_on_death_certificate(
         covid_codelist,
-        on_or_before="2020-08-01",
+        on_or_after="2020-02-01",
         match_only_underlying_cause=True,
         return_expectations={"date": {"earliest": "2020-02-01"}},
     ),
     died_date_ons=patients.died_from_any_cause(
-        on_or_before="2020-08-01",
+        on_or_after="2020-02-01",
         returning="date_of_death",
         include_month=True,
         include_day=True,
@@ -165,6 +160,7 @@ study = StudyDefinition(
     first_tested_for_covid=patients.with_test_result_in_sgss(
         pathogen="SARS-CoV-2",
         test_result="any",
+        on_or_after="2020-02-01",
         find_first_match_in_period=True,
         returning="date",
         date_format="YYYY-MM-DD",
@@ -174,6 +170,7 @@ study = StudyDefinition(
     first_positive_test_date=patients.with_test_result_in_sgss(
         pathogen="SARS-CoV-2",
         test_result="positive",
+        on_or_after="2020-02-01",
         find_first_match_in_period=True,
         returning="date",
         date_format="YYYY-MM-DD",
@@ -345,9 +342,9 @@ study = StudyDefinition(
         "2020-02-01",
         returning="household_size",
         return_expectations={
-            "int": {"distribution": "normal", "mean": 4, "stddev": 2},
+            "int": {"distribution": "normal", "mean": 8, "stddev": 1},
             "incidence": 1,
-        },
+        }
     ),
 
     ### GP CONSULTATION RATE IN 12 MONTH BEFORE FEB 1 2020
@@ -383,7 +380,7 @@ study = StudyDefinition(
     bp_sys=patients.mean_recorded_value(
         systolic_blood_pressure_codes,
         on_most_recent_day_of_measurement=True,
-        between=["2019-02-01", "2020-01-31"],
+        between=["2017-02-01", "2020-01-31"],
         include_measurement_date=True,
         include_month=True,
         return_expectations={
@@ -396,7 +393,7 @@ study = StudyDefinition(
     bp_dias=patients.mean_recorded_value(
         diastolic_blood_pressure_codes,
         on_most_recent_day_of_measurement=True,
-        between=["2019-02-01", "2020-01-31"],
+        between=["2017-02-01", "2020-01-31"],
         include_measurement_date=True,
         include_month=True,
         return_expectations={
@@ -410,7 +407,7 @@ study = StudyDefinition(
     hba1c_mmol_per_mol=patients.with_these_clinical_events(
         hba1c_new_codes,
         find_last_match_in_period=True,
-        between=["2019-02-01", "2020-01-31"],
+        between=["2017-02-01", "2020-01-31"],
         returning="numeric_value",
         include_date_of_match=True,
         include_month=True,
@@ -424,7 +421,7 @@ study = StudyDefinition(
     hba1c_percentage=patients.with_these_clinical_events(
         hba1c_old_codes,
         find_last_match_in_period=True,
-        between=["2019-02-01", "2020-01-31"],
+        between=["2017-02-01", "2020-01-31"],
         returning="numeric_value",
         include_date_of_match=True,
         include_month=True,
@@ -439,7 +436,7 @@ study = StudyDefinition(
     creatinine=patients.with_these_clinical_events(
         creatinine_codes,
         find_last_match_in_period=True,
-        between=["2019-02-01", "2020-01-31"],
+        between=["2017-02-01", "2020-01-31"],
         returning="numeric_value",
         include_date_of_match=True,
         include_month=True,

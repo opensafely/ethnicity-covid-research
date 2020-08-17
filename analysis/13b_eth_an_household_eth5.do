@@ -42,6 +42,15 @@ safetab hh_total_cat `i', missing row
 safetab hh_total_cat carehome
 drop if carehome==1
 safetab hh_total_cat `i', missing row
+	}
+}
+
+foreach i of global outcomes3 {
+	forvalues eth=1/5 {
+		
+* Open Stata dataset
+use "$Tempdir/analysis_dataset_STSET_`i'.dta", clear
+keep if eth5==`eth'
 
 /* Main hh_model=================================================================*/
 
@@ -74,24 +83,23 @@ else di "WARNING MODEL1 DID NOT FIT (OUTCOME `i')"
 
 
 * Age, Gender, IMD and Comorbidities 
-stcox i.hh_total_cat i.male age1 age2 age3 	i.imd			///
-										bmi							///
+stcox i.hh_total_cat i.male age1 age2 age3 	i.imd						///
+										bmi	hba1c_pct				///
 										gp_consult_count			///
 										i.smoke_nomiss				///
-										i.htdiag_or_highbp		 	///	
+										i.hypertension bp_map		 	///	
 										i.asthma					///
 										chronic_respiratory_disease ///
 										i.chronic_cardiac_disease	///
-										i.diabcat 					///	
+										i.dm_type 					///	
 										i.cancer                    ///
 										i.chronic_liver_disease		///
 										i.stroke					///
 										i.dementia					///
 										i.other_neuro				///
-										i.egfr60						///
+										i.egfr60					///
 										i.esrf						///
-										i.other_immuno		 		///
-										i.ra_sle_psoriasis, strata(stp) nolog		
+										i.immunosuppressed , strata(stp) nolog		
 if _rc==0{
 estimates
 estimates save "$Tempdir/hh_model2_`i'_eth5_`eth'", replace 
