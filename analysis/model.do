@@ -87,7 +87,7 @@ do "$Dodir/14b_eth_an_diabetes_eth5"
 
 /**********************
 ETH 16
-**********************/
+**********************
 
 *Table 1 baseline characteristics
 do "$Dodir/05a_eth_table1_descriptives_eth16.do"
