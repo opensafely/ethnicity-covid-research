@@ -78,7 +78,7 @@ cap melogit positivetest i.eth5 i.male age1 age2 age3 	i.imd						///
 										bmi	hba1c_pct				///
 										gp_consult_count			///
 										i.smoke_nomiss				///
-										i.htdiag_or_highbp		 	///	
+										i.hypertension bp_map		 	///	
 										i.asthma					///
 										chronic_respiratory_disease ///
 										i.chronic_cardiac_disease	///
@@ -105,7 +105,7 @@ cap melogit positivetest i.eth5 i.male age1 age2 age3 	i.imd						///
 										bmi	hba1c_pct				///
 										gp_consult_count			///
 										i.smoke_nomiss				///
-										i.htdiag_or_highbp		 	///	
+										i.hypertension bp_map		 	///	
 										i.asthma					///
 										chronic_respiratory_disease ///
 										i.chronic_cardiac_disease	///

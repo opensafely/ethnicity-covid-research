@@ -84,7 +84,7 @@ stcox i.dm_type i.male age1 age2 age3 	i.imd						///
 										bmi				///
 										gp_consult_count			///
 										i.smoke_nomiss				///
-										i.htdiag_or_highbp		 	///	
+										i.hypertension bp_map		 	///	
 										i.asthma					///
 										chronic_respiratory_disease ///
 										i.chronic_cardiac_disease	///
@@ -110,7 +110,7 @@ stcox i.dm_type i.male age1 age2 age3 	i.imd						///
 										bmi				///
 										gp_consult_count			///
 										i.smoke_nomiss				///
-										i.htdiag_or_highbp		 	///	
+										i.hypertension bp_map		 	///	
 										i.asthma					///
 										chronic_respiratory_disease ///
 										i.chronic_cardiac_disease	///
