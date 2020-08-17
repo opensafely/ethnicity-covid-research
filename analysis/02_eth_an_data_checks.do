@@ -52,21 +52,17 @@ cap assert inlist(imd, 1, 2, 3, 4, 5)
 /* EXPECTED VALUES============================================================*/ 
 
 *HH
-summ hh_size
-datacheck inlist(hh_size, 1, 2, 3, 4, 5,6, 7, 8, 9, 10), nol
-
+summ hh_size hh_linear hh_log_linea
 safetab hh_total_cat, m
-datacheck inlist(hh_total_cat, 0, 1, 2), nol
 
 *Care home
-safetab carehome
+safetab carehome, m
 safetab carehome hh_total_cat, m
 
 * Age
 summ age
 datacheck age<., nol
 datacheck inlist(agegroup, 1, 2, 3, 4, 5, 6, 7), nol
-datacheck inlist(age66, 0, 1), nol
 
 * Sex
 safetab male, m
@@ -93,16 +89,16 @@ datacheck inlist(imd, 1, 2, 3, 4, 5), nol
 
 * Ethnicity
 safetab ethnicity
-datacheck inlist(ethnicity, 1, 2, 3, 4, 5), nol
+datacheck inlist(ethnicity, 1, 2, 3, 4, 5, 6), nol
 
 safetab eth5,m
-datacheck inlist(eth5, 1, 2, 3, 4, 5, .), nol
+datacheck inlist(eth5, 1, 2, 3, 4, 5, 6), nol
 
 safetab ethnicity_16,m
-datacheck inlist(ethnicity_16, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, .), nol
+datacheck inlist(ethnicity_16, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17), nol
 
 safetab eth16,m
-datacheck inlist(eth16, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, .), nol
+datacheck inlist(eth16, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12), nol
 
 * Smoking
 datacheck inlist(smoke, 1, 2, 3, .u), nol
@@ -129,9 +125,8 @@ safetab asthma
 safetab chronic_cardiac_disease
 safetab cancer
 safetab chronic_liver_disease
-safetab diabcat
-safetab perm_immunodef
-safetab temp_immunodef
+safetab dm_type
+safetab immunosuppressed
 safetab other_neuro
 safetab dementia
 safetab stroke
@@ -159,7 +154,6 @@ safetab bmicat_sa obese4cat_sa, m
 
 * Age
 bysort agegroup: summ age
-safetab agegroup age66, m
 
 * Smoking
 safetab smoke smoke_nomiss, m
@@ -168,7 +162,6 @@ safetab smoke smoke_nomiss, m
 safetab dm_type
 safetab dm_type_exeter_os
 tab dm_type dm_type_exeter_os, row col
-safetab diabcat
 
 * CKD
 safetab egfr60, m
@@ -181,12 +174,22 @@ foreach var in $varlist {
 	safetab eth16 `var', row
 }
 
+/* AGE DISTRUBUTION OF HOUSEHOLDS=======================================================*/
+bysort eth5: tab agegroup hh_total_cat, col
 
 /* SENSE CHECK OUTCOMES=======================================================*/
 foreach i of global outcomes {
 		safetab `i'
 		safetab eth5 `i', row
 		safetab eth16 `i', row
+		
+		*proportion with diabetes who have the outcome x ethnicity
+		bysort eth5:safetab  dm_type `i', col
+		bysort eth16: safetab  dm_type `i', col
+		
+		*proportion of household size who have the outcome x ethnicity
+		bysort eth5: safetab  hh_total_cat `i', col
+		bysort eth16: safetab  hh_total_cat `i', col
 }
 
 * Close log file 

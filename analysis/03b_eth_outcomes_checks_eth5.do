@@ -1,5 +1,5 @@
 /*==============================================================================
-DO FILE NAME:			05b_eth_table1_descriptives_eth5
+DO FILE NAME:			03b_outcomes_checks_eth5
 PROJECT:				Ethnicity and COVID-19 
 DATE: 					14 July 2020 
 AUTHOR:					R Mathur
@@ -28,11 +28,8 @@ USER-INSTALLED ADO:
 
 * Open a log file
 capture log close
-log using "$Logdir/05b_eth_table1_descriptives_eth5", replace t
+log using "$Logdir/03b_outcomes_checks_eth5", replace t
 
-* Open Stata dataset
-use $Tempdir/analysis_dataset, clear
-safetab eth5,m 
 
  /* PROGRAMS TO AUTOMATE TABULATIONS===========================================*/ 
 
@@ -185,13 +182,99 @@ file write tablecontent _n
 	
 end
 
+*******************************************************************Open Raw Data
+import delimited `c(pwd)'/output/input.csv, clear
+
+*Generate outcomes
+
+*Start dates
+gen index 			= "01/02/2020"
+
+* Date of cohort entry, 1 Feb 2020
+gen indexdate = date(index, "DMY")
+format indexdate %d
+
+ *re-order ethnicity
+ gen eth5=1 if ethnicity==1
+ replace eth5=2 if ethnicity==3
+ replace eth5=3 if ethnicity==4
+ replace eth5=4 if ethnicity==2
+ replace eth5=5 if ethnicity==5
+ replace eth5=6 if ethnicity==.
+
+ label define eth5	 	1 "White"  					///
+						2 "South Asian"		  ///						
+						3 "Black"  					///
+						4 "Mixed"					///
+						5 "Other"					///
+						6 "Unknown"
+					
+
+label values eth5 eth5
+safetab eth5, m
+
+
+/* OUTCOME AND SURVIVAL TIME==================================================*/
+
+	
+/****   Outcome definitions   ****/
+ren primary_care_suspect_case	suspected_date
+ren primary_care_case			confirmed_date
+ren first_tested_for_covid		tested_date
+ren first_positive_test_date	positivetest_date
+ren a_e_consult_date 			ae_date
+ren icu_date_admitted			icu_date
+ren died_date_cpns				cpnsdeath_date
+ren died_date_ons				onsdeath_date
+
+* Date of Covid death in ONS
+gen onscoviddeath_date = onsdeath_date if died_ons_covid_flag_any == 1
+gen onsconfirmeddeath_date = onsdeath_date if died_ons_confirmedcovid_flag_any ==1
+gen onssuspecteddeath_date = onsdeath_date if died_ons_suspectedcovid_flag_any ==1
+
+* Date of non-COVID death in ONS 
+* If missing date of death resulting died_date will also be missing
+gen ons_noncoviddeath_date = onsdeath_date if died_ons_covid_flag_any != 1
+
+
+
+/* CONVERT STRINGS TO DATE FOR OUTCOME VARIABLES =============================*/
+* Recode to dates from the strings 
+*gen dummy date for severe and replace later on
+*gen severe_date=ae_date
+
+foreach var of global outcomes {
+	confirm string variable `var'_date
+	rename `var'_date `var'_dstr
+	gen `var'_date = date(`var'_dstr, "YMD")
+	drop `var'_dstr
+	format `var'_date %td 
+
+}
+
+*If outcome occurs on the first day of follow-up add one day
+foreach i of global outcomes {
+	di "`i'"
+	count if `i'_date==indexdate
+	replace `i'_date=`i'_date+1 if `i'_date==indexdate
+}
+
+* Binary indicators for outcomes
+foreach i of global outcomes {
+		gen `i'=0
+		replace  `i'=1 if `i'_date < .
+		safetab `i'
+}
+
+
+
 /* INVOKE PROGRAMS FOR TABLE 1================================================*/ 
 
 *Set up output file
 cap file close tablecontent
-file open tablecontent using $Tabfigdir/table1_eth5.txt, write text replace
+file open tablecontent using $Tabfigdir/table0_outcomes_eth5.txt, write text replace
 
-file write tablecontent ("Table 1: Demographic and Clinical Characteristics") _n
+file write tablecontent ("Table 0: Outcome counts by ethnic group") _n
 
 * eth5 labelled columns
 
@@ -211,126 +294,61 @@ file write tablecontent _tab ("Total")				  			  _tab ///
 							 ("`lab4'")  						  _tab ///
 							 ("`lab5'")  						  _tab ///
 							 ("`lab6'")  						  _n 							 
+
+/*STEP 1: WHOLE POPULATION WITHOUT EXCLUSIONS*/
 							 
-
-
-* DEMOGRAPHICS (more than one level, potentially missing) 
-
-format hba1c_pct bmi egfr %9.2f
-
-
+*Denominator
+file write tablecontent ("Whole study population- no exclusions") _n
 gen byte cons=1
-tabulatevariable, variable(cons) min(1) max(1) 
+file write tablecontent ("N") _tab
+
+generaterow2, variable(cons) condition("==1")
 file write tablecontent _n 
 
-*SIZE OF LINKED DATASETS
-gen  byte SGSS=1 if tested==1
 
-file write tablecontent ("SGSS data") _tab
-generaterow2, variable(SGSS) condition("==1")
+*Outcomes 
+foreach var of global outcomes {
 
-gen  byte ICNARC=1 if tested==1
-file write tablecontent ("ICNARC data") _tab
-generaterow2, variable(ICNARC) condition("==1")
-
-qui summarizevariable, variable(age) 
-file write tablecontent _n
-
-tabulatevariable, variable(agegroup) min(1) max(7) 
-file write tablecontent _n 
-
-tabulatevariable, variable(male) min(0) max(1) 
-file write tablecontent _n 
-
-qui summarizevariable, variable(gp_consult_count) 
-file write tablecontent _n 
-
-tabulatevariable, variable(imd) min(1) max(5) 
-file write tablecontent _n 
-
-tabulatevariable, variable(hh_total_cat) min(1) max(4) missing
-file write tablecontent _n 
-
-tabulatevariable, variable(carehome) min(0) max(1) 
-file write tablecontent _n 
-
-tabulatevariable, variable(smoke_nomiss) min(1) max(3)  
-file write tablecontent _n 
-
-qui summarizevariable, variable(bmi)
-file write tablecontent _n
-
-tabulatevariable, variable(obese4cat_sa) min(1) max(4) 
-file write tablecontent _n 
-
-qui summarizevariable, variable(hba1c_pct)
-file write tablecontent _n
-
-qui summarizevariable, variable(hba1c_mmol_per_mol)
-file write tablecontent _n
-
-tabulatevariable, variable(dm_type) min(0) max(3)  
-file write tablecontent _n 
-
-tabulatevariable, variable(dm_type_exeter_os) min(0) max(2)  
-file write tablecontent _n 
-
-qui summarizevariable, variable(bp_sys) 
-file write tablecontent _n
-
-qui summarizevariable, variable(bp_dias) 
-file write tablecontent _n
-
-qui summarizevariable, variable(bp_map) 
-file write tablecontent _n
-
-
-file write tablecontent _n _n
-
-** COMORBIDITIES (binary)
-qui summarizevariable, variable(comorbidity_count)
-file write tablecontent _n
-
-foreach comorb of varlist 		///
-	hypertension 				///
-	htdiag_or_highbp			///
-	chronic_cardiac_disease		///
-	stroke						///
-	egfr60							///
-	esrf						///
-	cancer						///
-	ra_sle_psoriasis			///
-	immunosuppressed			///
-	chronic_liver_disease		///
-	dementia					///
-	other_neuro					///
-	asthma						///
-	chronic_respiratory_disease ///
-	{ 
-	local comorb: subinstr local comorb "i." ""
-	local lab: variable label `comorb'
-	file write tablecontent ("`lab'") _tab
-								
-	generaterow2, variable(`comorb') condition("==1")
-	file write tablecontent _n
+file write tablecontent ("`var'") _tab
+generaterow2, variable(`var') condition("==1")
 }
 
-** OTHER TREATMENT VARIABLES (binary)
-foreach treat of varlist ///
-	combination_bp_meds	///
-	statin 				///
-	insulin				///
-						{    		
+/* STEP 2: KEEP THOSE AGED 18-105 */
+drop if age<18
+drop if age>105
 
-local lab: variable label `treat'
-file write tablecontent ("`lab'") _tab
-	
-generaterow2, variable(`treat') condition("==1")
+*Denominator
+file write tablecontent ("Adults aged 18-105") _n
+file write tablecontent ("N") _tab
 
-file write tablecontent _n
+generaterow2, variable(cons) condition("==1")
+file write tablecontent _n 
+
+
+*Outcomes 
+foreach var of global outcomes {
+
+file write tablecontent ("`var'") _tab
+generaterow2, variable(`var') condition("==1")
 }
 
+* Sex: Exclude categories other than M and F
+drop if inlist(sex, "I", "U")
 
+*Denominator
+file write tablecontent ("Adults with valid sex recorded") _n
+file write tablecontent ("N") _tab
+
+generaterow2, variable(cons) condition("==1")
+file write tablecontent _n 
+
+
+*Outcomes 
+foreach var of global outcomes {
+
+file write tablecontent ("`var'") _tab
+generaterow2, variable(`var') condition("==1")
+}
 
 file close tablecontent
 
@@ -339,4 +357,4 @@ file close tablecontent
 log close
 
 clear
-insheet using "$Tabfigdir/table1_eth5.txt", clear
+insheet using "$Tabfigdir/table0_outcomes_eth5.txt", clear
