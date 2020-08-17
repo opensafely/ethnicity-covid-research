@@ -141,19 +141,17 @@ local labeth: label eth5 `eth'
 file write tablecontent ("`labeth': `i'") _n
 
 * Row headings
+local lab0: label dm_type 0
 local lab1: label dm_type 1
 local lab2: label dm_type 2
 local lab3: label dm_type 3
-local lab4: label dm_type 4
-local lab5: label dm_type 5
-local lab6: label dm_type 6
 
 /* counts */
  
-* First row, dm_type =  1 no diabetes
-	safecount if dm_type==1
+* First row, dm_type =  0 no diabetes
+	safecount if dm_type==0
 	local denominator = r(N)
-	safecount if dm_type ==1 & `i' == 1
+	safecount if dm_type ==0 & `i' == 1
 	local event = r(N)
     bysort dm_type: egen total_follow_up = total(_t)
 	su total_follow_up if dm_type == 1
@@ -165,7 +163,7 @@ local lab6: label dm_type 6
 	
 * Subsequent diabetes categories
 
-forvalues dm=2/6 {
+forvalues dm=1/3 {
 	safecount if dm_type==`dm'
 	local denominator = r(N)
 	safecount if dm_type == `dm' & `i' == 1
