@@ -315,19 +315,6 @@ safetab hh_total_cat carehome,m
 
 
 *add prison flag data
-************************************************************************************
-*  Tabluate size of linked datasets before applying inclusion criter  *
-************************************************************************************
-
-*TPP
-safecount
-
-*SGSS
-safetab tested
-
-*ICNARC
-safetab icu
-
 
 ****************************
 *  Create required cohort  *
@@ -337,28 +324,11 @@ safetab icu
 noi di "DROPPING AGE<18:" 
 drop if age<18
 
-*TPP
-safecount
-
-*SGSS
-safetab tested
-
-*ICNARC
-safetab icu
-
 * Age: Exclude those with implausible ages
 cap assert age<.
 noi di "DROPPING AGE<105:" 
 drop if age>105
 
-*TPP
-safecount
-
-*SGSS
-safetab tested
-
-*ICNARC
-safetab icu
 
 * Sex: Exclude categories other than M and F
 cap assert inlist(sex, "M", "F", "I", "U")
@@ -371,14 +341,6 @@ label define male 0"Female" 1"Male"
 label values male male
 safetab male
 
-*TPP
-safecount
-
-*SGSS
-safetab tested
-
-*ICNARC
-safetab icu
 
 
 * Create restricted cubic splines for age
