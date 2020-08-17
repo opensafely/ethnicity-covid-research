@@ -15,15 +15,12 @@ USER-INSTALLED ADO:
   (place .ado file(s) in analysis folder)	
   
  Notes:
- Table 1 population is people who are alive on indexdate
- It does not exclude anyone who experienced any outcome prior to indexdate
- change the analysis_dataset to exlucde people with any of the following as of Feb 1st 2020:
- COVID identified in primary care
- COVID test result via  SGSS
- A&E admission for COVID-19
- ICU admission for COVID-19
- 
 
+ Table to compare
+ 1. Tested vs. untested in general pop
+ 2. Test positive vs. other in tested pop
+ 3. Secondary care and mortality  outcomes in infected pop
+ 4. ventilation in ICU pop
  ==============================================================================*/
  
  * Open a log file
@@ -164,7 +161,9 @@ file write tablecontent _n
 end
 
 
-foreach  outcome of global outcomes {
+/*OUTCOMES IN GENERAL POPULATION*/
+local p"confirmed tested"
+foreach  outcome of local p {
 * Open Stata dataset
 use $Tempdir/analysis_dataset, clear
 
@@ -180,13 +179,13 @@ tab outcome `outcome'
 cap file close tablecontent
 file open tablecontent using "$Tabfigdir/table1_`outcome'.txt", write text replace
 
-file write tablecontent ("Characteristics of outcome") _n
+file write tablecontent ("char") _tab
 
 * tested labelled columns
 
-file write tablecontent _tab ("Total")				  		  _tab ///
-							 ("`outcome' 0")  				  _tab ///
-							 ("`outcome' 1")  				  _n
+file write tablecontent 	 ("General_Pop")				    _tab ///
+							 ("`outcome'0")  				  _tab ///
+							 ("`outcome'1")  				  _n
 							 
 							 
 
@@ -242,7 +241,166 @@ file write tablecontent _n
 file close tablecontent
 
 clear
-} //end outcomes
+} //end local p
+
+/*OUTCOMES IN TESTED POPULATION*/
+
+* Open Stata dataset
+use $Tempdir/analysis_dataset, clear
+keep if tested==1
+safetab positivetest
+
+gen outcome= positivetest
+tab outcome positivetest
+
+*Set up output file
+cap file close tablecontent
+file open tablecontent using "$Tabfigdir/table1_positivetest.txt", write text replace
+
+file write tablecontent ("char")  _tab
+
+* tested labelled columns
+
+file write tablecontent 	 ("Tested_pop")				  		  	_tab ///
+							 ("positive0")  				  		_tab ///
+							 ("positive1")  				  	_n
+							 
+							 
+
+
+* DEMOGRAPHICS (more than one level, potentially missing) 
+
+format hba1c_pct bmi egfr %9.2f
+
+
+gen byte cons=1
+tabulatevariable, variable(cons) min(1) max(1) 
+file write tablecontent _n 
+
+ summarizevariable, variable(age) 
+file write tablecontent _n
+
+tabulatevariable, variable(male) min(1) max(1) 
+file write tablecontent _n 
+
+tabulatevariable, variable(eth5) min(1) max(6) 
+file write tablecontent _n 
+
+tabulatevariable, variable(eth16) min(1) max(12) 
+file write tablecontent _n 
+
+ summarizevariable, variable(gp_consult_count) 
+file write tablecontent _n 
+
+tabulatevariable, variable(imd) min(1) max(5) 
+file write tablecontent _n 
+
+tabulatevariable, variable(hh_total_cat) min(1) max(4) missing
+file write tablecontent _n 
+
+tabulatevariable, variable(carehome) min(0) max(1) 
+file write tablecontent _n 
+
+ summarizevariable, variable(bmi)
+file write tablecontent _n
+
+ summarizevariable, variable(hba1c_pct)
+file write tablecontent _n
+
+ summarizevariable, variable(hba1c_mmol_per_mol)
+file write tablecontent _n
+
+ summarizevariable, variable(comorbidity_count)
+file write tablecontent _n
+
+tabulatevariable, variable(dm_type) min(0) max(3)  
+file write tablecontent _n 
+
+file close tablecontent
+
+clear
+
+/*OUTCOMES IN INFECTED POPULATION*/
+local p"ae icu cpnsdeath  onscoviddeath ons_noncoviddeath"
+foreach  outcome of local p {
+* Open Stata dataset
+use $Tempdir/analysis_dataset, clear
+keep if confirmed==1 | positivetest==1
+
+
+safetab `outcome'
+
+gen outcome= `outcome'
+tab outcome `outcome'
+
+
+*Set up output file
+cap file close tablecontent
+file open tablecontent using "$Tabfigdir/table1_`outcome'.txt", write text replace
+
+file write tablecontent ("char")  _tab
+
+* tested labelled columns
+
+file write tablecontent 	 ("Infected_pop")				  		  _tab ///
+							 ("`outcome'0")  				  _tab ///
+							 ("`outcome'1")  				  _n
+							 
+							 
+
+
+* DEMOGRAPHICS (more than one level, potentially missing) 
+
+format hba1c_pct bmi egfr %9.2f
+
+
+gen byte cons=1
+tabulatevariable, variable(cons) min(1) max(1) 
+file write tablecontent _n 
+
+ summarizevariable, variable(age) 
+file write tablecontent _n
+
+tabulatevariable, variable(male) min(1) max(1) 
+file write tablecontent _n 
+
+tabulatevariable, variable(eth5) min(1) max(6) 
+file write tablecontent _n 
+
+tabulatevariable, variable(eth16) min(1) max(12) 
+file write tablecontent _n 
+
+ summarizevariable, variable(gp_consult_count) 
+file write tablecontent _n 
+
+tabulatevariable, variable(imd) min(1) max(5) 
+file write tablecontent _n 
+
+tabulatevariable, variable(hh_total_cat) min(1) max(4) missing
+file write tablecontent _n 
+
+tabulatevariable, variable(carehome) min(0) max(1) 
+file write tablecontent _n 
+
+ summarizevariable, variable(bmi)
+file write tablecontent _n
+
+ summarizevariable, variable(hba1c_pct)
+file write tablecontent _n
+
+ summarizevariable, variable(hba1c_mmol_per_mol)
+file write tablecontent _n
+
+ summarizevariable, variable(comorbidity_count)
+file write tablecontent _n
+
+tabulatevariable, variable(dm_type) min(0) max(3)  
+file write tablecontent _n 
+
+file close tablecontent
+
+clear
+} //end local p
 
 /*VENTILATED*/
 * Open Stata dataset
@@ -254,20 +412,17 @@ replace outcome=1 if was_ventilated_flag==1
 
 safetab outcome was_ventilated_flag,m
 
-
-/* INVOKE PROGRAMS FOR TABLE 1================================================*/ 
-
 *Set up output file
 cap file close tablecontent
 file open tablecontent using "$Tabfigdir/table1_ventilated.txt", write text replace
 
-file write tablecontent ("Characteristics of outcome") _n
+file write tablecontent ("char") _tab
 
 * tested labelled columns
 
-file write tablecontent _tab ("Total")				  		  _tab ///
-							 ("ventilated 0")  				  _tab ///
-							 ("ventilated 1")  				  _n
+file write tablecontent 	 ("ICU_pop")				  		  _tab ///
+							 ("ventilated0")  				  _tab ///
+							 ("ventilated1")  				  _n
 							 
 							 
 
@@ -331,22 +486,15 @@ log close
 
 *combine tables
 foreach i of global outcomes {
-insheet using "$Tabfigdir/table1_`i'.txt", clear
+insheet using "$Tabfigdir/table1_`i'.txt", clear names
 gen order=[_n]
-ren v1 label
-ren v2 total
-ren (v3) (`i'0)
-ren (v4) (`i'1)
 drop v5
 save "$Tabfigdir/table1_`i'.dta", replace
 }
 
-insheet using "$Tabfigdir/table1_ventilated.txt", clear
+
+insheet using "$Tabfigdir/table1_ventilated.txt", clear names 
 gen order=[_n]
-ren v1 label
-ren v2 total
-ren (v3) (ventilated0)
-ren (v4) (ventilated1)
 drop v5
 save "$Tabfigdir/table1_ventilated.dta", replace
 
@@ -356,9 +504,10 @@ merge 1:1 order using "$Tabfigdir/table1_tested.dta", nogen
 merge 1:1 order using "$Tabfigdir/table1_positivetest.dta", nogen
 merge 1:1 order using "$Tabfigdir/table1_ae.dta", nogen
 merge 1:1 order using "$Tabfigdir/table1_icu.dta", nogen
-merge 1:1 order using "$Tabfigdir/table1_ventilated.dta", nogen
 merge 1:1 order using "$Tabfigdir/table1_onscoviddeath.dta", nogen
 merge 1:1 order using "$Tabfigdir/table1_ons_noncoviddeath.dta", nogen
+merge 1:1 order using "$Tabfigdir/table1_ventilated.dta", nogen
+
 drop order
 outsheet using "$Tabfigdir/table1_outcomes.txt", replace
 
