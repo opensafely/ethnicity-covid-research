@@ -56,7 +56,7 @@ parmest, label eform format(estimate p lb ub) saving("$Tempdir/crude_ventilated_
 
 /* Multivariable models */ 
 *Age Gender
-melogit ventilated i.eth16 i.male age1 age2 age3 || stp: , nolog
+cap melogit ventilated i.eth16 i.male age1 age2 age3 || stp: , nolog
 if _rc==0{
 estimates
 estimates save "$Tempdir/model0_ventilated_eth16", replace 
@@ -65,7 +65,7 @@ parmest, label eform format(estimate p lb ub) saving("$Tempdir/model0_ventilated
 else di "WARNING MODEL0 DID NOT FIT (OUTCOME `outcome')"
 
 * Age, Gender, IMD
-melogit ventilated i.eth16 i.male age1 age2 age3 i.imd || stp: , nolog
+cap melogit ventilated i.eth16 i.male age1 age2 age3 i.imd || stp: , nolog
 if _rc==0{
 estimates
 estimates save "$Tempdir/model1_ventilated_eth16", replace 
