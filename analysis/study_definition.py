@@ -48,13 +48,7 @@ study = StudyDefinition(
         return_expectations={"rate" : "exponential_increase"},
     ),
 
-    primary_care_sequalae=patients.with_these_clinical_events(
-        covid_primary_care_sequalae,
-        returning="date",
-        find_first_match_in_period=True,
-        date_format="YYYY-MM-DD",
-        return_expectations={"rate" : "exponential_increase"},
-    ),
+
     primary_care_historic_case=patients.with_these_clinical_events(
         combine_codelists(covid_primary_care_historic_case,
                         covid_primary_care_potential_historic_case,
