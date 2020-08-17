@@ -59,9 +59,6 @@ do "$Dodir/03a_eth_outcomes_checks_eth16.do"
 do "$Dodir/03b_eth_outcomes_checks_eth5.do"
 
 *Characteristics of people with and without key outcomes
-do "$Dodir/04a_eth_tested_checks_eth16.do"
-do "$Dodir/04b_eth_tested_checks_eth5.do"
-
 do "$Dodir/16_eth_an_outcome_characteristics.do"
 /**********************
 ETH 5
