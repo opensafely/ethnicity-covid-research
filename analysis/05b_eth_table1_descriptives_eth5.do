@@ -275,6 +275,16 @@ file write tablecontent _n
 tabulatevariable, variable(dm_type_exeter_os) min(0) max(2)  
 file write tablecontent _n 
 
+qui summarizevariable, variable(bp_sys) 
+file write tablecontent _n
+
+qui summarizevariable, variable(bp_dias) 
+file write tablecontent _n
+
+qui summarizevariable, variable(bp_map) 
+file write tablecontent _n
+
+
 file write tablecontent _n _n
 
 ** COMORBIDITIES (binary)

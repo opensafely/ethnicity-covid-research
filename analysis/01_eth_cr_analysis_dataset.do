@@ -636,7 +636,8 @@ gen bphigh = (bpcat==4)
 gen htdiag_or_highbp = bphigh
 recode htdiag_or_highbp 0 = 1 if hypertension==1 
 
-
+*Mean arterial pressure MAP = (SBP+(DBP*2))/3
+gen bp_map=(bp_sys + (bp_dias*2))/3
 ************
 *   eGFR   *
 ************
@@ -850,8 +851,11 @@ lab var egfr							"eGFR"
 lab var egfr_cat						"CKD category defined by eGFR"
 lab var egfr60							"CKD defined by egfr<60"
 lab var  bphigh 						"non-missing indicator of known high blood pressure"
-lab var bpcat 							"Blood pressure four levels, non-missing"
+lab var bpcat 							"Blood pressure four levels non-missing"
 lab var htdiag_or_highbp 				"High blood pressure or hypertension diagnosis"
+lab var bp_sys							"Systolic BP"
+lab var bp_dias							"Diastolic BP"
+lab var bp_map							"Mean Arterial Pressure"
 lab var esrf 							"end stage renal failure"
 lab var asthma_date 						"Diagnosed Asthma Date"
 label var hypertension_date			   		"Diagnosed hypertension Date"
