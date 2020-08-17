@@ -38,10 +38,12 @@ global tempdir    "$Tempdir"
 * Set globals for  outcomes
 global outcomes "suspected confirmed  tested positivetest ae icu cpnsdeath  onscoviddeath ons_noncoviddeath onsdeath"
 
+*outcomes for infected population (restricted to secondary care onwards)
 global outcomes2 "ae icu cpnsdeath  onscoviddeath ons_noncoviddeath onsdeath" 
 
 *outcomes for hh and diabetes
-global outcomes3 "confirmed  tested positivetest ae icu cpnsdeath  onscoviddeath ons_noncoviddeath onsdeath"
+global outcomes3 "confirmed tested positivetest ae icu cpnsdeath  onscoviddeath ons_noncoviddeath onsdeath"
+
 /**********************
 Data cleaning
 **********************/
@@ -49,12 +51,18 @@ Data cleaning
 *Create analysis dataset
 do "$Dodir/01_eth_cr_analysis_dataset.do"
 
-
 *Checks 
 do "$Dodir/02_eth_an_data_checks.do"
+
+*Numbers of outcomes in study population
 do "$Dodir/03a_eth_outcomes_checks_eth16.do"
 do "$Dodir/03b_eth_outcomes_checks_eth5.do"
 
+*Characteristics of people with and without key outcomes
+do "$Dodir/04a_eth_tested_checks_eth16.do"
+do "$Dodir/04b_eth_tested_checks_eth5.do"
+
+do "$Dodir/16_eth_an_outcome_characteristics.do"
 /**********************
 ETH 5
 **********************/
@@ -108,6 +116,7 @@ do "$Dodir/13a_eth_an_household_eth16"
 *Table 9: Diabetes
 do "$Dodir/14a_eth_an_diabetes_eth16"
 */
+
 /**********************
 SENSITIVITY  ANALYSIS
 **********************/
