@@ -52,9 +52,12 @@ Data cleaning
 do "$Dodir/01_eth_cr_analysis_dataset.do"
 
 *Table 2: multivariable analysis - MI
+do "$Dodir/08a_eth_an_multivariable_eth16_mi.do" 
+
+/*
 do "$Dodir/08b_eth_an_multivariable_eth5_mi.do" 
 
-/*Checks 
+*Checks 
 do "$Dodir/02_eth_an_data_checks.do"
 
 *Table 0: Numbers of outcomes in study population
