@@ -126,17 +126,17 @@ ren _Rate rate_`i'
 ren _Lower lb_`i'
 ren _Upper ub_`i'
 gen unique=_n
-save "$Tempdir/table4_`i'_eth16.dta", replace
+save "$Tempdir/table7_`i'_eth16.dta", replace
 
 } //end outcomes
 
 *MERGE ALL TABLES INTO ONE DATASET
-use "$Tempdir/table4_tested_eth16.dta", clear
+use "$Tempdir/table7_tested_eth16.dta", clear
 foreach i of global outcomes {
-	merge 1:1 unique using  "$Tempdir/table4_`i'_eth16.dta", nogen
+	merge 1:1 unique using  "$Tempdir/table7_`i'_eth16.dta", nogen
 }
-save "$Tabfigdir/table4_eth16.dta", replace
-outsheet using "$Tabfigdir/table4_eth16.txt", replace
+save "$Tabfigdir/table7_eth16.dta", replace
+outsheet using "$Tabfigdir/table7_eth16.txt", replace
 
 
 
