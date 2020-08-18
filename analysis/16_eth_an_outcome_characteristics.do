@@ -9,8 +9,8 @@ DESCRIPTION OF FILE:	Produce a table of baseline characteristics, by ethnicity
 						Output to a textfile for further formatting
 DATASETS USED:			$Tempdir\analysis_dataset.dta
 DATASETS CREATED: 		None
-OTHER OUTPUT: 			Results in txt: $Tabfigdir\table1.txt 
-						Log file: $Logdir\05_eth_table1_descriptives
+OTHER OUTPUT: 			Results in txt: $Tabfigdir\table5.txt 
+						Log file: $Logdir\05_eth_table5_descriptives
 USER-INSTALLED ADO: 	 
   (place .ado file(s) in analysis folder)	
   
@@ -177,7 +177,7 @@ tab outcome `outcome'
 
 *Set up output file
 cap file close tablecontent
-file open tablecontent using "$Tabfigdir/table1_`outcome'.txt", write text replace
+file open tablecontent using "$Tabfigdir/table5_`outcome'.txt", write text replace
 
 file write tablecontent ("char") _tab
 
@@ -255,7 +255,7 @@ tab outcome positivetest
 
 *Set up output file
 cap file close tablecontent
-file open tablecontent using "$Tabfigdir/table1_positivetest.txt", write text replace
+file open tablecontent using "$Tabfigdir/table5_positivetest.txt", write text replace
 
 file write tablecontent ("char")  _tab
 
@@ -336,7 +336,7 @@ tab outcome `outcome'
 
 *Set up output file
 cap file close tablecontent
-file open tablecontent using "$Tabfigdir/table1_`outcome'.txt", write text replace
+file open tablecontent using "$Tabfigdir/table5_`outcome'.txt", write text replace
 
 file write tablecontent ("char")  _tab
 
@@ -414,7 +414,7 @@ safetab outcome was_ventilated_flag,m
 
 *Set up output file
 cap file close tablecontent
-file open tablecontent using "$Tabfigdir/table1_ventilated.txt", write text replace
+file open tablecontent using "$Tabfigdir/table5_ventilated.txt", write text replace
 
 file write tablecontent ("char") _tab
 
@@ -486,28 +486,28 @@ log close
 
 *combine tables
 foreach i of global outcomes {
-insheet using "$Tabfigdir/table1_`i'.txt", clear names
+insheet using "$Tabfigdir/table5_`i'.txt", clear names
 gen order=[_n]
 drop v5
-save "$Tabfigdir/table1_`i'.dta", replace
+save "$Tabfigdir/table5_`i'.dta", replace
 }
 
 
-insheet using "$Tabfigdir/table1_ventilated.txt", clear names 
+insheet using "$Tabfigdir/table5_ventilated.txt", clear names 
 gen order=[_n]
 drop v5
-save "$Tabfigdir/table1_ventilated.dta", replace
+save "$Tabfigdir/table5_ventilated.dta", replace
 
 *merge tables of interest
-use "$Tabfigdir/table1_confirmed.dta", clear
-merge 1:1 order using "$Tabfigdir/table1_tested.dta", nogen
-merge 1:1 order using "$Tabfigdir/table1_positivetest.dta", nogen
-merge 1:1 order using "$Tabfigdir/table1_ae.dta", nogen
-merge 1:1 order using "$Tabfigdir/table1_icu.dta", nogen
-merge 1:1 order using "$Tabfigdir/table1_onscoviddeath.dta", nogen
-merge 1:1 order using "$Tabfigdir/table1_ons_noncoviddeath.dta", nogen
-merge 1:1 order using "$Tabfigdir/table1_ventilated.dta", nogen
+use "$Tabfigdir/table5_confirmed.dta", clear
+merge 1:1 order using "$Tabfigdir/table5_tested.dta", nogen
+merge 1:1 order using "$Tabfigdir/table5_positivetest.dta", nogen
+merge 1:1 order using "$Tabfigdir/table5_ae.dta", nogen
+merge 1:1 order using "$Tabfigdir/table5_icu.dta", nogen
+merge 1:1 order using "$Tabfigdir/table5_onscoviddeath.dta", nogen
+merge 1:1 order using "$Tabfigdir/table5_ons_noncoviddeath.dta", nogen
+merge 1:1 order using "$Tabfigdir/table5_ventilated.dta", nogen
 
 drop order
-outsheet using "$Tabfigdir/table1_outcomes.txt", replace
+outsheet using "$Tabfigdir/table5_outcomes.txt", replace
 
