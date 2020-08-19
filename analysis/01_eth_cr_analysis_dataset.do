@@ -270,39 +270,6 @@ label values agegroup agegroup
 **************************** HOUSEHOLD VARS*******************************************
 *update with UPRN data
 
-
-*Total number people in household (to check hh size)
-
-*check for missing household size values
-summ  hh_size
-
-*gen categories of household size.
-gen hh_total_cat=.
-replace hh_total_cat=1 if hh_size >=1 & hh_size<=2
-replace hh_total_cat=2 if hh_size >=3 & hh_size<=5
-replace hh_total_cat=3 if hh_size >=6 & hh_size<=10
-replace hh_total_cat=4 if hh_size >=11 & hh_size!=.
-		
-*remove people from hh_cat if they live in a care home
-replace hh_total_cat=. if care_home_type!="U"
-			
-label define hh_total_cat 1 "1-2" ///
-						2 "3-5" ///
-						3 "6-10" ///
-						4 "11+"
-											
-label values hh_total_cat hh_total_cat
-
-safetab hh_total_cat,m
-safetab hh_total_cat care_home_type,m
-
-*log linear household size
-gen hh_linear=hh_size
-replace hh_linear=11 if hh_linear>=11 & hh_linear!=.
-replace hh_linear=. if care_home_type!="U"
-gen hh_log_linear=log(hh_linear)
-sum hh_log_linear hh_linear
-
 **care home
 encode care_home_type, gen(carehometype)
 drop care_home_type
@@ -311,7 +278,44 @@ gen carehome=0
 replace carehome=1 if carehometype<4
 safetab  carehometype carehome
 
+
+
+*Total number people in household (to check hh size)
+
+*check for missing household size values
+codebook  hh_size, d
+
+*gen categories of household size.
+gen hh_total_cat=.
+replace hh_total_cat=1 if hh_size >=1 & hh_size<=2
+replace hh_total_cat=2 if hh_size >=3 & hh_size<=5
+replace hh_total_cat=3 if hh_size >=6 & hh_size<=10
+replace hh_total_cat=4 if hh_size >=11 & hh_size!=.
+
+*who are people with missing household size
+safecount if hh_total_cat==.
+safecount if hh_size==.
+		
+*remove people from hh_cat if they live in a care home - NO they will be excluded from complete case analysis
 safetab hh_total_cat carehome,m 
+
+*replace hh_total_cat=. if carehome==1
+label define hh_total_cat 1 "1-2" ///
+						2 "3-5" ///
+						3 "6-10" ///
+						4 "11+"
+											
+label values hh_total_cat hh_total_cat
+
+safetab hh_total_cat,m
+safetab hh_total_cat carehome,m 
+
+*log linear household size
+gen hh_linear=hh_size
+replace hh_linear=11 if hh_linear>=11 & hh_linear!=.
+gen hh_log_linear=log(hh_linear)
+sum hh_log_linear hh_linear
+
 
 
 *add prison flag data
@@ -483,7 +487,11 @@ replace comorbidity_count=comorbidity_count+1 if `var'==1
 
 summ comorbidity_count
 
-
+*comorbidities category 
+gen comorbidity_cat =comorbidity_count
+replace comorbidity_cat=4 if comorbidity_count>=4 & comorbidity_count!=.
+bysort comorbidity_cat: sum comorbidity_count
+safetab comorbidity_cat,m
 
 /*  Body Mass Index  */
 * NB: watch for missingness
@@ -765,6 +773,9 @@ safetab asthma
 * Set implausible BMIs to missing:
 replace bmi = . if !inrange(bmi, 15, 50)
 
+*GP consult count
+replace gp_consult_count=0 if gp_consult_count==. | gp_consult_count<0
+tab gp_consult_count,m
 
 /**** Create survival times  ****/
 * For looping later, name must be stime_binary_outcome_name
@@ -834,6 +845,7 @@ lab var gp_consult_count			"Number of GP consultations in the 12 months prior to
 
 * Comorbidities of interest 
 label var comorbidity_count   			"Count of co-morbid conditions"
+label var comorbidity_cat				"Catgeorised co-morbidity count"
 label var asthma						"Asthma category"
 label var hypertension				    "Diagnosed hypertension"
 label var chronic_respiratory_disease 	"Chronic Respiratory Diseases"

@@ -58,7 +58,7 @@ drop if carehome==1
 
 /* Univariable hh_model */ 
 
-stcox i.hh_total_cat, nolog
+stcox i.hh_total_cat, strata(stp) nolog
 estimates save "$Tempdir/hh_crude_`i'_eth16_`eth'", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/crude_`i'_eth16_`eth'", replace) idstr("crude_`i'_eth16_`eth'") 
 local hr "`hr' "$Tempdir/crude_`i'_eth16_`eth'" "
@@ -91,7 +91,7 @@ stcox i.hh_total_cat i.male age1 age2 age3 	i.imd						///
 										i.smoke_nomiss				///
 										i.hypertension bp_map		 	///	
 										i.asthma					///
-										chronic_respiratory_disease ///
+										i.chronic_respiratory_disease ///
 										i.chronic_cardiac_disease	///
 										i.dm_type 					///	
 										i.cancer                    ///
