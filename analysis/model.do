@@ -51,12 +51,6 @@ Data cleaning
 *Create analysis dataset
 do "$Dodir/01_eth_cr_analysis_dataset.do"
 
-*Table 2: multivariable analysis - MI
-do "$Dodir/08a_eth_an_multivariable_eth16_mi.do" 
-
-/*
-do "$Dodir/08b_eth_an_multivariable_eth5_mi.do" 
-
 *Checks 
 do "$Dodir/02_eth_an_data_checks.do"
 
@@ -89,7 +83,7 @@ do "$Dodir/12b_eth_an_infected_eth5"
 do "$Dodir/10b_eth_an_rates_eth5"
 
 *Table 8: Household size - dummy data has missing data in some categories - should run on server
-*do "$Dodir/13b_eth_an_household_eth5"
+do "$Dodir/13b_eth_an_household_eth5"
 
 *Table 9: Diabetes - dummy data has missing data in some categories - should run on server
 do "$Dodir/14b_eth_an_diabetes_eth5"
@@ -97,7 +91,7 @@ do "$Dodir/14b_eth_an_diabetes_eth5"
 
 /**********************
 ETH 16
-**********************
+**********************/
 
 *Table 1 baseline characteristics
 do "$Dodir/05a_eth_table1_descriptives_eth16.do"
@@ -116,13 +110,13 @@ do "$Dodir/11a_eth_an_testedpop_eth16"
 *Table 6: seconday care outcomes amongs those with evidence of infection 
 do "$Dodir/12a_eth_an_infected_eth16"
 
-/* I think cell counts too small to look at household size and diabetes by eth16
+/* cell counts too small to look at household size and diabetes by eth16
 Table 8: Household size
 do "$Dodir/13a_eth_an_household_eth16"
 
 *Table 9: Diabetes
 do "$Dodir/14a_eth_an_diabetes_eth16"
-
+*/
 
 /**********************
 SENSITIVITY  ANALYSIS
@@ -137,6 +131,7 @@ MULTIPLE IMPUTATION
 **********************
 *Table 2: multiple imputation
 do "$Dodir/08a_eth_an_multivariable_eth16_mi.do" 
+do "$Dodir/08b_eth_an_multivariable_eth5_mi.do" 
 
 
 /**********************
