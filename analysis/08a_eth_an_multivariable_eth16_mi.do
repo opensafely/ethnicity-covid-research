@@ -38,7 +38,27 @@ replace eth16=. if eth16==12 //set unknown to missing
 mi register imputed eth16
 
 *mi impute the dataset
-mi impute mlogit eth16, add(10) rseed(2232)
+*mi impute the dataset - remove variables with missing values - bmi	hba1c_pct bp_map 
+noisily mi impute mlogit eth5 `i' i.stp i.male age1 age2 age3 i.imd 	 ///
+										gp_consult_count			///
+										i.smoke_nomiss				///
+										i.hypertension 		 	///	
+										i.asthma					///
+										i.chronic_respiratory_disease ///
+										i.chronic_cardiac_disease	///
+										i.dm_type 					///	
+										i.cancer                    ///
+										i.chronic_liver_disease		///
+										i.stroke					///
+										i.dementia					///
+										i.other_neuro				///
+										i.egfr60					///
+										i.esrf						///
+										i.immunosuppressed	 		///
+										i.ra_sle_psoriasis		///			
+										i.hh_total_cat ///
+										i.carehome, ///
+										add(10) rseed(70548) augment force // can maybe remove the force option in the server
 
 *mi stset
 mi	stset stime_`i', fail(`i') 	id(patient_id) enter(indexdate) origin(indexdate)

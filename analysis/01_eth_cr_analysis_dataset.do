@@ -308,12 +308,11 @@ label define hh_total_cat 1 "1-2" ///
 label values hh_total_cat hh_total_cat
 
 safetab hh_total_cat,m
-safetab hh_total_cat care_home_type,m
+safetab hh_total_cat carehome,m 
 
 *log linear household size
 gen hh_linear=hh_size
 replace hh_linear=11 if hh_linear>=11 & hh_linear!=.
-replace hh_linear=. if care_home_type!="U"
 gen hh_log_linear=log(hh_linear)
 sum hh_log_linear hh_linear
 
