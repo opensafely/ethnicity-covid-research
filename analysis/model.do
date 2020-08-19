@@ -120,17 +120,11 @@ do "$Dodir/13a_eth_an_household_eth16"
 do "$Dodir/14a_eth_an_diabetes_eth16"
 */
 
-/**********************
-SENSITIVITY  ANALYSIS
-**********************/
-*Table 2 sens analysis: excluding care home residents
-do "$Dodir/07b_eth_an_nocarehomes_eth5.do"
-do "$Dodir/07a_eth_an_nocarehomes_eth16.do"
 
 
 /**********************
 MULTIPLE IMPUTATION
-**********************/
+**********************
 *Table 2: multiple imputation
 do "$Dodir/08a_eth_an_multivariable_eth16_mi.do" 
 do "$Dodir/08b_eth_an_multivariable_eth5_mi.do" 
@@ -145,3 +139,9 @@ do "$Dodir/04_eth_an_descriptive_plots.do"
 do "$Dodir/10a_eth_an_rates_eth16"
 
 
+/**********************
+SENSITIVITY  ANALYSIS
+**********************
+*Table 2 sens analysis: excluding care home residents
+do "$Dodir/07b_eth_an_nocarehomes_eth5.do"
+do "$Dodir/07a_eth_an_nocarehomes_eth16.do"
