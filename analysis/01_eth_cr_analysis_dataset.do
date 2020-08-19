@@ -270,11 +270,20 @@ label values agegroup agegroup
 **************************** HOUSEHOLD VARS*******************************************
 *update with UPRN data
 
+**care home
+encode care_home_type, gen(carehometype)
+drop care_home_type
+
+gen carehome=0
+replace carehome=1 if carehometype<4
+safetab  carehometype carehome
+
+
 
 *Total number people in household (to check hh size)
 
 *check for missing household size values
-summ  hh_size
+codebook  hh_size, d
 
 *gen categories of household size.
 gen hh_total_cat=.
@@ -282,10 +291,15 @@ replace hh_total_cat=1 if hh_size >=1 & hh_size<=2
 replace hh_total_cat=2 if hh_size >=3 & hh_size<=5
 replace hh_total_cat=3 if hh_size >=6 & hh_size<=10
 replace hh_total_cat=4 if hh_size >=11 & hh_size!=.
+
+*who are people with missing household size
+safecount if hh_total_cat==.
+safecount if hh_size==.
 		
-*remove people from hh_cat if they live in a care home
-replace hh_total_cat=. if care_home_type!="U"
-			
+*remove people from hh_cat if they live in a care home - NO they will be excluded from complete case analysis
+safetab hh_total_cat carehome,m 
+
+*replace hh_total_cat=. if carehome==1
 label define hh_total_cat 1 "1-2" ///
 						2 "3-5" ///
 						3 "6-10" ///
@@ -303,15 +317,6 @@ replace hh_linear=. if care_home_type!="U"
 gen hh_log_linear=log(hh_linear)
 sum hh_log_linear hh_linear
 
-**care home
-encode care_home_type, gen(carehometype)
-drop care_home_type
-
-gen carehome=0
-replace carehome=1 if carehometype<4
-safetab  carehometype carehome
-
-safetab hh_total_cat carehome,m 
 
 
 *add prison flag data
@@ -769,6 +774,9 @@ safetab asthma
 * Set implausible BMIs to missing:
 replace bmi = . if !inrange(bmi, 15, 50)
 
+*GP consult count
+replace gp_consult_count=0 if gp_consult_count==. | gp_consult_count<0
+tab gp_consult_count,m
 
 /**** Create survival times  ****/
 * For looping later, name must be stime_binary_outcome_name
