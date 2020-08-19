@@ -113,12 +113,8 @@ logistic positivetest i.eth16 i.male age1 age2 age3 	i.imd						///
 										i.ra_sle_psoriasis			///
 										i.hh_total_cat i.carehome i.stp, nolog 		
 										
-if _rc==0{
-estimates
 estimates save "$Tempdir/model3_positivetest_eth16", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model3_positivetest_eth16", replace) idstr("model3_positivetest_eth16") 
-}
-else di "WARNING MODEL3 DID NOT FIT (OUTCOME `outcome')"
 
 /* Print table================================================================*/ 
 *  Print the results for the main model 

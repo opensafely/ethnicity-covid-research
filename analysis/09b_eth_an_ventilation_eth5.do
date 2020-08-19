@@ -46,18 +46,18 @@ safetab eth5 ventilated , missing row
 
 /* Univariable model */ 
 
-melogit ventilated i.eth5 || stp:, nolog or
+melogit ventilated i.eth5  i.stp, nolog
 estimates save "$Tempdir/crude_ventilated_eth5", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/crude_ventilated_eth5", replace) idstr("crude_ventilated_eth5") 
 
 /* Multivariable models */ 
 *Age Gender
-cap melogit ventilated i.eth5 i.male age1 age2 age3 || stp: , nolog or
+logistic ventilated i.eth5 i.male age1 age2 age3 i.stp, nolog	
 estimates save "$Tempdir/model0_ventilated_eth5", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model0_ventilated_eth5", replace) idstr("model0_ventilated_eth5") 
 
 * Age, Gender, IMD
-cap melogit ventilated i.eth5 i.male age1 age2 age3 i.imd || stp: , nolog or
+logistic ventilated i.eth5 i.male age1 age2 age3 i.imd i.stp, nolog	
 estimates save "$Tempdir/model1_ventilated_eth5", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model1_ventilated_eth5", replace) idstr("model1_ventilated_eth5") 
 
@@ -79,14 +79,14 @@ cap  melogit ventilated i.eth5 i.male age1 age2 age3 	i.imd						///
 										i.egfr60					///
 										i.esrf						///
 										i.immunosuppressed	 		///
-										i.ra_sle_psoriasis || stp:, nolog or	
+										i.ra_sle_psoriasis  i.stp, nolog	
 										
 estimates save "$Tempdir/model2_ventilated_eth5", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model2_ventilated_eth5", replace) idstr("model2_ventilated_eth5") 
 
 
 * Age, Gender, IMD and Comorbidities  and household size and carehome
-cap melogit ventilated i.eth5 i.male age1 age2 age3 	i.imd						///
+logistic ventilated i.eth5 i.male age1 age2 age3 	i.imd						///
 										bmi	hba1c_pct				///
 										gp_consult_count			///
 										i.smoke_nomiss				///
@@ -104,7 +104,7 @@ cap melogit ventilated i.eth5 i.male age1 age2 age3 	i.imd						///
 										i.esrf						///
 										i.immunosuppressed	 		///
 										i.ra_sle_psoriasis			///
-										i.hh_total_cat i.carehome || stp:, nolog or	
+										i.hh_total_cat i.carehome  i.stp, nolog	
 										
 estimates save "$Tempdir/model3_ventilated_eth5", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model3_ventilated_eth5", replace) idstr("model3_ventilated_eth5") 
