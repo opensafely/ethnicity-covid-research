@@ -483,7 +483,11 @@ replace comorbidity_count=comorbidity_count+1 if `var'==1
 
 summ comorbidity_count
 
-
+*comorbidities category 
+gen comorbidity_cat =comorbidity_count
+replace comorbidity_cat=4 if comorbidity_count>=4 & comorbidity_count!=.
+bysort comorbidity_cat: sum comorbidity_count
+safetab comorbidity_cat,m
 
 /*  Body Mass Index  */
 * NB: watch for missingness
@@ -834,6 +838,7 @@ lab var gp_consult_count			"Number of GP consultations in the 12 months prior to
 
 * Comorbidities of interest 
 label var comorbidity_count   			"Count of co-morbid conditions"
+label var comorbidity_cat				"Catgeorised co-morbidity count"
 label var asthma						"Asthma category"
 label var hypertension				    "Diagnosed hypertension"
 label var chronic_respiratory_disease 	"Chronic Respiratory Diseases"

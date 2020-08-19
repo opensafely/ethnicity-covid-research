@@ -41,7 +41,7 @@ global outcomes "suspected confirmed  tested positivetest ae icu cpnsdeath  onsc
 *outcomes for infected population (restricted to secondary care onwards)
 global outcomes2 "ae icu cpnsdeath  onscoviddeath ons_noncoviddeath onsdeath" 
 
-*outcomes for hh and diabetes
+*outcomes for hh and diabetes and comorbidites
 global outcomes3 "confirmed tested positivetest ae icu cpnsdeath  onscoviddeath ons_noncoviddeath onsdeath"
 
 /**********************
@@ -88,6 +88,8 @@ do "$Dodir/13b_eth_an_household_eth5"
 *Table 9: Diabetes - dummy data has missing data in some categories - should run on server
 do "$Dodir/14b_eth_an_diabetes_eth5"
 
+*Table 10: Co-morbidities
+do "$Dodir/15b_eth_an_comorbidities_eth5"
 
 /**********************
 ETH 16
@@ -128,7 +130,7 @@ do "$Dodir/07a_eth_an_nocarehomes_eth16.do"
 
 /**********************
 MULTIPLE IMPUTATION
-**********************
+**********************/
 *Table 2: multiple imputation
 do "$Dodir/08a_eth_an_multivariable_eth16_mi.do" 
 do "$Dodir/08b_eth_an_multivariable_eth5_mi.do" 
