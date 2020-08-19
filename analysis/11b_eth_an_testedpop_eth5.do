@@ -20,7 +20,7 @@ cap log close
 log using "$Logdir/11b_eth_an_testedpop_eth5", replace t
 
 cap file close tablecontent
-file open tablecontent using $Tabfigdir/table5_testedpop_eth5.txt, write text replace
+file open tablecontent using $Tabfigdir/table4_testedpop_eth5.txt, write text replace
 file write tablecontent ("Table 2: Odds of testing positive amongst those receiving a test - Complete Case Analysis") _n
 file write tablecontent _tab ("Denominator") _tab ("Event") _tab ("%") _tab ("Crude") _tab _tab ("Age/Sex Adjusted") _tab _tab ("Age/Sex/IMD Adjusted") _tab _tab 	("plus co-morbidities") _tab _tab 	("plus hh size/carehome")  _tab _tab  _n
 file write tablecontent _tab _tab _tab _tab   ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _n
@@ -49,32 +49,24 @@ safetab eth5 positivetest, missing row
 
 /* Univariable model */ 
 
-logistic positivetest i.eth5, nolog
+logistic positivetest i.eth5 i.stp, nolog
 estimates save "$Tempdir/crude_positivetest_eth5", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/crude_positivetest_eth5", replace) idstr("crude_positivetest_eth5") 
 
 /* Multivariable models */ 
 *Age Gender
-melogit positivetest i.eth5 i.male age1 age2 age3 || stp: , nolog
-if _rc==0{
-estimates
+logistic positivetest i.eth5 i.male age1 age2 age3 i.stp, nolog
 estimates save "$Tempdir/model0_positivetest_eth5", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model0_positivetest_eth5", replace) idstr("model0_positivetest_eth5") 
-}
-else di "WARNING MODEL0 DID NOT FIT (OUTCOME `outcome')"
 
 * Age, Gender, IMD
-melogit positivetest i.eth5 i.male age1 age2 age3 i.imd || stp: , nolog
-if _rc==0{
-estimates
+logistic positivetest i.eth5 i.male age1 age2 age3 i.imd i.stp, nolog
 estimates save "$Tempdir/model1_positivetest_eth5", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model1_positivetest_eth5", replace) idstr("model1_positivetest_eth5") 
-}
-else di "WARNING MODEL1 DID NOT FIT (OUTCOME `outcome')"
 
 
 * Age, Gender, IMD and Comorbidities  
-cap melogit positivetest i.eth5 i.male age1 age2 age3 	i.imd						///
+cap logistic positivetest i.eth5 i.male age1 age2 age3 	i.imd						///
 										bmi	hba1c_pct				///
 										gp_consult_count			///
 										i.smoke_nomiss				///
@@ -93,15 +85,11 @@ cap melogit positivetest i.eth5 i.male age1 age2 age3 	i.imd						///
 										i.immunosuppressed	 		///
 										i.ra_sle_psoriasis || stp:, nolog		
 										
-if _rc==0{
-estimates
 estimates save "$Tempdir/model2_positivetest_eth5", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model2_positivetest_eth5", replace) idstr("model2_positivetest_eth5") 
-}
-else di "WARNING MODEL2 DID NOT FIT (OUTCOME `outcome')"
 
 * Age, Gender, IMD and Comorbidities  and household size and carehome
-cap melogit positivetest i.eth5 i.male age1 age2 age3 	i.imd						///
+cap logistic positivetest i.eth5 i.male age1 age2 age3 	i.imd						///
 										bmi	hba1c_pct				///
 										gp_consult_count			///
 										i.smoke_nomiss				///
@@ -121,12 +109,8 @@ cap melogit positivetest i.eth5 i.male age1 age2 age3 	i.imd						///
 										i.ra_sle_psoriasis			///
 										i.hh_total_cat i.carehome || stp:, nolog		
 										
-if _rc==0{
-estimates
 estimates save "$Tempdir/model3_positivetest_eth5", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model3_positivetest_eth5", replace) idstr("model3_positivetest_eth5") 
-}
-else di "WARNING MODEL3 DID NOT FIT (OUTCOME `outcome')"
 
 /* Print table================================================================*/ 
 *  Print the results for the main model 
@@ -235,7 +219,7 @@ outsheet using "$Tabfigdir/FP_testedpop_eth5.txt", replace
 log close
 
 
-insheet using "$Tabfigdir/table5_testedpop_eth5.txt", clear
+insheet using "$Tabfigdir/table4_testedpop_eth5.txt", clear
 
 
 

@@ -41,7 +41,7 @@ global outcomes "suspected confirmed  tested positivetest ae icu cpnsdeath  onsc
 *outcomes for infected population (restricted to secondary care onwards)
 global outcomes2 "ae icu cpnsdeath  onscoviddeath ons_noncoviddeath onsdeath" 
 
-*outcomes for hh and diabetes
+*outcomes for hh and diabetes and comorbidites
 global outcomes3 "confirmed tested positivetest ae icu cpnsdeath  onscoviddeath ons_noncoviddeath onsdeath"
 
 /**********************
@@ -54,12 +54,13 @@ do "$Dodir/01_eth_cr_analysis_dataset.do"
 *Checks 
 do "$Dodir/02_eth_an_data_checks.do"
 
-*Numbers of outcomes in study population
+*Table 0: Numbers of outcomes in study population
 do "$Dodir/03a_eth_outcomes_checks_eth16.do"
 do "$Dodir/03b_eth_outcomes_checks_eth5.do"
 
-*Characteristics of people with and without key outcomes
+*Table 5: Characteristics of people with and without key outcomes
 do "$Dodir/16_eth_an_outcome_characteristics.do"
+
 /**********************
 ETH 5
 **********************/
@@ -72,22 +73,27 @@ do "$Dodir/06b_eth_an_multivariable_eth5.do"
 *Table 3: Odds of receiving ventilation - in those admitted to ICU
 do "$Dodir/09b_eth_an_ventilation_eth5"
 
-*Table 5: Odds of testing positive amongst those with SGSS testing data
+*Table 4: Odds of testing positive amongst those with SGSS testing data
 do "$Dodir/11b_eth_an_testedpop_eth5" 
 
 *Table 6: seconday care outcomes amongs those with evidence of infection 
 do "$Dodir/12b_eth_an_infected_eth5"
 
+*Table 7: Rates - crude, age, and age-sex stratified
+do "$Dodir/10b_eth_an_rates_eth5"
+
 *Table 8: Household size - dummy data has missing data in some categories - should run on server
-*do "$Dodir/13b_eth_an_household_eth5"
+do "$Dodir/13b_eth_an_household_eth5"
 
 *Table 9: Diabetes - dummy data has missing data in some categories - should run on server
 do "$Dodir/14b_eth_an_diabetes_eth5"
 
+*Table 10: Co-morbidities
+do "$Dodir/15b_eth_an_comorbidities_eth5"
 
 /**********************
 ETH 16
-**********************
+**********************/
 
 *Table 1 baseline characteristics
 do "$Dodir/05a_eth_table1_descriptives_eth16.do"
@@ -106,7 +112,7 @@ do "$Dodir/11a_eth_an_testedpop_eth16"
 *Table 6: seconday care outcomes amongs those with evidence of infection 
 do "$Dodir/12a_eth_an_infected_eth16"
 
-/* I think cell counts too small to look at household size and diabetes by eth16
+/* cell counts too small to look at household size and diabetes by eth16
 Table 8: Household size
 do "$Dodir/13a_eth_an_household_eth16"
 
@@ -114,22 +120,14 @@ do "$Dodir/13a_eth_an_household_eth16"
 do "$Dodir/14a_eth_an_diabetes_eth16"
 */
 
-/**********************
-SENSITIVITY  ANALYSIS
-**********************/
-
-
-*Table 2 sens analysis: excluding care home residents
-do "$Dodir/07b_eth_an_nocarehomes_eth5.do"
-do "$Dodir/07a_eth_an_nocarehomes_eth16.do"
 
 
 /**********************
 MULTIPLE IMPUTATION
 **********************
 *Table 2: multiple imputation
-do "$Dodir/08b_eth_an_multivariable_eth5_mi.do" 
 do "$Dodir/08a_eth_an_multivariable_eth16_mi.do" 
+do "$Dodir/08b_eth_an_multivariable_eth5_mi.do" 
 
 
 /**********************
@@ -137,8 +135,13 @@ PLOTS & RATES
 **********************/
 do "$Dodir/04_eth_an_descriptive_plots.do" 
 
-*Table 4: Rates - crude, age, and age-sex stratified
-do "$Dodir/10b_eth_an_rates_eth5"
+*Table 7: Rates - crude, age, and age-sex stratified
 do "$Dodir/10a_eth_an_rates_eth16"
 
 
+/**********************
+SENSITIVITY  ANALYSIS
+**********************
+*Table 2 sens analysis: excluding care home residents
+do "$Dodir/07b_eth_an_nocarehomes_eth5.do"
+do "$Dodir/07a_eth_an_nocarehomes_eth16.do"
