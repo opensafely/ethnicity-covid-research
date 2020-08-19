@@ -50,7 +50,7 @@ keep if eth5==`eth'
 /* Main comorb_model=================================================================*/
 
 /* Univariable comorb_model */ 
-stcox i.comorbidity_cat, nolog
+stcox i.comorbidity_cat, strata(stp) nolog
 estimates save "$Tempdir/comorb_crude_`i'_eth5_`eth'", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/crude_`i'_eth5_`eth'", replace) idstr("crude_`i'_eth5_`eth'") 
 local hr "`hr' "$Tempdir/crude_`i'_eth5_`eth'" "

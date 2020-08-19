@@ -53,7 +53,7 @@ drop if  `eth'==2  & "`i'"=="icu"
 
 /* Univariable dm_model */ 
 
-stcox i.dm_type, nolog
+stcox i.dm_type, strata(stp) nolog
 estimates save "$Tempdir/dm_crude_`i'_eth16_`eth'", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/crude_`i'_eth16_`eth'", replace) idstr("crude_`i'_eth16_`eth'") 
 local hr "`hr' "$Tempdir/crude_`i'_eth16_`eth'" "
@@ -86,7 +86,7 @@ stcox i.dm_type i.male age1 age2 age3 	i.imd						///
 										i.smoke_nomiss				///
 										i.hypertension bp_map		 	///	
 										i.asthma					///
-										chronic_respiratory_disease ///
+										i.chronic_respiratory_disease ///
 										i.chronic_cardiac_disease	///
 										i.cancer                    ///
 										i.chronic_liver_disease		///
@@ -112,7 +112,7 @@ stcox i.dm_type i.male age1 age2 age3 	i.imd						///
 										i.smoke_nomiss				///
 										i.hypertension bp_map		 	///	
 										i.asthma					///
-										chronic_respiratory_disease ///
+										i.chronic_respiratory_disease ///
 										i.chronic_cardiac_disease	///
 										i.cancer                    ///
 										i.chronic_liver_disease		///

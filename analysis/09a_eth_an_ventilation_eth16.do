@@ -50,7 +50,8 @@ safetab eth16 ventilated , missing row
 
 /* Univariable model */ 
 
-logistic ventilated i.eth16, nolog
+melogit ventilated i.eth16 || stp:, nolog
+
 estimates save "$Tempdir/crude_ventilated_eth16", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/crude_ventilated_eth16", replace) idstr("crude_ventilated_eth16") 
 
@@ -81,7 +82,7 @@ cap melogit ventilated i.eth16 i.male age1 age2 age3 	i.imd						///
 										i.smoke_nomiss				///
 										i.hypertension bp_map		 	///	
 										i.asthma					///
-										chronic_respiratory_disease ///
+										i.chronic_respiratory_disease ///
 										i.chronic_cardiac_disease	///
 										i.dm_type 					///	
 										i.cancer                    ///
@@ -109,7 +110,7 @@ cap melogit ventilated i.eth16 i.male age1 age2 age3 	i.imd						///
 										i.smoke_nomiss				///
 										i.hypertension bp_map		 	///	
 										i.asthma					///
-										chronic_respiratory_disease ///
+										i.chronic_respiratory_disease ///
 										i.chronic_cardiac_disease	///
 										i.dm_type 					///	
 										i.cancer                    ///

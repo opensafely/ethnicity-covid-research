@@ -46,38 +46,29 @@ safetab eth5 ventilated , missing row
 
 /* Univariable model */ 
 
-logistic ventilated i.eth5, nolog
+melogit ventilated i.eth5 || stp:, nolog or
 estimates save "$Tempdir/crude_ventilated_eth5", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/crude_ventilated_eth5", replace) idstr("crude_ventilated_eth5") 
 
 /* Multivariable models */ 
 *Age Gender
-cap melogit ventilated i.eth5 i.male age1 age2 age3 || stp: , nolog
-if _rc==0{
-estimates
+cap melogit ventilated i.eth5 i.male age1 age2 age3 || stp: , nolog or
 estimates save "$Tempdir/model0_ventilated_eth5", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model0_ventilated_eth5", replace) idstr("model0_ventilated_eth5") 
-}
-else di "WARNING MODEL0 DID NOT FIT (OUTCOME `outcome')"
 
 * Age, Gender, IMD
-cap melogit ventilated i.eth5 i.male age1 age2 age3 i.imd || stp: , nolog
-if _rc==0{
-estimates
+cap melogit ventilated i.eth5 i.male age1 age2 age3 i.imd || stp: , nolog or
 estimates save "$Tempdir/model1_ventilated_eth5", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model1_ventilated_eth5", replace) idstr("model1_ventilated_eth5") 
-}
-else di "WARNING MODEL1 DID NOT FIT (OUTCOME `outcome')"
-
 
 * Age, Gender, IMD and Comorbidities  
-cap melogit ventilated i.eth16 i.male age1 age2 age3 	i.imd						///
+cap  melogit ventilated i.eth5 i.male age1 age2 age3 	i.imd						///
 										bmi	hba1c_pct				///
 										gp_consult_count			///
 										i.smoke_nomiss				///
 										i.hypertension bp_map		 	///	
 										i.asthma					///
-										chronic_respiratory_disease ///
+										i.chronic_respiratory_disease ///
 										i.chronic_cardiac_disease	///
 										i.dm_type 					///	
 										i.cancer                    ///
@@ -88,25 +79,20 @@ cap melogit ventilated i.eth16 i.male age1 age2 age3 	i.imd						///
 										i.egfr60					///
 										i.esrf						///
 										i.immunosuppressed	 		///
-										i.ra_sle_psoriasis || stp:, nolog		
+										i.ra_sle_psoriasis || stp:, nolog or	
 										
-if _rc==0{
-estimates
 estimates save "$Tempdir/model2_ventilated_eth5", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model2_ventilated_eth5", replace) idstr("model2_ventilated_eth5") 
-}
-else di "WARNING MODEL2 DID NOT FIT (OUTCOME `outcome')"
 
-* Age, Gender, IMD and Comorbidities and household size
 
 * Age, Gender, IMD and Comorbidities  and household size and carehome
-cap melogit ventilated i.eth16 i.male age1 age2 age3 	i.imd						///
+cap melogit ventilated i.eth5 i.male age1 age2 age3 	i.imd						///
 										bmi	hba1c_pct				///
 										gp_consult_count			///
 										i.smoke_nomiss				///
 										i.hypertension bp_map		 	///	
 										i.asthma					///
-										chronic_respiratory_disease ///
+										i.chronic_respiratory_disease ///
 										i.chronic_cardiac_disease	///
 										i.dm_type 					///	
 										i.cancer                    ///
@@ -118,14 +104,11 @@ cap melogit ventilated i.eth16 i.male age1 age2 age3 	i.imd						///
 										i.esrf						///
 										i.immunosuppressed	 		///
 										i.ra_sle_psoriasis			///
-										i.hh_total_cat i.carehome || stp:, nolog		
+										i.hh_total_cat i.carehome || stp:, nolog or	
 										
-if _rc==0{
-estimates
 estimates save "$Tempdir/model3_ventilated_eth5", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model3_ventilated_eth5", replace) idstr("model3_ventilated_eth5") 
-}
-else di "WARNING MODEL3 DID NOT FIT (OUTCOME `outcome')"
+
 
 /* Print table================================================================*/ 
 *  Print the results for the main model 
@@ -144,9 +127,9 @@ local lab5: label eth5 5
 /* Counts */
  
 * First row, eth5 = 1 (White) reference cat
-	qui safecount if eth5==1
+	 safecount if eth5==1
 	local denominator = r(N)
-	qui safecount if eth5 == 1 & ventilated == 1
+	 safecount if eth5 == 1 & ventilated == 1
 	local event = r(N)
 	local pct =(`event'/`denominator')
 	
@@ -155,30 +138,34 @@ local lab5: label eth5 5
 	
 * Subsequent ethnic groups
 forvalues eth=2/5 {
-	qui safecount if eth5==`eth'
+	di "ethnic group `eth'"
+	safecount if eth5==`eth'
 	local denominator = r(N)
-	qui safecount if eth5 == `eth' & ventilated == 1
+	 safecount if eth5 == `eth' & ventilated == 1
 	local event = r(N)
 	local pct =(`event'/`denominator')
 	file write tablecontent  ("`lab`eth''") _tab (`denominator') _tab (`event') _tab %3.2f (`pct') _tab
 	estimates use "$Tempdir/crude_ventilated_eth5" 
+	estimates
 	lincom `eth'.eth5, eform
 	file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (" - ") %4.2f (r(ub)) (")") _tab 
-	cap estimates clear
-	cap estimates use "$Tempdir/model0_ventilated_eth5" 
-	cap lincom `eth'.eth5, eform
+	estimates clear
+	estimates use "$Tempdir/model0_ventilated_eth5" 
+	estimates
+	lincom `eth'.eth5, eform
 	file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (" - ") %4.2f (r(ub)) (")") _tab 
-	cap estimates clear
-	cap estimates use "$Tempdir/model1_ventilated_eth5" 
-	cap lincom `eth'.eth5, eform
+	estimates clear
+	estimates use "$Tempdir/model1_ventilated_eth5" 
+	lincom `eth'.eth5, eform
 	file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (" - ") %4.2f (r(ub)) (")") _tab 
-	cap estimates clear
-	cap estimates use "$Tempdir/model2_ventilated_eth5" 
-	cap lincom `eth'.eth5, eform
+	estimates clear
+	estimates use "$Tempdir/model2_ventilated_eth5" 
+	lincom `eth'.eth5, eform
 	file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (" - ") %4.2f (r(ub)) (")") _tab 
-	cap estimates clear
-	cap estimates use "$Tempdir/model3_ventilated_eth5" 
-	cap lincom `eth'.eth5, eform
+	estimates clear
+	estimates use "$Tempdir/model3_ventilated_eth5"
+	estimates
+	lincom `eth'.eth5, eform
 	file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (" - ") %4.2f (r(ub)) (")") _n
 }  //end ethnic group
 

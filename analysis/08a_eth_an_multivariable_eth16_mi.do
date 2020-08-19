@@ -37,7 +37,6 @@ mi set mlong
 replace eth16=. if eth16==12 //set unknown to missing
 mi register imputed eth16
 
-*mi impute the dataset
 *mi impute the dataset - remove variables with missing values - bmi	hba1c_pct bp_map 
 noisily mi impute mlogit eth5 `i' i.stp i.male age1 age2 age3 i.imd 	 ///
 										gp_consult_count			///

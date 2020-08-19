@@ -41,7 +41,7 @@ use "$Tempdir/analysis_dataset_STSET_`i'_infected.dta", clear
 
 /* Univariable model */ 
 
-stcox i.eth5, nolog
+stcox i.eth5, strata(stp) nolog
 estimates save "$Tempdir/crude_`i'_eth5", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/crude_`i'_eth5", replace) idstr("crude_`i'_eth5") 
 local hr "`hr' "$Tempdir/crude_`i'_eth5" "
@@ -74,7 +74,7 @@ stcox i.eth5 i.male age1 age2 age3 	i.imd						///
 										i.smoke_nomiss				///
 										i.hypertension bp_map		 	///	
 										i.asthma					///
-										chronic_respiratory_disease ///
+										i.chronic_respiratory_disease ///
 										i.chronic_cardiac_disease	///
 										i.dm_type 					///	
 										i.cancer                    ///
@@ -102,7 +102,7 @@ stcox i.eth5 i.male age1 age2 age3 	i.imd						///
 										i.smoke_nomiss				///
 										i.hypertension bp_map		 	///	
 										i.asthma					///
-										chronic_respiratory_disease ///
+										i.chronic_respiratory_disease ///
 										i.chronic_cardiac_disease	///
 										i.dm_type 					///	
 										i.cancer                    ///

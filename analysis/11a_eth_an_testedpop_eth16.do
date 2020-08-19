@@ -49,38 +49,32 @@ safetab eth16 positivetest, missing row
 
 /* Univariable model */ 
 
-logistic positivetest i.eth16, nolog
+logistic positivetest i.eth16 i.stp, nolog 
 estimates save "$Tempdir/crude_positivetest_eth16", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/crude_positivetest_eth16", replace) idstr("crude_positivetest_eth16") 
 
+
+
 /* Multivariable models */ 
 *Age Gender
-melogit positivetest i.eth16 i.male age1 age2 age3 || stp: , nolog
-if _rc==0{
-estimates
+logistic positivetest i.eth16 i.male age1 age2 age3 i.stp, nolog 
 estimates save "$Tempdir/model0_positivetest_eth16", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model0_positivetest_eth16", replace) idstr("model0_positivetest_eth16") 
-}
-else di "WARNING MODEL0 DID NOT FIT (OUTCOME `outcome')"
 
 * Age, Gender, IMD
-melogit positivetest i.eth16 i.male age1 age2 age3 i.imd || stp: , nolog
-if _rc==0{
-estimates
+logistic positivetest i.eth16 i.male age1 age2 age3 i.imd i.stp , nolog 
 estimates save "$Tempdir/model1_positivetest_eth16", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model1_positivetest_eth16", replace) idstr("model1_positivetest_eth16") 
-}
-else di "WARNING MODEL1 DID NOT FIT (OUTCOME `outcome')"
 
 
 * Age, Gender, IMD and Comorbidities  
-cap melogit positivetest i.eth16 i.male age1 age2 age3 	i.imd						///
+logistic positivetest i.eth16 i.male age1 age2 age3 	i.imd						///
 										bmi	hba1c_pct				///
 										gp_consult_count			///
 										i.smoke_nomiss				///
 										i.hypertension bp_map		 	///	
 										i.asthma					///
-										chronic_respiratory_disease ///
+										i.chronic_respiratory_disease ///
 										i.chronic_cardiac_disease	///
 										i.dm_type 					///	
 										i.cancer                    ///
@@ -91,25 +85,21 @@ cap melogit positivetest i.eth16 i.male age1 age2 age3 	i.imd						///
 										i.egfr60					///
 										i.esrf						///
 										i.immunosuppressed	 		///
-										i.ra_sle_psoriasis	|| stp:, nolog		
+										i.ra_sle_psoriasis	i. stp, nolog 		
 										
-if _rc==0{
-estimates
 estimates save "$Tempdir/model2_positivetest_eth16", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model2_positivetest_eth16", replace) idstr("model2_positivetest_eth16") 
-}
-else di "WARNING MODEL2 DID NOT FIT (OUTCOME `outcome')"
 
 * Age, Gender, IMD and Comorbidities and household size
 
 * Age, Gender, IMD and Comorbidities  and household size and carehome
-cap melogit positivetest i.eth16 i.male age1 age2 age3 	i.imd						///
+logistic positivetest i.eth16 i.male age1 age2 age3 	i.imd						///
 										bmi	hba1c_pct				///
 										gp_consult_count			///
 										i.smoke_nomiss				///
 										i.hypertension bp_map		 	///	
 										i.asthma					///
-										chronic_respiratory_disease ///
+										i.chronic_respiratory_disease ///
 										i.chronic_cardiac_disease	///
 										i.dm_type 					///	
 										i.cancer                    ///
@@ -121,7 +111,7 @@ cap melogit positivetest i.eth16 i.male age1 age2 age3 	i.imd						///
 										i.esrf						///
 										i.immunosuppressed	 		///
 										i.ra_sle_psoriasis			///
-										i.hh_total_cat i.carehome || stp:, nolog		
+										i.hh_total_cat i.carehome i.stp, nolog 		
 										
 if _rc==0{
 estimates
