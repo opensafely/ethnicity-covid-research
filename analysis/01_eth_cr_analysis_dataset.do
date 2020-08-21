@@ -140,6 +140,9 @@ safetab ethnicity
  replace eth5=4 if ethnicity==2
  replace eth5=5 if ethnicity==5
  replace eth5=6 if ethnicity==.
+ 
+ *Put chinese in other ethnic group
+ replace eth5=5 if ethnicity_16==15
 
  label define eth5	 	1 "White"  					///
 						2 "South Asian"		  ///						
