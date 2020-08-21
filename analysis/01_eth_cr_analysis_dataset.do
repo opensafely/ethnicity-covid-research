@@ -141,7 +141,7 @@ safetab ethnicity
  replace eth5=5 if ethnicity==5
  replace eth5=6 if ethnicity==.
  
- *Put chinese in other ethnic group
+ *check chinese in other ethnic group
  replace eth5=5 if ethnicity_16==15
 
  label define eth5	 	1 "White"  					///
@@ -181,6 +181,7 @@ label define ethnicity_16 									///
 label values ethnicity_16 ethnicity_16
 safetab ethnicity_16,m
 
+bysort eth5: safetab ethnicity_16
 
 * Ethnicity (16 category grouped further)
 * Generate a version of the full breakdown with mixed in one group
@@ -197,10 +198,6 @@ recode eth16 15 = 9
 recode eth16 99 = 10
 recode eth16 16 = 11
 recode eth16 17 = 12
-
-
-
-
 
 label define eth16 	///
 						1 "British" ///
