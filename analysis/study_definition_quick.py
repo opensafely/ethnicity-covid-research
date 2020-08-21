@@ -60,4 +60,4 @@ study = StudyDefinition(
 
     ),
 
-
+)
