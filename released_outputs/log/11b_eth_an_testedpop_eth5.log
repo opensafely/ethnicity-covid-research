@@ -1,0 +1,643 @@
+-------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  E:\analyses\ethnicity-covid-research/output/log/11b_eth_an_testedp
+> op_eth5.log
+  log type:  text
+ opened on:  22 Aug 2020, 06:24:12
+
+. 
+. cap file close tablecontent
+
+. file open tablecontent using $Tabfigdir/table4_testedpop_eth5.txt, write text
+>  replace
+(note: file E:\analyses\ethnicity-covid-research/output/tabfig/table4_testedpop
+> _eth5.txt not found)
+
+. file write tablecontent ("Table 2: Odds of testing positive amongst those rec
+> eiving a test - Complete Case Analysis") _n
+
+. file write tablecontent _tab ("Denominator") _tab ("Event") _tab ("%") _tab (
+> "Crude") _tab _tab ("Age/Sex Adjusted") _tab _tab ("Age/Sex/IMD Adjusted") _t
+> ab _tab       ("plus co-morbidities") _tab _tab       ("plus hh size/carehome
+> ")  _tab _tab  _n
+
+. file write tablecontent _tab _tab _tab _tab   ("OR") _tab ("95% CI") _tab ("O
+> R") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _
+> n
+
+. 
+. 
+. 
+. * Open Stata dataset
+. use "$Tempdir/analysis_dataset.dta", clear
+
+. 
+. safecount
+  16,309,245
+
+. 
+. *define population as anyone who has received a test
+. keep if tested==1
+(15,183,801 observations deleted)
+
+. safecount
+  1,125,444
+
+. 
+. 
+. 
+. 
+. /* Sense check outcomes======================================================
+> =*/ 
+. safetab positivetest
+
+    outcome |
+positivetes |
+          t |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |  1,051,800       93.46       93.46
+          1 |     73,644        6.54      100.00
+------------+-----------------------------------
+      Total |  1,125,444      100.00
+
+. 
+. safetab eth5 positivetest, missing row
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+      Eth 5 | outcome positivetest
+ categories |         0          1 |     Total
+------------+----------------------+----------
+      White |   738,871     46,117 |   784,988 
+            |     94.13       5.87 |    100.00 
+------------+----------------------+----------
+South Asian |    69,915      9,811 |    79,726 
+            |     87.69      12.31 |    100.00 
+------------+----------------------+----------
+      Black |    21,676      2,358 |    24,034 
+            |     90.19       9.81 |    100.00 
+------------+----------------------+----------
+      Mixed |    10,582        864 |    11,446 
+            |     92.45       7.55 |    100.00 
+------------+----------------------+----------
+      Other |    13,939      1,255 |    15,194 
+            |     91.74       8.26 |    100.00 
+------------+----------------------+----------
+    Unknown |   196,817     13,239 |   210,056 
+            |     93.70       6.30 |    100.00 
+------------+----------------------+----------
+      Total | 1,051,800     73,644 | 1,125,444 
+            |     93.46       6.54 |    100.00 
+
+. 
+. 
+. /* Main Model================================================================
+> =*/
+. 
+. /* Univariable model */ 
+. 
+. logistic positivetest i.eth5 i.stp, nolog
+
+Logistic regression                             Number of obs     =  1,125,444
+                                                LR chi2(36)       =   12660.08
+                                                Prob > chi2       =     0.0000
+Log likelihood = -265654.52                     Pseudo R2         =     0.0233
+
+------------------------------------------------------------------------------
+positivetest | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |    2.28587   .0289124    65.36   0.000       2.2299    2.343246
+      Black  |    1.80316    .040811    26.05   0.000      1.72492    1.884949
+      Mixed  |   1.374343   .0493611     8.85   0.000     1.280924    1.474576
+      Other  |    1.55391   .0469332    14.59   0.000     1.464592    1.648675
+    Unknown  |   1.124325   .0115492    11.41   0.000     1.101915     1.14719
+             |
+         stp |
+          2  |   1.384248   .4158501     1.08   0.279     .7682448    2.494184
+          3  |   1.109552   .3336765     0.35   0.730     .6154105    2.000462
+          4  |   1.507842   .4550097     1.36   0.174     .8346327    2.724058
+          5  |   1.382855   .4186537     1.07   0.284     .7639749    2.503079
+          6  |   1.264626   .3800733     0.78   0.435     .7016818    2.279208
+          7  |   1.435675   .4382781     1.18   0.236      .789231    2.611609
+          8  |   1.161268   .3493732     0.50   0.619     .6439385    2.094212
+          9  |   .7047427   .2124546    -1.16   0.246     .3903228     1.27244
+         10  |   .9563018   .2877872    -0.15   0.882      .530196    1.724859
+         11  |   .7435993   .2235097    -0.99   0.324     .4125593    1.340268
+         12  |   1.164225   .3510778     0.50   0.614     .6446929    2.102427
+         13  |   1.060813   .3195336     0.20   0.845     .5878186    1.914406
+         14  |   1.012741   .3049235     0.04   0.966      .561322    1.827193
+         15  |   .8611355   .2591318    -0.50   0.619     .4774512    1.553152
+         16  |   .7730401   .2327087    -0.86   0.392     .4285134    1.394568
+         17  |   .8424383   .2536712    -0.57   0.569     .4669046    1.520016
+         18  |   .9014335   .2710786    -0.35   0.730     .4999894    1.625199
+         19  |   .8052999   .2424927    -0.72   0.472     .4463166    1.453022
+         20  |   .9151515    .275263    -0.29   0.768      .507534     1.65014
+         21  |   .7575244   .2277826    -0.92   0.356     .4201902    1.365675
+         22  |   .7823786   .2400222    -0.80   0.424     .4288259    1.427424
+         23  |   .6361076   .1915994    -1.50   0.133     .3524874    1.147936
+         24  |   .9463608   .2961641    -0.18   0.860     .5124751    1.747595
+         25  |   .4244562   .1301036    -2.80   0.005     .2327684    .7740015
+         26  |   .3355417     .10132    -3.62   0.000     .1856598     .606422
+         27  |   .6217733   .1873108    -1.58   0.115     .3445128     1.12217
+         28  |   .4212964    .127177    -2.86   0.004     .2331498    .7612729
+         29  |    .593295   .1789445    -1.73   0.083     .3285025    1.071526
+         30  |   .7072436   .2136429    -1.15   0.252     .3912367    1.278493
+         31  |   .6064076   .2024533    -1.50   0.134     .3151992    1.166659
+         32  |   1.596154   .4796102     1.56   0.120     .8857414    2.876356
+             |
+       _cons |   .0658456   .0197695    -9.06   0.000     .0365562     .118602
+------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+
+. estimates save "$Tempdir/crude_positivetest_eth5", replace 
+file E:\analyses\ethnicity-covid-research/output/tempdata/crude_positivetest_et
+> h5.ster saved
+
+. parmest, label eform format(estimate p lb ub) saving("$Tempdir/crude_positive
+> test_eth5", replace) idstr("crude_positivetest_eth5") 
+file E:\analyses\ethnicity-covid-research/output/tempdata/crude_positivetest_et
+> h5.dta saved
+
+. 
+. /* Multivariable models */ 
+. *Age Gender
+. logistic positivetest i.eth5 i.male age1 age2 age3 i.stp, nolog
+
+Logistic regression                             Number of obs     =  1,125,444
+                                                LR chi2(40)       =   18333.91
+                                                Prob > chi2       =     0.0000
+Log likelihood = -262817.61                     Pseudo R2         =     0.0337
+
+------------------------------------------------------------------------------
+positivetest | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |   2.565757    .033151    72.93   0.000     2.501597    2.631561
+      Black  |   2.017084   .0459889    30.77   0.000     1.928931    2.109265
+      Mixed  |   1.603912   .0578632    13.10   0.000     1.494419    1.721428
+      Other  |   1.751707   .0532071    18.46   0.000     1.650466    1.859157
+    Unknown  |   1.116085   .0115698    10.59   0.000     1.093637    1.138993
+             |
+        male |
+       Male  |   1.101454   .0086244    12.34   0.000     1.084679    1.118488
+        age1 |   1.017087   .0012434    13.86   0.000     1.014652    1.019526
+        age2 |   .9464954   .0037809   -13.77   0.000     .9391139     .953935
+        age3 |   1.204866   .0126947    17.69   0.000      1.18024    1.230006
+             |
+         stp |
+          2  |   1.313574    .395145     0.91   0.365     .7284486    2.368701
+          3  |    1.01103   .3044597     0.04   0.971     .5603186    1.824288
+          4  |   1.432496   .4328621     1.19   0.234     .7922882    2.590025
+          5  |   1.295644   .3927876     0.85   0.393     .7152131    2.347124
+          6  |   1.197862   .3604905     0.60   0.549     .6641132    2.160586
+          7  |   1.328558   .4061518     0.93   0.353     .7297275    2.418802
+          8  |   1.052492   .3170775     0.17   0.865     .5831533    1.899568
+          9  |   .6277178    .189493    -1.54   0.123     .3473818    1.134284
+         10  |   .8660241   .2609718    -0.48   0.633     .4797609    1.563274
+         11  |   .6977443   .2100092    -1.20   0.232     .3868112    1.258617
+         12  |   1.055767   .3188079     0.18   0.857     .5841605    1.908111
+         13  |   .9573081   .2887489    -0.14   0.885     .5300384    1.729005
+         14  |   .9421197   .2840426    -0.20   0.843     .5217647     1.70113
+         15  |   .8028863   .2419269    -0.73   0.466      .444804    1.449237
+         16  |   .6802299   .2050497    -1.28   0.201     .3767629    1.228127
+         17  |   .7581553   .2286024    -0.92   0.359     .4198557    1.369041
+         18  |    .853004   .2568573    -0.53   0.598     .4727554    1.539096
+         19  |   .7408506   .2233854    -0.99   0.320     .4102717    1.337795
+         20  |   .8298562   .2499445    -0.62   0.536      .459864    1.497533
+         21  |   .6958551   .2095206    -1.20   0.228      .385677    1.255492
+         22  |   .7221218   .2218428    -1.06   0.289     .3954697    1.318584
+         23  |   .5709361   .1722021    -1.86   0.063     .3161211    1.031149
+         24  |   .8285822   .2597023    -0.60   0.549     .4482741    1.531537
+         25  |   .3751122    .115137    -3.19   0.001     .2055385    .6845879
+         26  |   .2970191   .0898099    -4.01   0.000     .1642124    .5372332
+         27  |   .5666295   .1709292    -1.88   0.060     .3137084    1.023463
+         28  |   .3689331   .1115221    -3.30   0.001     .2040066    .6671923
+         29  |   .5374386   .1623169    -2.06   0.040     .2973374    .9714226
+         30  |   .6373488   .1927913    -1.49   0.136     .3522878    1.153073
+         31  |   .5488818     .18352    -1.79   0.073     .2850214    1.057013
+         32  |   1.463193   .4402525     1.27   0.206     .8113123    2.638853
+             |
+       _cons |   .0335447   .0101705   -11.20   0.000     .0185159    .0607719
+------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+
+. estimates save "$Tempdir/model0_positivetest_eth5", replace 
+file E:\analyses\ethnicity-covid-research/output/tempdata/model0_positivetest_e
+> th5.ster saved
+
+. parmest, label eform format(estimate p lb ub) saving("$Tempdir/model0_positiv
+> etest_eth5", replace) idstr("model0_positivetest_eth5") 
+file E:\analyses\ethnicity-covid-research/output/tempdata/model0_positivetest_e
+> th5.dta saved
+
+. 
+. * Age, Gender, IMD
+. logistic positivetest i.eth5 i.male age1 age2 age3 i.imd i.stp, nolog
+
+Logistic regression                             Number of obs     =  1,114,021
+                                                LR chi2(44)       =   18930.78
+                                                Prob > chi2       =     0.0000
+Log likelihood = -260137.27                     Pseudo R2         =     0.0351
+
+------------------------------------------------------------------------------
+positivetest | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |   2.464511    .032227    68.98   0.000      2.40215    2.528491
+      Black  |   1.896113   .0436996    27.76   0.000     1.812369    1.983726
+      Mixed  |   1.560954   .0567546    12.25   0.000     1.453588     1.67625
+      Other  |   1.715335    .052435    17.65   0.000     1.615583    1.821247
+    Unknown  |   1.122159   .0116794    11.07   0.000     1.099499    1.145285
+             |
+        male |
+       Male  |   1.104344   .0086865    12.62   0.000     1.087449    1.121501
+        age1 |   1.018072    .001252    14.56   0.000     1.015621    1.020529
+        age2 |   .9447786   .0037945   -14.14   0.000     .9373707     .952245
+        age3 |   1.209831   .0128141    17.98   0.000     1.184975    1.235209
+             |
+         imd |
+          2  |    1.09124   .0144994     6.57   0.000     1.063188    1.120031
+          3  |   1.172974   .0154121    12.14   0.000     1.143152    1.203573
+          4  |   1.281408   .0164234    19.35   0.000     1.249619    1.314005
+5 most de..  |   1.387767   .0180702    25.17   0.000     1.352798    1.423639
+             |
+         stp |
+          2  |   1.446577   .4351953     1.23   0.220     .8021617    2.608682
+          3  |   1.147351   .3455646     0.46   0.648     .6358097    2.070452
+          4  |   1.567694   .4737637     1.49   0.137     .8670112     2.83464
+          5  |   1.533367   .4649717     1.41   0.159     .8463139    2.778183
+          6  |   1.317659   .3965779     0.92   0.359      .730492    2.376788
+          7  |   1.468324   .4490087     1.26   0.209     .8063563    2.673724
+          8  |   1.201298   .3619727     0.61   0.543     .6655308    2.168368
+          9  |   .7148151   .2158414    -1.11   0.266     .3955213    1.291866
+         10  |   .9793361   .2951592    -0.07   0.945     .5424886    1.767962
+         11  |   .8078605   .2432104    -0.71   0.478     .4477937    1.457454
+         12  |   1.102884   .3330507     0.32   0.746      .610215    1.993321
+         13  |    1.04408   .3149447     0.14   0.886     .5780571    1.885806
+         14  |   1.089121   .3284387     0.28   0.777     .6030941    1.966831
+         15  |   .9422674    .283998    -0.20   0.844     .5219433    1.701081
+         16  |     .76648   .2310977    -0.88   0.378     .4244819     1.38402
+         17  |   .8836794   .2665237    -0.41   0.682     .4892903    1.595963
+         18  |    1.00559   .3028851     0.02   0.985     .5572346    1.814697
+         19  |   .8926536   .2692533    -0.38   0.707     .4942344    1.612252
+         20  |   .9753605   .2938452    -0.08   0.934     .5404122    1.760375
+         21  |   .7923753   .2386511    -0.77   0.440     .4390988     1.42988
+         22  |   .8241684   .2533078    -0.63   0.529     .4512317    1.505332
+         23  |   .6784094   .2046846    -1.29   0.198     .3755551    1.225491
+         24  |   1.047412   .3284175     0.15   0.883     .5665293     1.93648
+         25  |   .4198372   .1289307    -2.83   0.005     .2299744    .7664471
+         26  |   .3457569   .1045752    -3.51   0.000     .1911272    .6254885
+         27  |   .6844999    .206557    -1.26   0.209      .378889    1.236616
+         28  |   .4326233   .1308166    -2.77   0.006     .2391794    .7825212
+         29  |   .6067025   .1832722    -1.65   0.098     .3356182    1.096746
+         30  |   .7743432   .2343151    -0.85   0.398     .4279187    1.401218
+         31  |   .6879855   .2301016    -1.12   0.263     .3571815    1.325164
+         32  |   1.622664   .4882892     1.61   0.108     .8996766    2.926649
+             |
+       _cons |    .024002   .0072847   -12.29   0.000     .0132405    .0435101
+------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+
+. estimates save "$Tempdir/model1_positivetest_eth5", replace 
+file E:\analyses\ethnicity-covid-research/output/tempdata/model1_positivetest_e
+> th5.ster saved
+
+. parmest, label eform format(estimate p lb ub) saving("$Tempdir/model1_positiv
+> etest_eth5", replace) idstr("model1_positivetest_eth5") 
+file E:\analyses\ethnicity-covid-research/output/tempdata/model1_positivetest_e
+> th5.dta saved
+
+. 
+. 
+. * Age, Gender, IMD and Comorbidities  
+. cap logistic positivetest i.eth5 i.male age1 age2 age3  i.imd                
+>                            ///
+>                                                                              
+>    bmi     hba1c_pct                               ///
+>                                                                              
+>    gp_consult_count                        ///
+>                                                                              
+>    i.smoke_nomiss                          ///
+>                                                                              
+>    i.hypertension bp_map                   ///     
+>                                                                              
+>    i.asthma                                        ///
+>                                                                              
+>    chronic_respiratory_disease ///
+>                                                                              
+>    i.chronic_cardiac_disease       ///
+>                                                                              
+>    i.dm_type                                       ///     
+>                                                                              
+>    i.cancer                    ///
+>                                                                              
+>    i.chronic_liver_disease         ///
+>                                                                              
+>    i.stroke                                        ///
+>                                                                              
+>    i.dementia                                      ///
+>                                                                              
+>    i.other_neuro                           ///
+>                                                                              
+>    i.egfr60                                        ///
+>                                                                              
+>    i.esrf                                          ///
+>                                                                              
+>    i.immunosuppressed                      ///
+>                                                                              
+>    i.ra_sle_psoriasis || stp:, nolog               
+
+.                                                                              
+>    
+. estimates save "$Tempdir/model2_positivetest_eth5", replace 
+file E:\analyses\ethnicity-covid-research/output/tempdata/model2_positivetest_e
+> th5.ster saved
+
+. parmest, label eform format(estimate p lb ub) saving("$Tempdir/model2_positiv
+> etest_eth5", replace) idstr("model2_positivetest_eth5") 
+file E:\analyses\ethnicity-covid-research/output/tempdata/model2_positivetest_e
+> th5.dta saved
+
+. 
+. * Age, Gender, IMD and Comorbidities  and household size and carehome
+. cap logistic positivetest i.eth5 i.male age1 age2 age3  i.imd                
+>                            ///
+>                                                                              
+>    bmi     hba1c_pct                               ///
+>                                                                              
+>    gp_consult_count                        ///
+>                                                                              
+>    i.smoke_nomiss                          ///
+>                                                                              
+>    i.hypertension bp_map                   ///     
+>                                                                              
+>    i.asthma                                        ///
+>                                                                              
+>    chronic_respiratory_disease ///
+>                                                                              
+>    i.chronic_cardiac_disease       ///
+>                                                                              
+>    i.dm_type                                       ///     
+>                                                                              
+>    i.cancer                    ///
+>                                                                              
+>    i.chronic_liver_disease         ///
+>                                                                              
+>    i.stroke                                        ///
+>                                                                              
+>    i.dementia                                      ///
+>                                                                              
+>    i.other_neuro                           ///
+>                                                                              
+>    i.egfr60                                        ///
+>                                                                              
+>    i.esrf                                          ///
+>                                                                              
+>    i.immunosuppressed                      ///
+>                                                                              
+>    i.ra_sle_psoriasis                      ///
+>                                                                              
+>    i.hh_total_cat i.carehome || stp:, nolog                
+
+.                                                                              
+>    
+. estimates save "$Tempdir/model3_positivetest_eth5", replace 
+file E:\analyses\ethnicity-covid-research/output/tempdata/model3_positivetest_e
+> th5.ster saved
+
+. parmest, label eform format(estimate p lb ub) saving("$Tempdir/model3_positiv
+> etest_eth5", replace) idstr("model3_positivetest_eth5") 
+file E:\analyses\ethnicity-covid-research/output/tempdata/model3_positivetest_e
+> th5.dta saved
+
+. 
+. /* Print table===============================================================
+> =*/ 
+. *  Print the results for the main model 
+. 
+. 
+. * Column headings 
+. file write tablecontent ("Positive Test") _n
+
+. 
+. * Row headings 
+. local lab1: label eth5 1
+
+. local lab2: label eth5 2
+
+. local lab3: label eth5 3
+
+. local lab4: label eth5 4
+
+. local lab5: label eth5 5
+
+. 
+. /* Counts */
+.  
+. * First row, eth5 = 1 (White) reference cat
+.         qui safecount if eth5==1
+
+.         local denominator = r(N)
+
+.         qui safecount if eth5 == 1 & positivetest == 1
+
+.         local event = r(N)
+
+.         local pct =(`event'/`denominator')
+
+.         
+.         file write tablecontent  ("`lab1'") _tab (`denominator') _tab (`event
+> ') _tab %3.2f (`pct') _tab
+
+.         file write tablecontent ("1.00") _tab _tab ("1.00") _tab _tab ("1.00"
+> )  _tab _tab ("1.00") _tab _tab ("1.00") _n
+
+.         
+. * Subsequent ethnic groups
+. forvalues eth=2/5 {
+  2.         qui safecount if eth5==`eth'
+  3.         local denominator = r(N)
+  4.         qui safecount if eth5 == `eth' & positivetest == 1
+  5.         local event = r(N)
+  6.         local pct =(`event'/`denominator')
+  7.         file write tablecontent  ("`lab`eth''") _tab (`denominator') _tab 
+> (`event') _tab %3.2f (`pct') _tab
+  8.         estimates use "$Tempdir/crude_positivetest_eth5" 
+  9.         lincom `eth'.eth5, eform
+ 10.         file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(l
+> b)) (" - ") %4.2f (r(ub)) (")") _tab 
+ 11.         cap estimates clear
+ 12.         cap estimates use "$Tempdir/model0_positivetest_eth5" 
+ 13.         cap lincom `eth'.eth5, eform
+ 14.         file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(l
+> b)) (" - ") %4.2f (r(ub)) (")") _tab 
+ 15.         cap estimates clear
+ 16.         cap estimates use "$Tempdir/model1_positivetest_eth5" 
+ 17.         cap lincom `eth'.eth5, eform
+ 18.         file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(l
+> b)) (" - ") %4.2f (r(ub)) (")") _tab 
+ 19.         cap estimates clear
+ 20.         cap estimates use "$Tempdir/model2_positivetest_eth5" 
+ 21.         cap lincom `eth'.eth5, eform
+ 22.         file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(l
+> b)) (" - ") %4.2f (r(ub)) (")") _tab 
+ 23.         cap estimates clear
+ 24.         cap estimates use "$Tempdir/model3_positivetest_eth5" 
+ 25.         cap lincom `eth'.eth5, eform
+ 26.         file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(l
+> b)) (" - ") %4.2f (r(ub)) (")") _n
+ 27. }  //end ethnic group
+
+ ( 1)  [positivetest]2.eth5 = 0
+
+------------------------------------------------------------------------------
+positivetest | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         (1) |    2.28587   .0289124    65.36   0.000       2.2299    2.343246
+------------------------------------------------------------------------------
+
+ ( 1)  [positivetest]3.eth5 = 0
+
+------------------------------------------------------------------------------
+positivetest | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         (1) |    1.80316    .040811    26.05   0.000      1.72492    1.884949
+------------------------------------------------------------------------------
+
+ ( 1)  [positivetest]4.eth5 = 0
+
+------------------------------------------------------------------------------
+positivetest | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         (1) |   1.374343   .0493611     8.85   0.000     1.280924    1.474576
+------------------------------------------------------------------------------
+
+ ( 1)  [positivetest]5.eth5 = 0
+
+------------------------------------------------------------------------------
+positivetest | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         (1) |    1.55391   .0469332    14.59   0.000     1.464592    1.648675
+------------------------------------------------------------------------------
+
+. 
+. file close tablecontent
+
+. 
+. 
+. 
+. /* Foresplot================================================================*
+> / 
+. 
+. dsconcat "$Tempdir/model0_positivetest_eth5"  "$Tempdir/model1_positivetest_e
+> th5" "$Tempdir/model2_positivetest_eth5" "$Tempdir/model3_positivetest_eth5"
+
+. duplicates drop
+
+Duplicates in terms of all variables
+
+(0 observations are duplicates)
+
+. 
+. split idstr, p(_)
+variables created as string: 
+idstr1  idstr2  idstr3
+
+. drop idstr
+
+. ren idstr1 model
+
+. drop idstr2 idstr3 eq
+
+. 
+. 
+. *keep ORs for ethnic group
+. keep if label=="Eth 16 collapsed"
+(191 observations deleted)
+
+. drop label
+
+. 
+. gen eth5=1 if regexm(parm, "1b")
+
+. forvalues i=2/5 {
+  2.         replace eth5=`i' if regexm(parm, "`i'.eth5")
+  3. }
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+
+. 
+. drop parm 
+
+. order  model eth5
+
+. label define eth5       ///
+>                                                 1 "White" ///
+>                                                 2 "South Asian" ///
+>                                                 3 "Black" ///
+>                                                 4 "Mixed" ///
+>                                                 5 "Other" 
+
+. label values eth5 eth5
+
+. tab eth5,m
+no observations
+
+. 
+. graph set window 
+
+   window           current
+   setting          default          choices
+   ------------------------------------------------------------------------
+   fontface         Arial             font name
+   fontfacesans     Arial             font name
+   fontfaceserif    Times New Roman   font name
+   fontfacemono     Courier New       font name
+   fontfacesymbol   Symbol            font name
+   ------------------------------------------------------------------------
+   To change setting, type "graph set window setting choice"
+
+. gen num=[_n]
+
+. sum num
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+         num |          0
+
+. 
+. gen adjusted="Age-sex" if model=="model0"
+
+. replace adjusted="+ IMD" if model=="model1"
+(0 real changes made)
+
+. replace adjusted="+ co-morbidities" if model=="model2"
+(0 real changes made)
+
+. replace adjusted="+ household size" if model=="model3"
+(0 real changes made)
+
+. 
+. *save dataset for later
+. outsheet using "$Tabfigdir/FP_testedpop_eth5.txt", replace
+(note: file E:\analyses\ethnicity-covid-research/output/tabfig/FP_testedpop_eth
+> 5.txt not found)
+
+. 
+. 
+. * Close log file 
+. log close
+      name:  <unnamed>
+       log:  E:\analyses\ethnicity-covid-research/output/log/11b_eth_an_testedp
+> op_eth5.log
+  log type:  text
+ closed on:  22 Aug 2020, 06:25:07
+-------------------------------------------------------------------------------

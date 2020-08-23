@@ -1,0 +1,3 @@
+Table 2: Odds of testing positive amongst those receiving a test - Complete Case Analysis
+	Denominator	Event	%	Crude		Age/Sex Adjusted		Age/Sex/IMD Adjusted		plus co-morbidities		plus hh size/carehome		
+				OR	95% CI	OR	95% CI	OR	95% CI	OR	95% CI
