@@ -55,7 +55,7 @@ Data cleaning
 *Create analysis dataset
 do "$Dodir/01_eth_cr_analysis_dataset.do"
 
-*Checks 
+/*Checks 
 do "$Dodir/02_eth_an_data_checks.do"
 
 *Table 0: Numbers of outcomes in study population
@@ -126,15 +126,24 @@ do "$Dodir/14a_eth_an_diabetes_eth16"
 
 /**********************
 MULTIPLE IMPUTATION
-**********************
+**********************/
+*/
+
 *Table 2: multiple imputation
-do "$Dodir/08a_eth_an_multivariable_eth16_mi.do" 
-do "$Dodir/08b_eth_an_multivariable_eth5_mi.do" 
+do "$Dodir/08b_eth_cr_imputed_eth5.do"
+
+*Table 2: multiple imputation
+forvalues i = 1/120{
+sleep 60000
+}
+
+winexec "c:\program files\stata16\statamp-64.exe" do "$Dodir/08c_eth_an_multivariable_eth5_mi.do" demog
+winexec "c:\program files\stata16\statamp-64.exe" do "$Dodir/08c_eth_an_multivariable_eth5_mi.do" full
 
 
 /**********************
 PLOTS & RATES
-**********************/
+**********************
 do "$Dodir/04_eth_an_descriptive_plots.do" 
 
 *Table 7: Rates - crude, age, and age-sex stratified
