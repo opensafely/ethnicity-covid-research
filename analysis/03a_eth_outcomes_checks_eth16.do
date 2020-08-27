@@ -279,8 +279,7 @@ gen ons_noncoviddeath_date = onsdeath_date if died_ons_covid_flag_any != 1
 
 /* CONVERT STRINGS TO DATE FOR OUTCOME VARIABLES =============================*/
 * Recode to dates from the strings 
-*gen dummy date for severe and replace later on
-*gen severe_date=ae_date
+gen infected_date=confirmed_date
 
 foreach var of global outcomes {
 	confirm string variable `var'_date
@@ -290,6 +289,10 @@ foreach var of global outcomes {
 	format `var'_date %td 
 
 }
+
+* Date of infection
+replace infected_date=min(confirmed_date, positivetest_date)
+format infected_date %td
 
 *If outcome occurs on the first day of follow-up add one day
 foreach i of global outcomes {
