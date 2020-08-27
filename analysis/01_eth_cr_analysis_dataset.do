@@ -25,6 +25,38 @@ log using "$Logdir/01_eth_cr_create_analysis_dataset.log", replace t
 di "STARTING safecount FROM IMPORT:"
 safecount
 
+****************************
+*  Create required cohort  *
+****************************
+
+/* DROP ALL KIDS */
+noi di "DROPPING AGE<18:" 
+drop if age<18
+safecount
+
+* Age: Exclude those with implausible ages
+cap assert age<.
+noi di "DROPPING AGE<105:" 
+drop if age>105
+safecount
+
+* Sex: Exclude categories other than M and F
+cap assert inlist(sex, "M", "F", "I", "U")
+noi di "DROPPING GENDER NOT M/F:" 
+drop if inlist(sex, "I", "U")
+
+gen male = 1 if sex == "M"
+replace male = 0 if sex == "F"
+label define male 0"Female" 1"Male"
+label values male male
+safetab male
+safecount
+
+*add prison flag data to remove people from dataset
+
+* Create restricted cubic splines for age
+mkspline age = age, cubic nknots(4)
+
 *Start dates
 gen index 			= "01/02/2020"
 
@@ -128,7 +160,6 @@ sum *censor_date, format
 /* DEMOGRAPHICS */ 
 
 * Ethnicity (5 category)
-replace ethnicity = . if ethnicity==.
 label define ethnicity 	1 "White"  					///
 						2 "Mixed" 					///
 						3 "Asian or Asian British"	///
@@ -136,7 +167,7 @@ label define ethnicity 	1 "White"  					///
 						5 "Other"					
 						
 label values ethnicity ethnicity
-safetab ethnicity
+safetab ethnicity, m
 
  *re-order ethnicity
  gen eth5=1 if ethnicity==1
@@ -240,6 +271,8 @@ recode imd 5 = 1 4 = 2 3 = 3 2 = 4 1 = 5 .u = .u
 
 label define imd 1 "1 least deprived" 2 "2" 3 "3" 4 "4" 5 "5 most deprived" .u "Unknown"
 label values imd imd 
+safetab imd, m
+
 
 /*  Age variables  */ 
 
@@ -270,15 +303,13 @@ label values agegroup agegroup
 
 
 **************************** HOUSEHOLD VARS*******************************************
-*update with UPRN data
-
 **care home
 encode care_home_type, gen(carehometype)
 drop care_home_type
 
 gen carehome=0
 replace carehome=1 if carehometype<4
-safetab  carehometype carehome
+safetab  carehometype carehome, m
 
 *check for missing household size values
 codebook  hh_size, d
@@ -298,9 +329,6 @@ safecount if hh_total_cat==.
 safecount if hh_size==.
 bysort  hh_total_cat: summ hh_size
 
-		
-safetab hh_total_cat carehome,m 
-
 *replace hh_total_cat=. if carehome==1
 label define hh_total_cat 1 "1-2" ///
 						2 "3-5" ///
@@ -318,40 +346,6 @@ gen hh_linear=hh_size if hh_size>=1 & hh_size!=.
 replace hh_linear=11 if hh_linear>=11 & hh_linear!=.
 gen hh_log_linear=log(hh_linear)
 sum hh_log_linear hh_linear
-
-
-
-*add prison flag data
-
-****************************
-*  Create required cohort  *
-****************************
-
-/* DROP ALL KIDS, AS HH COMPOSITION VARS ARE NOW MADE */
-noi di "DROPPING AGE<18:" 
-drop if age<18
-
-* Age: Exclude those with implausible ages
-cap assert age<.
-noi di "DROPPING AGE<105:" 
-drop if age>105
-
-
-* Sex: Exclude categories other than M and F
-cap assert inlist(sex, "M", "F", "I", "U")
-noi di "DROPPING GENDER NOT M/F:" 
-drop if inlist(sex, "I", "U")
-
-gen male = 1 if sex == "M"
-replace male = 0 if sex == "F"
-label define male 0"Female" 1"Male"
-label values male male
-safetab male
-
-
-
-* Create restricted cubic splines for age
-mkspline age = age, cubic nknots(4)
 
 
 /* CONVERT STRINGS TO DATE====================================================*/
@@ -463,7 +457,7 @@ foreach var of varlist 	chronic_respiratory_disease ///
 	local newvar =  substr("`var'", 1, length("`var'") - 5)
 	gen `newvar' = (`var'!=. )
 	order `newvar', after(`var')
-	safetab `newvar'
+	safetab `newvar', m
 	
 }
 
@@ -550,11 +544,11 @@ order obese4cat, after(bmicat)
 *https://www.nice.org.uk/guidance/ph46/chapter/1-Recommendations#recommendation-2-bmi-assessment-multi-component-interventions-and-best-practice-standards
 
 gen bmicat_sa=bmicat
-replace bmicat_sa = 2 if bmi>=18.5 & bmi <23 & ethnicity  ==3
-replace bmicat_sa = 3 if bmi>=23 & bmi < 27.5 & ethnicity ==3
-replace bmicat_sa = 4 if bmi>=27.5 & bmi < 32.5 & ethnicity ==3
-replace bmicat_sa = 5 if bmi>=32.5 & bmi < 37.5 & ethnicity ==3
-replace bmicat_sa = 6 if bmi>=37.5 & bmi < . & ethnicity ==3
+replace bmicat_sa = 2 if bmi>=18.5 & bmi <23 & eth5==2
+replace bmicat_sa = 3 if bmi>=23 & bmi < 27.5 & eth5==2
+replace bmicat_sa = 4 if bmi>=27.5 & bmi < 32.5 & eth5==2
+replace bmicat_sa = 5 if bmi>=32.5 & bmi < 37.5 & eth5==2
+replace bmicat_sa = 6 if bmi>=37.5 & bmi < . & eth5==2
 
 safetab bmicat_sa
 
@@ -778,7 +772,7 @@ replace bmi = . if !inrange(bmi, 15, 50)
 
 *GP consult count
 replace gp_consult_count=0 if gp_consult_count==. | gp_consult_count<0
-tab gp_consult_count,m
+summ gp_consult_count
 
 /**** Create survival times  ****/
 * For looping later, name must be stime_binary_outcome_name
