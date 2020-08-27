@@ -28,7 +28,7 @@ file write tablecontent _tab _tab _tab _tab _tab   ("HR") _tab ("95% CI") _tab (
 
 
 foreach i of global outcomes3 {
-	forvalues eth=1/11 {
+	forvalues eth=1/11 { //chinese only
 * Open Stata dataset
 use "$Tempdir/analysis_dataset_STSET_`i'.dta", clear
 keep if eth16==`eth'

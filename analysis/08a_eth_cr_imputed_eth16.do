@@ -31,7 +31,7 @@ use "$Tempdir/analysis_dataset_STSET_`i'.dta", clear
 mi set mlong
 
 *mi register 
-replace eth16=. if eth16==12 //set unknown to missing
+replace eth16=. if eth16==14 //set unknown to missing
 mi register imputed eth16
 
 *mi impute the dataset - remove variables with missing values - bmi	hba1c_pct bp_map 

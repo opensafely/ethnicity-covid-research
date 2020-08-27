@@ -25,7 +25,8 @@ foreach i of global outcomes {
 * Open Stata dataset
 use "$Tempdir/analysis_dataset_STSET_`i'.dta", clear
 
-* Row headings 
+* eth16 labelled columns
+
 local lab1: label eth16 1
 local lab2: label eth16 2
 local lab3: label eth16 3
@@ -37,6 +38,8 @@ local lab8: label eth16 8
 local lab9: label eth16 9
 local lab10: label eth16 10
 local lab11: label eth16 11
+
+
 
 *rates by ethnic group
 strate eth16, per(10000) missing output($Tempdir/strate_`i'_eth16,replace) ///
@@ -53,6 +56,8 @@ foreach i of global outcomes {
 use "$Tempdir/analysis_dataset_STSET_`i'.dta", clear
 
 * Row headings 
+* eth16 labelled columns
+
 local lab1: label eth16 1
 local lab2: label eth16 2
 local lab3: label eth16 3
@@ -64,6 +69,9 @@ local lab8: label eth16 8
 local lab9: label eth16 9
 local lab10: label eth16 10
 local lab11: label eth16 11
+
+
+
 
 forvalues j=1/7 {
 	qui strate eth16 if agegroup==`j', per(10000) missing output($Tempdir/strate_`i'_eth16_agegroup`j', replace) ///

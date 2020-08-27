@@ -55,7 +55,7 @@ drop idstr idstr3 idstr4
 tab model
 
 gen eth16=1 if regexm(parm, "1b")
-forvalues i=2/11 {
+forvalues i=2/14 {
 	replace eth16=`i' if regexm(parm, "`i'.eth16")
 }
 
@@ -64,12 +64,20 @@ order outcome model eth16
 
 destring eth16, replace
 label define eth16 	///
-						1 "White" ///
-						2 "South Asian" ///
-						3 "Black" ///
-						4 "Mixed" ///
-						5 "Other" ///
-						6 "Unknown" 					
+						1 "British" ///
+						2 "Irish" ///
+						3 "Other White" ///
+						4 "Indian" ///
+						5 "Pakistani" ///
+						6 "Bangladeshi" ///	
+						7 "Other Asian" ///
+						8 "Caribbean" ///
+						9 "African" ///
+						10 "Other Black" ///
+						11 "Chinese" ///
+						12 "All mixed" ///
+						13  "Other" ///
+						14 "Unknown"
 label values eth16 eth16
 
 gen num=[_n]

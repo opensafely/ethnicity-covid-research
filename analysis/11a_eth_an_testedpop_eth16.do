@@ -123,7 +123,8 @@ parmest, label eform format(estimate p lb ub) saving("$Tempdir/model3_positivete
 * Column headings 
 file write tablecontent ("Positive Test") _n
 
-* Row headings 
+* eth16 labelled columns
+
 local lab1: label eth16 1
 local lab2: label eth16 2
 local lab3: label eth16 3
@@ -135,6 +136,9 @@ local lab8: label eth16 8
 local lab9: label eth16 9
 local lab10: label eth16 10
 local lab11: label eth16 11
+local lab12: label eth16 12
+local lab13: label eth16 13
+local lab14: label eth16 14
 
 /* Counts */
  
@@ -148,7 +152,7 @@ local lab11: label eth16 11
 	file write tablecontent ("1.00") _tab _tab ("1.00") _tab _tab ("1.00")  _tab _tab ("1.00") _tab _tab ("1.00") _n
 	
 * Subsequent ethnic groups
-forvalues eth=2/11 {
+forvalues eth=2/14 {
 	qui safecount if eth16==`eth'
 	local denominator = r(N)
 	qui safecount if eth16 == `eth' & positivetest == 1

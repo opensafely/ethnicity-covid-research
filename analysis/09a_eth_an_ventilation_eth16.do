@@ -134,6 +134,9 @@ local lab8: label eth16 8
 local lab9: label eth16 9
 local lab10: label eth16 10
 local lab11: label eth16 11
+local lab12: label eth16 10
+local lab13: label eth16 11
+local lab14: label eth16 14
 
 /* Counts */
  

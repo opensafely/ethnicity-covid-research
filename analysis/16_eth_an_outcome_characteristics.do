@@ -208,7 +208,7 @@ file write tablecontent _n
 tabulatevariable, variable(eth5) min(1) max(6) 
 file write tablecontent _n 
 
-tabulatevariable, variable(eth16) min(1) max(12) 
+tabulatevariable, variable(eth16) min(1) max(14) 
 file write tablecontent _n 
 
  summarizevariable, variable(gp_consult_count) 
@@ -286,7 +286,7 @@ file write tablecontent _n
 tabulatevariable, variable(eth5) min(1) max(6) 
 file write tablecontent _n 
 
-tabulatevariable, variable(eth16) min(1) max(12) 
+tabulatevariable, variable(eth16) min(1) max(14) 
 file write tablecontent _n 
 
  summarizevariable, variable(gp_consult_count) 
@@ -367,7 +367,7 @@ file write tablecontent _n
 tabulatevariable, variable(eth5) min(1) max(6) 
 file write tablecontent _n 
 
-tabulatevariable, variable(eth16) min(1) max(12) 
+tabulatevariable, variable(eth16) min(1) max(14) 
 file write tablecontent _n 
 
  summarizevariable, variable(gp_consult_count) 
@@ -445,7 +445,7 @@ file write tablecontent _n
 tabulatevariable, variable(eth5) min(1) max(6) 
 file write tablecontent _n 
 
-tabulatevariable, variable(eth16) min(1) max(12) 
+tabulatevariable, variable(eth16) min(1) max(14) 
 file write tablecontent _n 
 
  summarizevariable, variable(gp_consult_count) 
