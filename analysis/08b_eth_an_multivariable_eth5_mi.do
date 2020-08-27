@@ -35,10 +35,11 @@ replace eth5=. if eth5==6 //set unknown to missing
 mi register imputed eth5
 
 *mi impute the dataset - remove variables with missing values - bmi	hba1c_pct bp_map 
-noisily mi impute mlogit eth5 `i' i.stp i.male age1 age2 age3 i.imd 	 ///
+noisily mi impute mlogit eth5 `i' i.stp i.male age1 age2 age3 	i.imd						///
+										bmi	hba1c_pct				///
 										gp_consult_count			///
 										i.smoke_nomiss				///
-										i.hypertension 		 	///	
+										i.hypertension bp_map		 	///	
 										i.asthma					///
 										i.chronic_respiratory_disease ///
 										i.chronic_cardiac_disease	///
@@ -51,9 +52,8 @@ noisily mi impute mlogit eth5 `i' i.stp i.male age1 age2 age3 i.imd 	 ///
 										i.egfr60					///
 										i.esrf						///
 										i.immunosuppressed	 		///
-										i.ra_sle_psoriasis		///			
-										i.hh_total_cat ///
-										i.carehome, ///
+										i.ra_sle_psoriasis			///
+										i.hh_total_cat i.carehome, ///
 										add(10) rseed(70548) augment force // can maybe remove the force option in the server
 										
 
@@ -64,11 +64,15 @@ mi	stset stime_`i', fail(`i') 	id(patient_id) enter(indexdate) origin(indexdate)
 /* Main Model=================================================================*/
 
 /* Multivariable models */ 
+
+if "`1'"=="demog"{
 *Age and gender
-  mi estimate, dots eform: stcox i.eth5 i.male age1 age2 age3, strata(stp) nolog
+mi estimate, dots eform: stcox i.eth5 i.male age1 age2 age3, strata(stp) nolog
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model0_`i'_eth5", replace) idstr("model0_`i'_eth5")
 local hr "`hr' "$Tempdir/model0_`i'_eth5" "
- 
+estimates save "./output/an_imputed_demog", replace						
+}
+
 
 						
 * Age, Gender, IMD and Comorbidities  and household size and carehome
