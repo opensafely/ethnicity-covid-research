@@ -184,6 +184,8 @@ end
 
 *******************************************************************Open Raw Data
 import delimited `c(pwd)'/output/input.csv, clear
+di "STARTING safecount FROM IMPORT:"
+safecount
 
 *Generate outcomes
 
@@ -234,10 +236,6 @@ recode eth16 15 = 9
 recode eth16 99 = 10
 recode eth16 16 = 11
 recode eth16 17 = 12
-
-
-
-
 
 label define eth16 	///
 						1 "British" ///
