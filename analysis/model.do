@@ -1,5 +1,9 @@
 import delimited `c(pwd)'/output/input.csv, clear
 
+/*TO DO
+1. Re-run once ICU admission variable has been updated to include people not on respiratory support
+2. Exclude people who live in prisons
+*/
 
 *set filepaths
 global Projectdir `c(pwd)'
