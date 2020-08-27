@@ -293,7 +293,6 @@ file write tablecontent _n
 
 foreach comorb of varlist 		///
 	hypertension 				///
-	htdiag_or_highbp			///
 	chronic_cardiac_disease		///
 	stroke						///
 	egfr60							///
