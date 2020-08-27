@@ -213,4 +213,4 @@ outsheet using "$Tabfigdir/FP_diabetes_eth5.txt", replace
 * Close log file 
 log close
 
-insheet using $Tabfigdir/table7_dm_eth5.txt, clear
+insheet using $Tabfigdir/table8_dm_eth5.txt, clear

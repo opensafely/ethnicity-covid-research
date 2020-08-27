@@ -22,7 +22,7 @@ log using "$Logdir/15b_eth_an_comorbidities_eth5", replace t
 cap file close tablecontent
 file open tablecontent using $Tabfigdir/table9_comorb_eth5.txt, write text replace
 file write tablecontent ("Table 9: Ethnicity and comorbidities composition - Complete Case Analysis") _n
-file write tablecontent _tab ("Denominator") _tab ("Event") _tab ("Total person-weeks") _tab ("Rate per 1,000") _tab ("Crude") _tab _tab ("Age/Sex Adjusted")  _tab _tab 	("+ IMD, household") _tab _tab  _n
+file write tablecontent _tab ("Denominator") _tab ("Event") _tab ("Total person-weeks") _tab ("Rate per 1,000") _tab ("Crude") _tab _tab ("Age/Sex Adjusted")  _tab _tab 	("IMD, RF, household") _tab _tab  _n
 file write tablecontent _tab _tab _tab _tab _tab   ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _tab _n
 
 
@@ -152,4 +152,4 @@ outsheet using "$Tabfigdir/FP_comorbidities_eth5.txt", replace
 * Close log file 
 log close
 
-insheet using $Tabfigdir/table10_comorb_eth5.txt, clear
+insheet using $Tabfigdir/table9_comorb_eth5.txt, clear

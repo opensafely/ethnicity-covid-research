@@ -79,16 +79,16 @@ do "$Dodir/11b_eth_an_testedpop_eth5"
 *Table 6: seconday care outcomes amongs those with evidence of infection 
 do "$Dodir/12b_eth_an_infected_eth5"
 
-*Table 7: Rates - crude, age, and age-sex stratified
+* Rates - crude, age, and age-sex stratified
 do "$Dodir/10b_eth_an_rates_eth5"
 
-*Table 8: Household size - dummy data has missing data in some categories - should run on server
+*Table 7: Household size - dummy data has missing data in some categories - should run on server
 do "$Dodir/13b_eth_an_household_eth5"
 
-*Table 9: Diabetes - dummy data has missing data in some categories - should run on server
+*Table 8: Diabetes - dummy data has missing data in some categories - should run on server
 do "$Dodir/14b_eth_an_diabetes_eth5"
 
-*Table 10: Co-morbidities
+*Table 9: Co-morbidities
 do "$Dodir/15b_eth_an_comorbidities_eth5"
 
 /**********************
@@ -107,14 +107,14 @@ do "$Dodir/09a_eth_an_ventilation_eth16"
 *Table 5: Odds of testing positive amongst those with SGSS testing data
 do "$Dodir/11a_eth_an_testedpop_eth16" 
 
-*Table 6: seconday care outcomes amongs those with evidence of infection 
-do "$Dodir/12a_eth_an_infected_eth16"
+*Table 6: seconday care outcomes amongs those with evidence of infection -- numbers too small for eth16
+*do "$Dodir/12a_eth_an_infected_eth16"
 
 /* cell counts too small to look at household size and diabetes by eth16
-Table 8: Household size
+Table 7: Household size
 do "$Dodir/13a_eth_an_household_eth16"
 
-*Table 9: Diabetes
+*Table 8: Diabetes
 do "$Dodir/14a_eth_an_diabetes_eth16"
 */
 
