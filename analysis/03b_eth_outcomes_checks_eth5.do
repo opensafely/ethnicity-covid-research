@@ -184,6 +184,9 @@ end
 
 *******************************************************************Open Raw Data
 import delimited `c(pwd)'/output/input.csv, clear
+di "STARTING safecount FROM IMPORT:"
+safecount
+
 
 *Generate outcomes
 
@@ -193,6 +196,19 @@ gen index 			= "01/02/2020"
 * Date of cohort entry, 1 Feb 2020
 gen indexdate = date(index, "DMY")
 format indexdate %d
+
+
+
+* Ethnicity (5 category)
+replace ethnicity = . if ethnicity==.
+label define ethnicity 	1 "White"  					///
+						2 "Mixed" 					///
+						3 "Asian or Asian British"	///
+						4 "Black"  					///
+						5 "Other"					
+						
+label values ethnicity ethnicity
+safetab ethnicity, m
 
  *re-order ethnicity
  gen eth5=1 if ethnicity==1
