@@ -162,7 +162,7 @@ end
 
 
 /*OUTCOMES IN GENERAL POPULATION*/
-local p"suspected confirmed tested"
+local p"suspected confirmed tested infected"
 foreach  outcome of local p {
 * Open Stata dataset
 use $Tempdir/analysis_dataset, clear
@@ -217,7 +217,7 @@ file write tablecontent _n
 tabulatevariable, variable(imd) min(1) max(5) 
 file write tablecontent _n 
 
-tabulatevariable, variable(hh_total_cat) min(1) max(4) missing
+tabulatevariable, variable(hh_total_cat) min(1) max(5) missing
 file write tablecontent _n 
 
 tabulatevariable, variable(carehome) min(0) max(1) 
@@ -295,7 +295,7 @@ file write tablecontent _n
 tabulatevariable, variable(imd) min(1) max(5) 
 file write tablecontent _n 
 
-tabulatevariable, variable(hh_total_cat) min(1) max(4) missing
+tabulatevariable, variable(hh_total_cat) min(1) max(5) missing
 file write tablecontent _n 
 
 tabulatevariable, variable(carehome) min(0) max(1) 
@@ -376,7 +376,7 @@ file write tablecontent _n
 tabulatevariable, variable(imd) min(1) max(5) 
 file write tablecontent _n 
 
-tabulatevariable, variable(hh_total_cat) min(1) max(4) missing
+tabulatevariable, variable(hh_total_cat) min(1) max(5) missing
 file write tablecontent _n 
 
 tabulatevariable, variable(carehome) min(0) max(1) 
@@ -454,7 +454,7 @@ file write tablecontent _n
 tabulatevariable, variable(imd) min(1) max(5) 
 file write tablecontent _n 
 
-tabulatevariable, variable(hh_total_cat) min(1) max(4) missing
+tabulatevariable, variable(hh_total_cat) min(1) max(5) missing
 file write tablecontent _n 
 
 tabulatevariable, variable(carehome) min(0) max(1) 
@@ -502,6 +502,7 @@ save "$Tabfigdir/table5_ventilated.dta", replace
 use "$Tabfigdir/table5_confirmed.dta", clear
 merge 1:1 order using "$Tabfigdir/table5_tested.dta", nogen
 merge 1:1 order using "$Tabfigdir/table5_positivetest.dta", nogen
+merge 1:1 order using "$Tabfigdir/table5_infected.dta", nogen
 merge 1:1 order using "$Tabfigdir/table5_ae.dta", nogen
 merge 1:1 order using "$Tabfigdir/table5_icu.dta", nogen
 merge 1:1 order using "$Tabfigdir/table5_onscoviddeath.dta", nogen
