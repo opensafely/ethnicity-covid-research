@@ -195,6 +195,8 @@ gen indexdate = date(index, "DMY")
 format indexdate %d
 
  *re-order ethnicity
+ safetab ethnicity,m
+ 
  gen eth5=1 if ethnicity==1
  replace eth5=2 if ethnicity==3
  replace eth5=3 if ethnicity==4
