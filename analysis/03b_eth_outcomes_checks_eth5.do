@@ -183,7 +183,11 @@ file write tablecontent _n
 end
 
 *******************************************************************Open Raw Data
+
 import delimited `c(pwd)'/output/input.csv, clear
+
+di "STARTING safecount FROM IMPORT:"
+safecount
 
 *Generate outcomes
 
