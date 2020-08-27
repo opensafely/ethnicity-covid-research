@@ -21,7 +21,7 @@ log using "$Logdir/13b_eth_an_household_eth5", replace t
 
 cap file close tablecontent
 file open tablecontent using $Tabfigdir/table7_hh_eth5.txt, write text replace
-file write tablecontent ("Table 6: Ethnicity and household composition - Complete Case Analysis") _n
+file write tablecontent ("Table 7: Ethnicity and household composition - Complete Case Analysis") _n
 file write tablecontent _tab ("Denominator") _tab ("Event") _tab ("Total person-weeks") _tab ("Rate per 1,000") _tab ("Crude") _tab _tab ("Age/Sex Adjusted") _tab _tab ("Age/Sex/IMD Adjusted") _tab _tab 	("plus co-morbidities") _tab _tab  _n
 file write tablecontent _tab _tab _tab _tab _tab   ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _tab _n
 
