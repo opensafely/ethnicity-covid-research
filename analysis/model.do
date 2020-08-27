@@ -133,10 +133,6 @@ MULTIPLE IMPUTATION
 do "$Dodir/08b_eth_cr_imputed_eth5.do"
 
 *Table 2: multiple imputation
-forvalues i = 1/120{
-sleep 60000
-}
-
 winexec "c:\program files\stata16\statamp-64.exe" do "$Dodir/08c_eth_an_multivariable_eth5_mi.do" demog
 winexec "c:\program files\stata16\statamp-64.exe" do "$Dodir/08c_eth_an_multivariable_eth5_mi.do" full
 
