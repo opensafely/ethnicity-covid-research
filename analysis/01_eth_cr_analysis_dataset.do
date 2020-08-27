@@ -278,32 +278,33 @@ gen carehome=0
 replace carehome=1 if carehometype<4
 safetab  carehometype carehome
 
-
-
-*Total number people in household (to check hh size)
-
 *check for missing household size values
 codebook  hh_size, d
 
 *gen categories of household size.
+*hh size zero is people with invalid addresses
+
 gen hh_total_cat=.
 replace hh_total_cat=1 if hh_size >=1 & hh_size<=2
 replace hh_total_cat=2 if hh_size >=3 & hh_size<=5
 replace hh_total_cat=3 if hh_size >=6 & hh_size<=10
 replace hh_total_cat=4 if hh_size >=11 & hh_size!=.
+replace hh_total_cat=5 if hh_size==0 | hh_size==.
 
 *who are people with missing household size
 safecount if hh_total_cat==.
 safecount if hh_size==.
+bysort  hh_total_cat: summ hh_size
+
 		
-*remove people from hh_cat if they live in a care home - NO they will be excluded from complete case analysis
 safetab hh_total_cat carehome,m 
 
 *replace hh_total_cat=. if carehome==1
 label define hh_total_cat 1 "1-2" ///
 						2 "3-5" ///
 						3 "6-10" ///
-						4 "11+"
+						4 "11+" ///
+						5 "Unknown"
 											
 label values hh_total_cat hh_total_cat
 
@@ -311,7 +312,7 @@ safetab hh_total_cat,m
 safetab hh_total_cat carehome,m 
 
 *log linear household size
-gen hh_linear=hh_size
+gen hh_linear=hh_size if hh_size>=1 & hh_size!=.
 replace hh_linear=11 if hh_linear>=11 & hh_linear!=.
 gen hh_log_linear=log(hh_linear)
 sum hh_log_linear hh_linear

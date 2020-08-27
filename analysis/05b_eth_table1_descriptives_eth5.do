@@ -248,7 +248,7 @@ file write tablecontent _n
 tabulatevariable, variable(imd) min(1) max(5) 
 file write tablecontent _n 
 
-tabulatevariable, variable(hh_total_cat) min(1) max(4) missing
+tabulatevariable, variable(hh_total_cat) min(1) max(5) missing
 file write tablecontent _n 
 
 tabulatevariable, variable(carehome) min(0) max(1) 
