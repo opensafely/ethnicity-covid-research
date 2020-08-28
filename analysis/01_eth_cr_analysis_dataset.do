@@ -25,6 +25,38 @@ log using "$Logdir/01_eth_cr_create_analysis_dataset.log", replace t
 di "STARTING safecount FROM IMPORT:"
 safecount
 
+****************************
+*  Create required cohort  *
+****************************
+
+/* DROP ALL KIDS */
+noi di "DROPPING AGE<18:" 
+drop if age<18
+safecount
+
+* Age: Exclude those with implausible ages
+cap assert age<.
+noi di "DROPPING AGE<105:" 
+drop if age>105
+safecount
+
+* Sex: Exclude categories other than M and F
+cap assert inlist(sex, "M", "F", "I", "U")
+noi di "DROPPING GENDER NOT M/F:" 
+drop if inlist(sex, "I", "U")
+
+gen male = 1 if sex == "M"
+replace male = 0 if sex == "F"
+label define male 0"Female" 1"Male"
+label values male male
+safetab male
+safecount
+
+*add prison flag data to remove people from dataset
+
+* Create restricted cubic splines for age
+mkspline age = age, cubic nknots(4)
+
 *Start dates
 gen index 			= "01/02/2020"
 
@@ -62,11 +94,10 @@ gen onssuspecteddeath_date = onsdeath_date if died_ons_suspectedcovid_flag_any =
 gen ons_noncoviddeath_date = onsdeath_date if died_ons_covid_flag_any != 1
 
 
-
 /* CONVERT STRINGS TO DATE FOR OUTCOME VARIABLES =============================*/
 * Recode to dates from the strings 
-*gen dummy date for severe and replace later on
-*gen severe_date=ae_date
+*gen dummy date for infected and replace later on
+gen infected_date=confirmed_date
 
 foreach var of global outcomes {
 	confirm string variable `var'_date
@@ -76,6 +107,10 @@ foreach var of global outcomes {
 	format `var'_date %td 
 
 }
+
+* Date of infection
+replace infected_date=min(confirmed_date, positivetest_date)
+format infected_date %td
 
 *If outcome occurs on the first day of follow-up add one day
 foreach i of global outcomes {
@@ -102,18 +137,20 @@ foreach i of global outcomes {
 
 * Censoring dates for each outcome (last date outcome data available)
 *https://github.com/opensafely/rapid-reports/blob/master/notebooks/latest-dates.ipynb
-gen suspected_censor_date = d("07/08/2020")
-gen confirmed_censor_date  = d("07/08/2020")
-gen tested_censor_date = d("03/08/2020")
-gen positivetest_censor_date = d("03/08/2020")
-gen ae_censor_date = d("03/08/2020")
-gen icu_censor_date = d("30/07/2020")
-gen cpnsdeath_censor_date  = d("03/08/2020")
-gen onsdeath_censor_date = d("03/08/2020")
-gen onscoviddeath_censor_date = d("03/08/2020")
-gen onsconfirmeddeath_censor_date = d("03/08/2020")
-gen onssuspecteddeath_censor_date = d("03/08/2020")
-gen ons_noncoviddeath_censor_date = d("03/08/2020")
+gen suspected_censor_date = d("21/08/2020")
+gen confirmed_censor_date  = d("21/08/2020")
+gen tested_censor_date = d("17/08/2020")
+gen positivetest_censor_date = d("17/08/2020")
+gen ae_censor_date = d("17/08/2020")
+gen icu_censor_date = d("17/07/2020")
+gen cpnsdeath_censor_date  = d("17/08/2020")
+gen onsdeath_censor_date = d("14/08/2020")
+gen onscoviddeath_censor_date = d("14/08/2020")
+gen onsconfirmeddeath_censor_date = d("14/08/2020")
+gen onssuspecteddeath_censor_date = d("14/08/2020")
+gen ons_noncoviddeath_censor_date = d("14/08/2020")
+
+gen infected_censor_date=min(confirmed_censor_date, positivetest_censor_date)
 
 *******************************************************************************
 format *censor_date %d
@@ -123,7 +160,6 @@ sum *censor_date, format
 /* DEMOGRAPHICS */ 
 
 * Ethnicity (5 category)
-replace ethnicity = . if ethnicity==.
 label define ethnicity 	1 "White"  					///
 						2 "Mixed" 					///
 						3 "Asian or Asian British"	///
@@ -131,7 +167,7 @@ label define ethnicity 	1 "White"  					///
 						5 "Other"					
 						
 label values ethnicity ethnicity
-safetab ethnicity
+safetab ethnicity, m
 
  *re-order ethnicity
  gen eth5=1 if ethnicity==1
@@ -151,8 +187,6 @@ safetab ethnicity
 
 label values eth5 eth5
 safetab eth5, m
-
-
 
 * Ethnicity (16 category)
 replace ethnicity_16 = 17 if ethnicity_16==.
@@ -182,22 +216,18 @@ safetab ethnicity_16,m
 * Ethnicity (16 category grouped further)
 * Generate a version of the full breakdown with mixed in one group
 gen eth16 = ethnicity_16
-recode eth16 4/7 = 99
-recode eth16 11 = 16
-recode eth16 14 = 16
+recode eth16 4/7 = 99 //mixed
 recode eth16 8 = 4
 recode eth16 9 = 5
 recode eth16 10 = 6
-recode eth16 12 = 7
-recode eth16 13 = 8
-recode eth16 15 = 9
-recode eth16 99 = 10
-recode eth16 16 = 11
-recode eth16 17 = 12
-
-
-
-
+recode eth16 11= 7
+recode eth16 12 = 8
+recode eth16 13 = 9
+recode eth16 14 = 10
+recode eth16 15 = 11
+recode eth16 99 = 12
+recode eth16 16 = 13
+recode eth16 17 = 14
 
 label define eth16 	///
 						1 "British" ///
@@ -205,15 +235,20 @@ label define eth16 	///
 						3 "Other White" ///
 						4 "Indian" ///
 						5 "Pakistani" ///
-						6 "Bangladeshi" ///					
-						7 "Caribbean" ///
-						8 "African" ///
-						9 "Chinese" ///
-						10 "All mixed" ///
-						11 "All Other" ///
-						12 "Unknown"
+						6 "Bangladeshi" ///	
+						7 "Other Asian" ///
+						8 "Caribbean" ///
+						9 "African" ///
+						10 "Other Black" ///
+						11 "Chinese" ///
+						12 "All mixed" ///
+						13  "Other" ///
+						14 "Unknown"
 label values eth16 eth16
 safetab eth16,m
+
+safetab eth16 eth5, m
+bysort eth5: safetab eth16, m
 
 * STP 
 rename stp stp_old
@@ -238,6 +273,8 @@ recode imd 5 = 1 4 = 2 3 = 3 2 = 4 1 = 5 .u = .u
 
 label define imd 1 "1 least deprived" 2 "2" 3 "3" 4 "4" 5 "5 most deprived" .u "Unknown"
 label values imd imd 
+safetab imd, m
+
 
 /*  Age variables  */ 
 
@@ -268,42 +305,38 @@ label values agegroup agegroup
 
 
 **************************** HOUSEHOLD VARS*******************************************
-*update with UPRN data
-
 **care home
 encode care_home_type, gen(carehometype)
 drop care_home_type
 
 gen carehome=0
 replace carehome=1 if carehometype<4
-safetab  carehometype carehome
-
-
-
-*Total number people in household (to check hh size)
+safetab  carehometype carehome, m
 
 *check for missing household size values
 codebook  hh_size, d
 
 *gen categories of household size.
+*hh size zero is people with invalid addresses
+
 gen hh_total_cat=.
 replace hh_total_cat=1 if hh_size >=1 & hh_size<=2
 replace hh_total_cat=2 if hh_size >=3 & hh_size<=5
 replace hh_total_cat=3 if hh_size >=6 & hh_size<=10
 replace hh_total_cat=4 if hh_size >=11 & hh_size!=.
+replace hh_total_cat=5 if hh_size==0 | hh_size==.
 
 *who are people with missing household size
 safecount if hh_total_cat==.
 safecount if hh_size==.
-		
-*remove people from hh_cat if they live in a care home - NO they will be excluded from complete case analysis
-safetab hh_total_cat carehome,m 
+bysort  hh_total_cat: summ hh_size
 
 *replace hh_total_cat=. if carehome==1
 label define hh_total_cat 1 "1-2" ///
 						2 "3-5" ///
 						3 "6-10" ///
-						4 "11+"
+						4 "11+" ///
+						5 "Unknown"
 											
 label values hh_total_cat hh_total_cat
 
@@ -311,44 +344,10 @@ safetab hh_total_cat,m
 safetab hh_total_cat carehome,m 
 
 *log linear household size
-gen hh_linear=hh_size
+gen hh_linear=hh_size if hh_size>=1 & hh_size!=.
 replace hh_linear=11 if hh_linear>=11 & hh_linear!=.
 gen hh_log_linear=log(hh_linear)
 sum hh_log_linear hh_linear
-
-
-
-*add prison flag data
-
-****************************
-*  Create required cohort  *
-****************************
-
-/* DROP ALL KIDS, AS HH COMPOSITION VARS ARE NOW MADE */
-noi di "DROPPING AGE<18:" 
-drop if age<18
-
-* Age: Exclude those with implausible ages
-cap assert age<.
-noi di "DROPPING AGE<105:" 
-drop if age>105
-
-
-* Sex: Exclude categories other than M and F
-cap assert inlist(sex, "M", "F", "I", "U")
-noi di "DROPPING GENDER NOT M/F:" 
-drop if inlist(sex, "I", "U")
-
-gen male = 1 if sex == "M"
-replace male = 0 if sex == "F"
-label define male 0"Female" 1"Male"
-label values male male
-safetab male
-
-
-
-* Create restricted cubic splines for age
-mkspline age = age, cubic nknots(4)
 
 
 /* CONVERT STRINGS TO DATE====================================================*/
@@ -460,7 +459,7 @@ foreach var of varlist 	chronic_respiratory_disease ///
 	local newvar =  substr("`var'", 1, length("`var'") - 5)
 	gen `newvar' = (`var'!=. )
 	order `newvar', after(`var')
-	safetab `newvar'
+	safetab `newvar', m
 	
 }
 
@@ -547,11 +546,11 @@ order obese4cat, after(bmicat)
 *https://www.nice.org.uk/guidance/ph46/chapter/1-Recommendations#recommendation-2-bmi-assessment-multi-component-interventions-and-best-practice-standards
 
 gen bmicat_sa=bmicat
-replace bmicat_sa = 2 if bmi>=18.5 & bmi <23 & ethnicity  ==3
-replace bmicat_sa = 3 if bmi>=23 & bmi < 27.5 & ethnicity ==3
-replace bmicat_sa = 4 if bmi>=27.5 & bmi < 32.5 & ethnicity ==3
-replace bmicat_sa = 5 if bmi>=32.5 & bmi < 37.5 & ethnicity ==3
-replace bmicat_sa = 6 if bmi>=37.5 & bmi < . & ethnicity ==3
+replace bmicat_sa = 2 if bmi>=18.5 & bmi <23 & eth5==2
+replace bmicat_sa = 3 if bmi>=23 & bmi < 27.5 & eth5==2
+replace bmicat_sa = 4 if bmi>=27.5 & bmi < 32.5 & eth5==2
+replace bmicat_sa = 5 if bmi>=32.5 & bmi < 37.5 & eth5==2
+replace bmicat_sa = 6 if bmi>=37.5 & bmi < . & eth5==2
 
 safetab bmicat_sa
 
@@ -775,7 +774,7 @@ replace bmi = . if !inrange(bmi, 15, 50)
 
 *GP consult count
 replace gp_consult_count=0 if gp_consult_count==. | gp_consult_count<0
-tab gp_consult_count,m
+summ gp_consult_count
 
 /**** Create survival times  ****/
 * For looping later, name must be stime_binary_outcome_name
@@ -979,7 +978,7 @@ use "$Tempdir/analysis_dataset.dta", clear
 
 keep if confirmed==1 | positivetest==1
 safecount
-gen infected_date=min(confirmed_date, positivetest_date)
+*gen infected_date=min(confirmed_date, positivetest_date)
 save "$Tempdir/analysis_dataset_infected.dta", replace
 
 foreach i of global outcomes2 {

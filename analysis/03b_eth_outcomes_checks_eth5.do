@@ -184,6 +184,9 @@ end
 
 *******************************************************************Open Raw Data
 import delimited `c(pwd)'/output/input.csv, clear
+di "STARTING safecount FROM IMPORT:"
+safecount
+
 
 *Generate outcomes
 
@@ -193,6 +196,19 @@ gen index 			= "01/02/2020"
 * Date of cohort entry, 1 Feb 2020
 gen indexdate = date(index, "DMY")
 format indexdate %d
+
+
+
+* Ethnicity (5 category)
+replace ethnicity = . if ethnicity==.
+label define ethnicity 	1 "White"  					///
+						2 "Mixed" 					///
+						3 "Asian or Asian British"	///
+						4 "Black"  					///
+						5 "Other"					
+						
+label values ethnicity ethnicity
+safetab ethnicity, m
 
  *re-order ethnicity
  gen eth5=1 if ethnicity==1
@@ -240,8 +256,7 @@ gen ons_noncoviddeath_date = onsdeath_date if died_ons_covid_flag_any != 1
 
 /* CONVERT STRINGS TO DATE FOR OUTCOME VARIABLES =============================*/
 * Recode to dates from the strings 
-*gen dummy date for severe and replace later on
-*gen severe_date=ae_date
+gen infected_date=confirmed_date
 
 foreach var of global outcomes {
 	confirm string variable `var'_date
@@ -251,6 +266,10 @@ foreach var of global outcomes {
 	format `var'_date %td 
 
 }
+
+* Date of infection
+replace infected_date=min(confirmed_date, positivetest_date)
+format infected_date %td
 
 *If outcome occurs on the first day of follow-up add one day
 foreach i of global outcomes {

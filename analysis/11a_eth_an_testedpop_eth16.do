@@ -21,7 +21,7 @@ log using "$Logdir/11a_eth_an_testedpop_eth16", replace t
 
 cap file close tablecontent
 file open tablecontent using $Tabfigdir/table4_testedpop_eth16.txt, write text replace
-file write tablecontent ("Table 2: Odds of testing positive amongst those receiving a test - Complete Case Analysis") _n
+file write tablecontent ("Table 4: Odds of testing positive amongst those receiving a test - Complete Case Analysis") _n
 file write tablecontent _tab ("Denominator") _tab ("Event") _tab ("%") _tab ("Crude") _tab _tab ("Age/Sex Adjusted") _tab _tab ("Age/Sex/IMD Adjusted") _tab _tab 	("plus co-morbidities") _tab _tab 	("plus hh size/carehome")  _tab _tab  _n
 file write tablecontent _tab _tab _tab _tab   ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _n
 
@@ -123,7 +123,8 @@ parmest, label eform format(estimate p lb ub) saving("$Tempdir/model3_positivete
 * Column headings 
 file write tablecontent ("Positive Test") _n
 
-* Row headings 
+* eth16 labelled columns
+
 local lab1: label eth16 1
 local lab2: label eth16 2
 local lab3: label eth16 3
@@ -135,6 +136,9 @@ local lab8: label eth16 8
 local lab9: label eth16 9
 local lab10: label eth16 10
 local lab11: label eth16 11
+local lab12: label eth16 12
+local lab13: label eth16 13
+local lab14: label eth16 14
 
 /* Counts */
  
@@ -148,7 +152,7 @@ local lab11: label eth16 11
 	file write tablecontent ("1.00") _tab _tab ("1.00") _tab _tab ("1.00")  _tab _tab ("1.00") _tab _tab ("1.00") _n
 	
 * Subsequent ethnic groups
-forvalues eth=2/11 {
+forvalues eth=2/14 {
 	qui safecount if eth16==`eth'
 	local denominator = r(N)
 	qui safecount if eth16 == `eth' & positivetest == 1

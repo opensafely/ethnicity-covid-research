@@ -55,7 +55,7 @@ syntax, variable(varname) condition(string)
 	local colpct = 100*(r(N)/`overalldenom')
 	file write tablecontent %9.0gc (`rowdenom')  (" (") %3.1f (`colpct') (")") _tab
 
-	forvalues i=1/12{
+	forvalues i=1/14{
 	cou if eth16 == `i'
 	local rowdenom = r(N)
 	cou if eth16 == `i' & `variable' `condition'
@@ -81,7 +81,7 @@ syntax, variable(varname) condition(string)
 	local colpct = 100*(r(N)/`overalldenom')
 	file write tablecontent %9.0gc (`rowdenom')  (" (") %3.1f (`colpct') (")") _tab
 
-	forvalues i=1/12{
+	forvalues i=1/14{
 	cou if eth16 == `i'
 	local rowdenom = r(N)
 	cou if eth16 == `i' & `variable' `condition'
@@ -164,7 +164,7 @@ syntax, variable(varname)
 	file write tablecontent ("Mean (SD)") _tab 
 	file write tablecontent  %3.1f (r(mean)) (" (") %3.1f (r(sd)) (")") _tab
 	
-	forvalues i=1/12{							
+	forvalues i=1/14{							
 	qui summarize `variable' if eth16 == `i', d
 	file write tablecontent  %3.1f (r(mean)) (" (") %3.1f (r(sd)) (")") _tab
 	}
@@ -176,7 +176,7 @@ file write tablecontent _n
 	file write tablecontent ("Median (IQR)") _tab 
 	file write tablecontent %3.1f (r(p50)) (" (") %3.1f (r(p25)) ("-") %3.1f (r(p75)) (")") _tab
 	
-	forvalues i=1/12{
+	forvalues i=1/14{
 	qui summarize `variable' if eth16 == `i', d
 	file write tablecontent %3.1f (r(p50)) (" (") %3.1f (r(p25)) ("-") %3.1f (r(p75)) (")") _tab
 	}
@@ -207,6 +207,8 @@ local lab9: label eth16 9
 local lab10: label eth16 10
 local lab11: label eth16 11
 local lab12: label eth16 12
+local lab13: label eth16 13
+local lab14: label eth16 14
 
 
 
@@ -222,7 +224,9 @@ file write tablecontent _tab ("Total")				  			  _tab ///
 							 ("`lab9'")  						  _tab ///
 							 ("`lab10'")  						  _tab ///
 							 ("`lab11'")  						  _tab ///
-							 ("`lab12'")  						  _n 
+							 ("`lab12'")  						  _tab ///
+							 ("`lab13'")  						  _tab ///
+							 ("`lab14'")  						  _n 
 							 
 							 
 
@@ -252,7 +256,7 @@ file write tablecontent _n
 tabulatevariable, variable(imd) min(1) max(5) 
 file write tablecontent _n 
 
-tabulatevariable, variable(hh_total_cat) min(1) max(4) missing
+tabulatevariable, variable(hh_total_cat) min(1) max(5) missing
 file write tablecontent _n 
 
 tabulatevariable, variable(carehome) min(0) max(1) 
@@ -297,7 +301,6 @@ file write tablecontent _n
 
 foreach comorb of varlist 		///
 	hypertension 				///
-	htdiag_or_highbp			///
 	chronic_cardiac_disease		///
 	stroke						///
 	egfr60							///
