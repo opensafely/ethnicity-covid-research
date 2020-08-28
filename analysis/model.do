@@ -120,7 +120,7 @@ do "$Dodir/14a_eth_an_diabetes_eth16"
 */
 
 * Rates - crude, age, and age-sex stratified
-do "$Dodir/10b_eth_an_rates_eth5"
+*do "$Dodir/10b_eth_an_rates_eth5"
 
 /**********************
 SENSITIVITY  ANALYSIS
