@@ -20,8 +20,8 @@ macro drop hr
 log using "$Logdir/14a_eth_an_diabetes_eth16", replace t 
 
 cap file close tablecontent
-file open tablecontent using $Tabfigdir/table7_dm_eth16.txt, write text replace
-file write tablecontent ("Table 6: Ethnicity and household composition - Complete Case Analysis") _n
+file open tablecontent using $Tabfigdir/table8_dm_eth16.txt, write text replace
+file write tablecontent ("Table 8: Ethnicity and diabetes - Complete Case Analysis") _n
 file write tablecontent _tab ("Denominator") _tab ("Event") _tab ("Total person-weeks") _tab ("Rate per 1,000") _tab ("Crude") _tab _tab ("Age/Sex Adjusted") _tab _tab ("Age/Sex/IMD Adjusted") _tab _tab 	("plus co-morbidities") _tab _tab  _n
 file write tablecontent _tab _tab _tab _tab _tab   ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _n
 
@@ -214,4 +214,4 @@ outsheet using "$Tabfigdir/FP_diabetes_eth16.txt", replace
 * Close log file 
 log close
 
-insheet using $Tabfigdir/table7_dm_eth16.txt, clear
+insheet using $Tabfigdir/table8_dm_eth16.txt, clear

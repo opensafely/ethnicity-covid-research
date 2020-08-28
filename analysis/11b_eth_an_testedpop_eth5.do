@@ -21,7 +21,7 @@ log using "$Logdir/11b_eth_an_testedpop_eth5", replace t
 
 cap file close tablecontent
 file open tablecontent using $Tabfigdir/table4_testedpop_eth5.txt, write text replace
-file write tablecontent ("Table 2: Odds of testing positive amongst those receiving a test - Complete Case Analysis") _n
+file write tablecontent ("Table 4: Odds of testing positive amongst those receiving a test - Complete Case Analysis") _n
 file write tablecontent _tab ("Denominator") _tab ("Event") _tab ("%") _tab ("Crude") _tab _tab ("Age/Sex Adjusted") _tab _tab ("Age/Sex/IMD Adjusted") _tab _tab 	("plus co-morbidities") _tab _tab 	("plus hh size/carehome")  _tab _tab  _n
 file write tablecontent _tab _tab _tab _tab   ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _n
 
