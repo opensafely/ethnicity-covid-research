@@ -362,7 +362,6 @@ foreach var of varlist 	chronic_respiratory_disease ///
 						dementia ///
 						esrf  ///
 						hypertension  ///
-						asthma ///
 						ra_sle_psoriasis  ///
 						diabetes ///
 						bmi_date_measured   ///
@@ -379,7 +378,6 @@ foreach var of varlist 	chronic_respiratory_disease ///
 						alpha_blockers ///
 						betablockers ///
 						calcium_channel_blockers ///
-						combination_bp_meds ///
 						spironolactone  ///
 						thiazide_diuretics ///						
 						{
@@ -423,7 +421,6 @@ foreach var of varlist 	chronic_respiratory_disease ///
 						dementia ///
 						esrf  ///
 						hypertension  ///
-						asthma ///
 						ra_sle_psoriasis  ///
 						bmi_measured_date   ///
 						bp_sys_date_measured   ///
@@ -439,7 +436,6 @@ foreach var of varlist 	chronic_respiratory_disease ///
 						alpha_blockers ///
 						betablockers ///
 						calcium_channel_blockers ///
-						combination_bp_meds ///
 						spironolactone  ///
 						thiazide_diuretics ///						
 						{
@@ -453,34 +449,6 @@ foreach var of varlist 	chronic_respiratory_disease ///
 	
 }
 
-
-*gen count of co-morbidities
-gen comorbidity_count=0
-
-foreach var of varlist 	chronic_respiratory_disease ///
-						chronic_cardiac_disease  ///
-						cancer  ///
-						perm_immunodef  ///
-						temp_immunodef  ///
-						chronic_liver_disease  ///
-						other_neuro  ///
-						stroke			///
-						dementia ///
-						esrf  ///
-						hypertension  ///
-						asthma ///
-						ra_sle_psoriasis  ///
-						{
-replace comorbidity_count=comorbidity_count+1 if `var'==1
-						}
-
-summ comorbidity_count
-
-*comorbidities category 
-gen comorbidity_cat =comorbidity_count
-replace comorbidity_cat=4 if comorbidity_count>=4 & comorbidity_count!=.
-bysort comorbidity_cat: sum comorbidity_count
-safetab comorbidity_cat,m
 
 /*  Body Mass Index  */
 * NB: watch for missingness
@@ -749,14 +717,47 @@ safetab diabcat, m
 
 /*  Asthma  */
 * Asthma  (coded: 0 No, 1 Yes no OCS, 2 Yes with OCS)
+safetab asthma
 replace asthma=1 if asthma==2
 safetab asthma
 
+*gen count of co-morbidities
+gen comorbidity_count=0
+
+foreach var of varlist 	chronic_respiratory_disease ///
+						chronic_cardiac_disease  ///
+						cancer  ///
+						perm_immunodef  ///
+						temp_immunodef  ///
+						chronic_liver_disease  ///
+						other_neuro  ///
+						stroke			///
+						dementia ///
+						esrf  ///
+						hypertension  ///
+						asthma ///
+						ra_sle_psoriasis  ///
+						{
+replace comorbidity_count=comorbidity_count+1 if `var'==1
+						}
+
+summ comorbidity_count
+
+*comorbidities category 
+gen comorbidity_cat =comorbidity_count
+replace comorbidity_cat=4 if comorbidity_count>=4 & comorbidity_count!=.
+bysort comorbidity_cat: sum comorbidity_count
+safetab comorbidity_cat,m
 
 *******************************
 *  Recode implausible values  *
 *******************************
 
+*make combination_bp_meds binary
+safetab combination_bp_meds
+replace combination_bp_meds=0 if combination_bp_meds<0 
+replace combination_bp_meds=1 if combination_bp_meds>0 & combination_bp_meds!=.
+safetab combination_bp_meds
 
 * BMI 
 * Set implausible BMIs to missing:
@@ -858,7 +859,6 @@ lab var bp_sys							"Systolic BP"
 lab var bp_dias							"Diastolic BP"
 lab var bp_map							"Mean Arterial Pressure"
 lab var esrf 							"end stage renal failure"
-lab var asthma_date 						"Diagnosed Asthma Date"
 label var hypertension_date			   		"Diagnosed hypertension Date"
 label var chronic_respiratory_disease_date 	"Other Respiratory Diseases Date"
 label var chronic_cardiac_disease_date		"Other Heart Diseases Date"
@@ -892,7 +892,6 @@ lab var alpha_blockers_date 				"Alpha blocker in last 12 months"
 lab var arbs_date 							"ARB in last 12 months"
 lab var betablockers_date 					"Beta blocker in last 12 months"
 lab var calcium_channel_blockers_date 		"CCB in last 12 months"
-lab var combination_bp_meds_date 			"BP med in last 12 months"
 lab var spironolactone_date 				"Spironolactone in last 12 months"
 lab var thiazide_diuretics_date				"TZD in last 12 months"
 
