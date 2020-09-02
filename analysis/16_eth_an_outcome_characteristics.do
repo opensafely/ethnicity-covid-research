@@ -417,8 +417,7 @@ drop v5
 save "$Tabfigdir/table5_ventilated.dta", replace
 
 *merge tables of interest
-use "$Tabfigdir/table5_confirmed.dta", clear
-merge 1:1 order using "$Tabfigdir/table5_tested.dta", nogen
+use "$Tabfigdir/table5_tested.dta", clear
 merge 1:1 order using "$Tabfigdir/table5_positivetest.dta", nogen
 merge 1:1 order using "$Tabfigdir/table5_ae.dta", nogen
 merge 1:1 order using "$Tabfigdir/table5_icu.dta", nogen
