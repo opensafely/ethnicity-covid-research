@@ -223,16 +223,6 @@ gen byte cons=1
 tabulatevariable, variable(cons) min(1) max(1) 
 file write tablecontent _n 
 
-*SIZE OF LINKED DATASETS
-gen  byte SGSS=1 if tested==1
-
-file write tablecontent ("SGSS data") _tab
-generaterow2, variable(SGSS) condition("==1")
-
-gen  byte ICNARC=1 if tested==1
-file write tablecontent ("ICNARC data") _tab
-generaterow2, variable(ICNARC) condition("==1")
-
 qui summarizevariable, variable(age) 
 file write tablecontent _n
 

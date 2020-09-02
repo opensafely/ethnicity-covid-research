@@ -240,7 +240,6 @@ gen byte cons=1
 tabulatevariable, variable(cons) min(1) max(1) 
 file write tablecontent _n 
 
-*SIZE OF LINKED DATASETS
 qui summarizevariable, variable(age) 
 file write tablecontent _n
 
