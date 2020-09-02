@@ -979,16 +979,16 @@ use "$Tempdir/analysis_dataset.dta", clear
 keep if confirmed==1 | positivetest==1
 safecount
 *gen infected_date=min(confirmed_date, positivetest_date)
-save "$Tempdir/analysis_dataset_infected.dta", replace
+save "$Tempdir/analysis_dataset_infectedpop.dta", replace
 
 foreach i of global outcomes2 {
-	use "$Tempdir/analysis_dataset_infected.dta", clear
+	use "$Tempdir/analysis_dataset_infectedpop.dta", clear
 	
 	drop if `i'_date <= infected_date 
 
 	stset stime_`i', fail(`i') 				///	
 	id(patient_id) enter(infected_date) origin(infected_date)
-	save "$Tempdir/analysis_dataset_STSET_`i'_infected.dta", replace
+	save "$Tempdir/analysis_dataset_STSET_`i'_infectedpop.dta", replace
 }	
 
 	
