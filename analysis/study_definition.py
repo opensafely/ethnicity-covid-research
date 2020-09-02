@@ -347,10 +347,16 @@ study = StudyDefinition(
         }
     ),
 
-     prison_flag=patients.household_status_as_of(
-    "2020-02-01",
-    returning="is prison",
-),
+    is_prison=patients.household_as_of(
+    "2020-02-01", returning="is_prison",
+     return_expectations={
+            "rate": "exponential_increase",
+            "incidence" : 0.20,
+            "date" : {"earliest" : "2020-02-01"},
+            "bool" : True,
+        }
+    ),
+
 
     ### GP CONSULTATION RATE IN 12 MONTH BEFORE FEB 1 2020
     gp_consult_count=patients.with_gp_consultations(
