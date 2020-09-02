@@ -40,7 +40,7 @@ global tempdir    "$Tempdir"
 
 
 * Set globals for  outcomes
-global outcomes "suspected confirmed  tested positivetest infected ae icu cpnsdeath  onscoviddeath ons_noncoviddeath onsdeath"
+global outcomes "suspected confirmed tested positivetest infected ae icu cpnsdeath  onscoviddeath ons_noncoviddeath onsdeath"
 
 *outcomes for infected population (restricted to secondary care onwards)
 global outcomes2 "ae icu cpnsdeath  onscoviddeath ons_noncoviddeath onsdeath" 
@@ -77,9 +77,6 @@ do "$Dodir/06b_eth_an_multivariable_eth5.do"
 *Table 3: Odds of receiving ventilation - in those admitted to ICU
 do "$Dodir/09b_eth_an_ventilation_eth5"
 
-*Table 4: Odds of testing positive amongst those with SGSS testing data
-do "$Dodir/11b_eth_an_testedpop_eth5" 
-
 *Table 6: seconday care outcomes amongs those with evidence of infection 
 do "$Dodir/12b_eth_an_infected_eth5"
 
@@ -108,9 +105,6 @@ do "$Dodir/09a_eth_an_ventilation_eth16"
 *Table 5: Odds of testing positive amongst those with SGSS testing data
 do "$Dodir/11a_eth_an_testedpop_eth16" 
 
-*Table 6: seconday care outcomes amongs those with evidence of infection -- numbers too small for eth16
-*do "$Dodir/12a_eth_an_infected_eth16"
-
 /* cell counts too small to look at household size and diabetes by eth16
 Table 7: Household size
 do "$Dodir/13a_eth_an_household_eth16"
@@ -121,6 +115,15 @@ do "$Dodir/14a_eth_an_diabetes_eth16"
 
 * Rates - crude, age, and age-sex stratified
 *do "$Dodir/10b_eth_an_rates_eth5"
+
+
+/**********************
+OUTCOMES IN TESTED POP
+**********************/
+*Table 4: Odds of testing positive amongst those with SGSS testing data
+do "$Dodir/11b_eth_an_testedpop_eth5" 
+do "$Dodir/11a_eth_an_testedpop_eth16" 
+
 
 /**********************
 SENSITIVITY  ANALYSIS
