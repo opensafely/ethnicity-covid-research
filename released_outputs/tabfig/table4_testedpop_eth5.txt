@@ -1,9 +1,3 @@
-Table 2: Odds of testing positive amongst those receiving a test - Complete Case Analysis
+Table 4: Odds of testing positive amongst those receiving a test - Complete Case Analysis
 	Denominator	Event	%	Crude		Age/Sex Adjusted		Age/Sex/IMD Adjusted		plus co-morbidities		plus hh size/carehome		
 				OR	95% CI	OR	95% CI	OR	95% CI	OR	95% CI
-Positive Test
-White	784988	46117	0.06	1.00		1.00		1.00		1.00		1.00
-South Asian	79726	9811	0.12	2.29	(2.23 - 2.34)	2.57	(2.50 - 2.63)	2.46	(2.40 - 2.53)	2.46	(2.40 - 2.53)	2.46	(2.40 - 2.53)
-Black	24034	2358	0.10	1.80	(1.72 - 1.88)	2.02	(1.93 - 2.11)	1.90	(1.81 - 1.98)	1.90	(1.81 - 1.98)	1.90	(1.81 - 1.98)
-Mixed	11446	864	0.08	1.37	(1.28 - 1.47)	1.60	(1.49 - 1.72)	1.56	(1.45 - 1.68)	1.56	(1.45 - 1.68)	1.56	(1.45 - 1.68)
-Other	15194	1255	0.08	1.55	(1.46 - 1.65)	1.75	(1.65 - 1.86)	1.72	(1.62 - 1.82)	1.72	(1.62 - 1.82)	1.72	(1.62 - 1.82)
