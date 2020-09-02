@@ -97,7 +97,6 @@ gen ons_noncoviddeath_date = onsdeath_date if died_ons_covid_flag_any != 1
 /* CONVERT STRINGS TO DATE FOR OUTCOME VARIABLES =============================*/
 * Recode to dates from the strings 
 *gen dummy date for infected and replace later on
-gen infected_date=confirmed_date
 
 foreach var of global outcomes {
 	confirm string variable `var'_date
@@ -107,10 +106,6 @@ foreach var of global outcomes {
 	format `var'_date %td 
 
 }
-
-* Date of infection
-replace infected_date=min(confirmed_date, positivetest_date)
-format infected_date %td
 
 *If outcome occurs on the first day of follow-up add one day
 foreach i of global outcomes {
@@ -137,20 +132,15 @@ foreach i of global outcomes {
 
 * Censoring dates for each outcome (last date outcome data available)
 *https://github.com/opensafely/rapid-reports/blob/master/notebooks/latest-dates.ipynb
-gen suspected_censor_date = d("21/08/2020")
-gen confirmed_censor_date  = d("21/08/2020")
-gen tested_censor_date = d("17/08/2020")
-gen positivetest_censor_date = d("17/08/2020")
-gen ae_censor_date = d("17/08/2020")
-gen icu_censor_date = d("17/07/2020")
-gen cpnsdeath_censor_date  = d("17/08/2020")
-gen onsdeath_censor_date = d("14/08/2020")
-gen onscoviddeath_censor_date = d("14/08/2020")
-gen onsconfirmeddeath_censor_date = d("14/08/2020")
-gen onssuspecteddeath_censor_date = d("14/08/2020")
-gen ons_noncoviddeath_censor_date = d("14/08/2020")
+gen tested_censor_date = d("03/08/2020")
+gen positivetest_censor_date = d("03/08/2020")
+gen ae_censor_date = d("03/08/2020")
+gen icu_censor_date = d("30/07/2020")
+gen cpnsdeath_censor_date  = d("03/08/2020")
+gen onsdeath_censor_date = d("03/08/2020")
+gen onscoviddeath_censor_date = d("03/08/2020")
+gen ons_noncoviddeath_censor_date = d("03/08/2020")
 
-gen infected_censor_date=min(confirmed_censor_date, positivetest_censor_date)
 
 *******************************************************************************
 format *censor_date %d
@@ -948,8 +938,6 @@ noi di "DROP IF DIED BEFORE INDEX"
 
 *fix death dates
 drop if onsdeath_date <= indexdate
-drop if cpnsdeath_date <= indexdate
-
 safecount 
 
 sort patient_id
@@ -970,26 +958,6 @@ foreach i of global outcomes {
 	save "$Tempdir/analysis_dataset_STSET_`i'.dta", replace
 }	
 
-
-****************************************************************
-*  Create outcome specific datasets for those with evidence of infection  *
-*****************************************************************
-use "$Tempdir/analysis_dataset.dta", clear
-
-keep if confirmed==1 | positivetest==1
-safecount
-*gen infected_date=min(confirmed_date, positivetest_date)
-save "$Tempdir/analysis_dataset_infectedpop.dta", replace
-
-foreach i of global outcomes2 {
-	use "$Tempdir/analysis_dataset_infectedpop.dta", clear
-	
-	drop if `i'_date <= infected_date 
-
-	stset stime_`i', fail(`i') 				///	
-	id(patient_id) enter(infected_date) origin(infected_date)
-	save "$Tempdir/analysis_dataset_STSET_`i'_infectedpop.dta", replace
-}	
 
 	
 * Close log file 
