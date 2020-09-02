@@ -808,6 +808,7 @@ label var hh_total_cat "Number of people in household"
 label var hh_log_linear "Log linear household size"
 label var hh_linear "Linear household size"
 label var hh_cat_2 "Household category excluding 11+"
+label var is_prison "Household status is a prison"
 
 * Demographics
 label var patient_id				"Patient ID"

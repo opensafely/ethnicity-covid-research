@@ -52,12 +52,37 @@ cap assert inlist(imd, 1, 2, 3, 4, 5)
 /* EXPECTED VALUES============================================================*/ 
 
 *HH
-summ hh_size hh_linear hh_log_linea
+summ hh_size hh_linear hh_log_linear
 safetab hh_total_cat, m
+safetab hh_cat_2,m
+
+bysort hh_total_cat: summ hh_size, d
+
+
+*large households
+safetab male if hh_total_cat==4
+safetab agegroup if hh_total_cat==4
+
+
+
+*prison
+safetab is_prison, m
+safetab hh_total_cat is_prison, m
+
+
+safetab male if is_prison==1
+safetab agegroup if is_prison==1
+
+bysort is_prison: summ hh_size
 
 *Care home
 safetab carehome, m
 safetab carehome hh_total_cat, m
+bysort carehome: summ hh_size
+
+safetab male if carehome==1
+safetab agegroup if carehome==1
+
 
 * Age
 summ age
