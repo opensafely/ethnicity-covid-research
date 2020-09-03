@@ -30,6 +30,18 @@ use "$Tempdir/analysis_dataset.dta", clear
 datacheck _n==1, by(patient_id) nol
 
 
+/* CHECK A&E AND CPNS DEATH =====================================*/ 
+tab ae cpnsdeath
+tab ae onsdeath
+tab ae onscoviddeath
+tab ae ons_noncoviddeath
+tab ae icu
+tab ae was_ventilated
+tab ae tested
+tab ae positivetest
+
+
+
 /* CHECK INCLUSION AND EXCLUSION CRITERIA=====================================*/ 
 
 * DATA STRUCTURE: Confirm one row per patient 
