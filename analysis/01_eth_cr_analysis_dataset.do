@@ -52,8 +52,6 @@ label values male male
 safetab male
 safecount
 
-*add prison flag data to remove people from dataset
-
 * Create restricted cubic splines for age
 mkspline age = age, cubic nknots(4)
 
@@ -97,7 +95,6 @@ gen ons_noncoviddeath_date = onsdeath_date if died_ons_covid_flag_any != 1
 /* CONVERT STRINGS TO DATE FOR OUTCOME VARIABLES =============================*/
 * Recode to dates from the strings 
 *gen dummy date for infected and replace later on
-gen infected_date=confirmed_date
 
 foreach var of global outcomes {
 	confirm string variable `var'_date
@@ -107,10 +104,6 @@ foreach var of global outcomes {
 	format `var'_date %td 
 
 }
-
-* Date of infection
-replace infected_date=min(confirmed_date, positivetest_date)
-format infected_date %td
 
 *If outcome occurs on the first day of follow-up add one day
 foreach i of global outcomes {
@@ -137,20 +130,15 @@ foreach i of global outcomes {
 
 * Censoring dates for each outcome (last date outcome data available)
 *https://github.com/opensafely/rapid-reports/blob/master/notebooks/latest-dates.ipynb
-gen suspected_censor_date = d("21/08/2020")
-gen confirmed_censor_date  = d("21/08/2020")
-gen tested_censor_date = d("17/08/2020")
-gen positivetest_censor_date = d("17/08/2020")
-gen ae_censor_date = d("17/08/2020")
-gen icu_censor_date = d("17/07/2020")
-gen cpnsdeath_censor_date  = d("17/08/2020")
-gen onsdeath_censor_date = d("14/08/2020")
-gen onscoviddeath_censor_date = d("14/08/2020")
-gen onsconfirmeddeath_censor_date = d("14/08/2020")
-gen onssuspecteddeath_censor_date = d("14/08/2020")
-gen ons_noncoviddeath_censor_date = d("14/08/2020")
+gen tested_censor_date = d("03/08/2020")
+gen positivetest_censor_date = d("03/08/2020")
+gen ae_censor_date = d("03/08/2020")
+gen icu_censor_date = d("30/07/2020")
+gen cpnsdeath_censor_date  = d("03/08/2020")
+gen onsdeath_censor_date = d("03/08/2020")
+gen onscoviddeath_censor_date = d("03/08/2020")
+gen ons_noncoviddeath_censor_date = d("03/08/2020")
 
-gen infected_censor_date=min(confirmed_censor_date, positivetest_censor_date)
 
 *******************************************************************************
 format *censor_date %d
@@ -324,24 +312,30 @@ replace hh_total_cat=1 if hh_size >=1 & hh_size<=2
 replace hh_total_cat=2 if hh_size >=3 & hh_size<=5
 replace hh_total_cat=3 if hh_size >=6 & hh_size<=10
 replace hh_total_cat=4 if hh_size >=11 & hh_size!=.
-replace hh_total_cat=5 if hh_size==0 | hh_size==.
+replace hh_total_cat=. if hh_size==0 | hh_size==.
 
 *who are people with missing household size
 safecount if hh_total_cat==.
 safecount if hh_size==.
 bysort  hh_total_cat: summ hh_size
 
-*replace hh_total_cat=. if carehome==1
 label define hh_total_cat 1 "1-2" ///
 						2 "3-5" ///
 						3 "6-10" ///
-						4 "11+" ///
-						5 "Unknown"
+						4 "11+" 
+						
 											
 label values hh_total_cat hh_total_cat
 
 safetab hh_total_cat,m
 safetab hh_total_cat carehome,m 
+
+*create second hh_total_cat excluding 11+ households for sensitivity analysis
+gen hh_cat_2=hh_total_cat
+replace hh_cat_2=. if hh_total_cat>=4
+label values  hh_cat_2 hh_total_cat
+
+safetab hh_cat_2 hh_total_cat, m
 
 *log linear household size
 gen hh_linear=hh_size if hh_size>=1 & hh_size!=.
@@ -372,7 +366,6 @@ foreach var of varlist 	chronic_respiratory_disease ///
 						dementia ///
 						esrf  ///
 						hypertension  ///
-						asthma ///
 						ra_sle_psoriasis  ///
 						diabetes ///
 						bmi_date_measured   ///
@@ -389,7 +382,6 @@ foreach var of varlist 	chronic_respiratory_disease ///
 						alpha_blockers ///
 						betablockers ///
 						calcium_channel_blockers ///
-						combination_bp_meds ///
 						spironolactone  ///
 						thiazide_diuretics ///						
 						{
@@ -433,7 +425,6 @@ foreach var of varlist 	chronic_respiratory_disease ///
 						dementia ///
 						esrf  ///
 						hypertension  ///
-						asthma ///
 						ra_sle_psoriasis  ///
 						bmi_measured_date   ///
 						bp_sys_date_measured   ///
@@ -449,7 +440,6 @@ foreach var of varlist 	chronic_respiratory_disease ///
 						alpha_blockers ///
 						betablockers ///
 						calcium_channel_blockers ///
-						combination_bp_meds ///
 						spironolactone  ///
 						thiazide_diuretics ///						
 						{
@@ -463,34 +453,6 @@ foreach var of varlist 	chronic_respiratory_disease ///
 	
 }
 
-
-*gen count of co-morbidities
-gen comorbidity_count=0
-
-foreach var of varlist 	chronic_respiratory_disease ///
-						chronic_cardiac_disease  ///
-						cancer  ///
-						perm_immunodef  ///
-						temp_immunodef  ///
-						chronic_liver_disease  ///
-						other_neuro  ///
-						stroke			///
-						dementia ///
-						esrf  ///
-						hypertension  ///
-						asthma ///
-						ra_sle_psoriasis  ///
-						{
-replace comorbidity_count=comorbidity_count+1 if `var'==1
-						}
-
-summ comorbidity_count
-
-*comorbidities category 
-gen comorbidity_cat =comorbidity_count
-replace comorbidity_cat=4 if comorbidity_count>=4 & comorbidity_count!=.
-bysort comorbidity_cat: sum comorbidity_count
-safetab comorbidity_cat,m
 
 /*  Body Mass Index  */
 * NB: watch for missingness
@@ -759,14 +721,47 @@ safetab diabcat, m
 
 /*  Asthma  */
 * Asthma  (coded: 0 No, 1 Yes no OCS, 2 Yes with OCS)
+safetab asthma
 replace asthma=1 if asthma==2
 safetab asthma
 
+*gen count of co-morbidities
+gen comorbidity_count=0
+
+foreach var of varlist 	chronic_respiratory_disease ///
+						chronic_cardiac_disease  ///
+						cancer  ///
+						perm_immunodef  ///
+						temp_immunodef  ///
+						chronic_liver_disease  ///
+						other_neuro  ///
+						stroke			///
+						dementia ///
+						esrf  ///
+						hypertension  ///
+						asthma ///
+						ra_sle_psoriasis  ///
+						{
+replace comorbidity_count=comorbidity_count+1 if `var'==1
+						}
+
+summ comorbidity_count
+
+*comorbidities category 
+gen comorbidity_cat =comorbidity_count
+replace comorbidity_cat=4 if comorbidity_count>=4 & comorbidity_count!=.
+bysort comorbidity_cat: sum comorbidity_count
+safetab comorbidity_cat,m
 
 *******************************
 *  Recode implausible values  *
 *******************************
 
+*make combination_bp_meds binary
+safetab combination_bp_meds
+replace combination_bp_meds=0 if combination_bp_meds<0 
+replace combination_bp_meds=1 if combination_bp_meds>0 & combination_bp_meds!=.
+safetab combination_bp_meds
 
 * BMI 
 * Set implausible BMIs to missing:
@@ -809,7 +804,9 @@ label var  hh_id "Household ID"
 label var hh_total "# people in household calculated"
 label var hh_total_cat "Number of people in household"
 label var hh_log_linear "Log linear household size"
-labe var hh_linear "Linear household size"
+label var hh_linear "Linear household size"
+label var hh_cat_2 "Household category excluding 11+"
+*label var is_prison "Household status is a prison"
 
 * Demographics
 label var patient_id				"Patient ID"
@@ -868,7 +865,6 @@ lab var bp_sys							"Systolic BP"
 lab var bp_dias							"Diastolic BP"
 lab var bp_map							"Mean Arterial Pressure"
 lab var esrf 							"end stage renal failure"
-lab var asthma_date 						"Diagnosed Asthma Date"
 label var hypertension_date			   		"Diagnosed hypertension Date"
 label var chronic_respiratory_disease_date 	"Other Respiratory Diseases Date"
 label var chronic_cardiac_disease_date		"Other Heart Diseases Date"
@@ -902,7 +898,6 @@ lab var alpha_blockers_date 				"Alpha blocker in last 12 months"
 lab var arbs_date 							"ARB in last 12 months"
 lab var betablockers_date 					"Beta blocker in last 12 months"
 lab var calcium_channel_blockers_date 		"CCB in last 12 months"
-lab var combination_bp_meds_date 			"BP med in last 12 months"
 lab var spironolactone_date 				"Spironolactone in last 12 months"
 lab var thiazide_diuretics_date				"TZD in last 12 months"
 
@@ -948,8 +943,6 @@ noi di "DROP IF DIED BEFORE INDEX"
 
 *fix death dates
 drop if onsdeath_date <= indexdate
-drop if cpnsdeath_date <= indexdate
-
 safecount 
 
 sort patient_id
@@ -970,26 +963,6 @@ foreach i of global outcomes {
 	save "$Tempdir/analysis_dataset_STSET_`i'.dta", replace
 }	
 
-
-****************************************************************
-*  Create outcome specific datasets for those with evidence of infection  *
-*****************************************************************
-use "$Tempdir/analysis_dataset.dta", clear
-
-keep if confirmed==1 | positivetest==1
-safecount
-*gen infected_date=min(confirmed_date, positivetest_date)
-save "$Tempdir/analysis_dataset_infected.dta", replace
-
-foreach i of global outcomes2 {
-	use "$Tempdir/analysis_dataset_infected.dta", clear
-	
-	drop if `i'_date <= infected_date 
-
-	stset stime_`i', fail(`i') 				///	
-	id(patient_id) enter(infected_date) origin(infected_date)
-	save "$Tempdir/analysis_dataset_STSET_`i'_infected.dta", replace
-}	
 
 	
 * Close log file 

@@ -223,16 +223,6 @@ gen byte cons=1
 tabulatevariable, variable(cons) min(1) max(1) 
 file write tablecontent _n 
 
-*SIZE OF LINKED DATASETS
-gen  byte SGSS=1 if tested==1
-
-file write tablecontent ("SGSS data") _tab
-generaterow2, variable(SGSS) condition("==1")
-
-gen  byte ICNARC=1 if tested==1
-file write tablecontent ("ICNARC data") _tab
-generaterow2, variable(ICNARC) condition("==1")
-
 qui summarizevariable, variable(age) 
 file write tablecontent _n
 
@@ -248,11 +238,14 @@ file write tablecontent _n
 tabulatevariable, variable(imd) min(1) max(5) 
 file write tablecontent _n 
 
-tabulatevariable, variable(hh_total_cat) min(1) max(5) missing
+tabulatevariable, variable(hh_total_cat) min(1) max(4) missing
 file write tablecontent _n 
 
-tabulatevariable, variable(carehome) min(0) max(1) 
+tabulatevariable, variable(carehome) min(0) max(1) missing
 file write tablecontent _n 
+
+*tabulatevariable, variable(is_prison) min(0) max(1) missing
+*file write tablecontent _n 
 
 tabulatevariable, variable(smoke_nomiss) min(1) max(3)  
 file write tablecontent _n 

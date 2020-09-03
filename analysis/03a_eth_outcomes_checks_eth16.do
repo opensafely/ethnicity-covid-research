@@ -290,10 +290,6 @@ foreach var of global outcomes {
 
 }
 
-* Date of infection
-replace infected_date=min(confirmed_date, positivetest_date)
-format infected_date %td
-
 *If outcome occurs on the first day of follow-up add one day
 foreach i of global outcomes {
 	di "`i'"

@@ -1,5 +1,5 @@
 /*==============================================================================
-DO FILE NAME:			12a_eth_an_infected_eth16
+DO FILE NAME:			18a_eth_an_sens_exclude_large_hh_eth16
 PROJECT:				Ethnicity and COVID
 AUTHOR:					R Mathur (modified from A wong and A Schultze)
 DATE: 					15 July 2020					
@@ -16,34 +16,33 @@ OTHER OUTPUT: 			logfiles, printed to folder analysis/$logdir
 * Open a log file
 
 cap log close
-log using "$Logdir/12a_eth_an_infected_eth16", replace t 
+macro drop hr
+log using "$Logdir/18a_eth_an_sens_exclude_large_hh", replace t 
 
 cap file close tablecontent
-file open tablecontent using $Tabfigdir/table6_infected_eth16.txt, write text replace
-file write tablecontent ("Table 6: Risk of COVID-19 outcomes amongst those with evidence of infection - Complete Case Analysis") _n
+file open tablecontent using $Tabfigdir/table2_sens_exclude_large_hh_eth16.txt, write text replace
+file write tablecontent ("Table 2: Association between ethnicity in 16 categories and COVID-19 outcomes - Excluding Large Households") _n
 file write tablecontent _tab ("Denominator") _tab ("Event") _tab ("Total person-weeks") _tab ("Rate per 1,000") _tab ("Crude") _tab _tab ("Age/Sex Adjusted") _tab _tab ("Age/Sex/IMD Adjusted") _tab _tab 	("plus co-morbidities") _tab _tab 	("plus hh size/carehome")  _tab _tab  _n
 file write tablecontent _tab _tab _tab _tab _tab   ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _n
 
 
 
-foreach i of global outcomes2 {
-* Open Stata dataset
-use "$Tempdir/analysis_dataset_STSET_`i'_infectedpop.dta", clear
-
-/* Sense check outcomes=======================================================*/ 
-
+foreach i of global outcomes {
+use "$Tempdir/analysis_dataset_STSET_`i'.dta", clear
 safetab eth16 `i', missing row
-}
+} //end outcomes
 
-foreach i of global outcomes2 {
+foreach i of global outcomes {
+	di "`i'"
+	
 * Open Stata dataset
-use "$Tempdir/analysis_dataset_STSET_`i'_infectedpop.dta", clear
+use "$Tempdir/analysis_dataset_STSET_`i'.dta", clear
 
 *drop irish for icu due to small numbers
 drop if eth16==2 & "`i'"=="icu"
 
 
-/* Main inf_model=================================================================*/
+/* Main Model=================================================================*/
 
 /* Univariable model */ 
 
@@ -72,7 +71,6 @@ local hr "`hr' "$Tempdir/model1_`i'_eth16" "
 }
 else di "WARNING MODEL1 DID NOT FIT (OUTCOME `i')"
 
-
 * Age, Gender, IMD and Comorbidities 
 stcox i.eth16 i.male age1 age2 age3 	i.imd						///
 										bmi	hba1c_pct				///
@@ -91,7 +89,7 @@ stcox i.eth16 i.male age1 age2 age3 	i.imd						///
 										i.egfr60					///
 										i.esrf						///
 										i.immunosuppressed	 		///
-										i.ra_sle_psoriasis	, strata(stp) nolog		
+										i.ra_sle_psoriasis, strata(stp) nolog		
 if _rc==0{
 estimates
 estimates save "$Tempdir/model2_`i'_eth16", replace 
@@ -120,16 +118,18 @@ stcox i.eth16 i.male age1 age2 age3 	i.imd						///
 										i.esrf						///
 										i.immunosuppressed	 		///
 										i.ra_sle_psoriasis			///
-										i.hh_total_cat i.carehome , strata(stp) nolog		
+										i.hh_cat_2 i.carehome, strata(stp) nolog		
 if _rc==0{
 estimates
 estimates save "$Tempdir/model3_`i'_eth16", replace
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model3_`i'_eth16", replace) idstr("model3_`i'_eth16") 
 local hr "`hr' "$Tempdir/model3_`i'_eth16" "
 }
-else di "WARNING MODEL3 DID NOT FIT (OUTCOME `i')"							
+else di "WARNING MODEL3 DID NOT FIT (OUTCOME `i')"
+
+										
 /* Print table================================================================*/ 
-*  Print the results for the main inf_model 
+*  Print the results for the main model 
 
 
 * Column headings 
@@ -151,6 +151,9 @@ local lab11: label eth16 11
 local lab12: label eth16 12
 local lab13: label eth16 13
 local lab14: label eth16 14
+
+
+
 
 /* counts */
  
@@ -203,9 +206,6 @@ forvalues eth=2/14 {
 
 file close tablecontent
 
-* Close log file 
-log close
-
 ************************************************create forestplot dataset
 dsconcat `hr'
 duplicates drop
@@ -216,7 +216,10 @@ drop idstr idstr3
 tab model
 
 *save dataset for later
-outsheet using "$Tabfigdir/FP_infected_eth16.txt", replace
+outsheet using "$Tabfigdir/FP_nolargehh_eth16.txt", replace
 
-insheet using $Tabfigdir/table6_infected_eth16.txt, clear
+* Close log file 
+log close
 
+
+insheet using $Tabfigdir/table2_sens_exclude_large_hh_eth16.txt, clear
