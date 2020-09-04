@@ -41,19 +41,19 @@ cap prog drop generaterow
 program define generaterow
 syntax, variable(varname) condition(string) 
 	
-	cou
+	qui cou
 	local overalldenom=r(N)
 	
-	sum `variable' if `variable' `condition'
+	qui sum `variable' if `variable' `condition'
 	file write tablecontent (r(max)) _tab
 	
-	cou if `variable' `condition'
+	qui cou if `variable' `condition'
 	local rowdenom = r(N)
 	local colpct = 100*(r(N)/`overalldenom')
 	file write tablecontent %9.0gc (`rowdenom')  (" (") %3.1f (`colpct') (")") _tab
 
 	forvalues i=1/12{
-	cou if eth16 == `i'
+	qui cou if eth16 == `i'
 	local rowdenom = r(N)
 	cou if eth16 == `i' & `variable' `condition'
 	local pct = 100*(r(N)/`rowdenom') 
@@ -70,18 +70,18 @@ cap prog drop generaterow2
 program define generaterow2
 syntax, variable(varname) condition(string) 
 	
-	cou
+	qui cou
 	local overalldenom=r(N)
 	
-	cou if `variable' `condition'
+	qui cou if `variable' `condition'
 	local rowdenom = r(N)
 	local colpct = 100*(r(N)/`overalldenom')
 	file write tablecontent %9.0gc (`rowdenom')  (" (") %3.1f (`colpct') (")") _tab
 
 	forvalues i=1/14{
-	cou if eth16 == `i'
+	qui cou if eth16 == `i'
 	local rowdenom = r(N)
-	cou if eth16 == `i' & `variable' `condition'
+	qui cou if eth16 == `i' & `variable' `condition'
 	local pct = 100*(r(N)/`rowdenom') 
 	file write tablecontent %9.0gc (r(N)) (" (") %3.1f (`pct') (")") _tab
 	}
@@ -255,9 +255,6 @@ label define eth16 	///
 label values eth16 eth16
 safetab eth16,m
 
-safetab eth16 eth5, m
-bysort eth5: safetab eth16, m
-
 /* OUTCOME AND SURVIVAL TIME==================================================*/
 
 	
@@ -310,7 +307,6 @@ foreach i of global outcomes {
 }
 
 
-
 /* INVOKE PROGRAMS FOR TABLE 1================================================*/ 
 
 *Set up output file
@@ -333,8 +329,8 @@ local lab9: label eth16 9
 local lab10: label eth16 10
 local lab11: label eth16 11
 local lab12: label eth16 12
-local lab13: label eth16 12
-local lab14: label eth16 12
+local lab13: label eth16 13
+local lab14: label eth16 14
 
 
 
@@ -351,8 +347,8 @@ file write tablecontent _tab ("Total")				  			  _tab ///
 							 ("`lab10'")  						  _tab ///
 							 ("`lab11'")  						  _tab ///
 							 ("`lab12'")  						  _tab ///
-							 ("`lab14'")  						  _tab ///
-							 ("`lab15'")  						  _n ///
+							 ("`lab13'")  						  _tab ///
+							 ("`lab14'")  						  _n
 
 /*STEP 1: WHOLE POPULATION WITHOUT EXCLUSIONS*/
 							 
@@ -406,7 +402,7 @@ file write tablecontent _n
 foreach var of global outcomes {
 
 file write tablecontent ("`var'") _tab
-generaterow2, variable(`var') condition("==1")
+qui generaterow2, variable(`var') condition("==1")
 }
 
 file close tablecontent
