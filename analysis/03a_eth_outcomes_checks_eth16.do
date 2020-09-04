@@ -78,7 +78,7 @@ syntax, variable(varname) condition(string)
 	local colpct = 100*(r(N)/`overalldenom')
 	file write tablecontent %9.0gc (`rowdenom')  (" (") %3.1f (`colpct') (")") _tab
 
-	forvalues i=1/12{
+	forvalues i=1/14{
 	cou if eth16 == `i'
 	local rowdenom = r(N)
 	cou if eth16 == `i' & `variable' `condition'
@@ -224,18 +224,18 @@ safetab ethnicity_16,m
 * Ethnicity (16 category grouped further)
 * Generate a version of the full breakdown with mixed in one group
 gen eth16 = ethnicity_16
-recode eth16 4/7 = 99
-recode eth16 11 = 16
-recode eth16 14 = 16
+recode eth16 4/7 = 99 //mixed
 recode eth16 8 = 4
 recode eth16 9 = 5
 recode eth16 10 = 6
-recode eth16 12 = 7
-recode eth16 13 = 8
-recode eth16 15 = 9
-recode eth16 99 = 10
-recode eth16 16 = 11
-recode eth16 17 = 12
+recode eth16 11= 7
+recode eth16 12 = 8
+recode eth16 13 = 9
+recode eth16 14 = 10
+recode eth16 15 = 11
+recode eth16 99 = 12
+recode eth16 16 = 13
+recode eth16 17 = 14
 
 label define eth16 	///
 						1 "British" ///
@@ -243,15 +243,20 @@ label define eth16 	///
 						3 "Other White" ///
 						4 "Indian" ///
 						5 "Pakistani" ///
-						6 "Bangladeshi" ///					
-						7 "Caribbean" ///
-						8 "African" ///
-						9 "Chinese" ///
-						10 "All mixed" ///
-						11 "All Other" ///
-						12 "Unknown"
+						6 "Bangladeshi" ///	
+						7 "Other Asian" ///
+						8 "Caribbean" ///
+						9 "African" ///
+						10 "Other Black" ///
+						11 "Chinese" ///
+						12 "All mixed" ///
+						13 "Other" ///
+						14 "Unknown"
 label values eth16 eth16
 safetab eth16,m
+
+safetab eth16 eth5, m
+bysort eth5: safetab eth16, m
 
 /* OUTCOME AND SURVIVAL TIME==================================================*/
 
@@ -328,6 +333,8 @@ local lab9: label eth16 9
 local lab10: label eth16 10
 local lab11: label eth16 11
 local lab12: label eth16 12
+local lab13: label eth16 12
+local lab14: label eth16 12
 
 
 
@@ -343,7 +350,9 @@ file write tablecontent _tab ("Total")				  			  _tab ///
 							 ("`lab9'")  						  _tab ///
 							 ("`lab10'")  						  _tab ///
 							 ("`lab11'")  						  _tab ///
-							 ("`lab12'")  						  _n 							 
+							 ("`lab12'")  						  _tab ///
+							 ("`lab14'")  						  _tab ///
+							 ("`lab15'")  						  _n ///
 
 /*STEP 1: WHOLE POPULATION WITHOUT EXCLUSIONS*/
 							 
