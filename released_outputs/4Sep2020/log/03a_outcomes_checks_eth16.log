@@ -1,0 +1,777 @@
+-------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  E:\anna\ethnicity-covid-research/output/log/03a_outcomes_checks_et
+> h16.log
+  log type:  text
+ opened on:   3 Sep 2020, 15:26:31
+
+. 
+. 
+.  /* PROGRAMS TO AUTOMATE TABULATIONS=========================================
+> ==*/ 
+. 
+. *****************************************************************************
+> ***
+. * All below code from K Baskharan 
+. * Generic code to output one row of table
+. 
+. cap prog drop generaterow
+
+. program define generaterow
+  1. syntax, variable(varname) condition(string) 
+  2.         
+.         cou
+  3.         local overalldenom=r(N)
+  4.         
+.         sum `variable' if `variable' `condition'
+  5.         file write tablecontent (r(max)) _tab
+  6.         
+.         cou if `variable' `condition'
+  7.         local rowdenom = r(N)
+  8.         local colpct = 100*(r(N)/`overalldenom')
+  9.         file write tablecontent %9.0gc (`rowdenom')  (" (") %3.1f (`colpct
+> ') (")") _tab
+ 10. 
+.         forvalues i=1/12{
+ 11.         cou if eth16 == `i'
+ 12.         local rowdenom = r(N)
+ 13.         cou if eth16 == `i' & `variable' `condition'
+ 14.         local pct = 100*(r(N)/`rowdenom') 
+ 15.         file write tablecontent %9.0gc (r(N)) (" (") %3.1f (`pct') (")") _
+> tab
+ 16.         }
+ 17.         
+.         file write tablecontent _n
+ 18. end
+
+. 
+. 
+. * Output one row of table for co-morbidities and meds
+. 
+. cap prog drop generaterow2
+
+. program define generaterow2
+  1. syntax, variable(varname) condition(string) 
+  2.         
+.         cou
+  3.         local overalldenom=r(N)
+  4.         
+.         cou if `variable' `condition'
+  5.         local rowdenom = r(N)
+  6.         local colpct = 100*(r(N)/`overalldenom')
+  7.         file write tablecontent %9.0gc (`rowdenom')  (" (") %3.1f (`colpct
+> ') (")") _tab
+  8. 
+.         forvalues i=1/12{
+  9.         cou if eth16 == `i'
+ 10.         local rowdenom = r(N)
+ 11.         cou if eth16 == `i' & `variable' `condition'
+ 12.         local pct = 100*(r(N)/`rowdenom') 
+ 13.         file write tablecontent %9.0gc (r(N)) (" (") %3.1f (`pct') (")") _
+> tab
+ 14.         }
+ 15.         
+.         file write tablecontent _n
+ 16. end
+
+. 
+. 
+. 
+. /* Explanatory Notes 
+> 
+> defines a program (SAS macro/R function equivalent), generate row
+> the syntax row specifies two inputs for the program: 
+> 
+>         a VARNAME which is your variable 
+>         a CONDITION which is a string of some condition you impose 
+>         
+> the program counts if variable and condition and returns the counts
+> column percentages are then automatically generated
+> this is then written to the text file 'tablecontent' 
+> the number followed by space, brackets, formatted pct, end bracket and then t
+> ab
+> 
+> the format %3.1f specifies length of 3, followed by 1 dp. 
+> 
+> */ 
+. 
+. *****************************************************************************
+> ***
+. * Generic code to output one section (varible) within table (calls above)
+. 
+. cap prog drop tabulatevariable
+
+. prog define tabulatevariable
+  1. syntax, variable(varname) min(real) max(real) [missing]
+  2. 
+.         local lab: variable label `variable'
+  3.         file write tablecontent ("`lab'") _n 
+  4. 
+.         forvalues varlevel = `min'/`max'{ 
+  5.                 generaterow, variable(`variable') condition("==`varlevel'"
+> )
+  6.         }
+  7.         
+.         if "`missing'"!="" generaterow, variable(`variable') condition("== 12
+> ")
+  8.         
+. 
+. 
+. end
+
+. 
+. *****************************************************************************
+> ***
+. 
+. /* Explanatory Notes 
+> 
+> defines program tabulate variable 
+> syntax is : 
+> 
+>         - a VARNAME which you stick in variable 
+>         - a numeric minimum 
+>         - a numeric maximum 
+>         - optional missing option, default value is . 
+> 
+> forvalues lowest to highest of the variable, manually set for each var
+> run the generate row program for the level of the variable 
+> if there is a missing specified, then run the generate row for missing vals
+> 
+> */ 
+. 
+. *****************************************************************************
+> ***
+. * Generic code to qui summarize a continous variable 
+. 
+. cap prog drop summarizevariable 
+
+. prog define summarizevariable
+  1. syntax, variable(varname) 
+  2. 
+.         local lab: variable label `variable'
+  3.         file write tablecontent ("`lab'") _n 
+  4. 
+. 
+.         qui summarize `variable', d
+  5.         file write tablecontent ("Mean (SD)") _tab 
+  6.         file write tablecontent  %3.1f (r(mean)) (" (") %3.1f (r(sd)) (")"
+> ) _tab
+  7.         
+.         forvalues i=1/12{                                                    
+>    
+  8.         qui summarize `variable' if eth16 == `i', d
+  9.         file write tablecontent  %3.1f (r(mean)) (" (") %3.1f (r(sd)) (")"
+> ) _tab
+ 10.         }
+ 11. 
+. file write tablecontent _n
+ 12. 
+.         
+.         qui summarize `variable', d
+ 13.         file write tablecontent ("Median (IQR)") _tab 
+ 14.         file write tablecontent %3.1f (r(p50)) (" (") %3.1f (r(p25)) ("-")
+>  %3.1f (r(p75)) (")") _tab
+ 15.         
+.         forvalues i=1/12{
+ 16.         qui summarize `variable' if eth16 == `i', d
+ 17.         file write tablecontent %3.1f (r(p50)) (" (") %3.1f (r(p25)) ("-")
+>  %3.1f (r(p75)) (")") _tab
+ 18.         }
+ 19.         
+. file write tablecontent _n
+ 20.         
+. end
+
+. 
+. *******************************************************************Open Raw D
+> ata
+. import delimited `c(pwd)'/output/input.csv, clear
+(75 vars, 21,741,244 obs)
+
+. di "STARTING safecount FROM IMPORT:"
+STARTING safecount FROM IMPORT:
+
+. safecount
+  21,741,244
+
+. 
+. *Generate outcomes
+. 
+. *Start dates
+. gen index                       = "01/02/2020"
+
+. 
+. * Date of cohort entry, 1 Feb 2020
+. gen indexdate = date(index, "DMY")
+
+. format indexdate %d
+
+. 
+. * Ethnicity (16 category)
+. replace ethnicity_16 = 17 if ethnicity_16==.
+(6,205,438 real changes made)
+
+. label define ethnicity_16                                                    
+>                    ///
+>                                                 1 "British or Mixed British" 
+>            ///
+>                                                 2 "Irish"                    
+>                                    ///
+>                                                 3 "Other White"              
+>                            ///
+>                                                 4 "White + Black Caribbean"  
+>            ///
+>                                                 5 "White + Black African"    
+>                    ///
+>                                                 6 "White + Asian"            
+>                            ///
+>                                                 7 "Other mixed"              
+>                            ///
+>                                                 8 "Indian or British Indian" 
+>            ///
+>                                                 9 "Pakistani or British Pakis
+> tani"      ///
+>                                                 10 "Bangladeshi or British Ba
+> ngladeshi" ///
+>                                                 11 "Other Asian"             
+>                            ///
+>                                                 12 "Caribbean"               
+>                            ///
+>                                                 13 "African"                 
+>                            ///
+>                                                 14 "Other Black"             
+>                            ///
+>                                                 15 "Chinese"                 
+>                            ///
+>                                                 16 "Other"                   
+>                                    ///
+>                                                 17 "Unknown"
+
+.                                                 
+. label values ethnicity_16 ethnicity_16
+
+. safetab ethnicity_16,m
+
+                      ethnicity_16 |      Freq.     Percent        Cum.
+-----------------------------------+-----------------------------------
+          British or Mixed British | 11,431,966       52.58       52.58
+                             Irish |     85,228        0.39       52.97
+                       Other White |  1,605,107        7.38       60.36
+           White + Black Caribbean |     60,259        0.28       60.63
+             White + Black African |     49,906        0.23       60.86
+                     White + Asian |     56,573        0.26       61.12
+                       Other mixed |    100,311        0.46       61.59
+          Indian or British Indian |    525,690        2.42       64.00
+    Pakistani or British Pakistani |    415,236        1.91       65.91
+Bangladeshi or British Bangladeshi |     96,637        0.44       66.36
+                       Other Asian |    277,526        1.28       67.63
+                         Caribbean |     94,504        0.43       68.07
+                           African |    251,121        1.16       69.22
+                       Other Black |     93,469        0.43       69.65
+                           Chinese |    117,476        0.54       70.19
+                             Other |    274,797        1.26       71.46
+                           Unknown |  6,205,438       28.54      100.00
+-----------------------------------+-----------------------------------
+                             Total | 21,741,244      100.00
+
+. 
+. 
+. * Ethnicity (16 category grouped further)
+. * Generate a version of the full breakdown with mixed in one group
+. gen eth16 = ethnicity_16
+
+. recode eth16 4/7 = 99
+(eth16: 267049 changes made)
+
+. recode eth16 11 = 16
+(eth16: 277526 changes made)
+
+. recode eth16 14 = 16
+(eth16: 93469 changes made)
+
+. recode eth16 8 = 4
+(eth16: 525690 changes made)
+
+. recode eth16 9 = 5
+(eth16: 415236 changes made)
+
+. recode eth16 10 = 6
+(eth16: 96637 changes made)
+
+. recode eth16 12 = 7
+(eth16: 94504 changes made)
+
+. recode eth16 13 = 8
+(eth16: 251121 changes made)
+
+. recode eth16 15 = 9
+(eth16: 117476 changes made)
+
+. recode eth16 99 = 10
+(eth16: 267049 changes made)
+
+. recode eth16 16 = 11
+(eth16: 645792 changes made)
+
+. recode eth16 17 = 12
+(eth16: 6205438 changes made)
+
+. 
+. label define eth16      ///
+>                                                 1 "British" ///
+>                                                 2 "Irish" ///
+>                                                 3 "Other White" ///
+>                                                 4 "Indian" ///
+>                                                 5 "Pakistani" ///
+>                                                 6 "Bangladeshi" ///          
+>                            
+>                                                 7 "Caribbean" ///
+>                                                 8 "African" ///
+>                                                 9 "Chinese" ///
+>                                                 10 "All mixed" ///
+>                                                 11 "All Other" ///
+>                                                 12 "Unknown"
+
+. label values eth16 eth16
+
+. safetab eth16,m
+
+      eth16 |      Freq.     Percent        Cum.
+------------+-----------------------------------
+    British | 11,431,966       52.58       52.58
+      Irish |     85,228        0.39       52.97
+Other White |  1,605,107        7.38       60.36
+     Indian |    525,690        2.42       62.77
+  Pakistani |    415,236        1.91       64.68
+Bangladeshi |     96,637        0.44       65.13
+  Caribbean |     94,504        0.43       65.56
+    African |    251,121        1.16       66.72
+    Chinese |    117,476        0.54       67.26
+  All mixed |    267,049        1.23       68.49
+  All Other |    645,792        2.97       71.46
+    Unknown |  6,205,438       28.54      100.00
+------------+-----------------------------------
+      Total | 21,741,244      100.00
+
+. 
+. /* OUTCOME AND SURVIVAL TIME=================================================
+> =*/
+. 
+.         
+. /****   Outcome definitions   ****/
+. ren primary_care_suspect_case   suspected_date
+
+. ren primary_care_case                   confirmed_date
+
+. ren first_tested_for_covid              tested_date
+
+. ren first_positive_test_date    positivetest_date
+
+. ren a_e_consult_date                    ae_date
+
+. ren icu_date_admitted                   icu_date
+
+. ren died_date_cpns                              cpnsdeath_date
+
+. ren died_date_ons                               onsdeath_date
+
+. 
+. * Date of Covid death in ONS
+. gen onscoviddeath_date = onsdeath_date if died_ons_covid_flag_any == 1
+(21,725,610 missing values generated)
+
+. gen onsconfirmeddeath_date = onsdeath_date if died_ons_confirmedcovid_flag_an
+> y ==1
+(21,726,748 missing values generated)
+
+. gen onssuspecteddeath_date = onsdeath_date if died_ons_suspectedcovid_flag_an
+> y ==1
+(21,740,104 missing values generated)
+
+. 
+. * Date of non-COVID death in ONS 
+. * If missing date of death resulting died_date will also be missing
+. gen ons_noncoviddeath_date = onsdeath_date if died_ons_covid_flag_any != 1
+(21,656,238 missing values generated)
+
+. 
+. 
+. 
+. /* CONVERT STRINGS TO DATE FOR OUTCOME VARIABLES ============================
+> =*/
+. * Recode to dates from the strings 
+. gen infected_date=confirmed_date
+(21,672,035 missing values generated)
+
+. 
+. foreach var of global outcomes {
+  2.         confirm string variable `var'_date
+  3.         rename `var'_date `var'_dstr
+  4.         gen `var'_date = date(`var'_dstr, "YMD")
+  5.         drop `var'_dstr
+  6.         format `var'_date %td 
+  7. 
+. }
+(21,656,147 missing values generated)
+(21,656,147 missing values generated)
+(19,998,631 missing values generated)
+(21,738,221 missing values generated)
+(21,725,610 missing values generated)
+(21,656,238 missing values generated)
+(21,640,604 missing values generated)
+(21,731,466 missing values generated)
+
+. 
+. *If outcome occurs on the first day of follow-up add one day
+. foreach i of global outcomes {
+  2.         di "`i'"
+  3.         count if `i'_date==indexdate
+  4.         replace `i'_date=`i'_date+1 if `i'_date==indexdate
+  5. }
+tested
+  0
+(0 real changes made)
+positivetest
+  0
+(0 real changes made)
+ae
+  14,840
+(14,840 real changes made)
+icu
+  0
+(0 real changes made)
+onscoviddeath
+  0
+(0 real changes made)
+ons_noncoviddeath
+  477
+(477 real changes made)
+onsdeath
+  477
+(477 real changes made)
+cpnsdeath
+  0
+(0 real changes made)
+
+. 
+. * Binary indicators for outcomes
+. foreach i of global outcomes {
+  2.                 gen `i'=0
+  3.                 replace  `i'=1 if `i'_date < .
+  4.                 safetab `i'
+  5. }
+(85,097 real changes made)
+
+     tested |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 | 21,656,147       99.61       99.61
+          1 |     85,097        0.39      100.00
+------------+-----------------------------------
+      Total | 21,741,244      100.00
+(85,097 real changes made)
+
+positivetes |
+          t |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 | 21,656,147       99.61       99.61
+          1 |     85,097        0.39      100.00
+------------+-----------------------------------
+      Total | 21,741,244      100.00
+(1,742,613 real changes made)
+
+         ae |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 | 19,998,631       91.98       91.98
+          1 |  1,742,613        8.02      100.00
+------------+-----------------------------------
+      Total | 21,741,244      100.00
+(3,023 real changes made)
+
+        icu |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 | 21,738,221       99.99       99.99
+          1 |      3,023        0.01      100.00
+------------+-----------------------------------
+      Total | 21,741,244      100.00
+(15,634 real changes made)
+
+onscoviddea |
+         th |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 | 21,725,610       99.93       99.93
+          1 |     15,634        0.07      100.00
+------------+-----------------------------------
+      Total | 21,741,244      100.00
+(85,006 real changes made)
+
+ons_noncovi |
+     ddeath |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 | 21,656,238       99.61       99.61
+          1 |     85,006        0.39      100.00
+------------+-----------------------------------
+      Total | 21,741,244      100.00
+(100,640 real changes made)
+
+   onsdeath |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 | 21,640,604       99.54       99.54
+          1 |    100,640        0.46      100.00
+------------+-----------------------------------
+      Total | 21,741,244      100.00
+(9,778 real changes made)
+
+  cpnsdeath |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 | 21,731,466       99.96       99.96
+          1 |      9,778        0.04      100.00
+------------+-----------------------------------
+      Total | 21,741,244      100.00
+
+. 
+. 
+. 
+. /* INVOKE PROGRAMS FOR TABLE 1===============================================
+> =*/ 
+. 
+. *Set up output file
+. cap file close tablecontent
+
+. file open tablecontent using $Tabfigdir/table0_outcomes_eth16.txt, write text
+>  replace
+(note: file E:\anna\ethnicity-covid-research/output/tabfig/table0_outcomes_eth1
+> 6.txt not found)
+
+. 
+. file write tablecontent ("Table 0: Outcome counts by ethnic group") _n
+
+. 
+. * eth16 labelled columns
+. 
+. local lab1: label eth16 1
+
+. local lab2: label eth16 2
+
+. local lab3: label eth16 3
+
+. local lab4: label eth16 4
+
+. local lab5: label eth16 5
+
+. local lab6: label eth16 6
+
+. local lab7: label eth16 7
+
+. local lab8: label eth16 8
+
+. local lab9: label eth16 9
+
+. local lab10: label eth16 10
+
+. local lab11: label eth16 11
+
+. local lab12: label eth16 12
+
+. 
+. 
+. 
+. file write tablecontent _tab ("Total")                                       
+>              _tab ///
+>                                                          ("`lab1'")          
+>                                      _tab ///
+>                                                          ("`lab2'")          
+>                                      _tab ///
+>                                                          ("`lab3'")          
+>                                      _tab ///
+>                                                          ("`lab4'")          
+>                                      _tab ///
+>                                                          ("`lab5'")          
+>                                      _tab ///
+>                                                          ("`lab6'")          
+>                                      _tab ///                                
+>                        
+>                                                          ("`lab7'")          
+>                                      _tab ///
+>                                                          ("`lab8'")          
+>                                      _tab ///
+>                                                          ("`lab9'")          
+>                                      _tab ///
+>                                                          ("`lab10'")         
+>                                      _tab ///
+>                                                          ("`lab11'")         
+>                                      _tab ///
+>                                                          ("`lab12'")         
+>                                      _n                                      
+>                
+
+. 
+. /*STEP 1: WHOLE POPULATION WITHOUT EXCLUSIONS*/
+.                                                          
+. *Denominator
+. file write tablecontent ("Whole study population- no exclusions") _n
+
+. gen byte cons=1
+
+. file write tablecontent ("N") _tab
+
+. 
+. generaterow2, variable(cons) condition("==1")
+  21,741,244
+  21,741,244
+  11,431,966
+  11,431,966
+  85,228
+  85,228
+  1,605,107
+  1,605,107
+  525,690
+  525,690
+  415,236
+  415,236
+  96,637
+  96,637
+  94,504
+  94,504
+  251,121
+  251,121
+  117,476
+  117,476
+  267,049
+  267,049
+  645,792
+  645,792
+  6,205,438
+  6,205,438
+
+. file write tablecontent _n 
+
+. 
+. 
+. *Outcomes 
+. foreach var of global outcomes {
+  2. 
+. file write tablecontent ("`var'") _tab
+  3. generaterow2, variable(`var') condition("==1")
+  4. }
+  [REDACTED]
+
+. 
+. /* STEP 2: KEEP THOSE AGED 18-105 */
+. drop if age<18
+(4,237,787 observations deleted)
+
+. drop if age>105
+(131 observations deleted)
+
+. 
+. *Denominator
+. file write tablecontent ("Adults aged 18-105") _n
+
+. file write tablecontent ("N") _tab
+
+. 
+. generaterow2, variable(cons) condition("==1")
+  17,503,326
+  17,503,326
+  9,594,798
+  9,594,798
+  79,364
+  79,364
+  1,351,091
+  1,351,091
+  435,954
+  435,954
+  302,825
+  302,825
+  70,229
+  70,229
+  83,198
+  83,198
+  192,237
+  192,237
+  105,461
+  105,461
+  172,317
+  172,317
+  512,120
+  512,120
+  4,603,732
+  4,603,732
+
+. file write tablecontent _n 
+
+. 
+. 
+. *Outcomes 
+. foreach var of global outcomes {
+  2. 
+. file write tablecontent ("`var'") _tab
+  3. generaterow2, variable(`var') condition("==1")
+  4. }
+[REDACTED]
+
+. 
+. * Sex: Exclude categories other than M and F
+. drop if inlist(sex, "I", "U")
+(269 observations deleted)
+
+. 
+. *Denominator
+. file write tablecontent ("Adults with valid sex recorded") _n
+
+. file write tablecontent ("N") _tab
+
+. 
+. generaterow2, variable(cons) condition("==1")
+  17,503,057
+  17,503,057
+  9,594,647
+  9,594,647
+  79,363
+  79,363
+  1,351,071
+  1,351,071
+  435,953
+  435,953
+  302,824
+  302,824
+  70,229
+  70,229
+  83,197
+  83,197
+  192,234
+  192,234
+  105,458
+  105,458
+  172,310
+  172,310
+  512,113
+  512,113
+  4,603,658
+  4,603,658
+
+. file write tablecontent _n 
+
+. 
+. 
+. *Outcomes 
+. foreach var of global outcomes {
+  2. 
+. file write tablecontent ("`var'") _tab
+  3. generaterow2, variable(`var') condition("==1")
+  4. }
+  [REDACTED]
+
+. 
+. file close tablecontent
+
+. 
+. 
+. * Close log file 
+. log close
+      name:  <unnamed>
+       log:  E:\anna\ethnicity-covid-research/output/log/03a_outcomes_checks_et
+> h16.log
+  log type:  text
+ closed on:   3 Sep 2020, 15:46:48
+-------------------------------------------------------------------------------

@@ -1,0 +1,1800 @@
+-------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  E:\anna\ethnicity-covid-research/output/log/09b_eth_an_ventilation
+> _eth5.log
+  log type:  text
+ opened on:   4 Sep 2020, 04:33:15
+
+. 
+. cap file close tablecontent
+
+. file open tablecontent using $Tabfigdir/table3_ventilated_eth5.txt, write tex
+> t replace
+(note: file E:\anna\ethnicity-covid-research/output/tabfig/table3_ventilated_et
+> h5.txt not found)
+
+. file write tablecontent ("Table 3: Odds of receiving invasive mechanical vent
+> ilation - Complete Case Analysis") _n
+
+. file write tablecontent _tab ("Denominator") _tab ("Event") _tab ("%") _tab (
+> "Crude") _tab _tab ("Age/Sex Adjusted") _tab _tab ("Age/Sex/IMD Adjusted") _t
+> ab _tab       ("plus co-morbidities") _tab _tab       ("plus hh size/carehome
+> ")  _tab _tab  _n
+
+. file write tablecontent _tab _tab _tab _tab   ("OR") _tab ("95% CI") _tab ("O
+> R") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _
+> tab ("OR") _tab ("95% CI") _n
+
+. 
+. 
+. 
+. * Open Stata dataset
+. use "$Tempdir/analysis_dataset.dta", clear
+
+. 
+. gen ventilated=0
+
+. replace ventilated=1 if was_ventilated_flag==1
+(1,757 real changes made)
+
+. 
+. /* Restrict to those ever admitted to ICU====================================
+> ===================*/ 
+. keep if icu==1
+(17,500,038 observations deleted)
+
+. count
+  3,019
+
+. 
+. 
+. /* Sense check outcomes======================================================
+> =*/ 
+. 
+. safetab eth5 ventilated , missing row
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+      Eth 5 |      ventilated
+ categories |         0          1 |     Total
+------------+----------------------+----------
+      White |       756        892 |     1,648 
+            |     45.87      54.13 |    100.00 
+------------+----------------------+----------
+South Asian |       131        262 |       393 
+            |     33.33      66.67 |    100.00 
+------------+----------------------+----------
+      Black |        64        117 |       181 
+            |     35.36      64.64 |    100.00 
+------------+----------------------+----------
+      Mixed |        24         32 |        56 
+            |     42.86      57.14 |    100.00 
+------------+----------------------+----------
+      Other |        30         61 |        91 
+            |     32.97      67.03 |    100.00 
+------------+----------------------+----------
+    Unknown |       258        392 |       650 
+            |     39.69      60.31 |    100.00 
+------------+----------------------+----------
+      Total |     1,263      1,756 |     3,019 
+            |     41.84      58.16 |    100.00 
+
+. 
+. /* Main Model================================================================
+> =*/
+. 
+. /* Univariable model */ 
+. 
+. melogit ventilated i.eth5  i.stp, nolog
+note: 1.stp != 0 predicts failure perfectly
+      1.stp dropped and [REDACTED] obs not used
+
+note: 31.stp != 0 predicts success perfectly
+      31.stp dropped and [REDACTED] obs not used
+
+note: 32.stp omitted because of collinearity
+
+Logistic regression                             Number of obs     =      3,015
+
+                                                Wald chi2(34)     =     359.31
+Log likelihood = -1843.1044                     Prob > chi2       =     0.0000
+------------------------------------------------------------------------------
+  ventilated |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |   .2831905   .1325778     2.14   0.033     .0233428    .5430381
+      Black  |   .0923513   .1778784     0.52   0.604     -.256284    .4409865
+      Mixed  |   .0390816   .2899491     0.13   0.893    -.5292082    .6073713
+      Other  |   .1332697   .2467123     0.54   0.589    -.3502777     .616817
+    Unknown  |   .1806344   .1017576     1.78   0.076    -.0188068    .3800755
+             |
+         stp |
+          1  |          0  (empty)
+          2  |  -.2170749    .185926    -1.17   0.243    -.5814831    .1473334
+          3  |  -.5282951   .2447083    -2.16   0.031    -1.007915   -.0486756
+          4  |   .9844933   .4225678     2.33   0.020     .1562757    1.812711
+          5  |  -.7969719   .4037204    -1.97   0.048    -1.588249   -.0056944
+          6  |   .0232311   .2079805     0.11   0.911    -.3844032    .4308655
+          7  |   .4878762   .7209854     0.68   0.499    -.9252293    1.900982
+          8  |   1.150749   .2490263     4.62   0.000      .662667    1.638832
+          9  |   1.381336   .3677284     3.76   0.000     .6606016    2.102071
+         10  |   1.248182   .2572214     4.85   0.000     .7440372    1.752327
+         11  |   1.511766   .2615796     5.78   0.000     .9990798    2.024453
+         12  |   .8007242   .2672392     3.00   0.003     .2769451    1.324503
+         13  |   2.458827   .3644327     6.75   0.000     1.744552    3.173102
+         14  |   1.802344   .3413783     5.28   0.000     1.133255    2.471434
+         15  |   .7078771    .225723     3.14   0.002      .265468    1.150286
+         16  |  -.3803814   .3155011    -1.21   0.228    -.9987522    .2379895
+         17  |   1.862854   .3289951     5.66   0.000     1.218036    2.507673
+         18  |   .6517567   .2037158     3.20   0.001     .2524811    1.051032
+         19  |   1.186106   .2269241     5.23   0.000     .7413429    1.630869
+         20  |   .9498024   .1909437     4.97   0.000     .5755595    1.324045
+         21  |   1.569857   .2030275     7.73   0.000     1.171931    1.967784
+         22  |   1.254513   .5540509     2.26   0.024      .168593    2.340433
+         23  |   .3626334   .2667717     1.36   0.174    -.1602295    .8854964
+         24  |   1.565409   1.163653     1.35   0.179    -.7153097    3.846127
+         25  |  -.4325157   .8484891    -0.51   0.610    -2.095524    1.230492
+         26  |   1.040922    .371907     2.80   0.005     .3119976    1.769846
+         27  |   1.824191   .3295509     5.54   0.000     1.178283    2.470099
+         28  |   1.625041   .3466418     4.69   0.000     .9456356    2.304447
+         29  |   1.579778   .3196624     4.94   0.000     .9532514    2.206305
+         30  |   .9523955   .3363268     2.83   0.005     .2932072    1.611584
+         31  |          0  (empty)
+         32  |          0  (omitted)
+             |
+       _cons |  -.5104153   .1405905    -3.63   0.000    -.7859675   -.2348631
+------------------------------------------------------------------------------
+
+. estimates save "$Tempdir/crude_ventilated_eth5", replace 
+(note: file E:\anna\ethnicity-covid-research/output/tempdata/crude_ventilated_e
+> th5.ster not found)
+file E:\anna\ethnicity-covid-research/output/tempdata/crude_ventilated_eth5.ste
+> r saved
+
+. parmest, label eform format(estimate p lb ub) saving("$Tempdir/crude_ventilat
+> ed_eth5", replace) idstr("crude_ventilated_eth5") 
+(note: file E:\anna\ethnicity-covid-research/output/tempdata/crude_ventilated_e
+> th5.dta not found)
+file E:\anna\ethnicity-covid-research/output/tempdata/crude_ventilated_eth5.dta
+>  saved
+
+. 
+. /* Multivariable models */ 
+. *Age Gender
+. logistic ventilated i.eth5 i.male age1 age2 age3 i.stp, nolog   
+note: 1.stp != 0 predicts failure perfectly
+      1.stp dropped and [REDACTED] obs not used
+
+note: 31.stp != 0 predicts success perfectly
+      31.stp dropped and [REDACTED] obs not used
+
+note: 32.stp omitted because of collinearity
+
+Logistic regression                             Number of obs     =      3,015
+                                                LR chi2(38)       =     446.13
+                                                Prob > chi2       =     0.0000
+Log likelihood =  -1826.286                     Pseudo R2         =     0.1088
+
+------------------------------------------------------------------------------
+  ventilated | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |   1.305683   .1766737     1.97   0.049     1.001523    1.702218
+      Black  |   1.066379   .1918353     0.36   0.721     .7495236    1.517182
+      Mixed  |   1.057708   .3082438     0.19   0.847     .5974523    1.872527
+      Other  |    1.09727   .2714859     0.38   0.708      .675631    1.782039
+    Unknown  |   1.209998    .123963     1.86   0.063     .9898743    1.479072
+             |
+        male |
+       Male  |   1.326241   .1155528     3.24   0.001     1.118044    1.573208
+        age1 |   1.006679   .0263511     0.25   0.799     .9563344    1.059674
+        age2 |   1.055718   .0718761     0.80   0.426     .9238384    1.206425
+        age3 |   .7750982   .1373467    -1.44   0.151     .5476771    1.096955
+             |
+         stp |
+          1  |          1  (empty)
+          2  |   .8064374   .1507494    -1.15   0.250     .5590535     1.16329
+          3  |   .6000133   .1478336    -2.07   0.038     .3702018    .9724858
+          4  |    2.53147   1.075614     2.19   0.029     1.100779    5.821644
+          5  |   .4612264   .1873592    -1.91   0.057     .2080365     1.02256
+          6  |   1.017461   .2130258     0.08   0.934     .6749964    1.533676
+          7  |   1.696021   1.233542     0.73   0.468     .4076989    7.055422
+          8  |   3.161403   .7918403     4.60   0.000     1.934989    5.165131
+          9  |   3.797627   1.401406     3.62   0.000     1.842471    7.827516
+         10  |    3.51453   .9101168     4.85   0.000     2.115639    5.838388
+         11  |   4.692008   1.234662     5.87   0.000     2.801382    7.858599
+         12  |   2.343163   .6313748     3.16   0.002     1.381792      3.9734
+         13  |   11.87486   4.344846     6.76   0.000     5.796767    24.32604
+         14  |   6.094807   2.094459     5.26   0.000     3.107761    11.95288
+         15  |    2.00335   .4547884     3.06   0.002     1.283874    3.126018
+         16  |   .7089566   .2251025    -1.08   0.279     .3804982    1.320951
+         17  |   6.768309    2.24353     5.77   0.000     3.534496    12.96083
+         18  |   1.917452   .3932611     3.17   0.002     1.282764    2.866172
+         19  |   3.395626   .7763154     5.35   0.000     2.169283    5.315246
+         20  |   2.687626   .5177952     5.13   0.000     1.842372    3.920671
+         21  |   4.641527   .9486362     7.51   0.000     3.109512    6.928347
+         22  |   3.289477   1.837906     2.13   0.033     1.100376    9.833599
+         23  |   1.435484   .3854592     1.35   0.178     .8480701    2.429768
+         24  |   4.636465   5.401076     1.32   0.188     .4727284     45.4739
+         25  |   .5802128   .4951942    -0.64   0.524     .1089212    3.090738
+         26  |   2.852479   1.069485     2.80   0.005     1.367981    5.947919
+         27  |   5.915123   1.957652     5.37   0.000     3.092094    11.31553
+         28  |   4.982791   1.735269     4.61   0.000     2.517907    9.860653
+         29  |   5.267649   1.695189     5.16   0.000     2.803436    9.897901
+         30  |   2.455701   .8298719     2.66   0.008     1.266261    4.762422
+         31  |          1  (empty)
+         32  |          1  (omitted)
+             |
+       _cons |   .2874063   .2608071    -1.37   0.169      .048537    1.701844
+------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+
+. estimates save "$Tempdir/model0_ventilated_eth5", replace 
+(note: file E:\anna\ethnicity-covid-research/output/tempdata/model0_ventilated_
+> eth5.ster not found)
+file E:\anna\ethnicity-covid-research/output/tempdata/model0_ventilated_eth5.st
+> er saved
+
+. parmest, label eform format(estimate p lb ub) saving("$Tempdir/model0_ventila
+> ted_eth5", replace) idstr("model0_ventilated_eth5") 
+(note: file E:\anna\ethnicity-covid-research/output/tempdata/model0_ventilated_
+> eth5.dta not found)
+file E:\anna\ethnicity-covid-research/output/tempdata/model0_ventilated_eth5.dt
+> a saved
+
+. 
+. * Age, Gender, IMD
+. logistic ventilated i.eth5 i.male age1 age2 age3 i.imd i.stp, nolog     
+note: 1.stp != 0 predicts failure perfectly
+      1.stp dropped and [REDACTED] obs not used
+
+note: 31.stp != 0 predicts success perfectly
+      31.stp dropped and [REDACTED] obs not used
+
+note: 32.stp omitted because of collinearity
+
+Logistic regression                             Number of obs     =      3,007
+                                                LR chi2(42)       =     450.22
+                                                Prob > chi2       =     0.0000
+Log likelihood = -1818.9145                     Pseudo R2         =     0.1101
+
+------------------------------------------------------------------------------
+  ventilated | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |   1.320213   .1803448     2.03   0.042     1.010107    1.725522
+      Black  |   1.120746   .2051052     0.62   0.533     .7829437    1.604292
+      Mixed  |   1.068955   .3116443     0.23   0.819     .6036691    1.892865
+      Other  |   1.125673   .2800159     0.48   0.634     .6913089    1.832957
+    Unknown  |   1.214767   .1247306     1.89   0.058      .993328     1.48557
+             |
+        male |
+       Male  |   1.320929   .1155904     3.18   0.001     1.112739     1.56807
+        age1 |   1.009398   .0264224     0.36   0.721     .9589176    1.062537
+        age2 |   1.047761   .0713664     0.68   0.493       .91682    1.197403
+        age3 |   .7897015   .1400193    -1.33   0.183      .557878    1.117858
+             |
+         imd |
+          2  |   1.073834   .1492592     0.51   0.608     .8177543    1.410104
+          3  |   1.093751   .1502857     0.65   0.514     .8355265    1.431782
+          4  |   1.142693   .1520094     1.00   0.316     .8804332    1.483073
+5 most de..  |    .870963   .1178714    -1.02   0.307     .6680404    1.135525
+             |
+         stp |
+          1  |          1  (empty)
+          2  |   .8059375   .1511891    -1.15   0.250     .5579831    1.164077
+          3  |   .5916714   .1464054    -2.12   0.034     .3642974    .9609595
+          4  |   2.505397   1.066133     2.16   0.031      1.08808    5.768889
+          5  |   .4460536   .1817566    -1.98   0.048     .2006975    .9913615
+          6  |    1.03389   .2172337     0.16   0.874     .6848977    1.560712
+          7  |   1.583664   1.157985     0.63   0.530     .3777978    6.638452
+          8  |   3.117796   .7839771     4.52   0.000     1.904632     5.10369
+          9  |   3.613753   1.338904     3.47   0.001     1.748181    7.470171
+         10  |   3.549085    .929243     4.84   0.000     2.124465    5.929023
+         11  |   4.460904   1.182255     5.64   0.000     2.653582    7.499172
+         12  |    2.42572   .6574682     3.27   0.001     1.426036    4.126204
+         13  |   12.19249   4.469372     6.82   0.000     5.943873     25.0101
+         14  |   5.629051   1.948162     4.99   0.000     2.856553    11.09246
+         15  |   1.920481   .4401925     2.85   0.004      1.22548    3.009632
+         16  |   .6918371   .2224602    -1.15   0.252     .3683833    1.299295
+         17  |   6.408103    2.13519     5.57   0.000     3.335091    12.31264
+         18  |   1.833524   .3810652     2.92   0.004     1.220055    2.755457
+         19  |   3.183126    .737907     4.99   0.000      2.02083    5.013927
+         20  |   2.597882   .5060568     4.90   0.000     1.773409     3.80566
+         21  |   4.296572   .8921425     7.02   0.000      2.86008    6.454551
+         22  |   3.023113   1.695755     1.97   0.049     1.006908    9.076509
+         23  |   1.352528   .3673738     1.11   0.266     .7942232    2.303296
+         24  |   4.625125   5.405807     1.31   0.190     .4680005    45.70889
+         25  |   .5188593   .4440516    -0.77   0.443     .0969554    2.776689
+         26  |   2.737015   1.030462     2.67   0.007     1.308601    5.724627
+         27  |   5.693755   1.893787     5.23   0.000     2.966761    10.92735
+         28  |   4.625603   1.622791     4.37   0.000     2.325643    9.200123
+         29  |   5.135123    1.65607     5.07   0.000     2.729225    9.661893
+         30  |   2.401983   .8188252     2.57   0.010       1.2314    4.685336
+         31  |          1  (empty)
+         32  |          1  (omitted)
+             |
+       _cons |   .2644771   .2409772    -1.46   0.144     .0443424    1.577454
+------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+
+. estimates save "$Tempdir/model1_ventilated_eth5", replace 
+(note: file E:\anna\ethnicity-covid-research/output/tempdata/model1_ventilated_
+> eth5.ster not found)
+file E:\anna\ethnicity-covid-research/output/tempdata/model1_ventilated_eth5.st
+> er saved
+
+. parmest, label eform format(estimate p lb ub) saving("$Tempdir/model1_ventila
+> ted_eth5", replace) idstr("model1_ventilated_eth5") 
+(note: file E:\anna\ethnicity-covid-research/output/tempdata/model1_ventilated_
+> eth5.dta not found)
+file E:\anna\ethnicity-covid-research/output/tempdata/model1_ventilated_eth5.dt
+> a saved
+
+. 
+. * Age, Gender, IMD and Comorbidities  
+. cap  melogit ventilated i.eth5 i.male age1 age2 age3    i.imd                
+>                            ///
+>                                                                              
+>    bmi     hba1c_pct                               ///
+>                                                                              
+>    gp_consult_count                        ///
+>                                                                              
+>    i.smoke_nomiss                          ///
+>                                                                              
+>    i.hypertension bp_map                   ///     
+>                                                                              
+>    i.asthma                                        ///
+>                                                                              
+>    i.chronic_respiratory_disease ///
+>                                                                              
+>    i.chronic_cardiac_disease       ///
+>                                                                              
+>    i.dm_type                                       ///     
+>                                                                              
+>    i.cancer                    ///
+>                                                                              
+>    i.chronic_liver_disease         ///
+>                                                                              
+>    i.stroke                                        ///
+>                                                                              
+>    i.dementia                                      ///
+>                                                                              
+>    i.other_neuro                           ///
+>                                                                              
+>    i.egfr60                                        ///
+>                                                                              
+>    i.esrf                                          ///
+>                                                                              
+>    i.immunosuppressed                      ///
+>                                                                              
+>    i.ra_sle_psoriasis  i.stp, nolog        
+
+.                                                                              
+>    
+. estimates save "$Tempdir/model2_ventilated_eth5", replace 
+(note: file E:\anna\ethnicity-covid-research/output/tempdata/model2_ventilated_
+> eth5.ster not found)
+file E:\anna\ethnicity-covid-research/output/tempdata/model2_ventilated_eth5.st
+> er saved
+
+. parmest, label eform format(estimate p lb ub) saving("$Tempdir/model2_ventila
+> ted_eth5", replace) idstr("model2_ventilated_eth5") 
+(note: file E:\anna\ethnicity-covid-research/output/tempdata/model2_ventilated_
+> eth5.dta not found)
+file E:\anna\ethnicity-covid-research/output/tempdata/model2_ventilated_eth5.dt
+> a saved
+
+. 
+. 
+. * Age, Gender, IMD and Comorbidities  and household size and carehome
+. logistic ventilated i.eth5 i.male age1 age2 age3        i.imd                
+>                            ///
+>                                                                              
+>    bmi     hba1c_pct                               ///
+>                                                                              
+>    gp_consult_count                        ///
+>                                                                              
+>    i.smoke_nomiss                          ///
+>                                                                              
+>    i.hypertension bp_map                   ///     
+>                                                                              
+>    i.asthma                                        ///
+>                                                                              
+>    i.chronic_respiratory_disease ///
+>                                                                              
+>    i.chronic_cardiac_disease       ///
+>                                                                              
+>    i.dm_type                                       ///     
+>                                                                              
+>    i.cancer                    ///
+>                                                                              
+>    i.chronic_liver_disease         ///
+>                                                                              
+>    i.stroke                                        ///
+>                                                                              
+>    i.dementia                                      ///
+>                                                                              
+>    i.other_neuro                           ///
+>                                                                              
+>    i.egfr60                                        ///
+>                                                                              
+>    i.esrf                                          ///
+>                                                                              
+>    i.immunosuppressed                      ///
+>                                                                              
+>    i.ra_sle_psoriasis                      ///
+>                                                                              
+>    i.hh_total_cat i.carehome  i.stp, nolog 
+note: 0.dementia != 1 predicts failure perfectly
+      0.dementia dropped and [REDACTED] obs not used
+
+note: 31.stp != 0 predicts success perfectly
+      31.stp dropped and [REDACTED] obs not used
+
+note: 1.dementia omitted because of collinearity
+
+Logistic regression                             Number of obs     =      1,802
+                                                LR chi2(67)       =     367.64
+                                                Prob > chi2       =     0.0000
+Log likelihood = -1033.3449                     Pseudo R2         =     0.1510
+
+------------------------------------------------------------------------------
+  ventilated | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |   1.096606   .2132966     0.47   0.635     .7490083    1.605516
+      Black  |   1.117174   .2790173     0.44   0.657     .6847477    1.822681
+      Mixed  |    1.00847   .3690295     0.02   0.982     .4922469    2.066062
+      Other  |    1.11443   .3742321     0.32   0.747     .5770516    2.152243
+    Unknown  |   1.170046   .1753374     1.05   0.295       .87226    1.569495
+             |
+        male |
+       Male  |   1.381668   .1717761     2.60   0.009     1.082874    1.762908
+        age1 |   .9843462   .0572052    -0.27   0.786     .8783758    1.103101
+        age2 |   1.146225   .1558691     1.00   0.316     .8780505    1.496306
+        age3 |   .6249699     .20908    -1.41   0.160     .3244103    1.203992
+             |
+         imd |
+          2  |   1.117497   .2128858     0.58   0.560     .7692904    1.623312
+          3  |   1.166378   .2223738     0.81   0.420      .802703     1.69482
+          4  |   1.244153   .2307717     1.18   0.239      .864945    1.789612
+5 most de..  |   .8382887   .1592095    -0.93   0.353     .5777389    1.216342
+             |
+         bmi |   1.006671   .0102889     0.65   0.515     .9867058     1.02704
+   hba1c_pct |   1.023806   .0497806     0.48   0.628     .9307432    1.126175
+gp_consult~t |   .9920902    .004495    -1.75   0.080     .9833192     1.00094
+             |
+smoke_nomiss |
+     Former  |   .8852236   .1089072    -0.99   0.322      .695555    1.126612
+    Current  |   1.087504   .2781037     0.33   0.743     .6588035    1.795171
+             |
+1.hyperten~n |   .9700002   .1187379    -0.25   0.803     .7630906    1.233013
+      bp_map |    .998907   .0034435    -0.32   0.751     .9921807    1.005679
+    1.asthma |   1.139989   .1611308     0.93   0.354      .864148    1.503879
+1.~y_disease |   .9839641   .1647398    -0.10   0.923     .7087078    1.366128
+1.~c_disease |    .764636    .110511    -1.86   0.063     .5760135    1.015025
+             |
+     dm_type |
+       T1DM  |   .8370657   .3647168    -0.41   0.683     .3563556    1.966235
+       T2DM  |   .9994099   .1637222    -0.00   0.997     .7249379    1.377801
+ UNKNOWN_DM  |    1.02329   .2460303     0.10   0.924     .6387686    1.639282
+             |
+    1.cancer |    1.06852   .2045337     0.35   0.729     .7342558    1.554954
+1.~r_disease |   .7805502   .3863136    -0.50   0.617     .2958831     2.05912
+    1.stroke |   .5674723    .132272    -2.43   0.015     .3593671    .8960888
+  1.dementia |          1  (empty)
+1.other_ne~o |   .6408354    .278234    -1.02   0.305     .2736384    1.500777
+             |
+      egfr60 |
+   eGFR <60  |   .5469633   .0899168    -3.67   0.000     .3963025    .7549003
+      1.esrf |    1.96377   .7437763     1.78   0.075     .9347572    4.125556
+1.immunosu~d |   .5430925   .2172516    -1.53   0.127     .2479535    1.189535
+1.ra_sle_p~s |   1.105017   .2250249     0.49   0.624     .7413632    1.647051
+             |
+hh_total_cat |
+        3-5  |   1.044451   .1304395     0.35   0.728     .8176793    1.334114
+       6-10  |   1.477613   .3458963     1.67   0.095     .9339031    2.337866
+        11+  |   .9169624   .4126103    -0.19   0.847      .379605    2.214987
+             |
+  1.carehome |   .7214712   .6337584    -0.37   0.710      .128974    4.035857
+             |
+         stp |
+          3  |   .9962066   .3273566    -0.01   0.991     .5231689    1.896954
+          4  |   4.593666   2.406782     2.91   0.004     1.645073    12.82725
+          5  |   .4860807   .2853025    -1.23   0.219     .1538509    1.535736
+          6  |   1.587955   .4299285     1.71   0.088     .9340734    2.699576
+          7  |   3.592746   3.750657     1.23   0.221     .4643146    27.79974
+          8  |    7.06458   2.368808     5.83   0.000     3.661609    13.63015
+          9  |   7.635122   3.299733     4.70   0.000     3.272994    17.81093
+         10  |   6.545657   2.416869     5.09   0.000     3.174403    13.49722
+         11  |    7.27206   2.327789     6.20   0.000      3.88318    13.61844
+         12  |   5.591494   1.909948     5.04   0.000     2.862686    10.92149
+         13  |   21.54017   9.533839     6.94   0.000     9.046922    51.28581
+         14  |   6.928029   3.177765     4.22   0.000     2.819542    17.02319
+         15  |   3.056561   .9040592     3.78   0.000     1.711857     5.45756
+         16  |   1.176349   .5003124     0.38   0.703     .5111074    2.707449
+         17  |   13.50933   6.819058     5.16   0.000     5.023148    36.33222
+         18  |   3.999362   1.149917     4.82   0.000     2.276401    7.026396
+         19  |   5.432769   1.669169     5.51   0.000     2.975071    9.920766
+         20  |   5.382107    1.38446     6.54   0.000     3.250831    8.910667
+         21  |   7.804517    1.98294     8.09   0.000     4.743253     12.8415
+         22  |   9.806754   8.096866     2.77   0.006     1.944186    49.46669
+         23  |   2.884463   .9866745     3.10   0.002     1.475362    5.639381
+         24  |   5.394402   6.850537     1.33   0.184     .4476856    65.00001
+         25  |   3.211723   4.107886     0.91   0.362     .2618344    39.39575
+         26  |   3.305396   1.790086     2.21   0.027     1.143517    9.554419
+         27  |   11.69895   6.130218     4.69   0.000     4.189087    32.67188
+         28  |   9.221829   4.446514     4.61   0.000     3.584189    23.72702
+         29  |   8.384298   3.648015     4.89   0.000     3.573619    19.67094
+         30  |   2.305121   .9956667     1.93   0.053      .988618     5.37476
+         31  |          1  (empty)
+         32  |   1.751725   .4299822     2.28   0.022      1.08275    2.834025
+             |
+       _cons |   .2858485   .6180086    -0.58   0.562     .0041288    19.79001
+------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+
+.                                                                              
+>    
+. estimates save "$Tempdir/model3_ventilated_eth5", replace 
+(note: file E:\anna\ethnicity-covid-research/output/tempdata/model3_ventilated_
+> eth5.ster not found)
+file E:\anna\ethnicity-covid-research/output/tempdata/model3_ventilated_eth5.st
+> er saved
+
+. parmest, label eform format(estimate p lb ub) saving("$Tempdir/model3_ventila
+> ted_eth5", replace) idstr("model3_ventilated_eth5") 
+(note: file E:\anna\ethnicity-covid-research/output/tempdata/model3_ventilated_
+> eth5.dta not found)
+file E:\anna\ethnicity-covid-research/output/tempdata/model3_ventilated_eth5.dt
+> a saved
+
+. 
+. 
+. /* Print table===============================================================
+> =*/ 
+. *  Print the results for the main model 
+. 
+. 
+. * Column headings 
+. file write tablecontent ("ventilated") _n
+
+. 
+. * Row headings 
+. local lab1: label eth5 1
+
+. local lab2: label eth5 2
+
+. local lab3: label eth5 3
+
+. local lab4: label eth5 4
+
+. local lab5: label eth5 5
+
+. 
+. /* Counts */
+.  
+. * First row, eth5 = 1 (White) reference cat
+.          safecount if eth5==1
+  1,648
+
+.         local denominator = r(N)
+
+.          safecount if eth5 == 1 & ventilated == 1
+  892
+
+.         local event = r(N)
+
+.         local pct =(`event'/`denominator')
+
+.         
+.         file write tablecontent  ("`lab1'") _tab (`denominator') _tab (`event
+> ') _tab %3.2f (`pct') _tab
+
+.         file write tablecontent ("1.00") _tab _tab ("1.00") _tab _tab ("1.00"
+> )  _tab _tab ("1.00") _tab _tab ("1.00") _n
+
+.         
+. * Subsequent ethnic groups
+. forvalues eth=2/5 {
+  2.         di "ethnic group `eth'"
+  3.         safecount if eth5==`eth'
+  4.         local denominator = r(N)
+  5.          safecount if eth5 == `eth' & ventilated == 1
+  6.         local event = r(N)
+  7.         local pct =(`event'/`denominator')
+  8.         file write tablecontent  ("`lab`eth''") _tab (`denominator') _tab 
+> (`event') _tab %3.2f (`pct') _tab
+  9.         estimates use "$Tempdir/crude_ventilated_eth5" 
+ 10.         estimates
+ 11.         lincom `eth'.eth5, eform
+ 12.         file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(l
+> b)) (" - ") %4.2f (r(ub)) (")") _tab 
+ 13.         estimates clear
+ 14.         estimates use "$Tempdir/model0_ventilated_eth5" 
+ 15.         estimates
+ 16.         lincom `eth'.eth5, eform
+ 17.         file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(l
+> b)) (" - ") %4.2f (r(ub)) (")") _tab 
+ 18.         estimates clear
+ 19.         estimates use "$Tempdir/model1_ventilated_eth5" 
+ 20.         lincom `eth'.eth5, eform
+ 21.         file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(l
+> b)) (" - ") %4.2f (r(ub)) (")") _tab 
+ 22.         estimates clear
+ 23.         estimates use "$Tempdir/model2_ventilated_eth5" 
+ 24.         lincom `eth'.eth5, eform
+ 25.         file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(l
+> b)) (" - ") %4.2f (r(ub)) (")") _tab 
+ 26.         estimates clear
+ 27.         estimates use "$Tempdir/model3_ventilated_eth5"
+ 28.         estimates
+ 29.         lincom `eth'.eth5, eform
+ 30.         file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(l
+> b)) (" - ") %4.2f (r(ub)) (")") _n
+ 31. }  //end ethnic group
+ethnic group 2
+  393
+  262
+
+-------------------------------------------------------------------------------
+active results
+-------------------------------------------------------------------------------
+
+Logistic regression                             Number of obs     =      3,015
+
+                                                Wald chi2(34)     =     359.31
+Log likelihood = -1843.1044                     Prob > chi2       =     0.0000
+------------------------------------------------------------------------------
+  ventilated |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |   .2831905   .1325778     2.14   0.033     .0233428    .5430381
+      Black  |   .0923513   .1778784     0.52   0.604     -.256284    .4409865
+      Mixed  |   .0390816   .2899491     0.13   0.893    -.5292082    .6073713
+      Other  |   .1332697   .2467123     0.54   0.589    -.3502777     .616817
+    Unknown  |   .1806344   .1017576     1.78   0.076    -.0188068    .3800755
+             |
+         stp |
+          1  |          0  (empty)
+          2  |  -.2170749    .185926    -1.17   0.243    -.5814831    .1473334
+          3  |  -.5282951   .2447083    -2.16   0.031    -1.007915   -.0486756
+          4  |   .9844933   .4225678     2.33   0.020     .1562757    1.812711
+          5  |  -.7969719   .4037204    -1.97   0.048    -1.588249   -.0056944
+          6  |   .0232311   .2079805     0.11   0.911    -.3844032    .4308655
+          7  |   .4878762   .7209854     0.68   0.499    -.9252293    1.900982
+          8  |   1.150749   .2490263     4.62   0.000      .662667    1.638832
+          9  |   1.381336   .3677284     3.76   0.000     .6606016    2.102071
+         10  |   1.248182   .2572214     4.85   0.000     .7440372    1.752327
+         11  |   1.511766   .2615796     5.78   0.000     .9990798    2.024453
+         12  |   .8007242   .2672392     3.00   0.003     .2769451    1.324503
+         13  |   2.458827   .3644327     6.75   0.000     1.744552    3.173102
+         14  |   1.802344   .3413783     5.28   0.000     1.133255    2.471434
+         15  |   .7078771    .225723     3.14   0.002      .265468    1.150286
+         16  |  -.3803814   .3155011    -1.21   0.228    -.9987522    .2379895
+         17  |   1.862854   .3289951     5.66   0.000     1.218036    2.507673
+         18  |   .6517567   .2037158     3.20   0.001     .2524811    1.051032
+         19  |   1.186106   .2269241     5.23   0.000     .7413429    1.630869
+         20  |   .9498024   .1909437     4.97   0.000     .5755595    1.324045
+         21  |   1.569857   .2030275     7.73   0.000     1.171931    1.967784
+         22  |   1.254513   .5540509     2.26   0.024      .168593    2.340433
+         23  |   .3626334   .2667717     1.36   0.174    -.1602295    .8854964
+         24  |   1.565409   1.163653     1.35   0.179    -.7153097    3.846127
+         25  |  -.4325157   .8484891    -0.51   0.610    -2.095524    1.230492
+         26  |   1.040922    .371907     2.80   0.005     .3119976    1.769846
+         27  |   1.824191   .3295509     5.54   0.000     1.178283    2.470099
+         28  |   1.625041   .3466418     4.69   0.000     .9456356    2.304447
+         29  |   1.579778   .3196624     4.94   0.000     .9532514    2.206305
+         30  |   .9523955   .3363268     2.83   0.005     .2932072    1.611584
+         31  |          0  (empty)
+         32  |          0  (omitted)
+             |
+       _cons |  -.5104153   .1405905    -3.63   0.000    -.7859675   -.2348631
+------------------------------------------------------------------------------
+
+ ( 1)  [ventilated]2.eth5 = 0
+
+------------------------------------------------------------------------------
+  ventilated |     exp(b)   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         (1) |   1.327358   .1759782     2.14   0.033     1.023617    1.721228
+------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------
+active results
+-------------------------------------------------------------------------------
+
+note: 1b.stp != 0 predicts failure perfectly
+      1b.stp dropped and [REDACTED] obs not used
+note: 31.stp != 0 predicts success perfectly
+      31.stp dropped and [REDACTED] obs not used
+note: 32.stp omitted because of collinearity
+
+Logistic regression                             Number of obs     =      3,015
+                                                LR chi2(38)       =     446.13
+                                                Prob > chi2       =     0.0000
+Log likelihood =  -1826.286                     Pseudo R2         =     0.1088
+
+------------------------------------------------------------------------------
+  ventilated | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |   1.305683   .1766737     1.97   0.049     1.001523    1.702218
+      Black  |   1.066379   .1918353     0.36   0.721     .7495236    1.517182
+      Mixed  |   1.057708   .3082438     0.19   0.847     .5974523    1.872527
+      Other  |    1.09727   .2714859     0.38   0.708      .675631    1.782039
+    Unknown  |   1.209998    .123963     1.86   0.063     .9898743    1.479072
+             |
+        male |
+       Male  |   1.326241   .1155528     3.24   0.001     1.118044    1.573208
+        age1 |   1.006679   .0263511     0.25   0.799     .9563344    1.059674
+        age2 |   1.055718   .0718761     0.80   0.426     .9238384    1.206425
+        age3 |   .7750982   .1373467    -1.44   0.151     .5476771    1.096955
+             |
+         stp |
+          1  |          1  (empty)
+          2  |   .8064374   .1507494    -1.15   0.250     .5590535     1.16329
+          3  |   .6000133   .1478336    -2.07   0.038     .3702018    .9724858
+          4  |    2.53147   1.075614     2.19   0.029     1.100779    5.821644
+          5  |   .4612264   .1873592    -1.91   0.057     .2080365     1.02256
+          6  |   1.017461   .2130258     0.08   0.934     .6749964    1.533676
+          7  |   1.696021   1.233542     0.73   0.468     .4076989    7.055422
+          8  |   3.161403   .7918403     4.60   0.000     1.934989    5.165131
+          9  |   3.797627   1.401406     3.62   0.000     1.842471    7.827516
+         10  |    3.51453   .9101168     4.85   0.000     2.115639    5.838388
+         11  |   4.692008   1.234662     5.87   0.000     2.801382    7.858599
+         12  |   2.343163   .6313748     3.16   0.002     1.381792      3.9734
+         13  |   11.87486   4.344846     6.76   0.000     5.796767    24.32604
+         14  |   6.094807   2.094459     5.26   0.000     3.107761    11.95288
+         15  |    2.00335   .4547884     3.06   0.002     1.283874    3.126018
+         16  |   .7089566   .2251025    -1.08   0.279     .3804982    1.320951
+         17  |   6.768309    2.24353     5.77   0.000     3.534496    12.96083
+         18  |   1.917452   .3932611     3.17   0.002     1.282764    2.866172
+         19  |   3.395626   .7763154     5.35   0.000     2.169283    5.315246
+         20  |   2.687626   .5177952     5.13   0.000     1.842372    3.920671
+         21  |   4.641527   .9486362     7.51   0.000     3.109512    6.928347
+         22  |   3.289477   1.837906     2.13   0.033     1.100376    9.833599
+         23  |   1.435484   .3854592     1.35   0.178     .8480701    2.429768
+         24  |   4.636465   5.401076     1.32   0.188     .4727284     45.4739
+         25  |   .5802128   .4951942    -0.64   0.524     .1089212    3.090738
+         26  |   2.852479   1.069485     2.80   0.005     1.367981    5.947919
+         27  |   5.915123   1.957652     5.37   0.000     3.092094    11.31553
+         28  |   4.982791   1.735269     4.61   0.000     2.517907    9.860653
+         29  |   5.267649   1.695189     5.16   0.000     2.803436    9.897901
+         30  |   2.455701   .8298719     2.66   0.008     1.266261    4.762422
+         31  |          1  (empty)
+         32  |          1  (omitted)
+             |
+       _cons |   .2874063   .2608071    -1.37   0.169      .048537    1.701844
+------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+
+ ( 1)  [ventilated]2.eth5 = 0
+
+------------------------------------------------------------------------------
+  ventilated | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         (1) |   1.305683   .1766737     1.97   0.049     1.001523    1.702218
+------------------------------------------------------------------------------
+
+ ( 1)  [ventilated]2.eth5 = 0
+
+------------------------------------------------------------------------------
+  ventilated | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         (1) |   1.320213   .1803448     2.03   0.042     1.010107    1.725522
+------------------------------------------------------------------------------
+
+ ( 1)  [ventilated]2.eth5 = 0
+
+------------------------------------------------------------------------------
+  ventilated |     exp(b)   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         (1) |   1.151604   .2001188     0.81   0.417     .8191931    1.618899
+------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------
+active results
+-------------------------------------------------------------------------------
+
+note: 0b.dementia != 1 predicts failure perfectly
+      0b.dementia dropped and [REDACTED] obs not used
+note: 31.stp != 0 predicts success perfectly
+      31.stp dropped and [REDACTED] obs not used
+note: 1.dementia omitted because of collinearity
+
+Logistic regression                             Number of obs     =      1,802
+                                                LR chi2(67)       =     367.64
+                                                Prob > chi2       =     0.0000
+Log likelihood = -1033.3449                     Pseudo R2         =     0.1510
+
+------------------------------------------------------------------------------
+  ventilated | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |   1.096606   .2132966     0.47   0.635     .7490083    1.605516
+      Black  |   1.117174   .2790173     0.44   0.657     .6847477    1.822681
+      Mixed  |    1.00847   .3690295     0.02   0.982     .4922469    2.066062
+      Other  |    1.11443   .3742321     0.32   0.747     .5770516    2.152243
+    Unknown  |   1.170046   .1753374     1.05   0.295       .87226    1.569495
+             |
+        male |
+       Male  |   1.381668   .1717761     2.60   0.009     1.082874    1.762908
+        age1 |   .9843462   .0572052    -0.27   0.786     .8783758    1.103101
+        age2 |   1.146225   .1558691     1.00   0.316     .8780505    1.496306
+        age3 |   .6249699     .20908    -1.41   0.160     .3244103    1.203992
+             |
+         imd |
+          2  |   1.117497   .2128858     0.58   0.560     .7692904    1.623312
+          3  |   1.166378   .2223738     0.81   0.420      .802703     1.69482
+          4  |   1.244153   .2307717     1.18   0.239      .864945    1.789612
+5 most de..  |   .8382887   .1592095    -0.93   0.353     .5777389    1.216342
+             |
+         bmi |   1.006671   .0102889     0.65   0.515     .9867058     1.02704
+   hba1c_pct |   1.023806   .0497806     0.48   0.628     .9307432    1.126175
+gp_consult~t |   .9920902    .004495    -1.75   0.080     .9833192     1.00094
+             |
+smoke_nomiss |
+     Former  |   .8852236   .1089072    -0.99   0.322      .695555    1.126612
+    Current  |   1.087504   .2781037     0.33   0.743     .6588035    1.795171
+             |
+1.hyperten~n |   .9700002   .1187379    -0.25   0.803     .7630906    1.233013
+      bp_map |    .998907   .0034435    -0.32   0.751     .9921807    1.005679
+    1.asthma |   1.139989   .1611308     0.93   0.354      .864148    1.503879
+1.~y_disease |   .9839641   .1647398    -0.10   0.923     .7087078    1.366128
+1.~c_disease |    .764636    .110511    -1.86   0.063     .5760135    1.015025
+             |
+     dm_type |
+       T1DM  |   .8370657   .3647168    -0.41   0.683     .3563556    1.966235
+       T2DM  |   .9994099   .1637222    -0.00   0.997     .7249379    1.377801
+ UNKNOWN_DM  |    1.02329   .2460303     0.10   0.924     .6387686    1.639282
+             |
+    1.cancer |    1.06852   .2045337     0.35   0.729     .7342558    1.554954
+1.~r_disease |   .7805502   .3863136    -0.50   0.617     .2958831     2.05912
+    1.stroke |   .5674723    .132272    -2.43   0.015     .3593671    .8960888
+  1.dementia |          1  (empty)
+1.other_ne~o |   .6408354    .278234    -1.02   0.305     .2736384    1.500777
+             |
+      egfr60 |
+   eGFR <60  |   .5469633   .0899168    -3.67   0.000     .3963025    .7549003
+      1.esrf |    1.96377   .7437763     1.78   0.075     .9347572    4.125556
+1.immunosu~d |   .5430925   .2172516    -1.53   0.127     .2479535    1.189535
+1.ra_sle_p~s |   1.105017   .2250249     0.49   0.624     .7413632    1.647051
+             |
+hh_total_cat |
+        3-5  |   1.044451   .1304395     0.35   0.728     .8176793    1.334114
+       6-10  |   1.477613   .3458963     1.67   0.095     .9339031    2.337866
+        11+  |   .9169624   .4126103    -0.19   0.847      .379605    2.214987
+             |
+  1.carehome |   .7214712   .6337584    -0.37   0.710      .128974    4.035857
+             |
+         stp |
+          3  |   .9962066   .3273566    -0.01   0.991     .5231689    1.896954
+          4  |   4.593666   2.406782     2.91   0.004     1.645073    12.82725
+          5  |   .4860807   .2853025    -1.23   0.219     .1538509    1.535736
+          6  |   1.587955   .4299285     1.71   0.088     .9340734    2.699576
+          7  |   3.592746   3.750657     1.23   0.221     .4643146    27.79974
+          8  |    7.06458   2.368808     5.83   0.000     3.661609    13.63015
+          9  |   7.635122   3.299733     4.70   0.000     3.272994    17.81093
+         10  |   6.545657   2.416869     5.09   0.000     3.174403    13.49722
+         11  |    7.27206   2.327789     6.20   0.000      3.88318    13.61844
+         12  |   5.591494   1.909948     5.04   0.000     2.862686    10.92149
+         13  |   21.54017   9.533839     6.94   0.000     9.046922    51.28581
+         14  |   6.928029   3.177765     4.22   0.000     2.819542    17.02319
+         15  |   3.056561   .9040592     3.78   0.000     1.711857     5.45756
+         16  |   1.176349   .5003124     0.38   0.703     .5111074    2.707449
+         17  |   13.50933   6.819058     5.16   0.000     5.023148    36.33222
+         18  |   3.999362   1.149917     4.82   0.000     2.276401    7.026396
+         19  |   5.432769   1.669169     5.51   0.000     2.975071    9.920766
+         20  |   5.382107    1.38446     6.54   0.000     3.250831    8.910667
+         21  |   7.804517    1.98294     8.09   0.000     4.743253     12.8415
+         22  |   9.806754   8.096866     2.77   0.006     1.944186    49.46669
+         23  |   2.884463   .9866745     3.10   0.002     1.475362    5.639381
+         24  |   5.394402   6.850537     1.33   0.184     .4476856    65.00001
+         25  |   3.211723   4.107886     0.91   0.362     .2618344    39.39575
+         26  |   3.305396   1.790086     2.21   0.027     1.143517    9.554419
+         27  |   11.69895   6.130218     4.69   0.000     4.189087    32.67188
+         28  |   9.221829   4.446514     4.61   0.000     3.584189    23.72702
+         29  |   8.384298   3.648015     4.89   0.000     3.573619    19.67094
+         30  |   2.305121   .9956667     1.93   0.053      .988618     5.37476
+         31  |          1  (empty)
+         32  |   1.751725   .4299822     2.28   0.022      1.08275    2.834025
+             |
+       _cons |   .2858485   .6180086    -0.58   0.562     .0041288    19.79001
+------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+
+ ( 1)  [ventilated]2.eth5 = 0
+
+------------------------------------------------------------------------------
+  ventilated | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         (1) |   1.096606   .2132966     0.47   0.635     .7490083    1.605516
+------------------------------------------------------------------------------
+ethnic group 3
+  181
+  117
+
+-------------------------------------------------------------------------------
+active results
+-------------------------------------------------------------------------------
+
+Logistic regression                             Number of obs     =      3,015
+
+                                                Wald chi2(34)     =     359.31
+Log likelihood = -1843.1044                     Prob > chi2       =     0.0000
+------------------------------------------------------------------------------
+  ventilated |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |   .2831905   .1325778     2.14   0.033     .0233428    .5430381
+      Black  |   .0923513   .1778784     0.52   0.604     -.256284    .4409865
+      Mixed  |   .0390816   .2899491     0.13   0.893    -.5292082    .6073713
+      Other  |   .1332697   .2467123     0.54   0.589    -.3502777     .616817
+    Unknown  |   .1806344   .1017576     1.78   0.076    -.0188068    .3800755
+             |
+         stp |
+          1  |          0  (empty)
+          2  |  -.2170749    .185926    -1.17   0.243    -.5814831    .1473334
+          3  |  -.5282951   .2447083    -2.16   0.031    -1.007915   -.0486756
+          4  |   .9844933   .4225678     2.33   0.020     .1562757    1.812711
+          5  |  -.7969719   .4037204    -1.97   0.048    -1.588249   -.0056944
+          6  |   .0232311   .2079805     0.11   0.911    -.3844032    .4308655
+          7  |   .4878762   .7209854     0.68   0.499    -.9252293    1.900982
+          8  |   1.150749   .2490263     4.62   0.000      .662667    1.638832
+          9  |   1.381336   .3677284     3.76   0.000     .6606016    2.102071
+         10  |   1.248182   .2572214     4.85   0.000     .7440372    1.752327
+         11  |   1.511766   .2615796     5.78   0.000     .9990798    2.024453
+         12  |   .8007242   .2672392     3.00   0.003     .2769451    1.324503
+         13  |   2.458827   .3644327     6.75   0.000     1.744552    3.173102
+         14  |   1.802344   .3413783     5.28   0.000     1.133255    2.471434
+         15  |   .7078771    .225723     3.14   0.002      .265468    1.150286
+         16  |  -.3803814   .3155011    -1.21   0.228    -.9987522    .2379895
+         17  |   1.862854   .3289951     5.66   0.000     1.218036    2.507673
+         18  |   .6517567   .2037158     3.20   0.001     .2524811    1.051032
+         19  |   1.186106   .2269241     5.23   0.000     .7413429    1.630869
+         20  |   .9498024   .1909437     4.97   0.000     .5755595    1.324045
+         21  |   1.569857   .2030275     7.73   0.000     1.171931    1.967784
+         22  |   1.254513   .5540509     2.26   0.024      .168593    2.340433
+         23  |   .3626334   .2667717     1.36   0.174    -.1602295    .8854964
+         24  |   1.565409   1.163653     1.35   0.179    -.7153097    3.846127
+         25  |  -.4325157   .8484891    -0.51   0.610    -2.095524    1.230492
+         26  |   1.040922    .371907     2.80   0.005     .3119976    1.769846
+         27  |   1.824191   .3295509     5.54   0.000     1.178283    2.470099
+         28  |   1.625041   .3466418     4.69   0.000     .9456356    2.304447
+         29  |   1.579778   .3196624     4.94   0.000     .9532514    2.206305
+         30  |   .9523955   .3363268     2.83   0.005     .2932072    1.611584
+         31  |          0  (empty)
+         32  |          0  (omitted)
+             |
+       _cons |  -.5104153   .1405905    -3.63   0.000    -.7859675   -.2348631
+------------------------------------------------------------------------------
+
+ ( 1)  [ventilated]3.eth5 = 0
+
+------------------------------------------------------------------------------
+  ventilated |     exp(b)   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         (1) |    1.09675   .1950881     0.52   0.604     .7739222     1.55424
+------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------
+active results
+-------------------------------------------------------------------------------
+
+note: 1b.stp != 0 predicts failure perfectly
+      1b.stp dropped and [REDACTED] obs not used
+note: 31.stp != 0 predicts success perfectly
+      31.stp dropped and [REDACTED] obs not used
+note: 32.stp omitted because of collinearity
+
+Logistic regression                             Number of obs     =      3,015
+                                                LR chi2(38)       =     446.13
+                                                Prob > chi2       =     0.0000
+Log likelihood =  -1826.286                     Pseudo R2         =     0.1088
+
+------------------------------------------------------------------------------
+  ventilated | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |   1.305683   .1766737     1.97   0.049     1.001523    1.702218
+      Black  |   1.066379   .1918353     0.36   0.721     .7495236    1.517182
+      Mixed  |   1.057708   .3082438     0.19   0.847     .5974523    1.872527
+      Other  |    1.09727   .2714859     0.38   0.708      .675631    1.782039
+    Unknown  |   1.209998    .123963     1.86   0.063     .9898743    1.479072
+             |
+        male |
+       Male  |   1.326241   .1155528     3.24   0.001     1.118044    1.573208
+        age1 |   1.006679   .0263511     0.25   0.799     .9563344    1.059674
+        age2 |   1.055718   .0718761     0.80   0.426     .9238384    1.206425
+        age3 |   .7750982   .1373467    -1.44   0.151     .5476771    1.096955
+             |
+         stp |
+          1  |          1  (empty)
+          2  |   .8064374   .1507494    -1.15   0.250     .5590535     1.16329
+          3  |   .6000133   .1478336    -2.07   0.038     .3702018    .9724858
+          4  |    2.53147   1.075614     2.19   0.029     1.100779    5.821644
+          5  |   .4612264   .1873592    -1.91   0.057     .2080365     1.02256
+          6  |   1.017461   .2130258     0.08   0.934     .6749964    1.533676
+          7  |   1.696021   1.233542     0.73   0.468     .4076989    7.055422
+          8  |   3.161403   .7918403     4.60   0.000     1.934989    5.165131
+          9  |   3.797627   1.401406     3.62   0.000     1.842471    7.827516
+         10  |    3.51453   .9101168     4.85   0.000     2.115639    5.838388
+         11  |   4.692008   1.234662     5.87   0.000     2.801382    7.858599
+         12  |   2.343163   .6313748     3.16   0.002     1.381792      3.9734
+         13  |   11.87486   4.344846     6.76   0.000     5.796767    24.32604
+         14  |   6.094807   2.094459     5.26   0.000     3.107761    11.95288
+         15  |    2.00335   .4547884     3.06   0.002     1.283874    3.126018
+         16  |   .7089566   .2251025    -1.08   0.279     .3804982    1.320951
+         17  |   6.768309    2.24353     5.77   0.000     3.534496    12.96083
+         18  |   1.917452   .3932611     3.17   0.002     1.282764    2.866172
+         19  |   3.395626   .7763154     5.35   0.000     2.169283    5.315246
+         20  |   2.687626   .5177952     5.13   0.000     1.842372    3.920671
+         21  |   4.641527   .9486362     7.51   0.000     3.109512    6.928347
+         22  |   3.289477   1.837906     2.13   0.033     1.100376    9.833599
+         23  |   1.435484   .3854592     1.35   0.178     .8480701    2.429768
+         24  |   4.636465   5.401076     1.32   0.188     .4727284     45.4739
+         25  |   .5802128   .4951942    -0.64   0.524     .1089212    3.090738
+         26  |   2.852479   1.069485     2.80   0.005     1.367981    5.947919
+         27  |   5.915123   1.957652     5.37   0.000     3.092094    11.31553
+         28  |   4.982791   1.735269     4.61   0.000     2.517907    9.860653
+         29  |   5.267649   1.695189     5.16   0.000     2.803436    9.897901
+         30  |   2.455701   .8298719     2.66   0.008     1.266261    4.762422
+         31  |          1  (empty)
+         32  |          1  (omitted)
+             |
+       _cons |   .2874063   .2608071    -1.37   0.169      .048537    1.701844
+------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+
+ ( 1)  [ventilated]3.eth5 = 0
+
+------------------------------------------------------------------------------
+  ventilated | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         (1) |   1.066379   .1918353     0.36   0.721     .7495236    1.517182
+------------------------------------------------------------------------------
+
+ ( 1)  [ventilated]3.eth5 = 0
+
+------------------------------------------------------------------------------
+  ventilated | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         (1) |   1.120746   .2051052     0.62   0.533     .7829437    1.604292
+------------------------------------------------------------------------------
+
+ ( 1)  [ventilated]3.eth5 = 0
+
+------------------------------------------------------------------------------
+  ventilated |     exp(b)   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         (1) |   1.144194    .263965     0.58   0.559     .7279944    1.798339
+------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------
+active results
+-------------------------------------------------------------------------------
+
+note: 0b.dementia != 1 predicts failure perfectly
+      0b.dementia dropped and [REDACTED] obs not used
+note: 31.stp != 0 predicts success perfectly
+      31.stp dropped and [REDACTED] obs not used
+note: 1.dementia omitted because of collinearity
+
+Logistic regression                             Number of obs     =      1,802
+                                                LR chi2(67)       =     367.64
+                                                Prob > chi2       =     0.0000
+Log likelihood = -1033.3449                     Pseudo R2         =     0.1510
+
+------------------------------------------------------------------------------
+  ventilated | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |   1.096606   .2132966     0.47   0.635     .7490083    1.605516
+      Black  |   1.117174   .2790173     0.44   0.657     .6847477    1.822681
+      Mixed  |    1.00847   .3690295     0.02   0.982     .4922469    2.066062
+      Other  |    1.11443   .3742321     0.32   0.747     .5770516    2.152243
+    Unknown  |   1.170046   .1753374     1.05   0.295       .87226    1.569495
+             |
+        male |
+       Male  |   1.381668   .1717761     2.60   0.009     1.082874    1.762908
+        age1 |   .9843462   .0572052    -0.27   0.786     .8783758    1.103101
+        age2 |   1.146225   .1558691     1.00   0.316     .8780505    1.496306
+        age3 |   .6249699     .20908    -1.41   0.160     .3244103    1.203992
+             |
+         imd |
+          2  |   1.117497   .2128858     0.58   0.560     .7692904    1.623312
+          3  |   1.166378   .2223738     0.81   0.420      .802703     1.69482
+          4  |   1.244153   .2307717     1.18   0.239      .864945    1.789612
+5 most de..  |   .8382887   .1592095    -0.93   0.353     .5777389    1.216342
+             |
+         bmi |   1.006671   .0102889     0.65   0.515     .9867058     1.02704
+   hba1c_pct |   1.023806   .0497806     0.48   0.628     .9307432    1.126175
+gp_consult~t |   .9920902    .004495    -1.75   0.080     .9833192     1.00094
+             |
+smoke_nomiss |
+     Former  |   .8852236   .1089072    -0.99   0.322      .695555    1.126612
+    Current  |   1.087504   .2781037     0.33   0.743     .6588035    1.795171
+             |
+1.hyperten~n |   .9700002   .1187379    -0.25   0.803     .7630906    1.233013
+      bp_map |    .998907   .0034435    -0.32   0.751     .9921807    1.005679
+    1.asthma |   1.139989   .1611308     0.93   0.354      .864148    1.503879
+1.~y_disease |   .9839641   .1647398    -0.10   0.923     .7087078    1.366128
+1.~c_disease |    .764636    .110511    -1.86   0.063     .5760135    1.015025
+             |
+     dm_type |
+       T1DM  |   .8370657   .3647168    -0.41   0.683     .3563556    1.966235
+       T2DM  |   .9994099   .1637222    -0.00   0.997     .7249379    1.377801
+ UNKNOWN_DM  |    1.02329   .2460303     0.10   0.924     .6387686    1.639282
+             |
+    1.cancer |    1.06852   .2045337     0.35   0.729     .7342558    1.554954
+1.~r_disease |   .7805502   .3863136    -0.50   0.617     .2958831     2.05912
+    1.stroke |   .5674723    .132272    -2.43   0.015     .3593671    .8960888
+  1.dementia |          1  (empty)
+1.other_ne~o |   .6408354    .278234    -1.02   0.305     .2736384    1.500777
+             |
+      egfr60 |
+   eGFR <60  |   .5469633   .0899168    -3.67   0.000     .3963025    .7549003
+      1.esrf |    1.96377   .7437763     1.78   0.075     .9347572    4.125556
+1.immunosu~d |   .5430925   .2172516    -1.53   0.127     .2479535    1.189535
+1.ra_sle_p~s |   1.105017   .2250249     0.49   0.624     .7413632    1.647051
+             |
+hh_total_cat |
+        3-5  |   1.044451   .1304395     0.35   0.728     .8176793    1.334114
+       6-10  |   1.477613   .3458963     1.67   0.095     .9339031    2.337866
+        11+  |   .9169624   .4126103    -0.19   0.847      .379605    2.214987
+             |
+  1.carehome |   .7214712   .6337584    -0.37   0.710      .128974    4.035857
+             |
+         stp |
+          3  |   .9962066   .3273566    -0.01   0.991     .5231689    1.896954
+          4  |   4.593666   2.406782     2.91   0.004     1.645073    12.82725
+          5  |   .4860807   .2853025    -1.23   0.219     .1538509    1.535736
+          6  |   1.587955   .4299285     1.71   0.088     .9340734    2.699576
+          7  |   3.592746   3.750657     1.23   0.221     .4643146    27.79974
+          8  |    7.06458   2.368808     5.83   0.000     3.661609    13.63015
+          9  |   7.635122   3.299733     4.70   0.000     3.272994    17.81093
+         10  |   6.545657   2.416869     5.09   0.000     3.174403    13.49722
+         11  |    7.27206   2.327789     6.20   0.000      3.88318    13.61844
+         12  |   5.591494   1.909948     5.04   0.000     2.862686    10.92149
+         13  |   21.54017   9.533839     6.94   0.000     9.046922    51.28581
+         14  |   6.928029   3.177765     4.22   0.000     2.819542    17.02319
+         15  |   3.056561   .9040592     3.78   0.000     1.711857     5.45756
+         16  |   1.176349   .5003124     0.38   0.703     .5111074    2.707449
+         17  |   13.50933   6.819058     5.16   0.000     5.023148    36.33222
+         18  |   3.999362   1.149917     4.82   0.000     2.276401    7.026396
+         19  |   5.432769   1.669169     5.51   0.000     2.975071    9.920766
+         20  |   5.382107    1.38446     6.54   0.000     3.250831    8.910667
+         21  |   7.804517    1.98294     8.09   0.000     4.743253     12.8415
+         22  |   9.806754   8.096866     2.77   0.006     1.944186    49.46669
+         23  |   2.884463   .9866745     3.10   0.002     1.475362    5.639381
+         24  |   5.394402   6.850537     1.33   0.184     .4476856    65.00001
+         25  |   3.211723   4.107886     0.91   0.362     .2618344    39.39575
+         26  |   3.305396   1.790086     2.21   0.027     1.143517    9.554419
+         27  |   11.69895   6.130218     4.69   0.000     4.189087    32.67188
+         28  |   9.221829   4.446514     4.61   0.000     3.584189    23.72702
+         29  |   8.384298   3.648015     4.89   0.000     3.573619    19.67094
+         30  |   2.305121   .9956667     1.93   0.053      .988618     5.37476
+         31  |          1  (empty)
+         32  |   1.751725   .4299822     2.28   0.022      1.08275    2.834025
+             |
+       _cons |   .2858485   .6180086    -0.58   0.562     .0041288    19.79001
+------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+
+ ( 1)  [ventilated]3.eth5 = 0
+
+------------------------------------------------------------------------------
+  ventilated | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         (1) |   1.117174   .2790173     0.44   0.657     .6847477    1.822681
+------------------------------------------------------------------------------
+ethnic group 4
+  56
+  32
+
+-------------------------------------------------------------------------------
+active results
+-------------------------------------------------------------------------------
+
+Logistic regression                             Number of obs     =      3,015
+
+                                                Wald chi2(34)     =     359.31
+Log likelihood = -1843.1044                     Prob > chi2       =     0.0000
+------------------------------------------------------------------------------
+  ventilated |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |   .2831905   .1325778     2.14   0.033     .0233428    .5430381
+      Black  |   .0923513   .1778784     0.52   0.604     -.256284    .4409865
+      Mixed  |   .0390816   .2899491     0.13   0.893    -.5292082    .6073713
+      Other  |   .1332697   .2467123     0.54   0.589    -.3502777     .616817
+    Unknown  |   .1806344   .1017576     1.78   0.076    -.0188068    .3800755
+             |
+         stp |
+          1  |          0  (empty)
+          2  |  -.2170749    .185926    -1.17   0.243    -.5814831    .1473334
+          3  |  -.5282951   .2447083    -2.16   0.031    -1.007915   -.0486756
+          4  |   .9844933   .4225678     2.33   0.020     .1562757    1.812711
+          5  |  -.7969719   .4037204    -1.97   0.048    -1.588249   -.0056944
+          6  |   .0232311   .2079805     0.11   0.911    -.3844032    .4308655
+          7  |   .4878762   .7209854     0.68   0.499    -.9252293    1.900982
+          8  |   1.150749   .2490263     4.62   0.000      .662667    1.638832
+          9  |   1.381336   .3677284     3.76   0.000     .6606016    2.102071
+         10  |   1.248182   .2572214     4.85   0.000     .7440372    1.752327
+         11  |   1.511766   .2615796     5.78   0.000     .9990798    2.024453
+         12  |   .8007242   .2672392     3.00   0.003     .2769451    1.324503
+         13  |   2.458827   .3644327     6.75   0.000     1.744552    3.173102
+         14  |   1.802344   .3413783     5.28   0.000     1.133255    2.471434
+         15  |   .7078771    .225723     3.14   0.002      .265468    1.150286
+         16  |  -.3803814   .3155011    -1.21   0.228    -.9987522    .2379895
+         17  |   1.862854   .3289951     5.66   0.000     1.218036    2.507673
+         18  |   .6517567   .2037158     3.20   0.001     .2524811    1.051032
+         19  |   1.186106   .2269241     5.23   0.000     .7413429    1.630869
+         20  |   .9498024   .1909437     4.97   0.000     .5755595    1.324045
+         21  |   1.569857   .2030275     7.73   0.000     1.171931    1.967784
+         22  |   1.254513   .5540509     2.26   0.024      .168593    2.340433
+         23  |   .3626334   .2667717     1.36   0.174    -.1602295    .8854964
+         24  |   1.565409   1.163653     1.35   0.179    -.7153097    3.846127
+         25  |  -.4325157   .8484891    -0.51   0.610    -2.095524    1.230492
+         26  |   1.040922    .371907     2.80   0.005     .3119976    1.769846
+         27  |   1.824191   .3295509     5.54   0.000     1.178283    2.470099
+         28  |   1.625041   .3466418     4.69   0.000     .9456356    2.304447
+         29  |   1.579778   .3196624     4.94   0.000     .9532514    2.206305
+         30  |   .9523955   .3363268     2.83   0.005     .2932072    1.611584
+         31  |          0  (empty)
+         32  |          0  (omitted)
+             |
+       _cons |  -.5104153   .1405905    -3.63   0.000    -.7859675   -.2348631
+------------------------------------------------------------------------------
+
+ ( 1)  [ventilated]4.eth5 = 0
+
+------------------------------------------------------------------------------
+  ventilated |     exp(b)   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         (1) |   1.039855   .3015051     0.13   0.893     .5890712      1.8356
+------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------
+active results
+-------------------------------------------------------------------------------
+
+note: 1b.stp != 0 predicts failure perfectly
+      1b.stp dropped and [REDACTED] obs not used
+note: 31.stp != 0 predicts success perfectly
+      31.stp dropped and [REDACTED] obs not used
+note: 32.stp omitted because of collinearity
+
+Logistic regression                             Number of obs     =      3,015
+                                                LR chi2(38)       =     446.13
+                                                Prob > chi2       =     0.0000
+Log likelihood =  -1826.286                     Pseudo R2         =     0.1088
+
+------------------------------------------------------------------------------
+  ventilated | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |   1.305683   .1766737     1.97   0.049     1.001523    1.702218
+      Black  |   1.066379   .1918353     0.36   0.721     .7495236    1.517182
+      Mixed  |   1.057708   .3082438     0.19   0.847     .5974523    1.872527
+      Other  |    1.09727   .2714859     0.38   0.708      .675631    1.782039
+    Unknown  |   1.209998    .123963     1.86   0.063     .9898743    1.479072
+             |
+        male |
+       Male  |   1.326241   .1155528     3.24   0.001     1.118044    1.573208
+        age1 |   1.006679   .0263511     0.25   0.799     .9563344    1.059674
+        age2 |   1.055718   .0718761     0.80   0.426     .9238384    1.206425
+        age3 |   .7750982   .1373467    -1.44   0.151     .5476771    1.096955
+             |
+         stp |
+          1  |          1  (empty)
+          2  |   .8064374   .1507494    -1.15   0.250     .5590535     1.16329
+          3  |   .6000133   .1478336    -2.07   0.038     .3702018    .9724858
+          4  |    2.53147   1.075614     2.19   0.029     1.100779    5.821644
+          5  |   .4612264   .1873592    -1.91   0.057     .2080365     1.02256
+          6  |   1.017461   .2130258     0.08   0.934     .6749964    1.533676
+          7  |   1.696021   1.233542     0.73   0.468     .4076989    7.055422
+          8  |   3.161403   .7918403     4.60   0.000     1.934989    5.165131
+          9  |   3.797627   1.401406     3.62   0.000     1.842471    7.827516
+         10  |    3.51453   .9101168     4.85   0.000     2.115639    5.838388
+         11  |   4.692008   1.234662     5.87   0.000     2.801382    7.858599
+         12  |   2.343163   .6313748     3.16   0.002     1.381792      3.9734
+         13  |   11.87486   4.344846     6.76   0.000     5.796767    24.32604
+         14  |   6.094807   2.094459     5.26   0.000     3.107761    11.95288
+         15  |    2.00335   .4547884     3.06   0.002     1.283874    3.126018
+         16  |   .7089566   .2251025    -1.08   0.279     .3804982    1.320951
+         17  |   6.768309    2.24353     5.77   0.000     3.534496    12.96083
+         18  |   1.917452   .3932611     3.17   0.002     1.282764    2.866172
+         19  |   3.395626   .7763154     5.35   0.000     2.169283    5.315246
+         20  |   2.687626   .5177952     5.13   0.000     1.842372    3.920671
+         21  |   4.641527   .9486362     7.51   0.000     3.109512    6.928347
+         22  |   3.289477   1.837906     2.13   0.033     1.100376    9.833599
+         23  |   1.435484   .3854592     1.35   0.178     .8480701    2.429768
+         24  |   4.636465   5.401076     1.32   0.188     .4727284     45.4739
+         25  |   .5802128   .4951942    -0.64   0.524     .1089212    3.090738
+         26  |   2.852479   1.069485     2.80   0.005     1.367981    5.947919
+         27  |   5.915123   1.957652     5.37   0.000     3.092094    11.31553
+         28  |   4.982791   1.735269     4.61   0.000     2.517907    9.860653
+         29  |   5.267649   1.695189     5.16   0.000     2.803436    9.897901
+         30  |   2.455701   .8298719     2.66   0.008     1.266261    4.762422
+         31  |          1  (empty)
+         32  |          1  (omitted)
+             |
+       _cons |   .2874063   .2608071    -1.37   0.169      .048537    1.701844
+------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+
+ ( 1)  [ventilated]4.eth5 = 0
+
+------------------------------------------------------------------------------
+  ventilated | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         (1) |   1.057708   .3082438     0.19   0.847     .5974523    1.872527
+------------------------------------------------------------------------------
+
+ ( 1)  [ventilated]4.eth5 = 0
+
+------------------------------------------------------------------------------
+  ventilated | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         (1) |   1.068955   .3116443     0.23   0.819     .6036691    1.892865
+------------------------------------------------------------------------------
+
+ ( 1)  [ventilated]4.eth5 = 0
+
+------------------------------------------------------------------------------
+  ventilated |     exp(b)   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         (1) |   .8796175   .3097834    -0.36   0.716     .4410806    1.754162
+------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------
+active results
+-------------------------------------------------------------------------------
+
+note: 0b.dementia != 1 predicts failure perfectly
+      0b.dementia dropped and 1 obs not used
+note: 31.stp != 0 predicts success perfectly
+      31.stp dropped and 2 obs not used
+note: 1.dementia omitted because of collinearity
+
+Logistic regression                             Number of obs     =      1,802
+                                                LR chi2(67)       =     367.64
+                                                Prob > chi2       =     0.0000
+Log likelihood = -1033.3449                     Pseudo R2         =     0.1510
+
+------------------------------------------------------------------------------
+  ventilated | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |   1.096606   .2132966     0.47   0.635     .7490083    1.605516
+      Black  |   1.117174   .2790173     0.44   0.657     .6847477    1.822681
+      Mixed  |    1.00847   .3690295     0.02   0.982     .4922469    2.066062
+      Other  |    1.11443   .3742321     0.32   0.747     .5770516    2.152243
+    Unknown  |   1.170046   .1753374     1.05   0.295       .87226    1.569495
+             |
+        male |
+       Male  |   1.381668   .1717761     2.60   0.009     1.082874    1.762908
+        age1 |   .9843462   .0572052    -0.27   0.786     .8783758    1.103101
+        age2 |   1.146225   .1558691     1.00   0.316     .8780505    1.496306
+        age3 |   .6249699     .20908    -1.41   0.160     .3244103    1.203992
+             |
+         imd |
+          2  |   1.117497   .2128858     0.58   0.560     .7692904    1.623312
+          3  |   1.166378   .2223738     0.81   0.420      .802703     1.69482
+          4  |   1.244153   .2307717     1.18   0.239      .864945    1.789612
+5 most de..  |   .8382887   .1592095    -0.93   0.353     .5777389    1.216342
+             |
+         bmi |   1.006671   .0102889     0.65   0.515     .9867058     1.02704
+   hba1c_pct |   1.023806   .0497806     0.48   0.628     .9307432    1.126175
+gp_consult~t |   .9920902    .004495    -1.75   0.080     .9833192     1.00094
+             |
+smoke_nomiss |
+     Former  |   .8852236   .1089072    -0.99   0.322      .695555    1.126612
+    Current  |   1.087504   .2781037     0.33   0.743     .6588035    1.795171
+             |
+1.hyperten~n |   .9700002   .1187379    -0.25   0.803     .7630906    1.233013
+      bp_map |    .998907   .0034435    -0.32   0.751     .9921807    1.005679
+    1.asthma |   1.139989   .1611308     0.93   0.354      .864148    1.503879
+1.~y_disease |   .9839641   .1647398    -0.10   0.923     .7087078    1.366128
+1.~c_disease |    .764636    .110511    -1.86   0.063     .5760135    1.015025
+             |
+     dm_type |
+       T1DM  |   .8370657   .3647168    -0.41   0.683     .3563556    1.966235
+       T2DM  |   .9994099   .1637222    -0.00   0.997     .7249379    1.377801
+ UNKNOWN_DM  |    1.02329   .2460303     0.10   0.924     .6387686    1.639282
+             |
+    1.cancer |    1.06852   .2045337     0.35   0.729     .7342558    1.554954
+1.~r_disease |   .7805502   .3863136    -0.50   0.617     .2958831     2.05912
+    1.stroke |   .5674723    .132272    -2.43   0.015     .3593671    .8960888
+  1.dementia |          1  (empty)
+1.other_ne~o |   .6408354    .278234    -1.02   0.305     .2736384    1.500777
+             |
+      egfr60 |
+   eGFR <60  |   .5469633   .0899168    -3.67   0.000     .3963025    .7549003
+      1.esrf |    1.96377   .7437763     1.78   0.075     .9347572    4.125556
+1.immunosu~d |   .5430925   .2172516    -1.53   0.127     .2479535    1.189535
+1.ra_sle_p~s |   1.105017   .2250249     0.49   0.624     .7413632    1.647051
+             |
+hh_total_cat |
+        3-5  |   1.044451   .1304395     0.35   0.728     .8176793    1.334114
+       6-10  |   1.477613   .3458963     1.67   0.095     .9339031    2.337866
+        11+  |   .9169624   .4126103    -0.19   0.847      .379605    2.214987
+             |
+  1.carehome |   .7214712   .6337584    -0.37   0.710      .128974    4.035857
+             |
+         stp |
+          3  |   .9962066   .3273566    -0.01   0.991     .5231689    1.896954
+          4  |   4.593666   2.406782     2.91   0.004     1.645073    12.82725
+          5  |   .4860807   .2853025    -1.23   0.219     .1538509    1.535736
+          6  |   1.587955   .4299285     1.71   0.088     .9340734    2.699576
+          7  |   3.592746   3.750657     1.23   0.221     .4643146    27.79974
+          8  |    7.06458   2.368808     5.83   0.000     3.661609    13.63015
+          9  |   7.635122   3.299733     4.70   0.000     3.272994    17.81093
+         10  |   6.545657   2.416869     5.09   0.000     3.174403    13.49722
+         11  |    7.27206   2.327789     6.20   0.000      3.88318    13.61844
+         12  |   5.591494   1.909948     5.04   0.000     2.862686    10.92149
+         13  |   21.54017   9.533839     6.94   0.000     9.046922    51.28581
+         14  |   6.928029   3.177765     4.22   0.000     2.819542    17.02319
+         15  |   3.056561   .9040592     3.78   0.000     1.711857     5.45756
+         16  |   1.176349   .5003124     0.38   0.703     .5111074    2.707449
+         17  |   13.50933   6.819058     5.16   0.000     5.023148    36.33222
+         18  |   3.999362   1.149917     4.82   0.000     2.276401    7.026396
+         19  |   5.432769   1.669169     5.51   0.000     2.975071    9.920766
+         20  |   5.382107    1.38446     6.54   0.000     3.250831    8.910667
+         21  |   7.804517    1.98294     8.09   0.000     4.743253     12.8415
+         22  |   9.806754   8.096866     2.77   0.006     1.944186    49.46669
+         23  |   2.884463   .9866745     3.10   0.002     1.475362    5.639381
+         24  |   5.394402   6.850537     1.33   0.184     .4476856    65.00001
+         25  |   3.211723   4.107886     0.91   0.362     .2618344    39.39575
+         26  |   3.305396   1.790086     2.21   0.027     1.143517    9.554419
+         27  |   11.69895   6.130218     4.69   0.000     4.189087    32.67188
+         28  |   9.221829   4.446514     4.61   0.000     3.584189    23.72702
+         29  |   8.384298   3.648015     4.89   0.000     3.573619    19.67094
+         30  |   2.305121   .9956667     1.93   0.053      .988618     5.37476
+         31  |          1  (empty)
+         32  |   1.751725   .4299822     2.28   0.022      1.08275    2.834025
+             |
+       _cons |   .2858485   .6180086    -0.58   0.562     .0041288    19.79001
+------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+
+ ( 1)  [ventilated]4.eth5 = 0
+
+------------------------------------------------------------------------------
+  ventilated | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         (1) |    1.00847   .3690295     0.02   0.982     .4922469    2.066062
+------------------------------------------------------------------------------
+ethnic group 5
+  91
+  61
+
+-------------------------------------------------------------------------------
+active results
+-------------------------------------------------------------------------------
+
+Logistic regression                             Number of obs     =      3,015
+
+                                                Wald chi2(34)     =     359.31
+Log likelihood = -1843.1044                     Prob > chi2       =     0.0000
+------------------------------------------------------------------------------
+  ventilated |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |   .2831905   .1325778     2.14   0.033     .0233428    .5430381
+      Black  |   .0923513   .1778784     0.52   0.604     -.256284    .4409865
+      Mixed  |   .0390816   .2899491     0.13   0.893    -.5292082    .6073713
+      Other  |   .1332697   .2467123     0.54   0.589    -.3502777     .616817
+    Unknown  |   .1806344   .1017576     1.78   0.076    -.0188068    .3800755
+             |
+         stp |
+          1  |          0  (empty)
+          2  |  -.2170749    .185926    -1.17   0.243    -.5814831    .1473334
+          3  |  -.5282951   .2447083    -2.16   0.031    -1.007915   -.0486756
+          4  |   .9844933   .4225678     2.33   0.020     .1562757    1.812711
+          5  |  -.7969719   .4037204    -1.97   0.048    -1.588249   -.0056944
+          6  |   .0232311   .2079805     0.11   0.911    -.3844032    .4308655
+          7  |   .4878762   .7209854     0.68   0.499    -.9252293    1.900982
+          8  |   1.150749   .2490263     4.62   0.000      .662667    1.638832
+          9  |   1.381336   .3677284     3.76   0.000     .6606016    2.102071
+         10  |   1.248182   .2572214     4.85   0.000     .7440372    1.752327
+         11  |   1.511766   .2615796     5.78   0.000     .9990798    2.024453
+         12  |   .8007242   .2672392     3.00   0.003     .2769451    1.324503
+         13  |   2.458827   .3644327     6.75   0.000     1.744552    3.173102
+         14  |   1.802344   .3413783     5.28   0.000     1.133255    2.471434
+         15  |   .7078771    .225723     3.14   0.002      .265468    1.150286
+         16  |  -.3803814   .3155011    -1.21   0.228    -.9987522    .2379895
+         17  |   1.862854   .3289951     5.66   0.000     1.218036    2.507673
+         18  |   .6517567   .2037158     3.20   0.001     .2524811    1.051032
+         19  |   1.186106   .2269241     5.23   0.000     .7413429    1.630869
+         20  |   .9498024   .1909437     4.97   0.000     .5755595    1.324045
+         21  |   1.569857   .2030275     7.73   0.000     1.171931    1.967784
+         22  |   1.254513   .5540509     2.26   0.024      .168593    2.340433
+         23  |   .3626334   .2667717     1.36   0.174    -.1602295    .8854964
+         24  |   1.565409   1.163653     1.35   0.179    -.7153097    3.846127
+         25  |  -.4325157   .8484891    -0.51   0.610    -2.095524    1.230492
+         26  |   1.040922    .371907     2.80   0.005     .3119976    1.769846
+         27  |   1.824191   .3295509     5.54   0.000     1.178283    2.470099
+         28  |   1.625041   .3466418     4.69   0.000     .9456356    2.304447
+         29  |   1.579778   .3196624     4.94   0.000     .9532514    2.206305
+         30  |   .9523955   .3363268     2.83   0.005     .2932072    1.611584
+         31  |          0  (empty)
+         32  |          0  (omitted)
+             |
+       _cons |  -.5104153   .1405905    -3.63   0.000    -.7859675   -.2348631
+------------------------------------------------------------------------------
+
+ ( 1)  [ventilated]5.eth5 = 0
+
+------------------------------------------------------------------------------
+  ventilated |     exp(b)   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         (1) |   1.142558   .2818832     0.54   0.589     .7044925     1.85302
+------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------
+active results
+-------------------------------------------------------------------------------
+
+note: 1b.stp != 0 predicts failure perfectly
+      1b.stp dropped and [REDACTED] obs not used
+note: 31.stp != 0 predicts success perfectly
+      31.stp dropped and [REDACTED] obs not used
+note: 32.stp omitted because of collinearity
+
+Logistic regression                             Number of obs     =      3,015
+                                                LR chi2(38)       =     446.13
+                                                Prob > chi2       =     0.0000
+Log likelihood =  -1826.286                     Pseudo R2         =     0.1088
+
+------------------------------------------------------------------------------
+  ventilated | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |   1.305683   .1766737     1.97   0.049     1.001523    1.702218
+      Black  |   1.066379   .1918353     0.36   0.721     .7495236    1.517182
+      Mixed  |   1.057708   .3082438     0.19   0.847     .5974523    1.872527
+      Other  |    1.09727   .2714859     0.38   0.708      .675631    1.782039
+    Unknown  |   1.209998    .123963     1.86   0.063     .9898743    1.479072
+             |
+        male |
+       Male  |   1.326241   .1155528     3.24   0.001     1.118044    1.573208
+        age1 |   1.006679   .0263511     0.25   0.799     .9563344    1.059674
+        age2 |   1.055718   .0718761     0.80   0.426     .9238384    1.206425
+        age3 |   .7750982   .1373467    -1.44   0.151     .5476771    1.096955
+             |
+         stp |
+          1  |          1  (empty)
+          2  |   .8064374   .1507494    -1.15   0.250     .5590535     1.16329
+          3  |   .6000133   .1478336    -2.07   0.038     .3702018    .9724858
+          4  |    2.53147   1.075614     2.19   0.029     1.100779    5.821644
+          5  |   .4612264   .1873592    -1.91   0.057     .2080365     1.02256
+          6  |   1.017461   .2130258     0.08   0.934     .6749964    1.533676
+          7  |   1.696021   1.233542     0.73   0.468     .4076989    7.055422
+          8  |   3.161403   .7918403     4.60   0.000     1.934989    5.165131
+          9  |   3.797627   1.401406     3.62   0.000     1.842471    7.827516
+         10  |    3.51453   .9101168     4.85   0.000     2.115639    5.838388
+         11  |   4.692008   1.234662     5.87   0.000     2.801382    7.858599
+         12  |   2.343163   .6313748     3.16   0.002     1.381792      3.9734
+         13  |   11.87486   4.344846     6.76   0.000     5.796767    24.32604
+         14  |   6.094807   2.094459     5.26   0.000     3.107761    11.95288
+         15  |    2.00335   .4547884     3.06   0.002     1.283874    3.126018
+         16  |   .7089566   .2251025    -1.08   0.279     .3804982    1.320951
+         17  |   6.768309    2.24353     5.77   0.000     3.534496    12.96083
+         18  |   1.917452   .3932611     3.17   0.002     1.282764    2.866172
+         19  |   3.395626   .7763154     5.35   0.000     2.169283    5.315246
+         20  |   2.687626   .5177952     5.13   0.000     1.842372    3.920671
+         21  |   4.641527   .9486362     7.51   0.000     3.109512    6.928347
+         22  |   3.289477   1.837906     2.13   0.033     1.100376    9.833599
+         23  |   1.435484   .3854592     1.35   0.178     .8480701    2.429768
+         24  |   4.636465   5.401076     1.32   0.188     .4727284     45.4739
+         25  |   .5802128   .4951942    -0.64   0.524     .1089212    3.090738
+         26  |   2.852479   1.069485     2.80   0.005     1.367981    5.947919
+         27  |   5.915123   1.957652     5.37   0.000     3.092094    11.31553
+         28  |   4.982791   1.735269     4.61   0.000     2.517907    9.860653
+         29  |   5.267649   1.695189     5.16   0.000     2.803436    9.897901
+         30  |   2.455701   .8298719     2.66   0.008     1.266261    4.762422
+         31  |          1  (empty)
+         32  |          1  (omitted)
+             |
+       _cons |   .2874063   .2608071    -1.37   0.169      .048537    1.701844
+------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+
+ ( 1)  [ventilated]5.eth5 = 0
+
+------------------------------------------------------------------------------
+  ventilated | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         (1) |    1.09727   .2714859     0.38   0.708      .675631    1.782039
+------------------------------------------------------------------------------
+
+ ( 1)  [ventilated]5.eth5 = 0
+
+------------------------------------------------------------------------------
+  ventilated | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         (1) |   1.125673   .2800159     0.48   0.634     .6913089    1.832957
+------------------------------------------------------------------------------
+
+ ( 1)  [ventilated]5.eth5 = 0
+
+------------------------------------------------------------------------------
+  ventilated |     exp(b)   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         (1) |   1.133891   .3557599     0.40   0.689      .613064    2.097186
+------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------
+active results
+-------------------------------------------------------------------------------
+
+note: 0b.dementia != 1 predicts failure perfectly
+      0b.dementia dropped and [REDACTED] obs not used
+note: 31.stp != 0 predicts success perfectly
+      31.stp dropped and [REDACTED] obs not used
+note: 1.dementia omitted because of collinearity
+
+Logistic regression                             Number of obs     =      1,802
+                                                LR chi2(67)       =     367.64
+                                                Prob > chi2       =     0.0000
+Log likelihood = -1033.3449                     Pseudo R2         =     0.1510
+
+------------------------------------------------------------------------------
+  ventilated | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |   1.096606   .2132966     0.47   0.635     .7490083    1.605516
+      Black  |   1.117174   .2790173     0.44   0.657     .6847477    1.822681
+      Mixed  |    1.00847   .3690295     0.02   0.982     .4922469    2.066062
+      Other  |    1.11443   .3742321     0.32   0.747     .5770516    2.152243
+    Unknown  |   1.170046   .1753374     1.05   0.295       .87226    1.569495
+             |
+        male |
+       Male  |   1.381668   .1717761     2.60   0.009     1.082874    1.762908
+        age1 |   .9843462   .0572052    -0.27   0.786     .8783758    1.103101
+        age2 |   1.146225   .1558691     1.00   0.316     .8780505    1.496306
+        age3 |   .6249699     .20908    -1.41   0.160     .3244103    1.203992
+             |
+         imd |
+          2  |   1.117497   .2128858     0.58   0.560     .7692904    1.623312
+          3  |   1.166378   .2223738     0.81   0.420      .802703     1.69482
+          4  |   1.244153   .2307717     1.18   0.239      .864945    1.789612
+5 most de..  |   .8382887   .1592095    -0.93   0.353     .5777389    1.216342
+             |
+         bmi |   1.006671   .0102889     0.65   0.515     .9867058     1.02704
+   hba1c_pct |   1.023806   .0497806     0.48   0.628     .9307432    1.126175
+gp_consult~t |   .9920902    .004495    -1.75   0.080     .9833192     1.00094
+             |
+smoke_nomiss |
+     Former  |   .8852236   .1089072    -0.99   0.322      .695555    1.126612
+    Current  |   1.087504   .2781037     0.33   0.743     .6588035    1.795171
+             |
+1.hyperten~n |   .9700002   .1187379    -0.25   0.803     .7630906    1.233013
+      bp_map |    .998907   .0034435    -0.32   0.751     .9921807    1.005679
+    1.asthma |   1.139989   .1611308     0.93   0.354      .864148    1.503879
+1.~y_disease |   .9839641   .1647398    -0.10   0.923     .7087078    1.366128
+1.~c_disease |    .764636    .110511    -1.86   0.063     .5760135    1.015025
+             |
+     dm_type |
+       T1DM  |   .8370657   .3647168    -0.41   0.683     .3563556    1.966235
+       T2DM  |   .9994099   .1637222    -0.00   0.997     .7249379    1.377801
+ UNKNOWN_DM  |    1.02329   .2460303     0.10   0.924     .6387686    1.639282
+             |
+    1.cancer |    1.06852   .2045337     0.35   0.729     .7342558    1.554954
+1.~r_disease |   .7805502   .3863136    -0.50   0.617     .2958831     2.05912
+    1.stroke |   .5674723    .132272    -2.43   0.015     .3593671    .8960888
+  1.dementia |          1  (empty)
+1.other_ne~o |   .6408354    .278234    -1.02   0.305     .2736384    1.500777
+             |
+      egfr60 |
+   eGFR <60  |   .5469633   .0899168    -3.67   0.000     .3963025    .7549003
+      1.esrf |    1.96377   .7437763     1.78   0.075     .9347572    4.125556
+1.immunosu~d |   .5430925   .2172516    -1.53   0.127     .2479535    1.189535
+1.ra_sle_p~s |   1.105017   .2250249     0.49   0.624     .7413632    1.647051
+             |
+hh_total_cat |
+        3-5  |   1.044451   .1304395     0.35   0.728     .8176793    1.334114
+       6-10  |   1.477613   .3458963     1.67   0.095     .9339031    2.337866
+        11+  |   .9169624   .4126103    -0.19   0.847      .379605    2.214987
+             |
+  1.carehome |   .7214712   .6337584    -0.37   0.710      .128974    4.035857
+             |
+         stp |
+          3  |   .9962066   .3273566    -0.01   0.991     .5231689    1.896954
+          4  |   4.593666   2.406782     2.91   0.004     1.645073    12.82725
+          5  |   .4860807   .2853025    -1.23   0.219     .1538509    1.535736
+          6  |   1.587955   .4299285     1.71   0.088     .9340734    2.699576
+          7  |   3.592746   3.750657     1.23   0.221     .4643146    27.79974
+          8  |    7.06458   2.368808     5.83   0.000     3.661609    13.63015
+          9  |   7.635122   3.299733     4.70   0.000     3.272994    17.81093
+         10  |   6.545657   2.416869     5.09   0.000     3.174403    13.49722
+         11  |    7.27206   2.327789     6.20   0.000      3.88318    13.61844
+         12  |   5.591494   1.909948     5.04   0.000     2.862686    10.92149
+         13  |   21.54017   9.533839     6.94   0.000     9.046922    51.28581
+         14  |   6.928029   3.177765     4.22   0.000     2.819542    17.02319
+         15  |   3.056561   .9040592     3.78   0.000     1.711857     5.45756
+         16  |   1.176349   .5003124     0.38   0.703     .5111074    2.707449
+         17  |   13.50933   6.819058     5.16   0.000     5.023148    36.33222
+         18  |   3.999362   1.149917     4.82   0.000     2.276401    7.026396
+         19  |   5.432769   1.669169     5.51   0.000     2.975071    9.920766
+         20  |   5.382107    1.38446     6.54   0.000     3.250831    8.910667
+         21  |   7.804517    1.98294     8.09   0.000     4.743253     12.8415
+         22  |   9.806754   8.096866     2.77   0.006     1.944186    49.46669
+         23  |   2.884463   .9866745     3.10   0.002     1.475362    5.639381
+         24  |   5.394402   6.850537     1.33   0.184     .4476856    65.00001
+         25  |   3.211723   4.107886     0.91   0.362     .2618344    39.39575
+         26  |   3.305396   1.790086     2.21   0.027     1.143517    9.554419
+         27  |   11.69895   6.130218     4.69   0.000     4.189087    32.67188
+         28  |   9.221829   4.446514     4.61   0.000     3.584189    23.72702
+         29  |   8.384298   3.648015     4.89   0.000     3.573619    19.67094
+         30  |   2.305121   .9956667     1.93   0.053      .988618     5.37476
+         31  |          1  (empty)
+         32  |   1.751725   .4299822     2.28   0.022      1.08275    2.834025
+             |
+       _cons |   .2858485   .6180086    -0.58   0.562     .0041288    19.79001
+------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+
+ ( 1)  [ventilated]5.eth5 = 0
+
+------------------------------------------------------------------------------
+  ventilated | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         (1) |    1.11443   .3742321     0.32   0.747     .5770516    2.152243
+------------------------------------------------------------------------------
+
+. 
+. file close tablecontent
+
+. 
+. 
+. /* Foresplot================================================================*
+> / 
+. 
+. dsconcat "$Tempdir/crude_ventilated_eth5" "$Tempdir/model0_ventilated_eth5" "
+> $Tempdir/model1_ventilated_eth5" "$Tempdir/model2_ventilated_eth5" "$Tempdir/
+> model3_ventilated_eth5"
+
+. duplicates drop
+
+Duplicates in terms of all variables
+
+(0 observations are duplicates)
+
+. 
+. split idstr, p(_)
+variables created as string: 
+idstr1  idstr2  idstr3
+
+. drop idstr
+
+. ren idstr1 model
+
+. ren idstr2 outcome
+
+. drop idstr3 
+
+. 
+. *save dataset for later
+. outsheet using "$Tabfigdir/FP_ventilated_eth5.txt", replace
+(note: file E:\anna\ethnicity-covid-research/output/tabfig/FP_ventilated_eth5.t
+> xt not found)
+
+. 
+. * Close log file 
+. log close
+      name:  <unnamed>
+       log:  E:\anna\ethnicity-covid-research/output/log/09b_eth_an_ventilation
+> _eth5.log
+  log type:  text
+ closed on:   4 Sep 2020, 04:33:48
+-------------------------------------------------------------------------------
