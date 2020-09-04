@@ -42,14 +42,14 @@ safecount
 /* Sense check outcomes=======================================================*/ 
 safetab positivetest
 
-safetab eth16 positivetest, missing row
+safetab ethnicity_16 positivetest, missing row
 
 
 /* Main Model=================================================================*/
 
 /* Univariable model */ 
 
-logistic positivetest i.eth16 i.stp, nolog 
+logistic positivetest i.ethnicity_16 i.stp, nolog 
 estimates save "$Tempdir/crude_positivetest_eth16", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/crude_positivetest_eth16", replace) idstr("crude_positivetest_eth16") 
 
@@ -57,18 +57,18 @@ parmest, label eform format(estimate p lb ub) saving("$Tempdir/crude_positivetes
 
 /* Multivariable models */ 
 *Age Gender
-logistic positivetest i.eth16 i.male age1 age2 age3 i.stp, nolog 
+logistic positivetest i.ethnicity_16 i.male age1 age2 age3 i.stp, nolog 
 estimates save "$Tempdir/model0_positivetest_eth16", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model0_positivetest_eth16", replace) idstr("model0_positivetest_eth16") 
 
 * Age, Gender, IMD
-logistic positivetest i.eth16 i.male age1 age2 age3 i.imd i.stp , nolog 
+logistic positivetest i.ethnicity_16 i.male age1 age2 age3 i.imd i.stp , nolog 
 estimates save "$Tempdir/model1_positivetest_eth16", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model1_positivetest_eth16", replace) idstr("model1_positivetest_eth16") 
 
 
 * Age, Gender, IMD and Comorbidities  
-logistic positivetest i.eth16 i.male age1 age2 age3 	i.imd						///
+logistic positivetest i.ethnicity_16 i.male age1 age2 age3 	i.imd						///
 										bmi	hba1c_pct				///
 										gp_consult_count			///
 										i.smoke_nomiss				///
@@ -93,7 +93,7 @@ parmest, label eform format(estimate p lb ub) saving("$Tempdir/model2_positivete
 * Age, Gender, IMD and Comorbidities and household size
 
 * Age, Gender, IMD and Comorbidities  and household size and carehome
-logistic positivetest i.eth16 i.male age1 age2 age3 	i.imd						///
+logistic positivetest i.ethnicity_16 i.male age1 age2 age3 	i.imd						///
 										bmi	hba1c_pct				///
 										gp_consult_count			///
 										i.smoke_nomiss				///
@@ -125,58 +125,61 @@ file write tablecontent ("Positive Test") _n
 
 * eth16 labelled columns
 
-local lab1: label eth16 1
-local lab2: label eth16 2
-local lab3: label eth16 3
-local lab4: label eth16 4
-local lab5: label eth16 5
-local lab6: label eth16 6
-local lab7: label eth16 7
-local lab8: label eth16 8
-local lab9: label eth16 9
-local lab10: label eth16 10
-local lab11: label eth16 11
-local lab12: label eth16 12
-local lab13: label eth16 13
-local lab14: label eth16 14
+local lab1: label ethnicity_16 1
+local lab2: label ethnicity_16 2
+local lab3: label ethnicity_16 3
+local lab4: label ethnicity_16 4
+local lab5: label ethnicity_16 5
+local lab6: label ethnicity_16 6
+local lab7: label ethnicity_16 7
+local lab8: label ethnicity_16 8
+local lab9: label ethnicity_16 9
+local lab10: label ethnicity_16 10
+local lab11: label ethnicity_16 11
+local lab12: label ethnicity_16 12
+local lab13: label ethnicity_16 13
+local lab14: label ethnicity_16 14
+local lab15: label ethnicity_16 15
+local lab16: label ethnicity_16 16
+local lab17: label ethnicity_16 17
 
 /* Counts */
  
 * First row, eth16 = 1 (White) reference cat
-	qui safecount if eth16==1
+	qui safecount if ethnicity_16==1
 	local denominator = r(N)
-	qui safecount if eth16 == 1 & positivetest == 1
+	qui safecount if ethnicity_16 == 1 & positivetest == 1
 	local event = r(N)
 	local pct =(`event'/`denominator')
 	file write tablecontent  ("`lab1'") _tab (`denominator') _tab (`event') _tab %3.2f (`pct') _tab
 	file write tablecontent ("1.00") _tab _tab ("1.00") _tab _tab ("1.00")  _tab _tab ("1.00") _tab _tab ("1.00") _n
 	
 * Subsequent ethnic groups
-forvalues eth=2/14 {
-	qui safecount if eth16==`eth'
+forvalues eth=2/17 {
+	qui safecount if ethnicity_16==`eth'
 	local denominator = r(N)
-	qui safecount if eth16 == `eth' & positivetest == 1
+	qui safecount if ethnicity_16 == `eth' & positivetest == 1
 	local event = r(N)
 	local pct =(`event'/`denominator')
 	file write tablecontent  ("`lab`eth''") _tab (`denominator') _tab (`event') _tab %3.2f (`pct') _tab
 	cap estimates use "$Tempdir/crude_positivetest_eth16" 
-	cap lincom `eth'.eth16, eform
+	cap lincom `eth'.ethnicity_16, eform
 	file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (" - ") %4.2f (r(ub)) (")") _tab 
 	cap estimates clear
 	cap estimates use "$Tempdir/model0_positivetest_eth16" 
-	cap lincom `eth'.eth16, eform
+	cap lincom `eth'.ethnicity_16, eform
 	file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (" - ") %4.2f (r(ub)) (")") _tab 
 	cap estimates clear
 	cap estimates use "$Tempdir/model1_positivetest_eth16" 
-	cap lincom `eth'.eth16, eform
+	cap lincom `eth'.ethnicity_16, eform
 	file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (" - ") %4.2f (r(ub)) (")") _tab 
 	cap estimates clear
 	cap estimates use "$Tempdir/model2_positivetest_eth16" 
-	cap lincom `eth'.eth16, eform
+	cap lincom `eth'.ethnicity_16, eform
 	file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (" - ") %4.2f (r(ub)) (")") _tab 
 	cap estimates clear
 	cap estimates use "$Tempdir/model3_positivetest_eth16" 
-	cap lincom `eth'.eth16, eform
+	cap lincom `eth'.ethnicity_16, eform
 	file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (" - ") %4.2f (r(ub)) (")") _n
 }  //end ethnic group
 
