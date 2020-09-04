@@ -104,7 +104,7 @@ study = StudyDefinition(
     on_or_after="2020-02-01",
     find_first_match_in_period=True,
     returning="had_basic_respiratory_support",
-    rreturn_expectations={
+    return_expectations={
             "date": {"earliest" : "2020-02-01"},
             "rate" : "exponential_increase"
        },
