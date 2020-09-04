@@ -1,11 +1,11 @@
 /*==============================================================================
-DO FILE NAME:			05a_eth_table1_descriptives_eth16
+DO FILE NAME:			19_eth_an_prison_characteristics
 PROJECT:				Ethnicity and COVID-19 
 DATE: 					14 July 2020 
 AUTHOR:					R Mathur
 						adapted from A Schultze 	
 DESCRIPTION OF FILE:	Produce a table of baseline characteristics, by ethnicity
-						Generalised to produce same columns as levels of eth16
+						Generalised to produce same columns as levels of is_prison
 						Output to a textfile for further formatting
 DATASETS USED:			$Tempdir\analysis_dataset.dta
 DATASETS CREATED: 		None
@@ -28,11 +28,11 @@ USER-INSTALLED ADO:
 
 * Open a log file
 capture log close
-log using "$Logdir/05a_eth_table1_descriptives_eth16", replace t
+log using "$Logdir/19_eth_an_prison_characteristics", replace t
 
 * Open Stata dataset
 use $Tempdir/analysis_dataset, clear
-safetab eth16,m 
+safetab is_prison, m 
 
  /* PROGRAMS TO AUTOMATE TABULATIONS===========================================*/ 
 
@@ -55,10 +55,10 @@ syntax, variable(varname) condition(string)
 	local colpct = 100*(r(N)/`overalldenom')
 	file write tablecontent %9.0gc (`rowdenom')  (" (") %3.1f (`colpct') (")") _tab
 
-	forvalues i=1/14{
-	cou if eth16 == `i'
+	forvalues i=0/1{
+	cou if is_prison == `i'
 	local rowdenom = r(N)
-	cou if eth16 == `i' & `variable' `condition'
+	cou if is_prison == `i' & `variable' `condition'
 	local pct = 100*(r(N)/`rowdenom') 
 	file write tablecontent %9.0gc (r(N)) (" (") %3.1f (`pct') (")") _tab
 	}
@@ -81,10 +81,10 @@ syntax, variable(varname) condition(string)
 	local colpct = 100*(r(N)/`overalldenom')
 	file write tablecontent %9.0gc (`rowdenom')  (" (") %3.1f (`colpct') (")") _tab
 
-	forvalues i=1/14{
-	cou if eth16 == `i'
+	forvalues i=0/1{
+	cou if is_prison == `i'
 	local rowdenom = r(N)
-	cou if eth16 == `i' & `variable' `condition'
+	cou if is_prison == `i' & `variable' `condition'
 	local pct = 100*(r(N)/`rowdenom') 
 	file write tablecontent %9.0gc (r(N)) (" (") %3.1f (`pct') (")") _tab
 	}
@@ -164,8 +164,8 @@ syntax, variable(varname)
 	file write tablecontent ("Mean (SD)") _tab 
 	file write tablecontent  %3.1f (r(mean)) (" (") %3.1f (r(sd)) (")") _tab
 	
-	forvalues i=1/14{							
-	qui summarize `variable' if eth16 == `i', d
+	forvalues i=0/1{							
+	qui summarize `variable' if is_prison == `i', d
 	file write tablecontent  %3.1f (r(mean)) (" (") %3.1f (r(sd)) (")") _tab
 	}
 
@@ -176,8 +176,8 @@ file write tablecontent _n
 	file write tablecontent ("Median (IQR)") _tab 
 	file write tablecontent %3.1f (r(p50)) (" (") %3.1f (r(p25)) ("-") %3.1f (r(p75)) (")") _tab
 	
-	forvalues i=1/14{
-	qui summarize `variable' if eth16 == `i', d
+	forvalues i=0/1{
+	qui summarize `variable' if is_prison == `i', d
 	file write tablecontent %3.1f (r(p50)) (" (") %3.1f (r(p25)) ("-") %3.1f (r(p75)) (")") _tab
 	}
 	
@@ -189,44 +189,20 @@ end
 
 *Set up output file
 cap file close tablecontent
-file open tablecontent using $Tabfigdir/table1_eth16.txt, write text replace
+file open tablecontent using $Tabfigdir/table1_is_prison.txt, write text replace
 
 file write tablecontent ("Table 1: Demographic and Clinical Characteristics") _n
 
-* eth16 labelled columns
+* is_prison labelled columns
 
-local lab1: label eth16 1
-local lab2: label eth16 2
-local lab3: label eth16 3
-local lab4: label eth16 4
-local lab5: label eth16 5
-local lab6: label eth16 6
-local lab7: label eth16 7
-local lab8: label eth16 8
-local lab9: label eth16 9
-local lab10: label eth16 10
-local lab11: label eth16 11
-local lab12: label eth16 12
-local lab13: label eth16 13
-local lab14: label eth16 14
+local lab1: label is_prison 0
+local lab2: label is_prison 1
 
 
 
 file write tablecontent _tab ("Total")				  			  _tab ///
 							 ("`lab1'")  						  _tab ///
-							 ("`lab2'")  						  _tab ///
-							 ("`lab3'")  						  _tab ///
-							 ("`lab4'")  						  _tab ///
-							 ("`lab5'")  						  _tab ///
-							 ("`lab6'")  						  _tab ///
-							 ("`lab7'")  						  _tab ///
-							 ("`lab8'")  						  _tab ///
-							 ("`lab9'")  						  _tab ///
-							 ("`lab10'")  						  _tab ///
-							 ("`lab11'")  						  _tab ///
-							 ("`lab12'")  						  _tab ///
-							 ("`lab13'")  						  _tab ///
-							 ("`lab14'")  						  _n 
+							 ("`lab2'")  						  _n
 							 
 							 
 
@@ -259,9 +235,6 @@ tabulatevariable, variable(hh_total_cat) min(1) max(4) missing
 file write tablecontent _n 
 
 tabulatevariable, variable(carehome) min(0) max(1) missing
-file write tablecontent _n 
-
-tabulatevariable, variable(is_prison) min(0) max(1) missing
 file write tablecontent _n 
 
 tabulatevariable, variable(smoke_nomiss) min(1) max(3)  
@@ -347,4 +320,4 @@ file close tablecontent
 log close
 
 clear
-insheet using "$Tabfigdir/table1_eth16.txt", clear
+insheet using "$Tabfigdir/table1_is_prison.txt", clear

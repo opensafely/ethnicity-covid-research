@@ -70,6 +70,10 @@ do "$Dodir/06b_eth_an_multivariable_eth5.do"
 *Table 3: Odds of receiving ventilation - in those admitted to ICU
 do "$Dodir/09b_eth_an_ventilation_eth5"
 
+*Table 4: Odds of testing positive amongst those with SGSS testing data
+do "$Dodir/11b_eth_an_testedpop_eth5" 
+
+
 /**********************
 ETH 16
 **********************/
@@ -93,6 +97,15 @@ do "$Dodir/18b_eth_an_sens_exclude_large_hh_eth5.do"
 
 *Table 5: Characteristics of people with and without key outcomes
 do "$Dodir/16_eth_an_outcome_characteristics.do"
+do "$Dodir/19_eth_an_prison_characteristics.do"
+
+/**********************
+OUTCOMES IN TESTED POP
+**********************/
+*Table 4: Odds of testing positive amongst those with SGSS testing data
+do "$Dodir/11b_eth_an_testedpop_eth5" 
+do "$Dodir/11a_eth_an_testedpop_eth16" 
+
 
 /**********************
 MULTIPLE IMPUTATION
