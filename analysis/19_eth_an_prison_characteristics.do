@@ -219,7 +219,7 @@ file write tablecontent _n
 tabulatevariable, variable(eth5) min(1) max(6) 
 file write tablecontent _n 
 
-tabulatevariable, variable(ethniicty_16) min(1) max(17) missing
+tabulatevariable, variable(ethnicty_16) min(1) max(17) missing
 file write tablecontent _n 
 
 qui summarizevariable, variable(age) 
