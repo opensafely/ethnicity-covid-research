@@ -35,7 +35,7 @@ replace eth16=. if eth16==14 //set unknown to missing
 mi register imputed eth16
 
 *mi impute the dataset - remove variables with missing values - bmi	hba1c_pct bp_map 
-noisily mi impute mlogit eth16 `i' i.stp i.male age1 age2 age3 	i.imd						///
+noisily mi impute mlogit ethnicity_16 `i' i.stp i.male age1 age2 age3 	i.imd						///
 										bmi	hba1c_pct				///
 										gp_consult_count			///
 										i.smoke_nomiss				///
