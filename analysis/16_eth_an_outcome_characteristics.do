@@ -41,24 +41,24 @@ syntax, variable(varname) condition(string)
 	cou
 	local overalldenom=r(N)
 	
-	sum `variable' if `variable' `condition'
+	qui sum  `variable' if `variable' `condition'
 	file write tablecontent (r(max)) _tab
 	
-	cou if `variable' `condition'
+	qui cou if `variable' `condition'
 	local rowdenom = r(N)
 	local colpct = 100*(r(N)/`overalldenom')
 	file write tablecontent %9.0gc (`rowdenom')  (" (") %3.1f (`colpct') (")") _tab
 
 	
-	cou if outcome == 0
+	qui cou if outcome == 0
 	local rowdenom = r(N)
-	cou if outcome == 0 & `variable' `condition'
+	qui cou if outcome == 0 & `variable' `condition'
 	local pct = 100*(r(N)/`rowdenom') 
 	file write tablecontent %9.0gc (r(N)) (" (") %3.1f (`pct') (")") _tab
 	
-	cou if outcome == 1
+	qui cou if outcome == 1
 	local rowdenom = r(N)
-	cou if outcome == 1 & `variable' `condition'
+	qui cou if outcome == 1 & `variable' `condition'
 	local pct = 100*(r(N)/`rowdenom') 
 	file write tablecontent %9.0gc (r(N)) (" (") %3.1f (`pct') (")") _tab
 
@@ -135,24 +135,24 @@ syntax, variable(varname)
 	file write tablecontent ("`lab'") _n 
 
 
-	 summarize `variable', d
+	qui summarize `variable', d
 	file write tablecontent ("Mean (SD)") _tab 
 	file write tablecontent  %3.1f (r(mean)) (" (") %3.1f (r(sd)) (")") _tab
 	
 	forvalues i=0/1{	
-	 summarize `variable' if outcome == `i', d
+	qui summarize `variable' if outcome == `i', d
 	file write tablecontent  %3.1f (r(mean)) (" (") %3.1f (r(sd)) (")") _tab
 	}
 
 file write tablecontent _n
 
 	
-	 summarize `variable', d
+	qui summarize `variable', d
 	file write tablecontent ("Median (IQR)") _tab 
 	file write tablecontent %3.1f (r(p50)) (" (") %3.1f (r(p25)) ("-") %3.1f (r(p75)) (")") _tab
 	
 	forvalues i=0/1{
-	 summarize `variable' if outcome == `i', d
+	qui summarize `variable' if outcome == `i', d
 	file write tablecontent %3.1f (r(p50)) (" (") %3.1f (r(p25)) ("-") %3.1f (r(p75)) (")") _tab
 	}
 	
@@ -326,9 +326,9 @@ use $Tempdir/analysis_dataset, clear
 keep if icu==1
 
 gen outcome=0
-replace outcome=1 if was_ventilated_flag==1
+replace outcome=1 if advanced_resp_support_flag==1
 
-safetab outcome was_ventilated_flag,m
+safetab outcome advanced_resp_support_flag,m
 
 *Set up output file
 cap file close tablecontent
