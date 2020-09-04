@@ -32,6 +32,7 @@ log using "$Logdir/19_eth_an_prison_characteristics", replace t
 
 * Open Stata dataset
 use $Tempdir/analysis_dataset, clear
+replace is_prison=0 if is_prison==.
 safetab is_prison, m 
 
  /* PROGRAMS TO AUTOMATE TABULATIONS===========================================*/ 
@@ -44,21 +45,21 @@ cap prog drop generaterow
 program define generaterow
 syntax, variable(varname) condition(string) 
 	
-	cou
+	qui cou
 	local overalldenom=r(N)
 	
-	sum `variable' if `variable' `condition'
+	qui sum `variable' if `variable' `condition'
 	file write tablecontent (r(max)) _tab
 	
-	cou if `variable' `condition'
+	qui cou if `variable' `condition'
 	local rowdenom = r(N)
 	local colpct = 100*(r(N)/`overalldenom')
 	file write tablecontent %9.0gc (`rowdenom')  (" (") %3.1f (`colpct') (")") _tab
 
 	forvalues i=0/1{
-	cou if is_prison == `i'
+	qui cou if is_prison == `i'
 	local rowdenom = r(N)
-	cou if is_prison == `i' & `variable' `condition'
+	qui cou if is_prison == `i' & `variable' `condition'
 	local pct = 100*(r(N)/`rowdenom') 
 	file write tablecontent %9.0gc (r(N)) (" (") %3.1f (`pct') (")") _tab
 	}
@@ -73,18 +74,18 @@ cap prog drop generaterow2
 program define generaterow2
 syntax, variable(varname) condition(string) 
 	
-	cou
+	qui cou
 	local overalldenom=r(N)
 	
-	cou if `variable' `condition'
+	qui cou if `variable' `condition'
 	local rowdenom = r(N)
 	local colpct = 100*(r(N)/`overalldenom')
 	file write tablecontent %9.0gc (`rowdenom')  (" (") %3.1f (`colpct') (")") _tab
 
 	forvalues i=0/1{
-	cou if is_prison == `i'
+	qui cou if is_prison == `i'
 	local rowdenom = r(N)
-	cou if is_prison == `i' & `variable' `condition'
+	qui cou if is_prison == `i' & `variable' `condition'
 	local pct = 100*(r(N)/`rowdenom') 
 	file write tablecontent %9.0gc (r(N)) (" (") %3.1f (`pct') (")") _tab
 	}
