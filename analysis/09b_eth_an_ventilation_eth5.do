@@ -31,7 +31,7 @@ file write tablecontent _tab _tab _tab _tab   ("OR") _tab ("95% CI") _tab ("OR")
 use "$Tempdir/analysis_dataset.dta", clear
 
 gen ventilated=0
-replace ventilated=1 if was_ventilated_flag==1
+replace ventilated=1 if advanced_resp_support_flag==1
 
 /* Restrict to those ever admitted to ICU=======================================================*/ 
 keep if icu==1
