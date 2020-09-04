@@ -1,5 +1,5 @@
 /*==============================================================================
-DO FILE NAME:			05a_eth_table1_descriptives_is_prison
+DO FILE NAME:			19_eth_an_prison_characteristics
 PROJECT:				Ethnicity and COVID-19 
 DATE: 					14 July 2020 
 AUTHOR:					R Mathur

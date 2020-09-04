@@ -97,6 +97,7 @@ do "$Dodir/18b_eth_an_sens_exclude_large_hh_eth5.do"
 
 *Table 5: Characteristics of people with and without key outcomes
 do "$Dodir/16_eth_an_outcome_characteristics.do"
+do "$Dodir/19_eth_an_prison_characteristics.do"
 
 /**********************
 OUTCOMES IN TESTED POP
