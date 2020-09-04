@@ -85,10 +85,10 @@ do "$Dodir/05a_eth_table1_descriptives_eth16.do"
 do "$Dodir/06a_eth_an_multivariable_eth16.do" 
 
 *Table 3: Odds of receiving ventilation - in those admitted to ICU
-do "$Dodir/09B_eth_an_ventilation_eth16"
+do "$Dodir/09a_eth_an_ventilation_eth16"
 
 *Table 4: Odds of testing positive amongst those with SGSS testing data
-do "$Dodir/11A_eth_an_testedpop_eth16" 
+do "$Dodir/11a_eth_an_testedpop_eth16" 
 
 
 /**********************
