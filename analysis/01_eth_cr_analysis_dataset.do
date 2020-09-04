@@ -923,7 +923,10 @@ foreach i of global outcomes {
 	lab var `i' 					"outcome `i'"
 	safetab `i'
 }
-label var was_ventilated_flag		"outcome: ICU Ventilation"
+label var advanced_resp_support_flag		"outcome: Advanced respiratory support"
+
+label var basic_resp_support_flag		"outcome: Basic respiratory support"
+label var any_resp_support_flag "outcome: Any respiratory support"
 
 /* TIDY DATA==================================================================*/
 *  Drop variables that are not needed (those not labelled)

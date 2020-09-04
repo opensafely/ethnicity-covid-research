@@ -55,7 +55,7 @@ syntax, variable(varname) condition(string)
 	forvalues i=1/12{
 	qui cou if eth16 == `i'
 	local rowdenom = r(N)
-	cou if eth16 == `i' & `variable' `condition'
+	qui cou if eth16 == `i' & `variable' `condition'
 	local pct = 100*(r(N)/`rowdenom') 
 	file write tablecontent %9.0gc (r(N)) (" (") %3.1f (`pct') (")") _tab
 	}
@@ -317,20 +317,23 @@ file write tablecontent ("Table 0: Outcome counts by ethnic group") _n
 
 * eth16 labelled columns
 
-local lab1: label eth16 1
-local lab2: label eth16 2
-local lab3: label eth16 3
-local lab4: label eth16 4
-local lab5: label eth16 5
-local lab6: label eth16 6
-local lab7: label eth16 7
-local lab8: label eth16 8
-local lab9: label eth16 9
-local lab10: label eth16 10
-local lab11: label eth16 11
-local lab12: label eth16 12
-local lab13: label eth16 13
-local lab14: label eth16 14
+local lab1: label ethnicity_16 1
+local lab2: label ethnicity_16 2
+local lab3: label ethnicity_16 3
+local lab4: label ethnicity_16 4
+local lab5: label ethnicity_16 5
+local lab6: label ethnicity_16 6
+local lab7: label ethnicity_16 7
+local lab8: label ethnicity_16 8
+local lab9: label ethnicity_16 9
+local lab10: label ethnicity_16 10
+local lab11: label ethnicity_16 11
+local lab12: label ethnicity_16 12
+local lab13: label ethnicity_16 13
+local lab14: label ethnicity_16 14
+local lab14: label ethnicity_16 15
+local lab14: label ethnicity_16 16
+local lab14: label ethnicity_16 17
 
 
 
@@ -348,8 +351,11 @@ file write tablecontent _tab ("Total")				  			  _tab ///
 							 ("`lab11'")  						  _tab ///
 							 ("`lab12'")  						  _tab ///
 							 ("`lab13'")  						  _tab ///
-							 ("`lab14'")  						  _n
-
+							 ("`lab14'")  						  _tab ///
+							 ("`lab15'")  						  _tab ///
+							 ("`lab16'")  						  _tab ///
+							 ("`lab17'")  						  _n
+							 
 /*STEP 1: WHOLE POPULATION WITHOUT EXCLUSIONS*/
 							 
 *Denominator
@@ -368,12 +374,23 @@ file write tablecontent ("`var'") _tab
 generaterow2, variable(`var') condition("==1")
 }
 
+*icu outcomes
+local p" "any_resp_support_flag" "basic_resp_support_flag" "advanced_resp_support_flag" "
+foreach var of local p {
+file write tablecontent ("`var'") _tab
+generaterow2, variable(`var') condition("==1")
+}
+
+
 /* STEP 2: KEEP THOSE AGED 18-105 */
 drop if age<18
 drop if age>105
 
+* Sex: Exclude categories other than M and F
+drop if inlist(sex, "I", "U")
+
 *Denominator
-file write tablecontent ("Adults aged 18-105") _n
+file write tablecontent ("Adults aged 18-105 with valid sex") _n
 file write tablecontent ("N") _tab
 
 generaterow2, variable(cons) condition("==1")
@@ -387,23 +404,14 @@ file write tablecontent ("`var'") _tab
 generaterow2, variable(`var') condition("==1")
 }
 
-* Sex: Exclude categories other than M and F
-drop if inlist(sex, "I", "U")
-
-*Denominator
-file write tablecontent ("Adults with valid sex recorded") _n
-file write tablecontent ("N") _tab
-
-generaterow2, variable(cons) condition("==1")
-file write tablecontent _n 
-
-
-*Outcomes 
-foreach var of global outcomes {
-
+*icu outcomes
+local p" "any_resp_support_flag" "basic_resp_support_flag" "advanced_resp_support_flag" "
+foreach var of local p {
 file write tablecontent ("`var'") _tab
-qui generaterow2, variable(`var') condition("==1")
+generaterow2, variable(`var') condition("==1")
 }
+
+
 
 file close tablecontent
 

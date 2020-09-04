@@ -327,7 +327,20 @@ file write tablecontent ("`var'") _tab
 generaterow2, variable(`var') condition("==1")
 }
 
+*icu outcomes
+local p" "any_resp_support_flag" "basic_resp_support_flag" "advanced_resp_support_flag" "
+foreach var of local p {
+file write tablecontent ("`var'") _tab
+generaterow2, variable(`var') condition("==1")
+}
+
+
 /* STEP 2: KEEP THOSE AGED 18-105 */
+
+* Sex: Exclude categories other than M and F
+drop if inlist(sex, "I", "U")
+
+
 drop if age<18
 drop if age>105
 
@@ -346,23 +359,14 @@ file write tablecontent ("`var'") _tab
 generaterow2, variable(`var') condition("==1")
 }
 
-* Sex: Exclude categories other than M and F
-drop if inlist(sex, "I", "U")
-
-*Denominator
-file write tablecontent ("Adults with valid sex recorded") _n
-file write tablecontent ("N") _tab
-
-generaterow2, variable(cons) condition("==1")
-file write tablecontent _n 
-
-
-*Outcomes 
-foreach var of global outcomes {
-
+*icu outcomes
+local p" "any_resp_support_flag" "basic_resp_support_flag" "advanced_resp_support_flag" "
+foreach var of local p {
 file write tablecontent ("`var'") _tab
 generaterow2, variable(`var') condition("==1")
 }
+
+
 
 file close tablecontent
 
