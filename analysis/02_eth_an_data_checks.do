@@ -36,7 +36,9 @@ tab ae onsdeath
 tab ae onscoviddeath
 tab ae ons_noncoviddeath
 tab ae icu
-tab ae was_ventilated
+tab ae any_resp_support_flag
+tab ae basic_resp_support_flag
+tab ae advanced_resp_support_flag
 tab ae tested
 tab ae positivetest
 
@@ -74,17 +76,14 @@ bysort hh_total_cat: summ hh_size, d
 *large households
 safetab male if hh_total_cat==4
 safetab agegroup if hh_total_cat==4
-
+safetab imd if hh_total_cat==4
 
 
 *prison
 safetab is_prison, m
 safetab hh_total_cat is_prison, m
-
-
-safetab male if is_prison==1
-safetab agegroup if is_prison==1
-
+bysort is_prison: safetab agegroup
+bysort is_prison: safetab male
 bysort is_prison: summ hh_size
 
 *Care home

@@ -41,21 +41,21 @@ cap prog drop generaterow
 program define generaterow
 syntax, variable(varname) condition(string) 
 	
-	cou
+	qui cou
 	local overalldenom=r(N)
 	
-	sum `variable' if `variable' `condition'
+	qui sum `variable' if `variable' `condition'
 	file write tablecontent (r(max)) _tab
 	
-	cou if `variable' `condition'
+	qui cou if `variable' `condition'
 	local rowdenom = r(N)
 	local colpct = 100*(r(N)/`overalldenom')
 	file write tablecontent %9.0gc (`rowdenom')  (" (") %3.1f (`colpct') (")") _tab
 
 	forvalues i=1/12{
-	cou if eth16 == `i'
+	qui cou if eth16 == `i'
 	local rowdenom = r(N)
-	cou if eth16 == `i' & `variable' `condition'
+	qui cou if eth16 == `i' & `variable' `condition'
 	local pct = 100*(r(N)/`rowdenom') 
 	file write tablecontent %9.0gc (r(N)) (" (") %3.1f (`pct') (")") _tab
 	}
@@ -70,18 +70,18 @@ cap prog drop generaterow2
 program define generaterow2
 syntax, variable(varname) condition(string) 
 	
-	cou
+	qui cou
 	local overalldenom=r(N)
 	
-	cou if `variable' `condition'
+	qui cou if `variable' `condition'
 	local rowdenom = r(N)
 	local colpct = 100*(r(N)/`overalldenom')
 	file write tablecontent %9.0gc (`rowdenom')  (" (") %3.1f (`colpct') (")") _tab
 
-	forvalues i=1/12{
-	cou if eth16 == `i'
+	forvalues i=1/14{
+	qui cou if eth16 == `i'
 	local rowdenom = r(N)
-	cou if eth16 == `i' & `variable' `condition'
+	qui cou if eth16 == `i' & `variable' `condition'
 	local pct = 100*(r(N)/`rowdenom') 
 	file write tablecontent %9.0gc (r(N)) (" (") %3.1f (`pct') (")") _tab
 	}
@@ -224,18 +224,18 @@ safetab ethnicity_16,m
 * Ethnicity (16 category grouped further)
 * Generate a version of the full breakdown with mixed in one group
 gen eth16 = ethnicity_16
-recode eth16 4/7 = 99
-recode eth16 11 = 16
-recode eth16 14 = 16
+recode eth16 4/7 = 99 //mixed
 recode eth16 8 = 4
 recode eth16 9 = 5
 recode eth16 10 = 6
-recode eth16 12 = 7
-recode eth16 13 = 8
-recode eth16 15 = 9
-recode eth16 99 = 10
-recode eth16 16 = 11
-recode eth16 17 = 12
+recode eth16 11= 7
+recode eth16 12 = 8
+recode eth16 13 = 9
+recode eth16 14 = 10
+recode eth16 15 = 11
+recode eth16 99 = 12
+recode eth16 16 = 13
+recode eth16 17 = 14
 
 label define eth16 	///
 						1 "British" ///
@@ -243,13 +243,15 @@ label define eth16 	///
 						3 "Other White" ///
 						4 "Indian" ///
 						5 "Pakistani" ///
-						6 "Bangladeshi" ///					
-						7 "Caribbean" ///
-						8 "African" ///
-						9 "Chinese" ///
-						10 "All mixed" ///
-						11 "All Other" ///
-						12 "Unknown"
+						6 "Bangladeshi" ///	
+						7 "Other Asian" ///
+						8 "Caribbean" ///
+						9 "African" ///
+						10 "Other Black" ///
+						11 "Chinese" ///
+						12 "All mixed" ///
+						13 "Other" ///
+						14 "Unknown"
 label values eth16 eth16
 safetab eth16,m
 
@@ -305,7 +307,6 @@ foreach i of global outcomes {
 }
 
 
-
 /* INVOKE PROGRAMS FOR TABLE 1================================================*/ 
 
 *Set up output file
@@ -316,18 +317,23 @@ file write tablecontent ("Table 0: Outcome counts by ethnic group") _n
 
 * eth16 labelled columns
 
-local lab1: label eth16 1
-local lab2: label eth16 2
-local lab3: label eth16 3
-local lab4: label eth16 4
-local lab5: label eth16 5
-local lab6: label eth16 6
-local lab7: label eth16 7
-local lab8: label eth16 8
-local lab9: label eth16 9
-local lab10: label eth16 10
-local lab11: label eth16 11
-local lab12: label eth16 12
+local lab1: label ethnicity_16 1
+local lab2: label ethnicity_16 2
+local lab3: label ethnicity_16 3
+local lab4: label ethnicity_16 4
+local lab5: label ethnicity_16 5
+local lab6: label ethnicity_16 6
+local lab7: label ethnicity_16 7
+local lab8: label ethnicity_16 8
+local lab9: label ethnicity_16 9
+local lab10: label ethnicity_16 10
+local lab11: label ethnicity_16 11
+local lab12: label ethnicity_16 12
+local lab13: label ethnicity_16 13
+local lab14: label ethnicity_16 14
+local lab14: label ethnicity_16 15
+local lab14: label ethnicity_16 16
+local lab14: label ethnicity_16 17
 
 
 
@@ -343,8 +349,13 @@ file write tablecontent _tab ("Total")				  			  _tab ///
 							 ("`lab9'")  						  _tab ///
 							 ("`lab10'")  						  _tab ///
 							 ("`lab11'")  						  _tab ///
-							 ("`lab12'")  						  _n 							 
-
+							 ("`lab12'")  						  _tab ///
+							 ("`lab13'")  						  _tab ///
+							 ("`lab14'")  						  _tab ///
+							 ("`lab15'")  						  _tab ///
+							 ("`lab16'")  						  _tab ///
+							 ("`lab17'")  						  _n
+							 
 /*STEP 1: WHOLE POPULATION WITHOUT EXCLUSIONS*/
 							 
 *Denominator
@@ -363,30 +374,23 @@ file write tablecontent ("`var'") _tab
 generaterow2, variable(`var') condition("==1")
 }
 
-/* STEP 2: KEEP THOSE AGED 18-105 */
-drop if age<18
-drop if age>105
-
-*Denominator
-file write tablecontent ("Adults aged 18-105") _n
-file write tablecontent ("N") _tab
-
-generaterow2, variable(cons) condition("==1")
-file write tablecontent _n 
-
-
-*Outcomes 
-foreach var of global outcomes {
-
+*icu outcomes
+local p" "any_resp_support_flag" "basic_resp_support_flag" "advanced_resp_support_flag" "
+foreach var of local p {
 file write tablecontent ("`var'") _tab
 generaterow2, variable(`var') condition("==1")
 }
+
+
+/* STEP 2: KEEP THOSE AGED 18-105 */
+drop if age<18
+drop if age>105
 
 * Sex: Exclude categories other than M and F
 drop if inlist(sex, "I", "U")
 
 *Denominator
-file write tablecontent ("Adults with valid sex recorded") _n
+file write tablecontent ("Adults aged 18-105 with valid sex") _n
 file write tablecontent ("N") _tab
 
 generaterow2, variable(cons) condition("==1")
@@ -399,6 +403,15 @@ foreach var of global outcomes {
 file write tablecontent ("`var'") _tab
 generaterow2, variable(`var') condition("==1")
 }
+
+*icu outcomes
+local p" "any_resp_support_flag" "basic_resp_support_flag" "advanced_resp_support_flag" "
+foreach var of local p {
+file write tablecontent ("`var'") _tab
+generaterow2, variable(`var') condition("==1")
+}
+
+
 
 file close tablecontent
 

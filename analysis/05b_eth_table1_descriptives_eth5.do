@@ -44,21 +44,21 @@ cap prog drop generaterow
 program define generaterow
 syntax, variable(varname) condition(string) 
 	
-	cou
+	qui cou
 	local overalldenom=r(N)
 	
-	sum `variable' if `variable' `condition'
+	qui sum `variable' if `variable' `condition'
 	file write tablecontent (r(max)) _tab
 	
-	cou if `variable' `condition'
+	qui cou   if `variable' `condition'
 	local rowdenom = r(N)
 	local colpct = 100*(r(N)/`overalldenom')
 	file write tablecontent %9.0gc (`rowdenom')  (" (") %3.1f (`colpct') (")") _tab
 
 	forvalues i=1/6{
-	cou if eth5 == `i'
+	qui cou if eth5 == `i'
 	local rowdenom = r(N)
-	cou if eth5 == `i' & `variable' `condition'
+	qui cou if eth5 == `i' & `variable' `condition'
 	local pct = 100*(r(N)/`rowdenom') 
 	file write tablecontent %9.0gc (r(N)) (" (") %3.1f (`pct') (")") _tab
 	}
@@ -73,18 +73,18 @@ cap prog drop generaterow2
 program define generaterow2
 syntax, variable(varname) condition(string) 
 	
-	cou
+	qui cou
 	local overalldenom=r(N)
 	
-	cou if `variable' `condition'
+	qui cou if `variable' `condition'
 	local rowdenom = r(N)
 	local colpct = 100*(r(N)/`overalldenom')
 	file write tablecontent %9.0gc (`rowdenom')  (" (") %3.1f (`colpct') (")") _tab
 
 	forvalues i=1/6{
-	cou if eth5 == `i'
+	qui cou if eth5 == `i'
 	local rowdenom = r(N)
-	cou if eth5 == `i' & `variable' `condition'
+	qui cou if eth5 == `i' & `variable' `condition'
 	local pct = 100*(r(N)/`rowdenom') 
 	file write tablecontent %9.0gc (r(N)) (" (") %3.1f (`pct') (")") _tab
 	}

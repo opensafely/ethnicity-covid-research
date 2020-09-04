@@ -87,6 +87,10 @@ do "$Dodir/06a_eth_an_multivariable_eth16.do"
 *Table 3: Odds of receiving ventilation - in those admitted to ICU
 do "$Dodir/09a_eth_an_ventilation_eth16"
 
+*Table 4: Odds of testing positive amongst those with SGSS testing data
+do "$Dodir/11a_eth_an_testedpop_eth16" 
+
+
 /**********************
 SENSITIVITY  ANALYSIS
 **********************/
@@ -99,13 +103,6 @@ do "$Dodir/18b_eth_an_sens_exclude_large_hh_eth5.do"
 do "$Dodir/16_eth_an_outcome_characteristics.do"
 do "$Dodir/19_eth_an_prison_characteristics.do"
 
-/**********************
-OUTCOMES IN TESTED POP
-**********************/
-*Table 4: Odds of testing positive amongst those with SGSS testing data
-do "$Dodir/11b_eth_an_testedpop_eth5" 
-do "$Dodir/11a_eth_an_testedpop_eth16" 
-
 
 /**********************
 MULTIPLE IMPUTATION
@@ -117,13 +114,5 @@ do "$Dodir/08b_eth_cr_imputed_eth5.do"
 winexec "c:\program files\stata16\statamp-64.exe" do "$Dodir/08c_eth_an_multivariable_eth5_mi.do" demog
 winexec "c:\program files\stata16\statamp-64.exe" do "$Dodir/08c_eth_an_multivariable_eth5_mi.do" full
 
-/**********************
-PLOTS & RATES
-**********************
-do "$Dodir/04_eth_an_descriptive_plots.do" 
-
-*Table 7: Rates - crude, age, and age-sex stratified
-do "$Dodir/10b_eth_an_rates_eth5"
-do "$Dodir/10a_eth_an_rates_eth16"
 
 
