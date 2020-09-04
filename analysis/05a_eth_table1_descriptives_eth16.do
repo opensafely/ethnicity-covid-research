@@ -261,8 +261,8 @@ file write tablecontent _n
 tabulatevariable, variable(carehome) min(0) max(1) missing
 file write tablecontent _n 
 
-*tabulatevariable, variable(is_prison) min(0) max(1) missing
-*file write tablecontent _n 
+tabulatevariable, variable(is_prison) min(0) max(1) missing
+file write tablecontent _n 
 
 tabulatevariable, variable(smoke_nomiss) min(1) max(3)  
 file write tablecontent _n 

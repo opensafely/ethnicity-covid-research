@@ -77,7 +77,7 @@ safetab agegroup if hh_total_cat==4
 
 
 
-/*prison
+*prison
 safetab is_prison, m
 safetab hh_total_cat is_prison, m
 
@@ -86,7 +86,7 @@ safetab male if is_prison==1
 safetab agegroup if is_prison==1
 
 bysort is_prison: summ hh_size
-*/
+
 *Care home
 safetab carehome, m
 safetab carehome hh_total_cat, m
