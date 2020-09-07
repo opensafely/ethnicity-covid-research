@@ -329,7 +329,8 @@ label values hh_total_cat hh_total_cat
 
 safetab hh_total_cat,m
 safetab hh_total_cat carehome,m 
-stop
+
+
 *create second hh_total_cat excluding 11+ households for sensitivity analysis
 gen hh_cat_2=hh_total_cat
 replace hh_cat_2=. if hh_total_cat>=4
