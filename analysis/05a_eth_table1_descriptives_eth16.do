@@ -242,44 +242,43 @@ format hba1c_pct bmi egfr %9.2f
 
 
 gen byte cons=1
-tabulatevariable, variable(cons) min(1) max(1) 
+qui tabulatevariable, variable(cons) min(1) max(1) 
 file write tablecontent _n 
 
 qui summarizevariable, variable(age) 
 file write tablecontent _n
 
-tabulatevariable, variable(agegroup) min(1) max(7) 
+qui tabulatevariable, variable(agegroup) min(1) max(7) 
 file write tablecontent _n 
 
-tabulatevariable, variable(male) min(0) max(1) 
+qui tabulatevariable, variable(male) min(0) max(1) 
 file write tablecontent _n 
 
 qui summarizevariable, variable(gp_consult_count) 
 file write tablecontent _n 
 
-tabulatevariable, variable(imd) min(1) max(5) 
+qui tabulatevariable, variable(imd) min(1) max(5) 
 file write tablecontent _n 
 
 qui summarizevariable, variable(hh_size)
 file write tablecontent _n
 
-
-tabulatevariable, variable(hh_total_cat) min(1) max(4) missing
+qui tabulatevariable, variable(hh_total_cat) min(1) max(4) missing
 file write tablecontent _n 
 
-tabulatevariable, variable(carehome) min(0) max(1) missing
+qui tabulatevariable, variable(carehome) min(0) max(1) missing
 file write tablecontent _n 
 
-tabulatevariable, variable(is_prison) min(0) max(1) missing
+qui tabulatevariable, variable(is_prison) min(0) max(1) missing
 file write tablecontent _n 
 
-tabulatevariable, variable(smoke_nomiss) min(1) max(3)  
+qui tabulatevariable, variable(smoke_nomiss) min(1) max(3)  
 file write tablecontent _n 
 
 qui summarizevariable, variable(bmi)
 file write tablecontent _n
 
-tabulatevariable, variable(obese4cat_sa) min(1) max(4) 
+qui tabulatevariable, variable(obese4cat_sa) min(1) max(4) 
 file write tablecontent _n 
 
 qui summarizevariable, variable(hba1c_pct)
@@ -288,10 +287,10 @@ file write tablecontent _n
 qui summarizevariable, variable(hba1c_mmol_per_mol)
 file write tablecontent _n
 
-tabulatevariable, variable(dm_type) min(0) max(3)  
+qui tabulatevariable, variable(dm_type) min(0) max(3)  
 file write tablecontent _n 
 
-tabulatevariable, variable(dm_type_exeter_os) min(0) max(2)  
+qui tabulatevariable, variable(dm_type_exeter_os) min(0) max(2)  
 file write tablecontent _n 
 
 qui summarizevariable, variable(bp_sys) 
