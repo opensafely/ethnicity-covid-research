@@ -32,7 +32,7 @@ log using "$Logdir/05a_eth_table1_descriptives_eth16", replace t
 
 * Open Stata dataset
 use $Tempdir/analysis_dataset, clear
-safetab eth16,m 
+safetab ethnicity_16,m 
 
  /* PROGRAMS TO AUTOMATE TABULATIONS===========================================*/ 
 
@@ -56,9 +56,9 @@ syntax, variable(varname) condition(string)
 	file write tablecontent %9.0gc (`rowdenom')  (" (") %3.1f (`colpct') (")") _tab
 
 	forvalues i=1/14{
-	qui cou if eth16 == `i'
+	qui cou if ethnicity_16 == `i'
 	local rowdenom = r(N)
-	qui cou if eth16 == `i' & `variable' `condition'
+	qui cou if ethnicity_16 == `i' & `variable' `condition'
 	local pct = 100*(r(N)/`rowdenom') 
 	file write tablecontent %9.0gc (r(N)) (" (") %3.1f (`pct') (")") _tab
 	}
@@ -82,9 +82,9 @@ syntax, variable(varname) condition(string)
 	file write tablecontent %9.0gc (`rowdenom')  (" (") %3.1f (`colpct') (")") _tab
 
 	forvalues i=1/14{
-	qui cou if eth16 == `i'
+	qui cou if ethnicity_16 == `i'
 	local rowdenom = r(N)
-	qui cou if eth16 == `i' & `variable' `condition'
+	qui cou if ethnicity_16 == `i' & `variable' `condition'
 	local pct = 100*(r(N)/`rowdenom') 
 	file write tablecontent %9.0gc (r(N)) (" (") %3.1f (`pct') (")") _tab
 	}
@@ -165,7 +165,7 @@ syntax, variable(varname)
 	file write tablecontent  %3.1f (r(mean)) (" (") %3.1f (r(sd)) (")") _tab
 	
 	forvalues i=1/14{							
-	qui summarize `variable' if eth16 == `i', d
+	qui summarize `variable' if ethnicity_16 == `i', d
 	file write tablecontent  %3.1f (r(mean)) (" (") %3.1f (r(sd)) (")") _tab
 	}
 
@@ -177,7 +177,7 @@ file write tablecontent _n
 	file write tablecontent %3.1f (r(p50)) (" (") %3.1f (r(p25)) ("-") %3.1f (r(p75)) (")") _tab
 	
 	forvalues i=1/14{
-	qui summarize `variable' if eth16 == `i', d
+	qui summarize `variable' if ethnicity_16 == `i', d
 	file write tablecontent %3.1f (r(p50)) (" (") %3.1f (r(p25)) ("-") %3.1f (r(p75)) (")") _tab
 	}
 	
@@ -193,22 +193,25 @@ file open tablecontent using $Tabfigdir/table1_eth16.txt, write text replace
 
 file write tablecontent ("Table 1: Demographic and Clinical Characteristics") _n
 
-* eth16 labelled columns
+* ethnicity_16 labelled columns
 
-local lab1: label eth16 1
-local lab2: label eth16 2
-local lab3: label eth16 3
-local lab4: label eth16 4
-local lab5: label eth16 5
-local lab6: label eth16 6
-local lab7: label eth16 7
-local lab8: label eth16 8
-local lab9: label eth16 9
-local lab10: label eth16 10
-local lab11: label eth16 11
-local lab12: label eth16 12
-local lab13: label eth16 13
-local lab14: label eth16 14
+local lab1: label ethnicity_16 1
+local lab2: label ethnicity_16 2
+local lab3: label ethnicity_16 3
+local lab4: label ethnicity_16 4
+local lab5: label ethnicity_16 5
+local lab6: label ethnicity_16 6
+local lab7: label ethnicity_16 7
+local lab8: label ethnicity_16 8
+local lab9: label ethnicity_16 9
+local lab10: label ethnicity_16 10
+local lab11: label ethnicity_16 11
+local lab12: label ethnicity_16 12
+local lab13: label ethnicity_16 13
+local lab14: label ethnicity_16 14
+local lab15: label ethnicity_16 15
+local lab16: label ethnicity_16 16
+local lab17: label ethnicity_16 17
 
 
 
@@ -226,8 +229,10 @@ file write tablecontent _tab ("Total")				  			  _tab ///
 							 ("`lab11'")  						  _tab ///
 							 ("`lab12'")  						  _tab ///
 							 ("`lab13'")  						  _tab ///
-							 ("`lab14'")  						  _n 
-							 
+							 ("`lab14'")  						  _tab ///
+							 ("`lab15'")  						  _tab ///
+							 ("`lab16'")  						  _tab ///
+							 ("`lab17'")  						  _n 
 							 
 
 
@@ -254,6 +259,10 @@ file write tablecontent _n
 
 tabulatevariable, variable(imd) min(1) max(5) 
 file write tablecontent _n 
+
+qui summarizevariable, variable(hh_size)
+file write tablecontent _n
+
 
 tabulatevariable, variable(hh_total_cat) min(1) max(4) missing
 file write tablecontent _n 
