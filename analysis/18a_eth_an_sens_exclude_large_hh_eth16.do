@@ -46,58 +46,6 @@ use "$Tempdir/analysis_dataset_STSET_`i'.dta", clear
 
 /* Univariable model */ 
 
-stcox i.ethnicity_16, strata(stp) nolog
-estimates save "$Tempdir/crude_`i'_eth16", replace 
-parmest, label eform format(estimate p lb ub) saving("$Tempdir/crude_`i'_eth16", replace) idstr("crude_`i'_eth16") 
-local hr "`hr' "$Tempdir/crude_`i'_eth16" "
-
-
-/* Multivariable models */ 
-*Age and gender
-stcox i.ethnicity_16 i.male age1 age2 age3, strata(stp) nolog
-estimates save "$Tempdir/model0_`i'_eth16", replace 
-parmest, label eform format(estimate p lb ub) saving("$Tempdir/model0_`i'_eth16", replace) idstr("model0_`i'_eth16")
-local hr "`hr' "$Tempdir/model0_`i'_eth16" "
- 
-
-* Age, Gender, IMD
-
-stcox i.ethnicity_16 i.male age1 age2 age3 i.imd, strata(stp) nolog
-if _rc==0{
-estimates
-estimates save "$Tempdir/model1_`i'_eth16", replace 
-parmest, label eform format(estimate p lb ub) saving("$Tempdir/model1_`i'_eth16", replace) idstr("model1_`i'_eth16") 
-local hr "`hr' "$Tempdir/model1_`i'_eth16" "
-}
-else di "WARNING MODEL1 DID NOT FIT (OUTCOME `i')"
-
-* Age, Gender, IMD and Comorbidities 
-stcox i.ethnicity_16 i.male age1 age2 age3 	i.imd						///
-										bmi	hba1c_pct				///
-										gp_consult_count			///
-										i.smoke_nomiss				///
-										i.hypertension bp_map		 	///	
-										i.asthma					///
-										i.chronic_respiratory_disease ///
-										i.chronic_cardiac_disease	///
-										i.dm_type 					///	
-										i.cancer                    ///
-										i.chronic_liver_disease		///
-										i.stroke					///
-										i.dementia					///
-										i.other_neuro				///
-										i.egfr60					///
-										i.esrf						///
-										i.immunosuppressed	 		///
-										i.ra_sle_psoriasis, strata(stp) nolog		
-if _rc==0{
-estimates
-estimates save "$Tempdir/model2_`i'_eth16", replace 
-parmest, label eform format(estimate p lb ub) saving("$Tempdir/model2_`i'_eth16", replace) idstr("model2_`i'_eth16") 
-local hr "`hr' "$Tempdir/model2_`i'_eth16" "
-}
-else di "WARNING MODEL2 DID NOT FIT (OUTCOME `i')"
-
 										
 * Age, Gender, IMD and Comorbidities  and household size and carehome
 stcox i.ethnicity_16 i.male age1 age2 age3 	i.imd						///
@@ -184,22 +132,6 @@ forvalues eth=2/17 {
 	local person_week = r(mean)/7
 	local rate = 1000*(`event'/`person_week')
 	file write tablecontent  ("`lab`eth''") _tab (`denominator') _tab (`event') _tab %10.0f (`person_week') _tab %3.2f (`rate') _tab  
-	cap estimates use "$Tempdir/crude_`i'_eth16" 
-	 cap lincom `eth'.ethnicity_16, eform
-	file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (" - ") %4.2f (r(ub)) (")") _tab 
-	cap estimates clear
-	cap estimates use "$Tempdir/model0_`i'_eth16" 
-	 cap lincom `eth'.ethnicity_16, eform
-	file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (" - ") %4.2f (r(ub)) (")") _tab 
-	cap estimates clear
-	cap estimates use "$Tempdir/model1_`i'_eth16" 
-	 cap lincom `eth'.ethnicity_16, eform
-	file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (" - ") %4.2f (r(ub)) (")") _tab 
-	cap estimates clear
-	cap estimates use "$Tempdir/model2_`i'_eth16" 
-	 cap lincom `eth'.ethnicity_16, eform
-	file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (" - ") %4.2f (r(ub)) (")") _tab 
-	cap estimates clear
 	cap estimates use "$Tempdir/model3_`i'_eth16" 
 	 cap lincom `eth'.ethnicity_16, eform
 	file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (" - ") %4.2f (r(ub)) (")") _n
