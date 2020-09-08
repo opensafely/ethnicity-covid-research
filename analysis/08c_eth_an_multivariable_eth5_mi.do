@@ -25,14 +25,14 @@ use "$Tempdir/analysis_dataset_STSET_`i'_eth5_mi.dta", clear
 /* Multivariable models */ 
 
 *Age and gender
-mi estimate, dots eform: stcox i.eth5 i.male age1 age2 age3, strata(stp) nolog
+cap mi estimate, dots eform: stcox i.eth5 i.male age1 age2 age3, strata(stp) nolog
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model0_`i'_eth5_mi", replace) idstr("model0_`i'_eth5")
 local hr "`hr' "$Tempdir/model0_`i'_eth5" "
 
 
 						
 * Age, Gender, IMD and Comorbidities  and household size and carehome
-  mi estimate, dots eform: stcox i.eth5 i.male age1 age2 age3 	i.imd						///
+ cap mi estimate, dots eform: stcox i.eth5 i.male age1 age2 age3 	i.imd						///
 										bmi	hba1c_pct				///
 										gp_consult_count			///
 										i.smoke_nomiss				///
