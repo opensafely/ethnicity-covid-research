@@ -1,3 +1,41 @@
+*set filepaths
+global Projectdir `c(pwd)'
+global Dodir "$Projectdir/analysis" 
+di "$Dodir"
+global Outdir "$Projectdir/output" 
+di "$Outdir"
+global Logdir "$Outdir/log"
+di "$Logdir"
+global Tempdir "$Outdir/tempdata" 
+di "$Tempdir"
+global Tabfigdir "$Outdir/tabfig" 
+di "$Tabfigdir"
+
+cd  "`c(pwd)'/analysis"
+
+adopath + "$Dodir/adofiles"
+sysdir
+sysdir set PLUS "$Dodir/adofiles"
+
+cd  "$Projectdir"
+
+***********************HOUSE-KEEPING*******************************************
+* Create directories required 
+
+capture mkdir "$Outdir/log"
+capture mkdir "$Outdir/tempdata"
+capture mkdir "$Outdir/tabfig"
+
+* Set globals that will print in programs and direct output
+global outdir  	  "$Outdir" 
+global logdir     "$Logdir"
+global tempdir    "$Tempdir"
+
+
+* Set globals for  outcomes
+global outcomes "tested positivetest ae icu onscoviddeath ons_noncoviddeath onsdeath cpnsdeath"
+
+
 /* Main Model=================================================================*/
 foreach i of global outcomes {
 * Open Stata dataset
@@ -48,42 +86,8 @@ estimates save "./output/an_imputed_full_eth5", replace
 ************************************************create forestplot dataset
 dsconcat `hr'
 duplicates drop
-split idstr, p(_)
-ren idstr1 model
-ren idstr2 outcome
-drop idstr idstr3 idstr4
-tab model
-
-gen eth5=1 if regexm(parm, "1b")
-forvalues i=2/11 {
-	replace eth5=`i' if regexm(parm, "`i'.eth5")
-}
-
-drop parm  stderr dof t 
-order outcome model eth5 
-
-destring eth5, replace
-label define eth5 	///
-						1 "White" ///
-						2 "South Asian" ///
-						3 "Black" ///
-						4 "Mixed" ///
-						5 "Other" ///
-						6 "Unknown" 					
-label values eth5 eth5
-
-gen num=[_n]
-sum num
-
-gen adjusted="Crude" if model=="crude"
-replace adjusted="Age-sex" if model=="model0"
-replace adjusted="+ IMD" if model=="model1"
-replace adjusted="+ co-morbidities" if model=="model2"
-replace adjusted="+ household size & carehome" if model=="model3"
-
 *save dataset for later
 outsheet using "$Tabfigdir/FP_mi_eth5.txt", replace
-
 * Close log file 
 log close
 insheet using "$Tabfigdir/FP_mi_eth5.txt", clear
