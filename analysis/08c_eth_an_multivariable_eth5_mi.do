@@ -27,7 +27,7 @@ use "$Tempdir/analysis_dataset_STSET_`i'_eth5_mi.dta", clear
 *Age and gender
 cap mi estimate, dots eform: stcox i.eth5 i.male age1 age2 age3, strata(stp) nolog
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model0_`i'_eth5_mi", replace) idstr("model0_`i'_eth5")
-local hr "`hr' "$Tempdir/model0_`i'_eth5" "
+local hr "`hr' "$Tempdir/model0_`i'_eth5_mi" "
 
 
 						
@@ -53,7 +53,7 @@ local hr "`hr' "$Tempdir/model0_`i'_eth5" "
 										i.hh_total_cat i.carehome, strata(stp) nolog		
 	
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model3_`i'_eth5_mi", replace) idstr("model3_`i'_eth5") 
-local hr "`hr' "$Tempdir/model3_`i'_eth5" "
+local hr "`hr' "$Tempdir/model3_`i'_eth5_mi" "
 
 } //end outcomes
 
