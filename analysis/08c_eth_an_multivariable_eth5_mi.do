@@ -1,3 +1,20 @@
+/*==============================================================================
+DO FILE NAME:			08c_eth_an_multivariable_eth5
+PROJECT:				Ethnicity and COVID
+AUTHOR:					R Mathur (modified from A wong and A Schultze)
+DATE: 					15 July 2020					
+DESCRIPTION OF FILE:	program 08
+						multivariable regression with multiple imputation
+DATASETS USED:			data in memory ($tempdir/analysis_dataset_STSET_outcome_eth5_mi)
+DATASETS CREATED: 		none
+OTHER OUTPUT: 			logfiles, printed to folder analysis/$logdir
+						estimates output to dataset							
+==============================================================================*/
+cap log close
+macro drop hr
+log using "$Logdir/08c_eth_an_mi_eth5", replace t 
+
+
 *set filepaths
 global Projectdir `c(pwd)'
 global Dodir "$Projectdir/analysis" 
@@ -47,9 +64,7 @@ use "$Tempdir/analysis_dataset_STSET_`i'_eth5_mi.dta", clear
 if "`1'"=="demog"{
 *Age and gender
 mi estimate, dots eform: stcox i.eth5 i.male age1 age2 age3, strata(stp) nolog
-parmest, label eform format(estimate p lb ub) saving("$Tempdir/model0_`i'_eth5", replace) idstr("model0_`i'_eth5")
-local hr "`hr' "$Tempdir/model0_`i'_eth5" "
-estimates save "./output/an_imputed_demog_eth5", replace						
+parmest, label eform format(estimate p lb ub) saving("$Tempdir/model0_`i'_eth5_mi", replace) idstr("model0_`i'_eth5")
 }
 
 
@@ -76,20 +91,9 @@ if "`1'"=="full"{
 										i.ra_sle_psoriasis			///
 										i.hh_total_cat i.carehome, strata(stp) nolog		
 	
-parmest, label eform format(estimate p lb ub) saving("$Tempdir/model3_`i'_eth5", replace) idstr("model3_`i'_eth5") 
-local hr "`hr' "$Tempdir/model3_`i'_eth5" "
-estimates save "./output/an_imputed_full_eth5", replace						
+parmest, label eform format(estimate p lb ub) saving("$Tempdir/model3_`i'_eth5_mi", replace) idstr("model3_`i'_eth5") 
 }
 
 } //end outcomes
 
-************************************************create forestplot dataset
-dsconcat `hr'
-duplicates drop
-*save dataset for later
-outsheet using "$Tabfigdir/FP_mi_eth5.txt", replace
-* Close log file 
 log close
-insheet using "$Tabfigdir/FP_mi_eth5.txt", clear
-
-

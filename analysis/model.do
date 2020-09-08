@@ -40,7 +40,7 @@ global tempdir    "$Tempdir"
 
 
 * Set globals for  outcomes
-global outcomes "tested positivetest ae icu onscoviddeath ons_noncoviddeath onsdeath cpnsdeath"
+global outcomes "tested positivetest ae icu onscoviddeath ons_noncoviddeath onsdeath"
 
 
 /**********************
@@ -49,7 +49,7 @@ Data cleaning
 
 *Create analysis dataset
 do "$Dodir/01_eth_cr_analysis_dataset.do"
-
+/*
 *Checks 
 do "$Dodir/02_eth_an_data_checks.do"
 
@@ -103,11 +103,12 @@ do "$Dodir/18b_eth_an_sens_exclude_large_hh_eth5.do"
 do "$Dodir/16_eth_an_outcome_characteristics.do"
 do "$Dodir/19_eth_an_prison_characteristics.do"
 
-
+*/
 /**********************
 MULTIPLE IMPUTATION
 **********************/
 *Table 2: multiple imputation
+do "$Dodir/08a_eth_cr_imputed_eth16.do"
 do "$Dodir/08b_eth_cr_imputed_eth5.do"
 
 *Table 2: multiple imputation
@@ -116,5 +117,15 @@ winexec "c:\program files\stata16\statamp-64.exe" do "$Dodir/08c_eth_an_multivar
 winexec "c:\program files\stata16\statamp-64.exe" do "$Dodir/08d_eth_an_multivariable_eth16_mi.do" demog
 winexec "c:\program files\stata16\statamp-64.exe" do "$Dodir/08d_eth_an_multivariable_eth16_mi.do" full
 
+************************************************************
+*PARALLEL WORKING - THESE MUST BE RUN AFTER THE MULTIPLE IMPUTATION
+************************************************************
+forvalues i = 1/360 {
+    di `i'
+    sleep 10000
+}
+*pauses Stata for 4 minutes: 1/24 whilst testing locally
+*pauses Stata for 10 mins: 1/360 whilst testing on server, on 5% weighted data
+*pauses Stata for 12 hours: 1/4320 whilst testing on server, on full data
 
-
+do "$Dodir/08e_eth_an_mi_forestplots.do"
