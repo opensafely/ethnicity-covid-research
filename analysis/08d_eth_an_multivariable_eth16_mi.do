@@ -69,5 +69,5 @@ outsheet using "$Tabfigdir/FP_mi_eth16.txt", replace
 * Close log file 
 log close
 
-insheet using $Tabfigdir/FP_mi_eth16.tx.txt, clear
+insheet using "$Tabfigdir/FP_mi_eth16.txt", clear
 
