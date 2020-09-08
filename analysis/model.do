@@ -125,6 +125,8 @@ forvalues i = 1/360 {
 *pauses Stata for 4 minutes: 1/24 whilst testing locally
 *pauses Stata for 10 mins: 1/360 whilst testing on server, on 5% weighted data
 *pauses Stata for 12 hours: 1/4320 whilst testing on server, on full data
-*/
 
 do "$Dodir/08e_eth_an_mi_forestplots.do"
+
+*/
+
