@@ -1,10 +1,5 @@
 import delimited `c(pwd)'/output/input.csv, clear
 
-/*TO DO
-1. Re-run once ICU admission variable has been updated to include people not on respiratory support
-2. Exclude people who live in prisons
-*/
-
 *set filepaths
 global Projectdir `c(pwd)'
 global Dodir "$Projectdir/analysis" 
@@ -112,7 +107,10 @@ do "$Dodir/08a_eth_cr_imputed_eth16.do"
 do "$Dodir/08b_eth_cr_imputed_eth5.do"
 
 *Table 2: multiple imputation
-winexec "c:\program files\stata16\statamp-64.exe" do "$Dodir/08c_eth_an_multivariable_eth5_mi.do" demog
+do "$Dodir/08c_eth_an_multivariable_eth5_mi.do" 
+do "$Dodir/08d_eth_an_multivariable_eth16_mi.do" 
+
+/*winexec "c:\program files\stata16\statamp-64.exe" do "$Dodir/08c_eth_an_multivariable_eth5_mi.do" demog
 winexec "c:\program files\stata16\statamp-64.exe" do "$Dodir/08c_eth_an_multivariable_eth5_mi.do" full
 winexec "c:\program files\stata16\statamp-64.exe" do "$Dodir/08d_eth_an_multivariable_eth16_mi.do" demog
 winexec "c:\program files\stata16\statamp-64.exe" do "$Dodir/08d_eth_an_multivariable_eth16_mi.do" full
@@ -127,5 +125,6 @@ forvalues i = 1/360 {
 *pauses Stata for 4 minutes: 1/24 whilst testing locally
 *pauses Stata for 10 mins: 1/360 whilst testing on server, on 5% weighted data
 *pauses Stata for 12 hours: 1/4320 whilst testing on server, on full data
+*/
 
 do "$Dodir/08e_eth_an_mi_forestplots.do"
