@@ -22,11 +22,6 @@ foreach i of global outcomes {
 use "$Tempdir/analysis_dataset_STSET_`i'_eth16_mi.dta", clear
 
 /* Multivariable models */ 
-
-*Age and gender
-cap mi estimate, dots eform: stcox i.ethnicity_16 i.male age1 age2 age3, strata(stp) nolog
-parmest, label eform format(estimate p lb ub) saving("$Tempdir/model0_`i'_eth16_mi", replace) idstr("model0_`i'_eth16")
-local hr "`hr' "$Tempdir/model0_`i'_eth16_mi" "
 					
 * Age, Gender, IMD and Comorbidities  and household size and carehome
 cap mi estimate, dots eform: stcox i.ethnicity_16 i.male age1 age2 age3 	i.imd						///
