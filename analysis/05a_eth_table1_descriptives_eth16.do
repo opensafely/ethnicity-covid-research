@@ -55,7 +55,7 @@ syntax, variable(varname) condition(string)
 	local colpct = 100*(r(N)/`overalldenom')
 	file write tablecontent %9.0gc (`rowdenom')  (" (") %3.1f (`colpct') (")") _tab
 
-	forvalues i=1/14{
+	forvalues i=1/17{
 	qui cou if ethnicity_16 == `i'
 	local rowdenom = r(N)
 	qui cou if ethnicity_16 == `i' & `variable' `condition'
@@ -81,7 +81,7 @@ syntax, variable(varname) condition(string)
 	local colpct = 100*(r(N)/`overalldenom')
 	file write tablecontent %9.0gc (`rowdenom')  (" (") %3.1f (`colpct') (")") _tab
 
-	forvalues i=1/14{
+	forvalues i=1/17{
 	qui cou if ethnicity_16 == `i'
 	local rowdenom = r(N)
 	qui cou if ethnicity_16 == `i' & `variable' `condition'
@@ -164,7 +164,7 @@ syntax, variable(varname)
 	file write tablecontent ("Mean (SD)") _tab 
 	file write tablecontent  %3.1f (r(mean)) (" (") %3.1f (r(sd)) (")") _tab
 	
-	forvalues i=1/14{							
+	forvalues i=1/17{							
 	qui summarize `variable' if ethnicity_16 == `i', d
 	file write tablecontent  %3.1f (r(mean)) (" (") %3.1f (r(sd)) (")") _tab
 	}
@@ -176,7 +176,7 @@ file write tablecontent _n
 	file write tablecontent ("Median (IQR)") _tab 
 	file write tablecontent %3.1f (r(p50)) (" (") %3.1f (r(p25)) ("-") %3.1f (r(p75)) (")") _tab
 	
-	forvalues i=1/14{
+	forvalues i=1/17{
 	qui summarize `variable' if ethnicity_16 == `i', d
 	file write tablecontent %3.1f (r(p50)) (" (") %3.1f (r(p25)) ("-") %3.1f (r(p75)) (")") _tab
 	}

@@ -48,10 +48,10 @@ do "$Dodir/01_eth_cr_analysis_dataset.do"
 *Checks 
 do "$Dodir/02_eth_an_data_checks.do"
 
-
+*/
 *Table 0: Numbers of outcomes in study population
 do "$Dodir/03a_eth_outcomes_checks_eth16.do"
-do "$Dodir/03b_eth_outcomes_checks_eth5.do"
+/*do "$Dodir/03b_eth_outcomes_checks_eth5.do"
 
 /**********************
 ETH 5
@@ -98,7 +98,7 @@ do "$Dodir/18b_eth_an_sens_exclude_large_hh_eth5.do"
 do "$Dodir/16_eth_an_outcome_characteristics.do"
 do "$Dodir/19_eth_an_prison_characteristics.do"
 
-*/
+
 /**********************
 MULTIPLE IMPUTATION
 **********************/
