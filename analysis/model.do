@@ -103,15 +103,14 @@ do "$Dodir/19_eth_an_prison_characteristics.do"
 MULTIPLE IMPUTATION
 **********************/
 *Table 2: multiple imputation
-do "$Dodir/08a_eth_cr_imputed_eth16.do"
 do "$Dodir/08b_eth_cr_imputed_eth5.do"
-
-*Table 2: multiple imputation
 do "$Dodir/08c_eth_an_multivariable_eth5_mi.do" 
+
+do "$Dodir/08a_eth_cr_imputed_eth16.do"
 do "$Dodir/08d_eth_an_multivariable_eth16_mi.do" 
 
 
-************************************************************
+/************************************************************
 *PARALLEL WORKING - THESE MUST BE RUN AFTER THE MULTIPLE IMPUTATION
 ************************************************************
 forvalues i = 1/360 {
@@ -122,7 +121,7 @@ forvalues i = 1/360 {
 *pauses Stata for 10 mins: 1/360 whilst testing on server, on 5% weighted data
 *pauses Stata for 12 hours: 1/4320 whilst testing on server, on full data
 
-/*winexec "c:\program files\stata16\statamp-64.exe" do "$Dodir/08c_eth_an_multivariable_eth5_mi.do" demog
+*winexec "c:\program files\stata16\statamp-64.exe" do "$Dodir/08c_eth_an_multivariable_eth5_mi.do" demog
 winexec "c:\program files\stata16\statamp-64.exe" do "$Dodir/08c_eth_an_multivariable_eth5_mi.do" full
 winexec "c:\program files\stata16\statamp-64.exe" do "$Dodir/08d_eth_an_multivariable_eth16_mi.do" demog
 winexec "c:\program files\stata16\statamp-64.exe" do "$Dodir/08d_eth_an_multivariable_eth16_mi.do" full
