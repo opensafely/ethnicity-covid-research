@@ -1,0 +1,2772 @@
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  E:\will\ethnicity-covid-research/output/log/01_eth_cr_create_analysis_dataset.log
+  log type:  text
+ opened on:   7 Sep 2020, 19:26:04
+
+. 
+. 
+. di "STARTING safecount FROM IMPORT:"
+STARTING safecount FROM IMPORT:
+
+. safecount
+  21,750,276
+
+. 
+. ****************************
+. *  Create required cohort  *
+. ****************************
+. 
+. /* DROP ALL KIDS */
+. noi di "DROPPING AGE<18:" 
+DROPPING AGE<18:
+
+. drop if age<18
+(4,239,879 observations deleted)
+
+. safecount
+  17,510,397
+
+. 
+. * Age: Exclude those with implausible ages
+. cap assert age<.
+
+. noi di "DROPPING AGE<105:" 
+DROPPING AGE<105:
+
+. drop if age>105
+(131 observations deleted)
+
+. safecount
+  17,510,266
+
+. 
+. * Sex: Exclude categories other than M and F
+. cap assert inlist(sex, "M", "F", "I", "U")
+
+. noi di "DROPPING GENDER NOT M/F:" 
+DROPPING GENDER NOT M/F:
+
+. drop if inlist(sex, "I", "U")
+(264 observations deleted)
+
+. 
+. gen male = 1 if sex == "M"
+(8,772,594 missing values generated)
+
+. replace male = 0 if sex == "F"
+(8,772,594 real changes made)
+
+. label define male 0"Female" 1"Male"
+
+. label values male male
+
+. safetab male
+
+       male |      Freq.     Percent        Cum.
+------------+-----------------------------------
+     Female |  8,772,594       50.10       50.10
+       Male |  8,737,408       49.90      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+
+. safecount
+  17,510,002
+
+. 
+. * Create restricted cubic splines for age
+. mkspline age = age, cubic nknots(4)
+
+. 
+. *Start dates
+. gen index                       = "01/02/2020"
+
+. 
+. * Date of cohort entry, 1 Feb 2020
+. gen indexdate = date(index, "DMY")
+
+. format indexdate %d
+
+. 
+. 
+. *******************************************************************************
+. 
+. 
+. 
+. /* CREATE VARIABLES===========================================================*/
+. 
+. /* OUTCOME AND SURVIVAL TIME==================================================*/
+. 
+.         
+. /****   Outcome definitions   ****/
+. ren primary_care_suspect_case   suspected_date
+
+. ren primary_care_case                   confirmed_date
+
+. ren first_tested_for_covid              tested_date
+
+. ren first_positive_test_date    positivetest_date
+
+. ren a_e_consult_date                    ae_date
+
+. ren icu_date_admitted                   icu_date
+
+. ren died_date_cpns                              cpnsdeath_date
+
+. ren died_date_ons                               onsdeath_date
+
+. 
+. * Date of Covid death in ONS
+. gen onscoviddeath_date = onsdeath_date if died_ons_covid_flag_any == 1
+(17,494,375 missing values generated)
+
+. gen onsconfirmeddeath_date = onsdeath_date if died_ons_confirmedcovid_flag_any ==1
+(17,495,511 missing values generated)
+
+. gen onssuspecteddeath_date = onsdeath_date if died_ons_suspectedcovid_flag_any ==1
+(17,508,864 missing values generated)
+
+. 
+. * Date of non-COVID death in ONS 
+. * If missing date of death resulting died_date will also be missing
+. gen ons_noncoviddeath_date = onsdeath_date if died_ons_covid_flag_any != 1
+(17,425,130 missing values generated)
+
+. 
+. 
+. /* CONVERT STRINGS TO DATE FOR OUTCOME VARIABLES =============================*/
+. * Recode to dates from the strings 
+. *gen dummy date for infected and replace later on
+. 
+. foreach var of global outcomes {
+  2.         confirm string variable `var'_date
+  3.         rename `var'_date `var'_dstr
+  4.         gen `var'_date = date(`var'_dstr, "YMD")
+  5.         drop `var'_dstr
+  6.         format `var'_date %td 
+  7. 
+. }
+(15,957,481 missing values generated)
+(17,427,529 missing values generated)
+(16,087,363 missing values generated)
+(17,506,884 missing values generated)
+(17,494,375 missing values generated)
+(17,425,130 missing values generated)
+(17,409,503 missing values generated)
+(17,500,227 missing values generated)
+
+. 
+. *If outcome occurs on the first day of follow-up add one day
+. foreach i of global outcomes {
+  2.         di "`i'"
+  3.         count if `i'_date==indexdate
+  4.         replace `i'_date=`i'_date+1 if `i'_date==indexdate
+  5. }
+tested
+  12
+(12 real changes made)
+positivetest
+  0
+(0 real changes made)
+ae
+  11,594
+(11,594 real changes made)
+icu
+  0
+(0 real changes made)
+onscoviddeath
+  0
+(0 real changes made)
+ons_noncoviddeath
+  477
+(477 real changes made)
+onsdeath
+  477
+(477 real changes made)
+cpnsdeath
+  0
+(0 real changes made)
+
+. *date of deregistration
+. rename dereg_date dereg_dstr
+
+.         gen dereg_date = date(dereg_dstr, "YMD")
+(17,510,002 missing values generated)
+
+.         drop dereg_dstr
+
+.         format dereg_date %td 
+
+. 
+. * Binary indicators for outcomes
+. foreach i of global outcomes {
+  2.                 gen `i'=0
+  3.                 replace  `i'=1 if `i'_date < .
+  4.                 safetab `i'
+  5. }
+(1,552,521 real changes made)
+
+     tested |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 | 15,957,481       91.13       91.13
+          1 |  1,552,521        8.87      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+(82,473 real changes made)
+
+positivetes |
+          t |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 | 17,427,529       99.53       99.53
+          1 |     82,473        0.47      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+(1,422,639 real changes made)
+
+         ae |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 | 16,087,363       91.88       91.88
+          1 |  1,422,639        8.12      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+(3,118 real changes made)
+
+        icu |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 | 17,506,884       99.98       99.98
+          1 |      3,118        0.02      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+(15,627 real changes made)
+
+onscoviddea |
+         th |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 | 17,494,375       99.91       99.91
+          1 |     15,627        0.09      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+(84,872 real changes made)
+
+ons_noncovi |
+     ddeath |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 | 17,425,130       99.52       99.52
+          1 |     84,872        0.48      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+(100,499 real changes made)
+
+   onsdeath |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 | 17,409,503       99.43       99.43
+          1 |    100,499        0.57      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+(9,775 real changes made)
+
+  cpnsdeath |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 | 17,500,227       99.94       99.94
+          1 |      9,775        0.06      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+
+. 
+. 
+. /* CENSORING */
+. /* SET FU DATES===============================================================*/ 
+. 
+. * Censoring dates for each outcome (last date outcome data available)
+. *https://github.com/opensafely/rapid-reports/blob/master/notebooks/latest-dates.ipynb
+. gen tested_censor_date = d("03/08/2020")
+
+. gen positivetest_censor_date = d("03/08/2020")
+
+. gen ae_censor_date = d("03/08/2020")
+
+. gen icu_censor_date = d("30/07/2020")
+
+. gen cpnsdeath_censor_date  = d("03/08/2020")
+
+. gen onsdeath_censor_date = d("03/08/2020")
+
+. gen onscoviddeath_censor_date = d("03/08/2020")
+
+. gen ons_noncoviddeath_censor_date = d("03/08/2020")
+
+. 
+. 
+. *******************************************************************************
+. format *censor_date %d
+
+. sum *censor_date, format
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+tested_cen~e | 17,510,002   03aug2020           0  03aug2020  03aug2020
+posit~r_date | 17,510,002   03aug2020           0  03aug2020  03aug2020
+ae_censor_~e | 17,510,002   03aug2020           0  03aug2020  03aug2020
+icu_censor~e | 17,510,002   30jul2020           0  30jul2020  30jul2020
+cpnsd~r_date | 17,510,002   03aug2020           0  03aug2020  03aug2020
+-------------+---------------------------------------------------------
+onsdeath_c~e | 17,510,002   03aug2020           0  03aug2020  03aug2020
+onsco~r_date | 17,510,002   03aug2020           0  03aug2020  03aug2020
+ons_n~r_date | 17,510,002   03aug2020           0  03aug2020  03aug2020
+
+. 
+. 
+. /* DEMOGRAPHICS */ 
+. 
+. * Ethnicity (5 category)
+. label define ethnicity  1 "White"                                       ///
+>                                                 2 "Mixed"                                       ///
+>                                                 3 "Asian or Asian British"      ///
+>                                                 4 "Black"                                       ///
+>                                                 5 "Other"                                       
+
+.                                                 
+. label values ethnicity ethnicity
+
+. safetab ethnicity, m
+
+             ethnicity |      Freq.     Percent        Cum.
+-----------------------+-----------------------------------
+                 White | 11,030,673       63.00       63.00
+                 Mixed |    172,551        0.99       63.98
+Asian or Asian British |  1,034,337        5.91       69.89
+                 Black |    344,889        1.97       71.86
+                 Other |    324,730        1.85       73.71
+                     . |  4,602,822       26.29      100.00
+-----------------------+-----------------------------------
+                 Total | 17,510,002      100.00
+
+. 
+.  *re-order ethnicity
+.  gen eth5=1 if ethnicity==1
+(6,479,329 missing values generated)
+
+.  replace eth5=2 if ethnicity==3
+(1,034,337 real changes made)
+
+.  replace eth5=3 if ethnicity==4
+(344,889 real changes made)
+
+.  replace eth5=4 if ethnicity==2
+(172,551 real changes made)
+
+.  replace eth5=5 if ethnicity==5
+(324,730 real changes made)
+
+.  replace eth5=6 if ethnicity==.
+(4,602,822 real changes made)
+
+. 
+.  label define eth5              1 "White"                                       ///
+>                                                 2 "South Asian"           ///                                           
+>                                                 3 "Black"                                       ///
+>                                                 4 "Mixed"                                       ///
+>                                                 5 "Other"                                       ///
+>                                                 6 "Unknown"
+
+.                                         
+. 
+. label values eth5 eth5
+
+. safetab eth5, m
+
+       eth5 |      Freq.     Percent        Cum.
+------------+-----------------------------------
+      White | 11,030,673       63.00       63.00
+South Asian |  1,034,337        5.91       68.90
+      Black |    344,889        1.97       70.87
+      Mixed |    172,551        0.99       71.86
+      Other |    324,730        1.85       73.71
+    Unknown |  4,602,822       26.29      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+
+. 
+. * Ethnicity (16 category)
+. replace ethnicity_16 = 17 if ethnicity_16==.
+(4,602,822 real changes made)
+
+. label define ethnicity_16                                                                       ///
+>                                                 1 "British or Mixed British"            ///
+>                                                 2 "Irish"                                                       ///
+>                                                 3 "Other White"                                         ///
+>                                                 4 "White + Black Caribbean"             ///
+>                                                 5 "White + Black African"                       ///
+>                                                 6 "White + Asian"                                       ///
+>                                                 7 "Other mixed"                                         ///
+>                                                 8 "Indian or British Indian"            ///
+>                                                 9 "Pakistani or British Pakistani"      ///
+>                                                 10 "Bangladeshi or British Bangladeshi" ///
+>                                                 11 "Other Asian"                                        ///
+>                                                 12 "Caribbean"                                          ///
+>                                                 13 "African"                                            ///
+>                                                 14 "Other Black"                                        ///
+>                                                 15 "Chinese"                                            ///
+>                                                 16 "Other"                                                      ///
+>                                                 17 "Unknown"
+
+.                                                 
+. label values ethnicity_16 ethnicity_16
+
+. safetab ethnicity_16,m
+
+                      ethnicity_16 |      Freq.     Percent        Cum.
+-----------------------------------+-----------------------------------
+          British or Mixed British |  9,598,922       54.82       54.82
+                             Irish |     79,374        0.45       55.27
+                       Other White |  1,352,377        7.72       63.00
+           White + Black Caribbean |     39,676        0.23       63.22
+             White + Black African |     33,629        0.19       63.42
+                     White + Asian |     34,679        0.20       63.61
+                       Other mixed |     64,567        0.37       63.98
+          Indian or British Indian |    436,692        2.49       66.48
+    Pakistani or British Pakistani |    302,940        1.73       68.21
+Bangladeshi or British Bangladeshi |     70,396        0.40       68.61
+                       Other Asian |    224,309        1.28       69.89
+                         Caribbean |     83,419        0.48       70.37
+                           African |    192,521        1.10       71.46
+                       Other Black |     68,949        0.39       71.86
+                           Chinese |    105,447        0.60       72.46
+                             Other |    219,283        1.25       73.71
+                           Unknown |  4,602,822       26.29      100.00
+-----------------------------------+-----------------------------------
+                             Total | 17,510,002      100.00
+
+. 
+. 
+. * Ethnicity (16 category grouped further)
+. * Generate a version of the full breakdown with mixed in one group
+. gen eth16 = ethnicity_16
+
+. recode eth16 4/7 = 99 //mixed
+(eth16: 172551 changes made)
+
+. recode eth16 8 = 4
+(eth16: 436692 changes made)
+
+. recode eth16 9 = 5
+(eth16: 302940 changes made)
+
+. recode eth16 10 = 6
+(eth16: 70396 changes made)
+
+. recode eth16 11= 7
+(eth16: 224309 changes made)
+
+. recode eth16 12 = 8
+(eth16: 83419 changes made)
+
+. recode eth16 13 = 9
+(eth16: 192521 changes made)
+
+. recode eth16 14 = 10
+(eth16: 68949 changes made)
+
+. recode eth16 15 = 11
+(eth16: 105447 changes made)
+
+. recode eth16 99 = 12
+(eth16: 172551 changes made)
+
+. recode eth16 16 = 13
+(eth16: 219283 changes made)
+
+. recode eth16 17 = 14
+(eth16: 4602822 changes made)
+
+. 
+. label define eth16      ///
+>                                                 1 "British" ///
+>                                                 2 "Irish" ///
+>                                                 3 "Other White" ///
+>                                                 4 "Indian" ///
+>                                                 5 "Pakistani" ///
+>                                                 6 "Bangladeshi" ///     
+>                                                 7 "Other Asian" ///
+>                                                 8 "Caribbean" ///
+>                                                 9 "African" ///
+>                                                 10 "Other Black" ///
+>                                                 11 "Chinese" ///
+>                                                 12 "All mixed" ///
+>                                                 13  "Other" ///
+>                                                 14 "Unknown"
+
+. label values eth16 eth16
+
+. safetab eth16,m
+
+      eth16 |      Freq.     Percent        Cum.
+------------+-----------------------------------
+    British |  9,598,922       54.82       54.82
+      Irish |     79,374        0.45       55.27
+Other White |  1,352,377        7.72       63.00
+     Indian |    436,692        2.49       65.49
+  Pakistani |    302,940        1.73       67.22
+Bangladeshi |     70,396        0.40       67.62
+Other Asian |    224,309        1.28       68.90
+  Caribbean |     83,419        0.48       69.38
+    African |    192,521        1.10       70.48
+Other Black |     68,949        0.39       70.87
+    Chinese |    105,447        0.60       71.48
+  All mixed |    172,551        0.99       72.46
+      Other |    219,283        1.25       73.71
+    Unknown |  4,602,822       26.29      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+
+. 
+. safetab eth16 eth5, m
+
+            |                               eth5
+      eth16 |     White  South Asi      Black      Mixed      Other    Unknown |     Total
+------------+------------------------------------------------------------------+----------
+    British | 9,598,922          0          0          0          0          0 | 9,598,922 
+      Irish |    79,374          0          0          0          0          0 |    79,374 
+Other White | 1,352,377          0          0          0          0          0 | 1,352,377 
+     Indian |         0    436,692          0          0          0          0 |   436,692 
+  Pakistani |         0    302,940          0          0          0          0 |   302,940 
+Bangladeshi |         0     70,396          0          0          0          0 |    70,396 
+Other Asian |         0    224,309          0          0          0          0 |   224,309 
+  Caribbean |         0          0     83,419          0          0          0 |    83,419 
+    African |         0          0    192,521          0          0          0 |   192,521 
+Other Black |         0          0     68,949          0          0          0 |    68,949 
+    Chinese |         0          0          0          0    105,447          0 |   105,447 
+  All mixed |         0          0          0    172,551          0          0 |   172,551 
+      Other |         0          0          0          0    219,283          0 |   219,283 
+    Unknown |         0          0          0          0          0  4,602,822 | 4,602,822 
+------------+------------------------------------------------------------------+----------
+      Total |11,030,673  1,034,337    344,889    172,551    324,730  4,602,822 |17,510,002 
+
+. bysort eth5: safetab eth16, m
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-> eth5 = White
+
+      eth16 |      Freq.     Percent        Cum.
+------------+-----------------------------------
+    British |  9,598,922       87.02       87.02
+      Irish |     79,374        0.72       87.74
+Other White |  1,352,377       12.26      100.00
+------------+-----------------------------------
+      Total | 11,030,673      100.00
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-> eth5 = South Asian
+
+      eth16 |      Freq.     Percent        Cum.
+------------+-----------------------------------
+     Indian |    436,692       42.22       42.22
+  Pakistani |    302,940       29.29       71.51
+Bangladeshi |     70,396        6.81       78.31
+Other Asian |    224,309       21.69      100.00
+------------+-----------------------------------
+      Total |  1,034,337      100.00
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-> eth5 = Black
+
+      eth16 |      Freq.     Percent        Cum.
+------------+-----------------------------------
+  Caribbean |     83,419       24.19       24.19
+    African |    192,521       55.82       80.01
+Other Black |     68,949       19.99      100.00
+------------+-----------------------------------
+      Total |    344,889      100.00
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-> eth5 = Mixed
+
+      eth16 |      Freq.     Percent        Cum.
+------------+-----------------------------------
+  All mixed |    172,551      100.00      100.00
+------------+-----------------------------------
+      Total |    172,551      100.00
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-> eth5 = Other
+
+      eth16 |      Freq.     Percent        Cum.
+------------+-----------------------------------
+    Chinese |    105,447       32.47       32.47
+      Other |    219,283       67.53      100.00
+------------+-----------------------------------
+      Total |    324,730      100.00
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-> eth5 = Unknown
+
+      eth16 |      Freq.     Percent        Cum.
+------------+-----------------------------------
+    Unknown |  4,602,822      100.00      100.00
+------------+-----------------------------------
+      Total |  4,602,822      100.00
+
+. 
+. * STP 
+. rename stp stp_old
+
+. bysort stp_old: gen stp = 1 if _n==1
+(17,509,970 missing values generated)
+
+. replace stp = sum(stp)
+(17,510,001 real changes made)
+
+. drop stp_old
+
+. 
+. /*  IMD  */
+. * Group into 5 groups
+. rename imd imd_o
+
+. egen imd = cut(imd_o), group(5) icodes
+
+. 
+. * add one to create groups 1 - 5 
+. replace imd = imd + 1
+(17,510,002 real changes made)
+
+. 
+. * - 1 is missing, should be excluded from population 
+. replace imd = .u if imd_o == -1
+(143,346 real changes made, 143,346 to missing)
+
+. drop imd_o
+
+. 
+. * Reverse the order (so high is more deprived)
+. recode imd 5 = 1 4 = 2 3 = 3 2 = 4 1 = 5 .u = .u
+(imd: 13862353 changes made)
+
+. 
+. label define imd 1 "1 least deprived" 2 "2" 3 "3" 4 "4" 5 "5 most deprived" .u "Unknown"
+
+. label values imd imd 
+
+. safetab imd, m
+
+             imd |      Freq.     Percent        Cum.
+-----------------+-----------------------------------
+1 least deprived |  3,509,990       20.05       20.05
+               2 |  3,497,116       19.97       40.02
+               3 |  3,504,303       20.01       60.03
+               4 |  3,498,950       19.98       80.01
+ 5 most deprived |  3,356,297       19.17       99.18
+         Unknown |    143,346        0.82      100.00
+-----------------+-----------------------------------
+           Total | 17,510,002      100.00
+
+. 
+. 
+. /*  Age variables  */ 
+. 
+. * Create categorised age 
+. recode age      0/17.9999=0 ///
+>                         18/29.9999 = 1 /// 
+>                     30/39.9999 = 2 /// 
+>                         40/49.9999 = 3 ///
+>                         50/59.9999 = 4 ///
+>                         60/69.9999 = 5 ///
+>                         70/79.9999 = 6 ///
+>                         80/max = 7, gen(agegroup) 
+(17510002 differences between age and agegroup)
+
+. 
+. label define agegroup   0 "0-<18" ///
+>                                                 1 "18-<30" ///
+>                                                 2 "30-<40" ///
+>                                                 3 "40-<50" ///
+>                                                 4 "50-<60" ///
+>                                                 5 "60-<70" ///
+>                                                 6 "70-<80" ///
+>                                                 7 "80+"
+
+.                                                 
+. label values agegroup agegroup
+
+. 
+. 
+. 
+. 
+. 
+. 
+. **************************** HOUSEHOLD VARS*******************************************
+. **care home
+. encode care_home_type, gen(carehometype)
+
+. drop care_home_type
+
+. 
+. gen carehome=0
+
+. replace carehome=1 if carehometype<4
+(78,354 real changes made)
+
+. safetab  carehometype carehome, m
+
+carehomety |       carehome
+        pe |         0          1 |     Total
+-----------+----------------------+----------
+        PC |         0     42,133 |    42,133 
+        PN |         0     34,344 |    34,344 
+        PS |         0      1,877 |     1,877 
+         U |17,369,627          0 |17,369,627 
+         . |    62,021          0 |    62,021 
+-----------+----------------------+----------
+     Total |17,431,648     78,354 |17,510,002 
+
+. 
+. *check for missing household size values
+. codebook  hh_size, d
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+hh_size                                                                                                                                                                (unlabeled)
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+                  type:  numeric (int)
+
+                 range:  [0,2590]                     units:  1
+         unique values:  233                      missing .:  0/17,510,002
+
+                  mean:   4.36321
+              std. dev:   45.0181
+
+           percentiles:        10%       25%       50%       75%       90%
+                                 0         1         2         4         5
+
+. 
+. *gen categories of household size.
+. *hh size zero is people with invalid addresses
+. 
+. gen hh_total_cat=.
+(17,510,002 missing values generated)
+
+. replace hh_total_cat=1 if hh_size >=1 & hh_size<=2
+(7,615,418 real changes made)
+
+. replace hh_total_cat=2 if hh_size >=3 & hh_size<=5
+(6,225,759 real changes made)
+
+. replace hh_total_cat=3 if hh_size >=6 & hh_size<=10
+(1,003,765 real changes made)
+
+. replace hh_total_cat=4 if hh_size >=11 & hh_size<=15
+(91,861 real changes made)
+
+. replace hh_total_cat=.u if hh_size==0 | hh_size>=16
+(2,573,199 real changes made, 2,573,199 to missing)
+
+. 
+. *who are people with missing household size
+. safecount if hh_total_cat==.
+  0
+
+. safecount if hh_size==.
+  0
+
+. bysort  hh_total_cat: summ hh_size
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-> hh_total_cat = 1
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     hh_size |  7,615,418    1.584659    .4927807          1          2
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-> hh_total_cat = 2
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     hh_size |  6,225,759    3.713621    .7356929          3          5
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-> hh_total_cat = 3
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     hh_size |  1,003,765     6.95165    1.175226          6         10
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-> hh_total_cat = 4
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     hh_size |     91,861    12.38887    1.350129         11         15
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-> hh_total_cat = .u
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     hh_size |  2,573,199     12.8618    116.9917          0       2590
+
+
+. 
+. label define hh_total_cat 1 "1-2" ///
+>                                                 2 "3-5" ///
+>                                                 3 "6-10" ///
+>                                                 4 "11-15" ///
+>                                                 .u "Unknown"
+
+.                                                                                         
+. label values hh_total_cat hh_total_cat
+
+. 
+. safetab hh_total_cat,m
+
+hh_total_ca |
+          t |      Freq.     Percent        Cum.
+------------+-----------------------------------
+        1-2 |  7,615,418       43.49       43.49
+        3-5 |  6,225,759       35.56       79.05
+       6-10 |  1,003,765        5.73       84.78
+      11-15 |     91,861        0.52       85.30
+    Unknown |  2,573,199       14.70      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+
+. safetab hh_total_cat carehome,m 
+
+hh_total_c |       carehome
+        at |         0          1 |     Total
+-----------+----------------------+----------
+       1-2 | 7,606,640      8,778 | 7,615,418 
+       3-5 | 6,220,136      5,623 | 6,225,759 
+      6-10 |   995,697      8,068 | 1,003,765 
+     11-15 |    83,196      8,665 |    91,861 
+   Unknown | 2,525,979     47,220 | 2,573,199 
+-----------+----------------------+----------
+     Total |17,431,648     78,354 |17,510,002 
+
+. 
+. 
+. *create second hh_total_cat excluding 11+ households for sensitivity analysis
+. gen hh_cat_2=hh_total_cat
+(2,573,199 missing values generated)
+
+. replace hh_cat_2=. if hh_total_cat>=4
+(2,665,060 real changes made, 2,665,060 to missing)
+
+. label values  hh_cat_2 hh_total_cat
+
+. 
+. safetab hh_cat_2 hh_total_cat, m
+
+           |                      hh_total_cat
+  hh_cat_2 |       1-2        3-5       6-10      11-15    Unknown |     Total
+-----------+-------------------------------------------------------+----------
+       1-2 | 7,615,418          0          0          0          0 | 7,615,418 
+       3-5 |         0  6,225,759          0          0          0 | 6,225,759 
+      6-10 |         0          0  1,003,765          0          0 | 1,003,765 
+         . |         0          0          0     91,861  2,573,199 | 2,665,060 
+-----------+-------------------------------------------------------+----------
+     Total | 7,615,418  6,225,759  1,003,765     91,861  2,573,199 |17,510,002 
+
+. 
+. *log linear household size
+. gen hh_linear=hh_size if hh_size>=1 & hh_size!=.
+(2,441,676 missing values generated)
+
+. replace hh_linear=11 if hh_linear>=11 & hh_linear!=.
+(190,886 real changes made)
+
+. gen hh_log_linear=log(hh_linear)
+(2,441,676 missing values generated)
+
+. sum hh_log_linear hh_linear
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+hh_log_lin~r | 15,068,326    .9028995    .6057638          0   2.397895
+   hh_linear | 15,068,326    2.961377    1.910149          1         11
+
+. 
+. 
+. /* CONVERT STRINGS TO DATE====================================================*/
+. /* Comorb dates dates are given with month only, so adding day 
+> 15 to enable  them to be processed as dates                       */
+. 
+. *cr date for diabetes based on adjudicated type
+. gen diabetes=type1_diabetes if diabetes_type=="T1DM"
+(17,422,257 missing values generated)
+
+. replace diabetes=type2_diabetes if diabetes_type=="T2DM"
+(1,241,364 real changes made)
+
+. replace diabetes=unknown_diabetes if diabetes_type=="UNKNOWN_DM"
+(387,327 real changes made)
+
+. 
+. drop type1_diabetes type2_diabetes unknown_diabetes
+
+. 
+. foreach var of varlist  chronic_respiratory_disease ///
+>                                                 chronic_cardiac_disease  ///
+>                                                 cancer  ///
+>                                                 permanent_immunodeficiency  ///
+>                                                 temporary_immunodeficiency  ///
+>                                                 chronic_liver_disease  ///
+>                                                 other_neuro  ///
+>                                                 stroke                  ///
+>                                                 dementia ///
+>                                                 esrf  ///
+>                                                 hypertension  ///
+>                                                 ra_sle_psoriasis  ///
+>                                                 diabetes ///
+>                                                 bmi_date_measured   ///
+>                                                 bp_sys_date_measured   ///
+>                                                 bp_dias_date_measured   ///
+>                                                 creatinine_date  ///
+>                                                 hba1c_mmol_per_mol_date  ///
+>                                                 hba1c_percentage_date ///
+>                                                 smoking_status_date ///
+>                                                 insulin ///
+>                                                 statin ///
+>                                                 ace_inhibitors ///
+>                                                 arbs ///
+>                                                 alpha_blockers ///
+>                                                 betablockers ///
+>                                                 calcium_channel_blockers ///
+>                                                 spironolactone  ///
+>                                                 thiazide_diuretics ///                                          
+>                                                 {
+  2.                                                         
+.                 capture confirm string variable `var'
+  3.                 if _rc!=0 {
+  4.                         cap assert `var'==.
+  5.                         rename `var' `var'_date
+  6.                 }
+  7.         
+.                 else {
+  8.                                 replace `var' = `var' + "-15"
+  9.                                 rename `var' `var'_dstr
+ 10.                                 replace `var'_dstr = " " if `var'_dstr == "-15"
+ 11.                                 gen `var'_date = date(`var'_dstr, "YMD") 
+ 12.                                 order `var'_date, after(`var'_dstr)
+ 13.                                 drop `var'_dstr
+ 14.                 }
+ 15.         
+.         format `var'_date %td
+ 16. }
+variable chronic_respiratory_disease was str7 now str10
+(17,510,002 real changes made)
+(16,777,881 real changes made)
+(16,777,881 missing values generated)
+variable chronic_cardiac_disease was str7 now str10
+(17,510,002 real changes made)
+(16,288,135 real changes made)
+(16,288,135 missing values generated)
+variable cancer was str7 now str10
+(17,510,002 real changes made)
+(16,513,235 real changes made)
+(16,513,235 missing values generated)
+variable permanent_immunodeficiency was str7 now str10
+(17,510,002 real changes made)
+(17,420,445 real changes made)
+(17,420,445 missing values generated)
+variable temporary_immunodeficiency was str7 now str10
+(17,510,002 real changes made)
+(17,504,997 real changes made)
+(17,504,997 missing values generated)
+variable chronic_liver_disease was str7 now str10
+(17,510,002 real changes made)
+(17,403,560 real changes made)
+(17,403,560 missing values generated)
+variable other_neuro was str7 now str10
+(17,510,002 real changes made)
+(17,332,527 real changes made)
+(17,332,527 missing values generated)
+variable stroke was str7 now str10
+(17,510,002 real changes made)
+(17,122,432 real changes made)
+(17,122,432 missing values generated)
+variable dementia was str7 now str10
+(17,510,002 real changes made)
+(17,464,669 real changes made)
+(17,464,669 missing values generated)
+variable esrf was str7 now str10
+(17,510,002 real changes made)
+(17,484,319 real changes made)
+(17,484,319 missing values generated)
+variable hypertension was str7 now str10
+(17,510,002 real changes made)
+(13,738,095 real changes made)
+(13,738,095 missing values generated)
+variable ra_sle_psoriasis was str7 now str10
+(17,510,002 real changes made)
+(16,607,885 real changes made)
+(16,607,885 missing values generated)
+variable diabetes was str7 now str10
+(17,510,002 real changes made)
+(15,793,566 real changes made)
+(15,793,566 missing values generated)
+variable bmi_date_measured was str7 now str10
+(17,510,002 real changes made)
+(3,673,746 real changes made)
+(3,673,746 missing values generated)
+variable bp_sys_date_measured was str7 now str10
+(17,510,002 real changes made)
+(5,572,525 real changes made)
+(5,572,525 missing values generated)
+variable bp_dias_date_measured was str7 now str10
+(17,510,002 real changes made)
+(5,575,616 real changes made)
+(5,575,616 missing values generated)
+variable creatinine_date was str7 now str10
+(17,510,002 real changes made)
+(7,681,666 real changes made)
+(7,681,666 missing values generated)
+variable hba1c_mmol_per_mol_date was str7 now str10
+(17,510,002 real changes made)
+(9,573,016 real changes made)
+(9,573,016 missing values generated)
+variable hba1c_percentage_date was str7 now str10
+(17,510,002 real changes made)
+(15,089,922 real changes made)
+(15,089,922 missing values generated)
+variable smoking_status_date was str7 now str10
+(17,510,002 real changes made)
+(728,623 real changes made)
+(728,623 missing values generated)
+variable insulin was str7 now str10
+(17,510,002 real changes made)
+(17,248,780 real changes made)
+(17,248,780 missing values generated)
+variable statin was str7 now str10
+(17,510,002 real changes made)
+(14,560,614 real changes made)
+(14,560,614 missing values generated)
+
+. 
+. * Note - outcome dates are handled separtely below 
+. 
+. * Some names too long for loops below, shorten
+. rename permanent_immunodeficiency_date  perm_immunodef_date
+
+. rename temporary_immunodeficiency_date  temp_immunodef_date
+
+. rename bmi_date_measured_date                   bmi_measured_date
+
+. 
+. /* CREATE BINARY VARIABLES====================================================*/
+. *  Make indicator variables for all conditions where relevant 
+. 
+. foreach var of varlist  chronic_respiratory_disease ///
+>                                                 chronic_cardiac_disease  ///
+>                                                 cancer  ///
+>                                                 perm_immunodef  ///
+>                                                 temp_immunodef  ///
+>                                                 chronic_liver_disease  ///
+>                                                 other_neuro  ///
+>                                                 stroke                  ///
+>                                                 dementia ///
+>                                                 esrf  ///
+>                                                 hypertension  ///
+>                                                 ra_sle_psoriasis  ///
+>                                                 bmi_measured_date   ///
+>                                                 bp_sys_date_measured   ///
+>                                                 bp_dias_date_measured   ///
+>                                                 creatinine_date  ///
+>                                                 hba1c_mmol_per_mol_date  ///
+>                                                 hba1c_percentage_date ///
+>                                                 smoking_status_date ///
+>                                                 insulin ///
+>                                                 statin ///
+>                                                 ace_inhibitors ///
+>                                                 arbs ///
+>                                                 alpha_blockers ///
+>                                                 betablockers ///
+>                                                 calcium_channel_blockers ///
+>                                                 spironolactone  ///
+>                                                 thiazide_diuretics ///                                          
+>                                                 {
+  2.                                                 
+.         /* date ranges are applied in python, so presence of date indicates presence of 
+>           disease in the correct time frame */ 
+.         local newvar =  substr("`var'", 1, length("`var'") - 5)
+  3.         gen `newvar' = (`var'!=. )
+  4.         order `newvar', after(`var')
+  5.         safetab `newvar', m
+  6.         
+. }
+
+chronic_res |
+piratory_di |
+      sease |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 | 16,777,881       95.82       95.82
+          1 |    732,121        4.18      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+
+chronic_car |
+diac_diseas |
+          e |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 | 16,288,135       93.02       93.02
+          1 |  1,221,867        6.98      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+
+     cancer |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 | 16,513,235       94.31       94.31
+          1 |    996,767        5.69      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+
+perm_immuno |
+        def |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 | 17,420,445       99.49       99.49
+          1 |     89,557        0.51      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+
+temp_immuno |
+        def |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 | 17,504,997       99.97       99.97
+          1 |      5,005        0.03      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+
+chronic_liv |
+ er_disease |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 | 17,403,560       99.39       99.39
+          1 |    106,442        0.61      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+
+other_neuro |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 | 17,332,527       98.99       98.99
+          1 |    177,475        1.01      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+
+     stroke |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 | 17,122,432       97.79       97.79
+          1 |    387,570        2.21      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+
+   dementia |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 | 17,464,669       99.74       99.74
+          1 |     45,333        0.26      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+
+       esrf |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 | 17,484,319       99.85       99.85
+          1 |     25,683        0.15      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+
+hypertensio |
+          n |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 | 13,738,095       78.46       78.46
+          1 |  3,771,907       21.54      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+
+ra_sle_psor |
+      iasis |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 | 16,607,885       94.85       94.85
+          1 |    902,117        5.15      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+
+bmi_measure |
+          d |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |  3,673,746       20.98       20.98
+          1 | 13,836,256       79.02      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+
+bp_sys_date |
+  _measured |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |  5,572,525       31.82       31.82
+          1 | 11,937,477       68.18      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+
+bp_dias_dat |
+ e_measured |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |  5,575,616       31.84       31.84
+          1 | 11,934,386       68.16      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+
+creatinine_ |
+       date |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |  7,681,666       43.87       43.87
+          1 |  9,828,336       56.13      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+
+hba1c_mmol_ |
+per_mol_dat |
+          e |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |  9,573,016       54.67       54.67
+          1 |  7,936,986       45.33      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+
+hba1c_perce |
+ ntage_date |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 | 15,089,922       86.18       86.18
+          1 |  2,420,080       13.82      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+
+smoking_sta |
+   tus_date |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |    728,623        4.16        4.16
+          1 | 16,781,379       95.84      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+
+    insulin |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 | 17,248,780       98.51       98.51
+          1 |    261,222        1.49      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+
+     statin |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 | 14,560,614       83.16       83.16
+          1 |  2,949,388       16.84      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+
+ace_inhibit |
+        ors |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          1 | 17,510,002      100.00      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+
+       arbs |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          1 | 17,510,002      100.00      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+
+alpha_block |
+        ers |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          1 | 17,510,002      100.00      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+
+betablocker |
+          s |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          1 | 17,510,002      100.00      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+
+calcium_cha |
+nnel_blocke |
+         rs |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          1 | 17,510,002      100.00      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+
+spironolact |
+        one |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          1 | 17,510,002      100.00      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+
+thiazide_di |
+    uretics |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          1 | 17,510,002      100.00      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+
+. 
+. 
+. /*  Body Mass Index  */
+. * NB: watch for missingness
+. 
+. * Recode strange values 
+. replace bmi = . if bmi == 0 
+(3,734,594 real changes made, 3,734,594 to missing)
+
+. replace bmi = . if !inrange(bmi, 15, 50)
+(125,406 real changes made, 125,406 to missing)
+
+. 
+. * Restrict to within 10 years of index and aged > 16 
+. gen bmi_time = (indexdate - bmi_measured_date)/365.25
+(3,673,746 missing values generated)
+
+. gen bmi_age = age - bmi_time
+(3,673,746 missing values generated)
+
+. 
+. replace bmi = . if bmi_age < 16 
+(50,080 real changes made, 50,080 to missing)
+
+. replace bmi = . if bmi_time > 10 & bmi_time != . 
+(0 real changes made)
+
+. 
+. * Set to missing if no date, and vice versa 
+. replace bmi = . if bmi_measured_date == . 
+(0 real changes made)
+
+. replace bmi_measured_date = . if bmi == . 
+(236,334 real changes made, 236,334 to missing)
+
+. replace bmi_measured = . if bmi == . 
+(3,910,080 real changes made, 3,910,080 to missing)
+
+. 
+. * BMI (NB: watch for missingness)
+. gen     bmicat = .
+(17,510,002 missing values generated)
+
+. recode  bmicat . = 1 if bmi<18.5
+(bmicat: 304254 changes made)
+
+. recode  bmicat . = 2 if bmi<25
+(bmicat: 4785663 changes made)
+
+. recode  bmicat . = 3 if bmi<30
+(bmicat: 4718235 changes made)
+
+. recode  bmicat . = 4 if bmi<35
+(bmicat: 2399737 changes made)
+
+. recode  bmicat . = 5 if bmi<40
+(bmicat: 927006 changes made)
+
+. recode  bmicat . = 6 if bmi<.
+(bmicat: 465027 changes made)
+
+. replace bmicat = .u if bmi>=.
+(3,910,080 real changes made, 3,910,080 to missing)
+
+. 
+. label define bmicat 1 "Underweight (<18.5)"     ///
+>                                         2 "Normal (18.5-24.9)"          ///
+>                                         3 "Overweight (25-29.9)"        ///
+>                                         4 "Obese I (30-34.9)"           ///
+>                                         5 "Obese II (35-39.9)"          ///
+>                                         6 "Obese III (40+)"                     ///
+>                                         .u "Unknown (.u)"
+
+. label values bmicat bmicat
+
+. 
+. * Create more granular categorisation
+. recode bmicat 1/3 .u = 1 4=2 5=3 6=4, gen(obese4cat)
+(17205748 differences between bmicat and obese4cat)
+
+. 
+. label define obese4cat  1 "No record of obesity"        ///
+>                                                 2 "Obese I (30-34.9)"           ///
+>                                                 3 "Obese II (35-39.9)"          ///
+>                                                 4 "Obese III (40+)"             
+
+. label values obese4cat obese4cat
+
+. order obese4cat, after(bmicat)
+
+. 
+. 
+. 
+. **generate BMI categories for south asians
+. *https://www.nice.org.uk/guidance/ph46/chapter/1-Recommendations#recommendation-2-bmi-assessment-multi-component-interventions-and-best-practice-standards
+. 
+. gen bmicat_sa=bmicat
+(3,910,080 missing values generated)
+
+. replace bmicat_sa = 2 if bmi>=18.5 & bmi <23 & eth5==2
+(0 real changes made)
+
+. replace bmicat_sa = 3 if bmi>=23 & bmi < 27.5 & eth5==2
+(139,556 real changes made)
+
+. replace bmicat_sa = 4 if bmi>=27.5 & bmi < 32.5 & eth5==2
+(132,613 real changes made)
+
+. replace bmicat_sa = 5 if bmi>=32.5 & bmi < 37.5 & eth5==2
+(46,417 real changes made)
+
+. replace bmicat_sa = 6 if bmi>=37.5 & bmi < . & eth5==2
+(13,874 real changes made)
+
+. 
+. safetab bmicat_sa
+
+  bmicat_sa |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          1 |    304,254        2.24        2.24
+          2 |  4,646,107       34.16       36.40
+          3 |  4,725,178       34.74       71.14
+          4 |  2,485,933       18.28       89.42
+          5 |    959,549        7.06       96.48
+          6 |    478,901        3.52      100.00
+------------+-----------------------------------
+      Total | 13,599,922      100.00
+
+. 
+. label define bmicat_sa 1 "Underweight (<18.5)"  ///
+>                                         2 "Normal (18.5-24.9 / 22.9)"           ///
+>                                         3 "Overweight (25-29.9 / 23-27.4)"      ///
+>                                         4 "Obese I (30-34.9 / 27.4-32.4)"               ///
+>                                         5 "Obese II (35-39.9 / 32.5- 37.4)"             ///
+>                                         6 "Obese III (40+ / 37.5+)"                     ///
+>                                         .u "Unknown (.u)"
+
+. label values bmicat bmicat
+
+. 
+. * Create more granular categorisation
+. recode bmicat_sa 1/3 .u = 1 4=2 5=3 6=4, gen(obese4cat_sa)
+(17205748 differences between bmicat_sa and obese4cat_sa)
+
+. 
+. label define obese4cat_sa       1 "No record of obesity"        ///
+>                                                 2 "Obese I (30-34.9 / 27.5-32.5)"               ///
+>                                                 3 "Obese II (35-39.9 / 32.5- 37.4)"             ///
+>                                                 4 "Obese III (40+ / 37.5+)"             
+
+. label values obese4cat_sa obese4cat_sa
+
+. order obese4cat_sa, after(bmicat_sa)
+
+. 
+. 
+. /*  Smoking  */
+. 
+. * Smoking 
+. label define smoke 1 "Never" 2 "Former" 3 "Current" .u "Unknown (.u)"
+
+. 
+. gen     smoke = 1  if smoking_status == "N"
+(9,472,170 missing values generated)
+
+. replace smoke = 2  if smoking_status == "E"
+(5,766,938 real changes made)
+
+. replace smoke = 3  if smoking_status == "S"
+(2,976,609 real changes made)
+
+. replace smoke = .u if smoking_status == "M"
+(728,623 real changes made, 728,623 to missing)
+
+. replace smoke = .u if smoking_status == "" 
+(0 real changes made)
+
+. 
+. label values smoke smoke
+
+. drop smoking_status
+
+. 
+. * Create non-missing 3-category variable for current smoking
+. * Assumes missing smoking is never smoking 
+. recode smoke .u = 1, gen(smoke_nomiss)
+(728623 differences between smoke and smoke_nomiss)
+
+. order smoke_nomiss, after(smoke)
+
+. label values smoke_nomiss smoke
+
+. 
+. /* CLINICAL COMORBIDITIES */ 
+. 
+. /*  Cancer */
+. label define cancer 1 "Never" 2 "Last year" 3 "2-5 years ago" 4 "5+ years"
+
+. 
+. * malignancies
+. gen     cancer_cat = 4 if inrange(cancer_date, d(1/1/1900), d(1/2/2015))
+(16,901,320 missing values generated)
+
+. replace cancer_cat = 3 if inrange(cancer_date, d(1/2/2015), d(1/2/2019))
+(257,753 real changes made)
+
+. replace cancer_cat = 2 if inrange(cancer_date, d(1/2/2019), d(1/2/2020))
+(85,537 real changes made)
+
+. recode  cancer_cat . = 1
+(cancer_cat: 16558030 changes made)
+
+. label values cancer_cat cancer
+
+. 
+. /*  Immunosuppression  */
+. 
+. * Immunosuppressed:
+. * Permanent immunodeficiency ever, OR 
+. * Temporary immunodeficiency  last year
+. gen temp1  = 1 if perm_immunodef_date!=.
+(17,420,445 missing values generated)
+
+. gen temp2  = inrange(temp_immunodef_date, (indexdate - 365), indexdate)
+
+. 
+. 
+. gen immunosuppressed=0
+
+. replace immunosuppressed=1 if perm_immunodef==1 | temp_immunodef==1
+(94,278 real changes made)
+
+. safetab immunosuppressed
+
+immunosuppr |
+      essed |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 | 17,415,724       99.46       99.46
+          1 |     94,278        0.54      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+
+. 
+. /*  Blood pressure   */
+. 
+. * Categorise
+. gen     bpcat = 1 if bp_sys < 120 &  bp_dias < 80
+(9,227,892 missing values generated)
+
+. replace bpcat = 2 if inrange(bp_sys, 120, 130) & bp_dias<80
+(2,247,787 real changes made)
+
+. replace bpcat = 3 if inrange(bp_sys, 130, 140) | inrange(bp_dias, 80, 90)
+(6,295,870 real changes made)
+
+. replace bpcat = 4 if (bp_sys>=140 & bp_sys<.) | (bp_dias>=90 & bp_dias<.) 
+(3,050,036 real changes made)
+
+. replace bpcat = .u if bp_sys>=. | bp_dias>=. | bp_sys==0 | bp_dias==0
+(5,577,086 real changes made, 5,577,086 to missing)
+
+. 
+. label define bpcat 1 "Normal" 2 "Elevated" 3 "High, stage I"    ///
+>                                         4 "High, stage II" .u "Unknown"
+
+. label values bpcat bpcat
+
+. 
+. recode bpcat .u=1, gen(bpcat_nomiss)
+(5577086 differences between bpcat and bpcat_nomiss)
+
+. label values bpcat_nomiss bpcat
+
+. 
+. * Create non-missing indicator of known high blood pressure
+. gen bphigh = (bpcat==4)
+
+. 
+. /*  Hypertension  */
+. 
+. gen htdiag_or_highbp = bphigh
+
+. recode htdiag_or_highbp 0 = 1 if hypertension==1 
+(htdiag_or_highbp: 2313295 changes made)
+
+. 
+. *Mean arterial pressure MAP = (SBP+(DBP*2))/3
+. gen bp_map=(bp_sys + (bp_dias*2))/3
+
+. ************
+. *   eGFR   *
+. ************
+. 
+. * Set implausible creatinine values to missing (Note: zero changed to missing)
+. replace creatinine = . if !inrange(creatinine, 20, 3000) 
+(7,699,570 real changes made, 7,699,570 to missing)
+
+.         
+. * Divide by 88.4 (to convert umol/l to mg/dl)
+. gen SCr_adj = creatinine/88.4
+(7,699,570 missing values generated)
+
+. 
+. gen min=.
+(17,510,002 missing values generated)
+
+. replace min = SCr_adj/0.7 if male==0
+(5,440,059 real changes made)
+
+. replace min = SCr_adj/0.9 if male==1
+(4,370,373 real changes made)
+
+. replace min = min^-0.329  if male==0
+(5,440,059 real changes made)
+
+. replace min = min^-0.411  if male==1
+(4,370,373 real changes made)
+
+. replace min = 1 if min<1
+(6,500,265 real changes made)
+
+. 
+. gen max=.
+(17,510,002 missing values generated)
+
+. replace max=SCr_adj/0.7 if male==0
+(5,440,059 real changes made)
+
+. replace max=SCr_adj/0.9 if male==1
+(4,370,373 real changes made)
+
+. replace max=max^-1.209
+(9,810,432 real changes made)
+
+. replace max=1 if max>1
+(11,009,737 real changes made)
+
+. 
+. gen egfr=min*max*141
+(7,699,570 missing values generated)
+
+. replace egfr=egfr*(0.993^age)
+(9,810,432 real changes made)
+
+. replace egfr=egfr*1.018 if male==0
+(5,440,059 real changes made)
+
+. label var egfr "egfr calculated using CKD-EPI formula with no eth"
+
+. 
+. * Categorise into ckd stages
+. egen egfr_cat = cut(egfr), at(0, 30, 60, 5000)
+(7699570 missing values generated)
+
+. 
+. label define egfr_cat 5000 "None" 60 "Stage 3 egfr 30-6" 30 "Stage 4/5 egfr<30"
+
+. label values egfr_cat egfr_cat 
+
+. lab var  egfr_cat "CKD category"
+
+. safetab egfr_cat
+
+     CKD category |      Freq.     Percent        Cum.
+------------------+-----------------------------------
+                0 |     76,062        0.78        0.78
+Stage 4/5 egfr<30 |    936,648        9.55       10.32
+Stage 3 egfr 30-6 |  8,797,722       89.68      100.00
+------------------+-----------------------------------
+            Total |  9,810,432      100.00
+
+. 
+. gen egfr60=0
+
+. replace egfr60=1 if egfr<60
+(1,012,710 real changes made)
+
+. lab define egfr60 0"egfr >=60" 1"eGFR <60"
+
+. label values egfr60 egfr60
+
+. tab egfr60
+
+     egfr60 |      Freq.     Percent        Cum.
+------------+-----------------------------------
+  egfr >=60 | 16,497,292       94.22       94.22
+   eGFR <60 |  1,012,710        5.78      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+
+. 
+. /* Hb1AC */
+. 
+. /*  Diabetes severity  */
+. 
+. * Set zero or negative to missing
+. replace hba1c_percentage   = . if hba1c_percentage <= 0
+(16,302,442 real changes made, 16,302,442 to missing)
+
+. replace hba1c_mmol_per_mol = . if hba1c_mmol_per_mol <= 0
+(9,612,613 real changes made, 9,612,613 to missing)
+
+. 
+. /* Express  HbA1c as percentage  */ 
+. 
+. * Express all values as perecentage 
+. noi summ hba1c_percentage hba1c_mmol_per_mol 
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+hba1c_per~ge |  1,207,560    5.946903    1.790006         .3        192
+hba1c_mmol~l |  7,897,389    40.95846    93.60781         .4      88000
+
+. gen     hba1c_pct = hba1c_percentage 
+(16,302,442 missing values generated)
+
+. replace hba1c_pct = (hba1c_mmol_per_mol/10.929)+2.15 if hba1c_mmol_per_mol<. 
+(7,897,387 real changes made)
+
+. 
+. * Valid % range between 0-20  /195 mmol/mol
+. replace hba1c_pct = . if !inrange(hba1c_pct, 0, 20) 
+(155 real changes made, 155 to missing)
+
+. replace hba1c_pct = round(hba1c_pct, 0.1)
+(7,897,356 real changes made)
+
+. 
+. 
+. /* Categorise hba1c and diabetes  */
+. /* Diabetes type */
+. gen dm_type=1 if diabetes_type=="T1DM"
+(17,420,365 missing values generated)
+
+. replace dm_type=2 if diabetes_type=="T2DM"
+(1,255,998 real changes made)
+
+. replace dm_type=3 if diabetes_type=="UNKNOWN_DM"
+(387,327 real changes made)
+
+. replace dm_type=0 if diabetes_type=="NO_DM"
+(15,777,040 real changes made)
+
+. 
+. safetab dm_type diabetes_type
+
+           |                diabetes_type
+   dm_type |     NO_DM       T1DM       T2DM  UNKNOWN.. |     Total
+-----------+--------------------------------------------+----------
+         0 |15,777,040          0          0          0 |15,777,040 
+         1 |         0     89,637          0          0 |    89,637 
+         2 |         0          0  1,255,998          0 | 1,255,998 
+         3 |         0          0          0    387,327 |   387,327 
+-----------+--------------------------------------------+----------
+     Total |15,777,040     89,637  1,255,998    387,327 |17,510,002 
+
+. label define dm_type 0"No DM" 1"T1DM" 2"T2DM" 3"UNKNOWN_DM"
+
+. label values dm_type dm_type
+
+. 
+. *Open safely diabetes codes with exeter algorithm
+. gen dm_type_exeter_os=1 if diabetes_exeter_os=="T1DM_EX_OS"
+(17,431,877 missing values generated)
+
+. replace dm_type_exeter_os=2 if diabetes_exeter_os=="T2DM_EX_OS"
+(1,254,099 real changes made)
+
+. replace dm_type_exeter_os=0 if diabetes_exeter_os=="NO_DM"
+(16,177,778 real changes made)
+
+. label values  dm_type_exeter_os dm_type
+
+. 
+. * Group hba1c
+. gen     hba1ccat = 0 if hba1c_pct <  6.5
+(10,705,972 missing values generated)
+
+. replace hba1ccat = 1 if hba1c_pct >= 6.5  & hba1c_pct < 7.5
+(590,512 real changes made)
+
+. replace hba1ccat = 2 if hba1c_pct >= 7.5  & hba1c_pct < 8
+(157,781 real changes made)
+
+. replace hba1ccat = 3 if hba1c_pct >= 8    & hba1c_pct < 9
+(171,433 real changes made)
+
+. replace hba1ccat = 4 if hba1c_pct >= 9    & hba1c_pct !=.
+(193,005 real changes made)
+
+. label define hba1ccat 0 "<6.5%" 1">=6.5-7.4" 2">=7.5-7.9" 3">=8-8.9" 4">=9"
+
+. label values hba1ccat hba1ccat
+
+. safetab hba1ccat
+
+   hba1ccat |      Freq.     Percent        Cum.
+------------+-----------------------------------
+      <6.5% |  6,804,030       85.94       85.94
+  >=6.5-7.4 |    590,512        7.46       93.40
+  >=7.5-7.9 |    157,781        1.99       95.40
+    >=8-8.9 |    171,433        2.17       97.56
+        >=9 |    193,005        2.44      100.00
+------------+-----------------------------------
+      Total |  7,916,761      100.00
+
+. 
+. gen hba1c75=0 if hba1c_pct<7.5
+(10,115,460 missing values generated)
+
+. replace hba1c75=1 if hba1c_pct>=7.5 & hba1c_pct!=.
+(522,219 real changes made)
+
+. label define hba1c75 0"<7.5" 1">=7.5"
+
+. safetab hba1c75, m
+
+    hba1c75 |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |  7,394,542       42.23       42.23
+          1 |    522,219        2.98       45.21
+          . |  9,593,241       54.79      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+
+. 
+. * Create diabetes, split by control/not
+. gen     diabcat = 1 if dm_type==0
+(1,732,962 missing values generated)
+
+. replace diabcat = 2 if dm_type==1 & inlist(hba1ccat, 0, 1)
+(22,407 real changes made)
+
+. replace diabcat = 3 if dm_type==1 & inlist(hba1ccat, 2, 3, 4)
+(62,133 real changes made)
+
+. replace diabcat = 4 if dm_type==2 & inlist(hba1ccat, 0, 1)
+(780,775 real changes made)
+
+. replace diabcat = 5 if dm_type==2 & inlist(hba1ccat, 2, 3, 4)
+(454,625 real changes made)
+
+. replace diabcat = 6 if dm_type==1 & hba1c_pct==. | dm_type==2 & hba1c_pct==.
+(25,695 real changes made)
+
+. 
+. 
+. label define diabcat    1 "No diabetes"                         ///
+>                                                 2 "T1DM, controlled"            ///
+>                                                 3 "T1DM, uncontrolled"          ///
+>                                                 4 "T2DM, controlled"            ///
+>                                                 5 "T2DM, uncontrolled"          ///
+>                                                 6 "Diabetes, no HbA1c"
+
+. label values diabcat diabcat
+
+. safetab diabcat, m
+
+           diabcat |      Freq.     Percent        Cum.
+-------------------+-----------------------------------
+       No diabetes | 15,777,040       90.10       90.10
+  T1DM, controlled |     22,407        0.13       90.23
+T1DM, uncontrolled |     62,133        0.35       90.59
+  T2DM, controlled |    780,775        4.46       95.04
+T2DM, uncontrolled |    454,625        2.60       97.64
+Diabetes, no HbA1c |     25,695        0.15       97.79
+                 . |    387,327        2.21      100.00
+-------------------+-----------------------------------
+             Total | 17,510,002      100.00
+
+. 
+. /*  Asthma  */
+. * Asthma  (coded: 0 No, 1 Yes no OCS, 2 Yes with OCS)
+. safetab asthma
+
+     asthma |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 | 14,813,021       84.60       84.60
+          1 |  2,403,048       13.72       98.32
+          2 |    293,933        1.68      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+
+. replace asthma=1 if asthma==2
+(293,933 real changes made)
+
+. safetab asthma
+
+     asthma |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 | 14,813,021       84.60       84.60
+          1 |  2,696,981       15.40      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+
+. 
+. *gen count of co-morbidities
+. gen comorbidity_count=0
+
+. 
+. foreach var of varlist  chronic_respiratory_disease ///
+>                                                 chronic_cardiac_disease  ///
+>                                                 cancer  ///
+>                                                 perm_immunodef  ///
+>                                                 temp_immunodef  ///
+>                                                 chronic_liver_disease  ///
+>                                                 other_neuro  ///
+>                                                 stroke                  ///
+>                                                 dementia ///
+>                                                 esrf  ///
+>                                                 hypertension  ///
+>                                                 asthma ///
+>                                                 ra_sle_psoriasis  ///
+>                                                 {
+  2. replace comorbidity_count=comorbidity_count+1 if `var'==1
+  3.                                                 }
+(732,121 real changes made)
+(1,221,867 real changes made)
+(996,767 real changes made)
+(89,557 real changes made)
+(5,005 real changes made)
+(106,442 real changes made)
+(177,475 real changes made)
+(387,570 real changes made)
+(45,333 real changes made)
+(25,683 real changes made)
+(3,771,907 real changes made)
+(2,696,981 real changes made)
+(902,117 real changes made)
+
+. 
+. summ comorbidity_count
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+comorbidit~t | 17,510,002    .6372829    .8981438          0          9
+
+. 
+. *comorbidities category 
+. gen comorbidity_cat =comorbidity_count
+
+. replace comorbidity_cat=4 if comorbidity_count>=4 & comorbidity_count!=.
+(43,794 real changes made)
+
+. bysort comorbidity_cat: sum comorbidity_count
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-> comorbidity_cat = 0
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+comorbidi~nt |  9,987,190           0           0          0          0
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-> comorbidity_cat = 1
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+comorbidi~nt |  4,964,442           1           0          1          1
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-> comorbidity_cat = 2
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+comorbidi~nt |  1,746,476           2           0          2          2
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-> comorbidity_cat = 3
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+comorbidi~nt |    597,217           3           0          3          3
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-> comorbidity_cat = 4
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+comorbidi~nt |    214,677    4.237902    .5067594          4          9
+
+
+. safetab comorbidity_cat,m
+
+comorbidity |
+       _cat |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |  9,987,190       57.04       57.04
+          1 |  4,964,442       28.35       85.39
+          2 |  1,746,476        9.97       95.36
+          3 |    597,217        3.41       98.77
+          4 |    214,677        1.23      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+
+. 
+. *******************************
+. *  Recode implausible values  *
+. *******************************
+. 
+. *make combination_bp_meds binary
+. safetab combination_bp_meds
+
+**TABLE OF combination_bp_meds REDACTED DUE TO SMALL N**
+
+
+. replace combination_bp_meds=0 if combination_bp_meds<0 
+(0 real changes made)
+
+. replace combination_bp_meds=1 if combination_bp_meds>0 & combination_bp_meds!=.
+(30,430 real changes made)
+
+. safetab combination_bp_meds
+
+combination |
+   _bp_meds |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 | 17,477,837       99.82       99.82
+          1 |     32,165        0.18      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+
+. 
+. * BMI 
+. * Set implausible BMIs to missing:
+. replace bmi = . if !inrange(bmi, 15, 50)
+(0 real changes made)
+
+. 
+. *GP consult count
+. replace gp_consult_count=0 if gp_consult_count==. | gp_consult_count<0
+(0 real changes made)
+
+. summ gp_consult_count
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+gp_consult~t | 17,510,002    5.879155    8.491868          0        740
+
+. 
+. /**** Create survival times  ****/
+. * For looping later, name must be stime_binary_outcome_name
+. 
+. * Survival time = last followup date (first: deregistration date, end study, death, or that outcome)
+. *Ventilation does not have a survival time because it is a yes/no flag
+. foreach i of global outcomes {
+  2.         gen stime_`i' = min(`i'_censor_date, onsdeath_date, `i'_date, dereg_date)
+  3. }
+
+. 
+. * If outcome occurs after censoring, set to zero
+. foreach i of global outcomes {
+  2.         replace `i'=0 if `i'_date>stime_`i'
+  3.         tab `i'
+  4. }
+(276,852 real changes made)
+
+     tested |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 | 16,234,333       92.71       92.71
+          1 |  1,275,669        7.29      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+(4,259 real changes made)
+
+positivetes |
+          t |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 | 17,431,788       99.55       99.55
+          1 |     78,214        0.45      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+(90,645 real changes made)
+
+         ae |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 | 16,178,008       92.39       92.39
+          1 |  1,331,994        7.61      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+(5 real changes made)
+
+        icu |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 | 17,506,889       99.98       99.98
+          1 |      3,113        0.02      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+(0 real changes made)
+
+onscoviddea |
+         th |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 | 17,494,375       99.91       99.91
+          1 |     15,627        0.09      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+(0 real changes made)
+
+ons_noncovi |
+     ddeath |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 | 17,425,130       99.52       99.52
+          1 |     84,872        0.48      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+(0 real changes made)
+
+   onsdeath |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 | 17,409,503       99.43       99.43
+          1 |    100,499        0.57      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+(408 real changes made)
+
+  cpnsdeath |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 | 17,500,635       99.95       99.95
+          1 |      9,367        0.05      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+
+. 
+. * Format date variables
+. format  stime* %td 
+
+. 
+. /*distribution of outcome dates
+> foreach i of global outcomes {
+>         histogram `i'_date, discrete width(15) frequency ytitle(`i') xtitle(Date) scheme(meta) 
+> graph export "$Tabfigdir/outcome_`i'_freq.svg", as(svg) replace
+> }
+> */
+. /* LABEL VARIABLES============================================================*/
+. *  Label variables you are intending to keep, drop the rest 
+. 
+. *HH variable
+. label var  hh_size "# people in household"
+
+. label var  hh_id "Household ID"
+
+. label var hh_total "# people in household calculated"
+
+. label var hh_total_cat "Number of people in household"
+
+. label var hh_log_linear "Log linear household size"
+
+. label var hh_linear "Linear household size"
+
+. label var hh_cat_2 "Household category excluding 11+"
+
+. label var is_prison "Household status is a prison"
+
+. 
+. * Demographics
+. label var patient_id                            "Patient ID"
+
+. label var age                                           "Age (years)"
+
+. label var agegroup                                      "Grouped age"
+
+. label var sex                                           "Sex"
+
+. label var male                                          "Male"
+
+. label var bmi                                           "Body Mass Index (BMI, kg/m2)"
+
+. label var bmicat                                        "BMI"
+
+. label var bmicat_sa                                     "BMI with SA categories"
+
+. label var bmi_measured_date             "Body Mass Index (BMI, kg/m2), date measured"
+
+. label var obese4cat                                     "Obesity (4 categories)"
+
+. label var obese4cat_sa                          "Obesity with SA categories"
+
+. label var smoke                                         "Smoking status"
+
+. label var smoke_nomiss                          "Smoking status (missing set to non)"
+
+. label var imd                                           "Index of Multiple Deprivation (IMD)"
+
+. label var eth5                                          "Eth 5 categories"
+
+. label var ethnicity_16                          "Eth 16 categories"
+
+. label var eth16                                         "Eth 16 collapsed"
+
+. label var stp                                           "Sustainability and Transformation Partnership"
+
+. label var age1                                          "Age spline 1"
+
+. label var age2                                          "Age spline 2"
+
+. label var age3                                          "Age spline 3"
+
+. lab var region                                          "Region of England"
+
+. lab var rural_urban                                     "Rural-Urban Indicator"
+
+. lab var carehome                                        "Care home y/n"
+
+. lab var hba1c_mmol_per_mol                      "HbA1c mmo/mol"
+
+. lab var hba1c_pct                                       "HbA1c %"
+
+. lab var hba1ccat                                        "HbA1c category"
+
+. lab var hba1c75                                         "HbA1c >= 7.5%"
+
+. lab var gp_consult_count                        "Number of GP consultations in the 12 months prior to baseline"
+
+. 
+. * Comorbidities of interest 
+. label var comorbidity_count                     "Count of co-morbid conditions"
+
+. label var comorbidity_cat                               "Catgeorised co-morbidity count"
+
+. label var asthma                                                "Asthma category"
+
+. label var hypertension                              "Diagnosed hypertension"
+
+. label var chronic_respiratory_disease   "Chronic Respiratory Diseases"
+
+. label var chronic_cardiac_disease               "Chronic Cardiac Diseases"
+
+. label var dm_type                                               "Diabetes Type"
+
+. label var dm_type_exeter_os                             "Diabetes type (Exeter definition)"
+
+. label var cancer                                                "Cancer"
+
+. label var immunosuppressed                              "Immunosuppressed (perm or temp)"
+
+. label var chronic_liver_disease                 "Chronic liver disease"
+
+. label var other_neuro                                   "Neurological disease"                  
+
+. label var stroke                                            "Stroke"
+
+. lab var dementia                                                "Dementia"                                                      
+
+. label var ra_sle_psoriasis                              "Autoimmune disease"
+
+. lab var egfr                                                    "eGFR"
+
+. lab var egfr_cat                                                "CKD category defined by eGFR"
+
+. lab var egfr60                                                  "CKD defined by egfr<60"
+
+. lab var  bphigh                                                 "non-missing indicator of known high blood pressure"
+
+. lab var bpcat                                                   "Blood pressure four levels non-missing"
+
+. lab var htdiag_or_highbp                                "High blood pressure or hypertension diagnosis"
+
+. lab var bp_sys                                                  "Systolic BP"
+
+. lab var bp_dias                                                 "Diastolic BP"
+
+. lab var bp_map                                                  "Mean Arterial Pressure"
+
+. lab var esrf                                                    "end stage renal failure"
+
+. label var hypertension_date                                     "Diagnosed hypertension Date"
+
+. label var chronic_respiratory_disease_date      "Other Respiratory Diseases Date"
+
+. label var chronic_cardiac_disease_date          "Other Heart Diseases Date"
+
+. label var diabetes_date                                         "Diabetes Date"
+
+. label var cancer_date                                           "Cancer Date"
+
+. label var chronic_liver_disease_date            "Chronic liver disease Date"
+
+. label var other_neuro_date                                      "Neurological disease  Date"
+
+. label var stroke_date                                   "Stroke date"           
+
+. label var dementia_date                                         "DDementia date"                                        
+
+. label var ra_sle_psoriasis_date                         "Autoimmune disease  Date"
+
+. lab var esrf_date                                                       "end stage renal failure"
+
+. lab var hba1c_percentage_date                           "HbA1c % date"
+
+. 
+. 
+. *medications
+. lab var statin                                                          "Statin in last 12 months"
+
+. lab var insulin                                                         "Insulin in last 12 months"
+
+. lab var ace_inhibitors                                          "ACE in last 12 months"
+
+. lab var alpha_blockers                                          "Alpha blocker in last 12 months"
+
+. lab var arbs                                                            "ARB in last 12 months"
+
+. lab var betablockers                                            "Beta blocker in last 12 months"
+
+. lab var calcium_channel_blockers                        "CCB in last 12 months"
+
+. lab var combination_bp_meds                             "BP med in last 12 months"
+
+. lab var spironolactone                                          "Spironolactone in last 12 months"
+
+. lab var thiazide_diuretics                                      "TZD in last 12 months"
+
+. 
+. lab var statin_date                                                     "Statin in last 12 months"
+
+. lab var insulin_date                                            "Insulin in last 12 months"
+
+. lab var ace_inhibitors_date                             "ACE in last 12 months"
+
+. lab var alpha_blockers_date                             "Alpha blocker in last 12 months"
+
+. lab var arbs_date                                                       "ARB in last 12 months"
+
+. lab var betablockers_date                                       "Beta blocker in last 12 months"
+
+. lab var calcium_channel_blockers_date           "CCB in last 12 months"
+
+. lab var spironolactone_date                             "Spironolactone in last 12 months"
+
+. lab var thiazide_diuretics_date                         "TZD in last 12 months"
+
+. 
+. * Outcomes and follow-up
+. label var indexdate                                     "Date of study start (Feb 1 2020)"
+
+. foreach i of global outcomes {
+  2.         label var `i'_censor_date                "Date of admin censoring"
+  3. }
+
+. *Outcome dates
+. foreach i of global outcomes {
+  2.         label var `i'_date                                      "Failure date:  `i'"
+  3.         d `i'_date
+  4. }
+
+              storage   display    value
+variable name   type    format     label      variable label
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+tested_date     float   %td                   Failure date:  tested
+
+              storage   display    value
+variable name   type    format     label      variable label
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+positive~t_date float   %td                   Failure date:  positivetest
+
+              storage   display    value
+variable name   type    format     label      variable label
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ae_date         float   %td                   Failure date:  ae
+
+              storage   display    value
+variable name   type    format     label      variable label
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+icu_date        float   %td                   Failure date:  icu
+
+              storage   display    value
+variable name   type    format     label      variable label
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+onscovid~h_date float   %td                   Failure date:  onscoviddeath
+
+              storage   display    value
+variable name   type    format     label      variable label
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ons_nonc~h_date float   %td                   Failure date:  ons_noncoviddeath
+
+              storage   display    value
+variable name   type    format     label      variable label
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+onsdeath_date   float   %td                   Failure date:  onsdeath
+
+              storage   display    value
+variable name   type    format     label      variable label
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+cpnsdeath_date  float   %td                   Failure date:  cpnsdeath
+
+. 
+. * Survival times
+. foreach i of global outcomes {
+  2.         lab var stime_`i'                                       "Survivatime (date): `i'"
+  3.         d stime_`i'
+  4. }
+
+              storage   display    value
+variable name   type    format     label      variable label
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+stime_tested    float   %td                   Survivatime (date): tested
+
+              storage   display    value
+variable name   type    format     label      variable label
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+stime_positiv~t float   %td                   Survivatime (date): positivetest
+
+              storage   display    value
+variable name   type    format     label      variable label
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+stime_ae        float   %td                   Survivatime (date): ae
+
+              storage   display    value
+variable name   type    format     label      variable label
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+stime_icu       float   %td                   Survivatime (date): icu
+
+              storage   display    value
+variable name   type    format     label      variable label
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+stime_onscovi~h float   %td                   Survivatime (date): onscoviddeath
+
+              storage   display    value
+variable name   type    format     label      variable label
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+stime_ons_non~h float   %td                   Survivatime (date): ons_noncoviddeath
+
+              storage   display    value
+variable name   type    format     label      variable label
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+stime_onsdeath  float   %td                   Survivatime (date): onsdeath
+
+              storage   display    value
+variable name   type    format     label      variable label
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+stime_cpnsdeath float   %td                   Survivatime (date): cpnsdeath
+
+. 
+. * binary outcome indicators
+. foreach i of global outcomes {
+  2.         lab var `i'                                     "outcome `i'"
+  3.         safetab `i'
+  4. }
+
+    outcome |
+     tested |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 | 16,234,333       92.71       92.71
+          1 |  1,275,669        7.29      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+
+    outcome |
+positivetes |
+          t |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 | 17,431,788       99.55       99.55
+          1 |     78,214        0.45      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+
+ outcome ae |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 | 16,178,008       92.39       92.39
+          1 |  1,331,994        7.61      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+
+outcome icu |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 | 17,506,889       99.98       99.98
+          1 |      3,113        0.02      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+
+    outcome |
+onscoviddea |
+         th |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 | 17,494,375       99.91       99.91
+          1 |     15,627        0.09      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+
+    outcome |
+ons_noncovi |
+     ddeath |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 | 17,425,130       99.52       99.52
+          1 |     84,872        0.48      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+
+    outcome |
+   onsdeath |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 | 17,409,503       99.43       99.43
+          1 |    100,499        0.57      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+
+    outcome |
+  cpnsdeath |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 | 17,500,635       99.95       99.95
+          1 |      9,367        0.05      100.00
+------------+-----------------------------------
+      Total | 17,510,002      100.00
+
+. label var advanced_resp_support_flag            "outcome: Advanced respiratory support"
+
+. 
+. label var basic_resp_support_flag               "outcome: Basic respiratory support"
+
+. label var any_resp_support_flag "outcome: Any respiratory support"
+
+. 
+. /* TIDY DATA==================================================================*/
+. *  Drop variables that are not needed (those not labelled)
+. ds, not(varlabel)
+confirmed_~e  died_ons_c..  ethni~6_date  bmi_measured  bp_dias_da~d  hba1c_perc..  smoki~e_date  diabetes_e~r  temp_immun~f  dereg_date    cancer_cat    min
+primary_c~se  d~nfirmedc~y  ethnicity     bp_sys_dat~e  ~l_date_date  creatinine    smoki~s_date  perm_immun~e  index         carehometype  temp1         max
+primary_c~re  died_ons_s~y  ethni~y_date  bp_sys_dat~d  hba1c~l_date  crea~te_date  diabetes_t~e  perm_immun~f  onsconfirm~e  bmi_time      temp2         diabcat
+suspected_~e  died_ons_c~g  has_consul~y  bp_dias_da~e  hba1c_per~ge  crea~ne_date  diabetes_e~s  temp_immun~e  onssuspect~e  bmi_age       SCr_adj
+
+. drop `r(varlist)'
+
+.         
+. 
+. /* APPLY INCLUSION/EXCLUIONS==================================================*/ 
+. 
+. safecount
+  17,510,002
+
+. 
+. noi di "DROP AGE >110:"
+DROP AGE >110:
+
+. drop if age > 110 & age != .
+(0 observations deleted)
+
+. 
+. safecount
+  17,510,002
+
+. noi di "DROP IF DIED BEFORE INDEX"
+DROP IF DIED BEFORE INDEX
+
+. 
+. *fix death dates
+. drop if onsdeath_date <= indexdate
+(0 observations deleted)
+
+. safecount 
+  17,510,002
+
+. 
+. sort patient_id
+
+. save "$Tempdir/analysis_dataset.dta", replace
+file E:\will\ethnicity-covid-research/output/tempdata/analysis_dataset.dta saved
+
+. 
+. ****************************************************************
+. *  Create outcome specific datasets for the whole population  *
+. *****************************************************************
+. 
+. 
+. foreach i of global outcomes {
+  2.         use "$Tempdir/analysis_dataset.dta", clear
+  3.         
+.         drop if `i'_date <= indexdate 
+  4. 
+.         stset stime_`i', fail(`i')                              ///     
+>         id(patient_id) enter(indexdate) origin(indexdate)
+  5.         save "$Tempdir/analysis_dataset_STSET_`i'.dta", replace
+  6. }       
+(0 observations deleted)
+
+                id:  patient_id
+     failure event:  tested != 0 & tested < .
+obs. time interval:  (stime_tested[_n-1], stime_tested]
+ enter on or after:  time indexdate
+ exit on or before:  failure
+    t for analysis:  (time-origin)
+            origin:  time indexdate
+
+------------------------------------------------------------------------------
+   17510002  total observations
+          0  exclusions
+------------------------------------------------------------------------------
+   17510002  observations remaining, representing
+   17510002  subjects
+  1,275,669  failures in single-failure-per-subject data
+ 3.1498e+09  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =         0
+                                          last observed exit t =       184
+file E:\will\ethnicity-covid-research/output/tempdata/analysis_dataset_STSET_tested.dta saved
+(0 observations deleted)
+
+                id:  patient_id
+     failure event:  positivetest != 0 & positivetest < .
+obs. time interval:  (stime_positivetest[_n-1], stime_positivetest]
+ enter on or after:  time indexdate
+ exit on or before:  failure
+    t for analysis:  (time-origin)
+            origin:  time indexdate
+
+------------------------------------------------------------------------------
+   17510002  total observations
+          0  exclusions
+------------------------------------------------------------------------------
+   17510002  observations remaining, representing
+   17510002  subjects
+     78,214  failures in single-failure-per-subject data
+ 3.2059e+09  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =         0
+                                          last observed exit t =       184
+file E:\will\ethnicity-covid-research/output/tempdata/analysis_dataset_STSET_positivetest.dta saved
+(0 observations deleted)
+
+                id:  patient_id
+     failure event:  ae != 0 & ae < .
+obs. time interval:  (stime_ae[_n-1], stime_ae]
+ enter on or after:  time indexdate
+ exit on or before:  failure
+    t for analysis:  (time-origin)
+            origin:  time indexdate
+
+------------------------------------------------------------------------------
+   17510002  total observations
+          0  exclusions
+------------------------------------------------------------------------------
+   17510002  observations remaining, representing
+   17510002  subjects
+  1,331,994  failures in single-failure-per-subject data
+ 3.0851e+09  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =         0
+                                          last observed exit t =       184
+file E:\will\ethnicity-covid-research/output/tempdata/analysis_dataset_STSET_ae.dta saved
+(0 observations deleted)
+
+                id:  patient_id
+     failure event:  icu != 0 & icu < .
+obs. time interval:  (stime_icu[_n-1], stime_icu]
+ enter on or after:  time indexdate
+ exit on or before:  failure
+    t for analysis:  (time-origin)
+            origin:  time indexdate
+
+------------------------------------------------------------------------------
+   17510002  total observations
+          0  exclusions
+------------------------------------------------------------------------------
+   17510002  observations remaining, representing
+   17510002  subjects
+      3,113  failures in single-failure-per-subject data
+ 3.1419e+09  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =         0
+                                          last observed exit t =       180
+file E:\will\ethnicity-covid-research/output/tempdata/analysis_dataset_STSET_icu.dta saved
+(0 observations deleted)
+
+                id:  patient_id
+     failure event:  onscoviddeath != 0 & onscoviddeath < .
+obs. time interval:  (stime_onscoviddeath[_n-1], stime_onscoviddeath]
+ enter on or after:  time indexdate
+ exit on or before:  failure
+    t for analysis:  (time-origin)
+            origin:  time indexdate
+
+------------------------------------------------------------------------------
+   17510002  total observations
+          0  exclusions
+------------------------------------------------------------------------------
+   17510002  observations remaining, representing
+   17510002  subjects
+     15,627  failures in single-failure-per-subject data
+ 3.2118e+09  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =         0
+                                          last observed exit t =       184
+file E:\will\ethnicity-covid-research/output/tempdata/analysis_dataset_STSET_onscoviddeath.dta saved
+(0 observations deleted)
+
+                id:  patient_id
+     failure event:  ons_noncoviddeath != 0 & ons_noncoviddeath < .
+obs. time interval:  (stime_ons_noncoviddeath[_n-1], stime_ons_noncoviddeath]
+ enter on or after:  time indexdate
+ exit on or before:  failure
+    t for analysis:  (time-origin)
+            origin:  time indexdate
+
+------------------------------------------------------------------------------
+   17510002  total observations
+          0  exclusions
+------------------------------------------------------------------------------
+   17510002  observations remaining, representing
+   17510002  subjects
+     84,872  failures in single-failure-per-subject data
+ 3.2118e+09  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =         0
+                                          last observed exit t =       184
+file E:\will\ethnicity-covid-research/output/tempdata/analysis_dataset_STSET_ons_noncoviddeath.dta saved
+(0 observations deleted)
+
+                id:  patient_id
+     failure event:  onsdeath != 0 & onsdeath < .
+obs. time interval:  (stime_onsdeath[_n-1], stime_onsdeath]
+ enter on or after:  time indexdate
+ exit on or before:  failure
+    t for analysis:  (time-origin)
+            origin:  time indexdate
+
+------------------------------------------------------------------------------
+   17510002  total observations
+          0  exclusions
+------------------------------------------------------------------------------
+   17510002  observations remaining, representing
+   17510002  subjects
+    100,499  failures in single-failure-per-subject data
+ 3.2118e+09  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =         0
+                                          last observed exit t =       184
+(note: file E:\will\ethnicity-covid-research/output/tempdata/analysis_dataset_STSET_onsdeath.dta not found)
+file E:\will\ethnicity-covid-research/output/tempdata/analysis_dataset_STSET_onsdeath.dta saved
+(0 observations deleted)
+
+                id:  patient_id
+     failure event:  cpnsdeath != 0 & cpnsdeath < .
+obs. time interval:  (stime_cpnsdeath[_n-1], stime_cpnsdeath]
+ enter on or after:  time indexdate
+ exit on or before:  failure
+    t for analysis:  (time-origin)
+            origin:  time indexdate
+
+------------------------------------------------------------------------------
+   17510002  total observations
+          0  exclusions
+------------------------------------------------------------------------------
+   17510002  observations remaining, representing
+   17510002  subjects
+      9,367  failures in single-failure-per-subject data
+ 3.2117e+09  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =         0
+                                          last observed exit t =       184
+(note: file E:\will\ethnicity-covid-research/output/tempdata/analysis_dataset_STSET_cpnsdeath.dta not found)
+file E:\will\ethnicity-covid-research/output/tempdata/analysis_dataset_STSET_cpnsdeath.dta saved
+
+. 
+. 
+.         
+. * Close log file 
+. log close
+      name:  <unnamed>
+       log:  E:\will\ethnicity-covid-research/output/log/01_eth_cr_create_analysis_dataset.log
+  log type:  text
+ closed on:   7 Sep 2020, 20:44:16
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

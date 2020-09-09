@@ -1,0 +1,9 @@
+Table 3: Odds of receiving invasive mechanical ventilation - Complete Case Analysis
+	Denominator	Event	%	Crude		Age/Sex Adjusted		Age/Sex/IMD Adjusted		plus co-morbidities		plus hh size/carehome		
+				OR	95% CI	OR	95% CI	OR	95% CI	OR	95% CI	OR	95% CI
+ventilated
+White	1697	1095	0.65	1.00		1.00		1.00		1.00		1.00
+South Asian	410	309	0.75	1.33	(1.02 - 1.73)	1.31	(1.00 - 1.72)	1.30	(0.99 - 1.71)	1.37	(0.97 - 1.95)	1.11	(0.75 - 1.63)
+Black	188	135	0.72	1.08	(0.76 - 1.54)	1.04	(0.72 - 1.49)	1.06	(0.74 - 1.53)	1.18	(0.74 - 1.88)	1.11	(0.67 - 1.84)
+Mixed	56	37	0.66	1.00	(0.56 - 1.79)	1.03	(0.57 - 1.85)	1.03	(0.58 - 1.86)	1.08	(0.53 - 2.19)	1.18	(0.55 - 2.55)
+Other	97	76	0.78	1.48	(0.89 - 2.47)	1.39	(0.83 - 2.32)	1.40	(0.83 - 2.35)	1.50	(0.79 - 2.86)	1.41	(0.70 - 2.84)
