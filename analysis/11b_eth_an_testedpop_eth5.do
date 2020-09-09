@@ -182,35 +182,6 @@ ren idstr1 model
 drop idstr2 idstr3 eq
 
 
-*keep ORs for ethnic group
-keep if label=="Eth 16 collapsed"
-drop label
-
-gen eth5=1 if regexm(parm, "1b")
-forvalues i=2/5 {
-	replace eth5=`i' if regexm(parm, "`i'.eth5")
-}
-
-drop parm 
-order  model eth5
-label define eth5 	///
-						1 "White" ///
-						2 "South Asian" ///
-						3 "Black" ///
-						4 "Mixed" ///
-						5 "Other" 
-label values eth5 eth5
-tab eth5,m
-
-graph set window 
-gen num=[_n]
-sum num
-
-gen adjusted="Age-sex" if model=="model0"
-replace adjusted="+ IMD" if model=="model1"
-replace adjusted="+ co-morbidities" if model=="model2"
-replace adjusted="+ household size" if model=="model3"
-
 *save dataset for later
 outsheet using "$Tabfigdir/FP_testedpop_eth5.txt", replace
 
