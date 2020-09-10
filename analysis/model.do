@@ -1,4 +1,4 @@
-import delimited `c(pwd)'/output/input.csv, clear
+* import delimited `c(pwd)'/output/input.csv, clear
 
 *set filepaths
 global Projectdir `c(pwd)'
@@ -43,14 +43,14 @@ Data cleaning
 **********************/
 
 *Create analysis dataset
-do "$Dodir/01_eth_cr_analysis_dataset.do"
+* do "$Dodir/01_eth_cr_analysis_dataset.do"
 /*
 *Checks 
 do "$Dodir/02_eth_an_data_checks.do"
 
 */
 *Table 0: Numbers of outcomes in study population
-do "$Dodir/03a_eth_outcomes_checks_eth16.do"
+* do "$Dodir/03a_eth_outcomes_checks_eth16.do"
 /*do "$Dodir/03b_eth_outcomes_checks_eth5.do"
 
 /**********************
@@ -72,10 +72,10 @@ do "$Dodir/11b_eth_an_testedpop_eth5"
 /**********************
 ETH 16
 **********************
-
+*/
 *Table 1 baseline characteristics
 do "$Dodir/05a_eth_table1_descriptives_eth16.do"
-
+/*
 *Table 2: multivariable analysis - complete case 
 do "$Dodir/06a_eth_an_multivariable_eth16.do" 
 
