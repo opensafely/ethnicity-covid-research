@@ -41,20 +41,8 @@ drop if age > 110
 count
 drop if sex != "M" & sex != "F"
 count
-keep if imd>0
-count
-keep if rheumatoid!="" | sle!=""
-count
-drop if chloroquine_not_hcq != ""
-count
 
 
-
-
-* For sensitivity analyses, missing ethnicity
-tab ethnicity, m
-drop if ethnicity == .
-count
 
 
 log close
