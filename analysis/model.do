@@ -56,11 +56,11 @@ do "$Dodir/03b_eth_outcomes_checks_eth5.do"
 /**********************
 ETH 5
 **********************/
-*/
+
 *Table 1 baseline characteristics
 do "$Dodir/05b_eth_table1_descriptives_eth5.do"
 
-/*Table 2: multivariable analysis - complete case 
+*Table 2: multivariable analysis - complete case 
 do "$Dodir/06b_eth_an_multivariable_eth5.do" 
 
 *Table 3: Odds of receiving ventilation - in those admitted to ICU
@@ -73,16 +73,16 @@ do "$Dodir/11b_eth_an_testedpop_eth5"
 /**********************
 ETH 16
 **********************/
-*/
+
 
 *Table 1 baseline characteristics
 do "$Dodir/05a_eth_table1_descriptives_eth16.do"
 
-/*Table 2: multivariable analysis - complete case 
+*Table 2: multivariable analysis - complete case 
 do "$Dodir/06a_eth_an_multivariable_eth16.do" 
 
 *Table 3: Odds of receiving ventilation - in those admitted to ICU
-*do "$Dodir/09a_eth_an_ventilation_eth16"
+do "$Dodir/09a_eth_an_ventilation_eth16"
 
 *Table 4: Odds of testing positive amongst those with SGSS testing data
 do "$Dodir/11a_eth_an_testedpop_eth16" 
@@ -90,7 +90,7 @@ do "$Dodir/11a_eth_an_testedpop_eth16"
 
 /**********************
 SENSITIVITY  ANALYSIS
-**********************
+**********************/
 
 *Table 2 sens analysis excluding large households
 do "$Dodir/18a_eth_an_sens_exclude_large_hh_eth16.do"
@@ -104,6 +104,8 @@ do "$Dodir/19_eth_an_prison_characteristics.do"
 /**********************
 MULTIPLE IMPUTATION
 **********************/
+*/
+
 *Table 2: multiple imputation
 do "$Dodir/08b_eth_cr_imputed_eth5.do"
 do "$Dodir/08c_eth_an_multivariable_eth5_mi.do" 
@@ -112,24 +114,4 @@ do "$Dodir/08a_eth_cr_imputed_eth16.do"
 do "$Dodir/08d_eth_an_multivariable_eth16_mi.do" 
 
 
-/************************************************************
-*PARALLEL WORKING - THESE MUST BE RUN AFTER THE MULTIPLE IMPUTATION
-************************************************************
-forvalues i = 1/360 {
-    di `i'
-    sleep 10000
-}
-*pauses Stata for 4 minutes: 1/24 whilst testing locally
-*pauses Stata for 10 mins: 1/360 whilst testing on server, on 5% weighted data
-*pauses Stata for 12 hours: 1/4320 whilst testing on server, on full data
-
-*winexec "c:\program files\stata16\statamp-64.exe" do "$Dodir/08c_eth_an_multivariable_eth5_mi.do" demog
-winexec "c:\program files\stata16\statamp-64.exe" do "$Dodir/08c_eth_an_multivariable_eth5_mi.do" full
-winexec "c:\program files\stata16\statamp-64.exe" do "$Dodir/08d_eth_an_multivariable_eth16_mi.do" demog
-winexec "c:\program files\stata16\statamp-64.exe" do "$Dodir/08d_eth_an_multivariable_eth16_mi.do" full
-
-
-do "$Dodir/08e_eth_an_mi_forestplots.do"
-
-*/
 
