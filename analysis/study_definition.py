@@ -90,25 +90,45 @@ study = StudyDefinition(
     ),
 
     # ICU attendance and ventilation
-    was_ventilated_flag=patients.admitted_to_icu(
+    any_resp_support_flag=patients.admitted_to_icu(
     on_or_after="2020-02-01",
-    returning="was_ventilated",
+    find_first_match_in_period=True,
+    returning="had_respiratory_support",
     return_expectations={
-            "rate": "exponential_increase",
-            "incidence" : 0.20,
-            "date" : {"earliest" : "2020-02-01"},
-            "bool" : True,
-        }
+            "date": {"earliest" : "2020-02-01"},
+            "rate" : "exponential_increase"
+       },
+    ),
+
+    basic_resp_support_flag=patients.admitted_to_icu(
+    on_or_after="2020-02-01",
+    find_first_match_in_period=True,
+    returning="had_basic_respiratory_support",
+    return_expectations={
+            "date": {"earliest" : "2020-02-01"},
+            "rate" : "exponential_increase"
+       },
+    ),
+
+    advanced_resp_support_flag=patients.admitted_to_icu(
+    on_or_after="2020-02-01",
+    find_first_match_in_period=True,
+    returning="had_advanced_respiratory_support",
+    return_expectations={
+            "date": {"earliest" : "2020-02-01"},
+            "rate" : "exponential_increase"
+       },
     ),
 
     icu_date_admitted=patients.admitted_to_icu(
         on_or_after="2020-02-01",
-        include_day=True,
-        returning="date_admitted",
         find_first_match_in_period=True,
-        return_expectations={"date": {"earliest" : "2020-02-01"},
-        "rate" : "exponential_increase"},
-
+        returning="date_admitted",
+        date_format="YYYY-MM-DD",
+        return_expectations={
+            "date": {"earliest" : "2020-02-01"},
+            "rate" : "exponential_increase"
+       },
     ),
 
     # cpns
@@ -346,6 +366,17 @@ study = StudyDefinition(
             "incidence": 1,
         }
     ),
+
+    is_prison=patients.household_as_of(
+    "2020-02-01", returning="is_prison",
+     return_expectations={
+            "rate": "exponential_increase",
+            "incidence" : 0.20,
+            "date" : {"earliest" : "2020-02-01"},
+            "bool" : True,
+        }
+    ),
+
 
     ### GP CONSULTATION RATE IN 12 MONTH BEFORE FEB 1 2020
     gp_consult_count=patients.with_gp_consultations(
@@ -871,6 +902,8 @@ study = StudyDefinition(
             "date": {"earliest": "2019-02-01", "latest": "2020-01-31"}
         },
     ),
+
+
 
 
 )

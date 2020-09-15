@@ -41,21 +41,21 @@ cap prog drop generaterow
 program define generaterow
 syntax, variable(varname) condition(string) 
 	
-	cou
+	qui cou
 	local overalldenom=r(N)
 	
 	sum `variable' if `variable' `condition'
 	file write tablecontent (r(max)) _tab
 	
-	cou if `variable' `condition'
+	qui cou if `variable' `condition'
 	local rowdenom = r(N)
 	local colpct = 100*(r(N)/`overalldenom')
 	file write tablecontent %9.0gc (`rowdenom')  (" (") %3.1f (`colpct') (")") _tab
 
 	forvalues i=1/6{
-	cou if eth5 == `i'
+	qui cou if eth5 == `i'
 	local rowdenom = r(N)
-	cou if eth5 == `i' & `variable' `condition'
+	qui cou if eth5 == `i' & `variable' `condition'
 	local pct = 100*(r(N)/`rowdenom') 
 	file write tablecontent %9.0gc (r(N)) (" (") %3.1f (`pct') (")") _tab
 	}
@@ -70,18 +70,18 @@ cap prog drop generaterow2
 program define generaterow2
 syntax, variable(varname) condition(string) 
 	
-	cou
+	qui cou
 	local overalldenom=r(N)
 	
-	cou if `variable' `condition'
+	qui cou if `variable' `condition'
 	local rowdenom = r(N)
 	local colpct = 100*(r(N)/`overalldenom')
 	file write tablecontent %9.0gc (`rowdenom')  (" (") %3.1f (`colpct') (")") _tab
 
 	forvalues i=1/6{
-	cou if eth5 == `i'
+	qui cou if eth5 == `i'
 	local rowdenom = r(N)
-	cou if eth5 == `i' & `variable' `condition'
+	qui cou if eth5 == `i' & `variable' `condition'
 	local pct = 100*(r(N)/`rowdenom') 
 	file write tablecontent %9.0gc (r(N)) (" (") %3.1f (`pct') (")") _tab
 	}
@@ -99,7 +99,7 @@ the syntax row specifies two inputs for the program:
 	a VARNAME which is your variable 
 	a CONDITION which is a string of some condition you impose 
 	
-the program counts if variable and condition and returns the counts
+the program qui counts if variable and condition and returns the qui counts
 column percentages are then automatically generated
 this is then written to the text file 'tablecontent' 
 the number followed by space, brackets, formatted pct, end bracket and then tab
@@ -256,7 +256,6 @@ gen ons_noncoviddeath_date = onsdeath_date if died_ons_covid_flag_any != 1
 
 /* CONVERT STRINGS TO DATE FOR OUTCOME VARIABLES =============================*/
 * Recode to dates from the strings 
-gen infected_date=confirmed_date
 
 foreach var of global outcomes {
 	confirm string variable `var'_date
@@ -267,14 +266,10 @@ foreach var of global outcomes {
 
 }
 
-* Date of infection
-replace infected_date=min(confirmed_date, positivetest_date)
-format infected_date %td
-
 *If outcome occurs on the first day of follow-up add one day
 foreach i of global outcomes {
 	di "`i'"
-	count if `i'_date==indexdate
+	qui count if `i'_date==indexdate
 	replace `i'_date=`i'_date+1 if `i'_date==indexdate
 }
 
@@ -293,7 +288,7 @@ foreach i of global outcomes {
 cap file close tablecontent
 file open tablecontent using $Tabfigdir/table0_outcomes_eth5.txt, write text replace
 
-file write tablecontent ("Table 0: Outcome counts by ethnic group") _n
+file write tablecontent ("Table 0: Outcome qui counts by ethnic group") _n
 
 * eth5 labelled columns
 
@@ -332,7 +327,20 @@ file write tablecontent ("`var'") _tab
 generaterow2, variable(`var') condition("==1")
 }
 
+*icu outcomes
+local p" "any_resp_support_flag" "basic_resp_support_flag" "advanced_resp_support_flag" "
+foreach var of local p {
+file write tablecontent ("`var'") _tab
+generaterow2, variable(`var') condition("==1")
+}
+
+
 /* STEP 2: KEEP THOSE AGED 18-105 */
+
+* Sex: Exclude categories other than M and F
+drop if inlist(sex, "I", "U")
+
+
 drop if age<18
 drop if age>105
 
@@ -351,23 +359,14 @@ file write tablecontent ("`var'") _tab
 generaterow2, variable(`var') condition("==1")
 }
 
-* Sex: Exclude categories other than M and F
-drop if inlist(sex, "I", "U")
-
-*Denominator
-file write tablecontent ("Adults with valid sex recorded") _n
-file write tablecontent ("N") _tab
-
-generaterow2, variable(cons) condition("==1")
-file write tablecontent _n 
-
-
-*Outcomes 
-foreach var of global outcomes {
-
+*icu outcomes
+local p" "any_resp_support_flag" "basic_resp_support_flag" "advanced_resp_support_flag" "
+foreach var of local p {
 file write tablecontent ("`var'") _tab
 generaterow2, variable(`var') condition("==1")
 }
+
+
 
 file close tablecontent
 

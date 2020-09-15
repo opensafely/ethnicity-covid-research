@@ -44,21 +44,21 @@ cap prog drop generaterow
 program define generaterow
 syntax, variable(varname) condition(string) 
 	
-	cou
+	qui cou
 	local overalldenom=r(N)
 	
-	sum `variable' if `variable' `condition'
+	qui sum `variable' if `variable' `condition'
 	file write tablecontent (r(max)) _tab
 	
-	cou if `variable' `condition'
+	qui cou   if `variable' `condition'
 	local rowdenom = r(N)
 	local colpct = 100*(r(N)/`overalldenom')
 	file write tablecontent %9.0gc (`rowdenom')  (" (") %3.1f (`colpct') (")") _tab
 
 	forvalues i=1/6{
-	cou if eth5 == `i'
+	qui cou if eth5 == `i'
 	local rowdenom = r(N)
-	cou if eth5 == `i' & `variable' `condition'
+	qui cou if eth5 == `i' & `variable' `condition'
 	local pct = 100*(r(N)/`rowdenom') 
 	file write tablecontent %9.0gc (r(N)) (" (") %3.1f (`pct') (")") _tab
 	}
@@ -73,18 +73,18 @@ cap prog drop generaterow2
 program define generaterow2
 syntax, variable(varname) condition(string) 
 	
-	cou
+	qui cou
 	local overalldenom=r(N)
 	
-	cou if `variable' `condition'
+	qui cou if `variable' `condition'
 	local rowdenom = r(N)
 	local colpct = 100*(r(N)/`overalldenom')
 	file write tablecontent %9.0gc (`rowdenom')  (" (") %3.1f (`colpct') (")") _tab
 
 	forvalues i=1/6{
-	cou if eth5 == `i'
+	qui cou if eth5 == `i'
 	local rowdenom = r(N)
-	cou if eth5 == `i' & `variable' `condition'
+	qui cou if eth5 == `i' & `variable' `condition'
 	local pct = 100*(r(N)/`rowdenom') 
 	file write tablecontent %9.0gc (r(N)) (" (") %3.1f (`pct') (")") _tab
 	}
@@ -220,47 +220,43 @@ format hba1c_pct bmi egfr %9.2f
 
 
 gen byte cons=1
-tabulatevariable, variable(cons) min(1) max(1) 
+qui tabulatevariable, variable(cons) min(1) max(1) 
 file write tablecontent _n 
-
-*SIZE OF LINKED DATASETS
-gen  byte SGSS=1 if tested==1
-
-file write tablecontent ("SGSS data") _tab
-generaterow2, variable(SGSS) condition("==1")
-
-gen  byte ICNARC=1 if tested==1
-file write tablecontent ("ICNARC data") _tab
-generaterow2, variable(ICNARC) condition("==1")
 
 qui summarizevariable, variable(age) 
 file write tablecontent _n
 
-tabulatevariable, variable(agegroup) min(1) max(7) 
+qui tabulatevariable, variable(agegroup) min(1) max(7) 
 file write tablecontent _n 
 
-tabulatevariable, variable(male) min(0) max(1) 
+qui tabulatevariable, variable(male) min(0) max(1) 
 file write tablecontent _n 
 
 qui summarizevariable, variable(gp_consult_count) 
 file write tablecontent _n 
 
-tabulatevariable, variable(imd) min(1) max(5) 
+qui tabulatevariable, variable(imd) min(1) max(5) 
 file write tablecontent _n 
 
-tabulatevariable, variable(hh_total_cat) min(1) max(5) missing
+qui summarizevariable, variable(hh_size)
+file write tablecontent _n
+
+qui tabulatevariable, variable(hh_total_cat) min(1) max(4) missing
 file write tablecontent _n 
 
-tabulatevariable, variable(carehome) min(0) max(1) 
+qui tabulatevariable, variable(carehome) min(0) max(1) missing
 file write tablecontent _n 
 
-tabulatevariable, variable(smoke_nomiss) min(1) max(3)  
+qui tabulatevariable, variable(is_prison) min(0) max(1) missing
+file write tablecontent _n 
+
+qui tabulatevariable, variable(smoke_nomiss) min(1) max(3)  
 file write tablecontent _n 
 
 qui summarizevariable, variable(bmi)
 file write tablecontent _n
 
-tabulatevariable, variable(obese4cat_sa) min(1) max(4) 
+qui tabulatevariable, variable(obese4cat_sa) min(1) max(4) 
 file write tablecontent _n 
 
 qui summarizevariable, variable(hba1c_pct)
@@ -269,10 +265,10 @@ file write tablecontent _n
 qui summarizevariable, variable(hba1c_mmol_per_mol)
 file write tablecontent _n
 
-tabulatevariable, variable(dm_type) min(0) max(3)  
+qui tabulatevariable, variable(dm_type) min(0) max(3)  
 file write tablecontent _n 
 
-tabulatevariable, variable(dm_type_exeter_os) min(0) max(2)  
+qui tabulatevariable, variable(dm_type_exeter_os) min(0) max(2)  
 file write tablecontent _n 
 
 qui summarizevariable, variable(bp_sys) 
@@ -283,7 +279,6 @@ file write tablecontent _n
 
 qui summarizevariable, variable(bp_map) 
 file write tablecontent _n
-
 
 file write tablecontent _n _n
 

@@ -20,7 +20,7 @@ https://stats.idre.ucla.edu/stata/seminars/mi_in_stata_pt1_new/
 cap log close
 macro drop hr
 estimates clear
-log using $logdir\08a_eth_cr_imputed_mi, replace text
+log using $logdir\08a_eth_cr_imputed_mi_eth16, replace text
 
 
 foreach i of global outcomes {
@@ -31,11 +31,12 @@ use "$Tempdir/analysis_dataset_STSET_`i'.dta", clear
 mi set mlong
 
 *mi register 
-replace eth16=. if eth16==14 //set unknown to missing
-mi register imputed eth16
+replace ethnicity_16=. if ethnicity_16==17 //set unknown to missing
+safetab ethnicity_16,m 
+mi register imputed ethnicity_16
 
 *mi impute the dataset - remove variables with missing values - bmi	hba1c_pct bp_map 
-noisily mi impute mlogit eth16 `i' i.stp i.male age1 age2 age3 	i.imd						///
+noisily mi impute mlogit ethnicity_16 `i' i.stp i.male age1 age2 age3 	i.imd						///
 										bmi	hba1c_pct				///
 										gp_consult_count			///
 										i.smoke_nomiss				///

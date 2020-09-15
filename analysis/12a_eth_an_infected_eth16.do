@@ -28,7 +28,7 @@ file write tablecontent _tab _tab _tab _tab _tab   ("HR") _tab ("95% CI") _tab (
 
 foreach i of global outcomes2 {
 * Open Stata dataset
-use "$Tempdir/analysis_dataset_STSET_`i'_infected.dta", clear
+use "$Tempdir/analysis_dataset_STSET_`i'_infectedpop.dta", clear
 
 /* Sense check outcomes=======================================================*/ 
 
@@ -37,7 +37,7 @@ safetab eth16 `i', missing row
 
 foreach i of global outcomes2 {
 * Open Stata dataset
-use "$Tempdir/analysis_dataset_STSET_`i'_infected.dta", clear
+use "$Tempdir/analysis_dataset_STSET_`i'_infectedpop.dta", clear
 
 *drop irish for icu due to small numbers
 drop if eth16==2 & "`i'"=="icu"

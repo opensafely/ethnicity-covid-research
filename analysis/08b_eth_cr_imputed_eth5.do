@@ -20,7 +20,7 @@ https://stats.idre.ucla.edu/stata/seminars/mi_in_stata_pt1_new/
 cap log close
 macro drop hr
 estimates clear
-log using $logdir\08b_eth_cr_imputed_mi, replace text
+log using $logdir\08b_eth_cr_imputed_mi_eth5, replace text
 
 
 foreach i of global outcomes {

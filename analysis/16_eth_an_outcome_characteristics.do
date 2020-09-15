@@ -41,24 +41,24 @@ syntax, variable(varname) condition(string)
 	cou
 	local overalldenom=r(N)
 	
-	sum `variable' if `variable' `condition'
+	qui sum  `variable' if `variable' `condition'
 	file write tablecontent (r(max)) _tab
 	
-	cou if `variable' `condition'
+	qui cou if `variable' `condition'
 	local rowdenom = r(N)
 	local colpct = 100*(r(N)/`overalldenom')
 	file write tablecontent %9.0gc (`rowdenom')  (" (") %3.1f (`colpct') (")") _tab
 
 	
-	cou if outcome == 0
+	qui cou if outcome == 0
 	local rowdenom = r(N)
-	cou if outcome == 0 & `variable' `condition'
+	qui cou if outcome == 0 & `variable' `condition'
 	local pct = 100*(r(N)/`rowdenom') 
 	file write tablecontent %9.0gc (r(N)) (" (") %3.1f (`pct') (")") _tab
 	
-	cou if outcome == 1
+	qui cou if outcome == 1
 	local rowdenom = r(N)
-	cou if outcome == 1 & `variable' `condition'
+	qui cou if outcome == 1 & `variable' `condition'
 	local pct = 100*(r(N)/`rowdenom') 
 	file write tablecontent %9.0gc (r(N)) (" (") %3.1f (`pct') (")") _tab
 
@@ -135,24 +135,24 @@ syntax, variable(varname)
 	file write tablecontent ("`lab'") _n 
 
 
-	 summarize `variable', d
+	qui summarize `variable', d
 	file write tablecontent ("Mean (SD)") _tab 
 	file write tablecontent  %3.1f (r(mean)) (" (") %3.1f (r(sd)) (")") _tab
 	
 	forvalues i=0/1{	
-	 summarize `variable' if outcome == `i', d
+	qui summarize `variable' if outcome == `i', d
 	file write tablecontent  %3.1f (r(mean)) (" (") %3.1f (r(sd)) (")") _tab
 	}
 
 file write tablecontent _n
 
 	
-	 summarize `variable', d
+	qui summarize `variable', d
 	file write tablecontent ("Median (IQR)") _tab 
 	file write tablecontent %3.1f (r(p50)) (" (") %3.1f (r(p25)) ("-") %3.1f (r(p75)) (")") _tab
 	
 	forvalues i=0/1{
-	 summarize `variable' if outcome == `i', d
+	qui summarize `variable' if outcome == `i', d
 	file write tablecontent %3.1f (r(p50)) (" (") %3.1f (r(p25)) ("-") %3.1f (r(p75)) (")") _tab
 	}
 	
@@ -162,8 +162,7 @@ end
 
 
 /*OUTCOMES IN GENERAL POPULATION*/
-local p"suspected confirmed tested infected"
-foreach  outcome of local p {
+foreach outcome of global outcomes {
 * Open Stata dataset
 use $Tempdir/analysis_dataset, clear
 
@@ -241,7 +240,7 @@ file write tablecontent _n
 file close tablecontent
 
 clear
-} //end local p
+} //end global outcomes 
 
 /*OUTCOMES IN TESTED POPULATION*/
 
@@ -320,87 +319,6 @@ file close tablecontent
 
 clear
 
-/*OUTCOMES IN INFECTED POPULATION*/
-local p"ae icu cpnsdeath  onscoviddeath ons_noncoviddeath onsdeath"
-foreach  outcome of local p {
-* Open Stata dataset
-use $Tempdir/analysis_dataset, clear
-keep if confirmed==1 | positivetest==1
-
-
-safetab `outcome'
-
-gen outcome= `outcome'
-tab outcome `outcome'
-
-
-*Set up output file
-cap file close tablecontent
-file open tablecontent using "$Tabfigdir/table5_`outcome'.txt", write text replace
-
-file write tablecontent ("char")  _tab
-
-* tested labelled columns
-
-file write tablecontent 	 ("Infected_pop")				  		  _tab ///
-							 ("`outcome'0")  				  _tab ///
-							 ("`outcome'1")  				  _n
-							 
-							 
-
-
-* DEMOGRAPHICS (more than one level, potentially missing) 
-
-format hba1c_pct bmi egfr %9.2f
-
-
-gen byte cons=1
-tabulatevariable, variable(cons) min(1) max(1) 
-file write tablecontent _n 
-
- summarizevariable, variable(age) 
-file write tablecontent _n
-
-tabulatevariable, variable(male) min(1) max(1) 
-file write tablecontent _n 
-
-tabulatevariable, variable(eth5) min(1) max(6) 
-file write tablecontent _n 
-
-tabulatevariable, variable(eth16) min(1) max(14) 
-file write tablecontent _n 
-
- summarizevariable, variable(gp_consult_count) 
-file write tablecontent _n 
-
-tabulatevariable, variable(imd) min(1) max(5) 
-file write tablecontent _n 
-
-tabulatevariable, variable(hh_total_cat) min(1) max(5) missing
-file write tablecontent _n 
-
-tabulatevariable, variable(carehome) min(0) max(1) 
-file write tablecontent _n 
-
- summarizevariable, variable(bmi)
-file write tablecontent _n
-
- summarizevariable, variable(hba1c_pct)
-file write tablecontent _n
-
- summarizevariable, variable(hba1c_mmol_per_mol)
-file write tablecontent _n
-
- summarizevariable, variable(comorbidity_count)
-file write tablecontent _n
-
-tabulatevariable, variable(dm_type) min(0) max(3)  
-file write tablecontent _n 
-
-file close tablecontent
-
-clear
-} //end local p
 
 /*VENTILATED*/
 * Open Stata dataset
@@ -408,9 +326,9 @@ use $Tempdir/analysis_dataset, clear
 keep if icu==1
 
 gen outcome=0
-replace outcome=1 if was_ventilated_flag==1
+replace outcome=1 if advanced_resp_support_flag==1
 
-safetab outcome was_ventilated_flag,m
+safetab outcome advanced_resp_support_flag,m
 
 *Set up output file
 cap file close tablecontent
@@ -499,15 +417,14 @@ drop v5
 save "$Tabfigdir/table5_ventilated.dta", replace
 
 *merge tables of interest
-use "$Tabfigdir/table5_confirmed.dta", clear
-merge 1:1 order using "$Tabfigdir/table5_tested.dta", nogen
+use "$Tabfigdir/table5_tested.dta", clear
 merge 1:1 order using "$Tabfigdir/table5_positivetest.dta", nogen
-merge 1:1 order using "$Tabfigdir/table5_infected.dta", nogen
 merge 1:1 order using "$Tabfigdir/table5_ae.dta", nogen
 merge 1:1 order using "$Tabfigdir/table5_icu.dta", nogen
+merge 1:1 order using "$Tabfigdir/table5_ventilated.dta", nogen
 merge 1:1 order using "$Tabfigdir/table5_onscoviddeath.dta", nogen
 merge 1:1 order using "$Tabfigdir/table5_ons_noncoviddeath.dta", nogen
-merge 1:1 order using "$Tabfigdir/table5_ventilated.dta", nogen
+
 
 drop order
 outsheet using "$Tabfigdir/table5_outcomes.txt", replace
