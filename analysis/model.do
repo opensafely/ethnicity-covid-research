@@ -60,7 +60,7 @@ ETH 5
 *Table 1 baseline characteristics
 do "$Dodir/05b_eth_table1_descriptives_eth5.do"
 
-*Table 2: multivariable analysis - complete case 
+/*Table 2: multivariable analysis - complete case 
 do "$Dodir/06b_eth_an_multivariable_eth5.do" 
 
 *Table 3: Odds of receiving ventilation - in those admitted to ICU
@@ -73,11 +73,12 @@ do "$Dodir/11b_eth_an_testedpop_eth5"
 /**********************
 ETH 16
 **********************/
+*/
 
 *Table 1 baseline characteristics
 do "$Dodir/05a_eth_table1_descriptives_eth16.do"
 
-*Table 2: multivariable analysis - complete case 
+/*Table 2: multivariable analysis - complete case 
 do "$Dodir/06a_eth_an_multivariable_eth16.do" 
 
 *Table 3: Odds of receiving ventilation - in those admitted to ICU
