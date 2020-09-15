@@ -607,6 +607,12 @@ gen htdiag_or_highbp = bphigh
 recode htdiag_or_highbp 0 = 1 if hypertension==1 
 
 *Mean arterial pressure MAP = (SBP+(DBP*2))/3
+/*set implausible BP values to missing
+SBP (DBP) values outside of the range of 50–300 (30–250) mm Hg were considered implausible and threrefore excluded. */
+
+replace bp_sys=. if bp_sys<50 | bp_sys>300
+replace bp_dias=. if bp_dias<30 | bp_dias>250
+
 gen bp_map=(bp_sys + (bp_dias*2))/3
 ************
 *   eGFR   *

@@ -1,0 +1,1089 @@
+---------------------------------------------------------
+      name:  <unnamed>
+       log:  /Users/lsh152058/Documents/GitHub/ethnicity-
+> covid-research/\00_eth_flowchart.log
+  log type:  text
+ opened on:  13 Sep 2020, 00:14:51
+
+. 
+. cd  "$Dodir"
+/Users/lsh152058
+
+. cd ..
+/Users
+
+. 
+end of do-file
+
+. do "/var/folders/jg/zvg1wn090ps86p3lwtn901140000gn/T//S
+> D80927.000000"
+
+. import delimited `c(pwd)'/output/input_flow_chart.csv, 
+> clear
+file /Users/output/input_flow_chart.csv not found
+r(601);
+
+end of do-file
+
+r(601);
+
+. cd "/Users/lsh152058/OneDrive - London School of Hygien
+> e and Tropical Medicine/#Wellcome Fellowship/Objective 
+> 3"
+/Users/lsh152058/OneDrive - London School of Hygiene and 
+> Tropical Medicine/#Wellcome Fellowship/Objective 3
+
+. do "/var/folders/jg/zvg1wn090ps86p3lwtn901140000gn/T//S
+> D80927.000000"
+
+. global pathReleased "/Users/lsh152058/OneDrive - London
+>  School of Hygiene and Tropical Medicine/#Wellcome Fell
+> owship/Objective 3"
+
+. 
+. cd "$pathReleased"
+/Users/lsh152058/OneDrive - London School of Hygiene and 
+> Tropical Medicine/#Wellcome Fellowship/Objective 3
+
+. pwd
+/Users/lsh152058/OneDrive - London School of Hygiene and 
+> Tropical Medicine/#Wellcome Fellowship/Objective 3
+
+. 
+end of do-file
+
+. 
+. import delimited "/Users/lsh152058/OneDrive - London Sc
+> hool of Hygiene and Tropical Medicine/#Wellcome Fellows
+> hip/Objective 3/ob3_Table2_5obs.txt", clear 
+(1 var, 113 obs)
+
+. bro
+
+. bro
+
+. do "/var/folders/jg/zvg1wn090ps86p3lwtn901140000gn/T//S
+> D80927.000000"
+
+. split v1, p(" ")
+variables created as string: 
+v11   v14   v17   v110  v113  v116  v119  v122  v125
+v12   v15   v18   v111  v114  v117  v120  v123  v126
+v13   v16   v19   v112  v115  v118  v121  v124  v127
+
+. 
+end of do-file
+
+. do "/var/folders/jg/zvg1wn090ps86p3lwtn901140000gn/T//S
+> D80927.000000"
+
+. split v1, p(" ")
+cannot generate new variables using stub v1
+r(110);
+
+end of do-file
+
+r(110);
+
+. help splot
+
+. help split
+
+. do "/var/folders/jg/zvg1wn090ps86p3lwtn901140000gn/T//S
+> D80927.000000"
+
+. split v1, p(" ") gen(var)
+variables created as string: 
+var1   var5   var9   var13  var17  var21  var25
+var2   var6   var10  var14  var18  var22  var26
+var3   var7   var11  var15  var19  var23  var27
+var4   var8   var12  var16  var20  var24
+
+. 
+end of do-file
+
+. bro
+
+. do "/var/folders/jg/zvg1wn090ps86p3lwtn901140000gn/T//S
+> D80927.000000"
+
+. import delimited "$pathReleased/ob3_Table2_5obs.txt", c
+> lear 
+(1 var, 113 obs)
+
+. split v1, p("  ") gen(var)
+variables created as string: 
+var1   var3   var5   var7   var9   var11  var13
+var2   var4   var6   var8   var10  var12
+
+. 
+end of do-file
+
+. bro
+
+. tab var
+var ambiguous abbreviation
+r(111);
+
+. tab var2
+
+       var2 |      Freq.     Percent        Cum.
+------------+-----------------------------------
+ membership |          1      100.00      100.00
+------------+-----------------------------------
+      Total |          1      100.00
+
+. edit
+
+. clear
+
+. edit
+
+. *(4 variables, 23 observations pasted into data editor)
+
+. do "/var/folders/jg/zvg1wn090ps86p3lwtn901140000gn/T//S
+> D80927.000000"
+
+. ren var1 characteristic
+
+. ren var2 level
+
+. ren var3 RRR
+
+. ren var4 ci
+
+. 
+end of do-file
+
+. do "/var/folders/jg/zvg1wn090ps86p3lwtn901140000gn/T//S
+> D80927.000000"
+
+. replace characteristic=characteristic[_n-1] if characte
+> ristic==""
+(16 real changes made)
+
+. 
+end of do-file
+
+. do "/var/folders/jg/zvg1wn090ps86p3lwtn901140000gn/T//S
+> D80927.000000"
+
+. save "$pathReleased/ob3_Fig1.dta", replace
+(note: file /Users/lsh152058/OneDrive - London School of 
+> Hygiene and Tropical Medicine/#Wellcome Fellowship/Obje
+> ctive 3/ob3_Fig1.dta not found)
+file /Users/lsh152058/OneDrive - London School of Hygiene
+>  and Tropical Medicine/#Wellcome Fellowship/Objective 3
+> /ob3_Fig1.dta saved
+
+. 
+end of do-file
+
+. do "/var/folders/jg/zvg1wn090ps86p3lwtn901140000gn/T//S
+> D80927.000000"
+
+. split ci,p(,)
+variables created as string: 
+ci1  ci2
+
+. 
+end of do-file
+
+. do "/var/folders/jg/zvg1wn090ps86p3lwtn901140000gn/T//S
+> D80927.000000"
+
+. gen lci=substr(ci1,2,.)
+
+. 
+end of do-file
+
+. do "/var/folders/jg/zvg1wn090ps86p3lwtn901140000gn/T//S
+> D80927.000000"
+
+. gen uci=substr(ci2,1,-1)
+(23 missing values generated)
+
+. 
+end of do-file
+
+. do "/var/folders/jg/zvg1wn090ps86p3lwtn901140000gn/T//S
+> D80927.000000"
+
+. use "$pathReleased/ob3_Fig1.dta", clear
+
+. 
+end of do-file
+
+. do "/var/folders/jg/zvg1wn090ps86p3lwtn901140000gn/T//S
+> D80927.000000"
+
+. split ci,p(,)
+variables created as string: 
+ci1  ci2
+
+. gen lci=substr(ci1,2,.)
+
+. gen uci=substr(ci2,1,4))
+too many ')' or ']'
+r(132);
+
+end of do-file
+
+r(132);
+
+. do "/var/folders/jg/zvg1wn090ps86p3lwtn901140000gn/T//S
+> D80927.000000"
+
+. gen uci=substr(ci2,1,4)
+
+. 
+end of do-file
+
+. do "/var/folders/jg/zvg1wn090ps86p3lwtn901140000gn/T//S
+> D80927.000000"
+
+. drop ci1 ci2
+
+. destring, replace
+characteristic: contains nonnumeric characters; no replac
+> e
+level: contains nonnumeric characters; no replace
+RRR already numeric; no replace
+ci: contains nonnumeric characters; no replace
+lci: all characters numeric; replaced as double
+uci: all characters numeric; replaced as double
+
+. 
+end of do-file
+
+. do "/var/folders/jg/zvg1wn090ps86p3lwtn901140000gn/T//S
+> D80927.000000"
+
+. use "$pathReleased/ob3_Fig1.dta", clear
+
+. 
+. split ci,p(,)
+variables created as string: 
+ci1  ci2
+
+. gen lci=substr(ci1,2,.)
+
+. gen uci=substr(ci2,1,4)
+
+. 
+. drop ci1 ci2 ci
+
+. destring, replace
+characteristic: contains nonnumeric characters; no replac
+> e
+level: contains nonnumeric characters; no replace
+RRR already numeric; no replace
+lci: all characters numeric; replaced as double
+uci: all characters numeric; replaced as double
+
+. 
+end of do-file
+
+. do "/var/folders/jg/zvg1wn090ps86p3lwtn901140000gn/T//S
+> D80927.000000"
+
+. 
+. qui metan RRR lci uci  ///
+>  ,   effect(RRR) null(1) lcols(level) by(characteristic
+> ) dp(2) ///
+>         nowt nosubgroup nooverall  nobox  ///
+>         graphregion(color(white)) scheme(sj) texts(300)
+>          ///
+>         xlab(0.1, 1, 2, 4) ///
+>         subtitle(`i', size(medium)) legend(off) ///
+>         graphregion(margin(zero)) 
+
+.         graph save "$pathReleased/FP_adequate_v_optimal
+> ", replace
+(note: file /Users/lsh152058/OneDrive - London School of 
+> Hygiene and Tropical Medicine/#Wellcome Fellowship/Obje
+> ctive 3/FP_adequate_v_optimal.gph not found)
+(file /Users/lsh152058/OneDrive - London School of Hygien
+> e and Tropical Medicine/#Wellcome Fellowship/Objective 
+> 3/FP_adequate_v_optimal.gph saved)
+
+.         graph export "$pathReleased/FP_adequate_v_optim
+> al.jpg", replace
+(file /Users/lsh152058/OneDrive - London School of Hygien
+> e and Tropical Medicine/#Wellcome Fellowship/Objective 
+> 3/FP_adequate_v_optimal.jpg written in JPG format)
+
+. 
+end of do-file
+
+. do "/var/folders/jg/zvg1wn090ps86p3lwtn901140000gn/T//S
+> D80927.000000"
+
+. qui metan RRR lci uci  ///
+>  ,   effect(RRR) null(1) lcols(level) by(characteristic
+> ) dp(2) ///
+>         nowt nosubgroup nooverall  nobox  ///
+>         graphregion(color(white)) scheme(sj)    /// tex
+> ts(300)
+>         xlab(0.1, 1, 2, 4) ///
+>         subtitle(`i', size(medium)) legend(off) ///
+>         graphregion(margin(zero)) 
+
+.         graph save "$pathReleased/FP_adequate_v_optimal
+> ", replace
+(file /Users/lsh152058/OneDrive - London School of Hygien
+> e and Tropical Medicine/#Wellcome Fellowship/Objective 
+> 3/FP_adequate_v_optimal.gph saved)
+
+.         graph export "$pathReleased/FP_adequate_v_optim
+> al.jpg", replace
+(file /Users/lsh152058/OneDrive - London School of Hygien
+> e and Tropical Medicine/#Wellcome Fellowship/Objective 
+> 3/FP_adequate_v_optimal.jpg written in JPG format)
+
+. 
+end of do-file
+
+. do "/var/folders/jg/zvg1wn090ps86p3lwtn901140000gn/T//S
+> D80927.000000"
+
+. qui metan RRR lci uci  ///
+>  ,   effect(RRR) null(1) lcols(level) by(characteristic
+> ) dp(2) ///
+>         nowt nosubgroup nooverall  nobox  ///
+>         graphregion(color(white)) scheme(sj) astexts(65
+> )        /// texts(300)
+>         xlab(0.1, 1, 2, 4) ///
+>         subtitle(`i', size(medium)) legend(off) ///
+>         graphregion(margin(zero)) 
+option astexts() not allowed
+r(198);
+
+end of do-file
+
+r(198);
+
+. do "/var/folders/jg/zvg1wn090ps86p3lwtn901140000gn/T//S
+> D80927.000000"
+
+. qui metan RRR lci uci  ///
+>  ,   effect(RRR) null(1) lcols(level) by(characteristic
+> ) dp(2) ///
+>         nowt nosubgroup nooverall  nobox  ///
+>         graphregion(color(white)) scheme(sj) astext(65)
+>          /// texts(300)
+>         xlab(0.1, 1, 2, 4) ///
+>         subtitle(`i', size(medium)) legend(off) ///
+>         graphregion(margin(zero)) 
+
+.         graph save "$pathReleased/FP_adequate_v_optimal
+> ", replace
+(file /Users/lsh152058/OneDrive - London School of Hygien
+> e and Tropical Medicine/#Wellcome Fellowship/Objective 
+> 3/FP_adequate_v_optimal.gph saved)
+
+.         graph export "$pathReleased/FP_adequate_v_optim
+> al.jpg", replace
+(file /Users/lsh152058/OneDrive - London School of Hygien
+> e and Tropical Medicine/#Wellcome Fellowship/Objective 
+> 3/FP_adequate_v_optimal.jpg written in JPG format)
+
+. 
+end of do-file
+
+. do "/var/folders/jg/zvg1wn090ps86p3lwtn901140000gn/T//S
+> D80927.000000"
+
+. qui metan RRR lci uci  ///
+>  ,   effect(RRR) null(1) lcols(level) by(characteristic
+> ) dp(2) ///
+>         nowt nosubgroup nooverall  nobox  ///
+>         graphregion(color(white)) scheme(sj) astext(75)
+>          /// texts(300)
+>         xlab(0.1, 1, 2, 4) ///
+>         subtitle(`i', size(medium)) legend(off) ///
+>         graphregion(margin(zero)) 
+
+.         graph save "$pathReleased/FP_adequate_v_optimal
+> ", replace
+(file /Users/lsh152058/OneDrive - London School of Hygien
+> e and Tropical Medicine/#Wellcome Fellowship/Objective 
+> 3/FP_adequate_v_optimal.gph saved)
+
+.         graph export "$pathReleased/FP_adequate_v_optim
+> al.jpg", replace
+(file /Users/lsh152058/OneDrive - London School of Hygien
+> e and Tropical Medicine/#Wellcome Fellowship/Objective 
+> 3/FP_adequate_v_optimal.jpg written in JPG format)
+
+. 
+end of do-file
+
+. bro
+
+. do "/var/folders/jg/zvg1wn090ps86p3lwtn901140000gn/T//S
+> D80927.000000"
+
+. qui metan RRR lci uci if characteristic!="Year of diagn
+> osis" ///
+>  ,   effect(RRR) null(1) lcols(level) by(characteristic
+> ) dp(2) ///
+>         nowt nosubgroup nooverall  nobox  ///
+>         graphregion(color(white)) scheme(sj) astext(75)
+>  texts(150)      /// 
+>         xlab(0.1, 1, 2, 4) ///
+>         subtitle(`i', size(medium)) legend(off) ///
+>         graphregion(margin(zero)) 
+
+.         graph save "$pathReleased/FP_adequate_v_optimal
+> ", replace
+(file /Users/lsh152058/OneDrive - London School of Hygien
+> e and Tropical Medicine/#Wellcome Fellowship/Objective 
+> 3/FP_adequate_v_optimal.gph saved)
+
+.         graph export "$pathReleased/FP_adequate_v_optim
+> al.jpg", replace
+(file /Users/lsh152058/OneDrive - London School of Hygien
+> e and Tropical Medicine/#Wellcome Fellowship/Objective 
+> 3/FP_adequate_v_optimal.jpg written in JPG format)
+
+. 
+end of do-file
+
+. do "/var/folders/jg/zvg1wn090ps86p3lwtn901140000gn/T//S
+> D80927.000000"
+
+. qui metan RRR lci uci if characteristic!="Year of diagn
+> osis" ///
+>  ,   effect(RRR) null(1) lcols(level) by(characteristic
+> ) dp(2) ///
+>         nowt nosubgroup nooverall  nobox  ///
+>         graphregion(color(white)) scheme(sj) astext(75)
+>  texts(150)      /// 
+>         xlab(0.1, 1.5, 2) ///
+>         subtitle(`i', size(medium)) legend(off) ///
+>         graphregion(margin(zero)) 
+
+.         graph save "$pathReleased/FP_adequate_v_optimal
+> ", replace
+(file /Users/lsh152058/OneDrive - London School of Hygien
+> e and Tropical Medicine/#Wellcome Fellowship/Objective 
+> 3/FP_adequate_v_optimal.gph saved)
+
+.         graph export "$pathReleased/FP_adequate_v_optim
+> al.jpg", replace
+(file /Users/lsh152058/OneDrive - London School of Hygien
+> e and Tropical Medicine/#Wellcome Fellowship/Objective 
+> 3/FP_adequate_v_optimal.jpg written in JPG format)
+
+. 
+end of do-file
+
+. do "/var/folders/jg/zvg1wn090ps86p3lwtn901140000gn/T//S
+> D80927.000000"
+
+. qui metan RRR lci uci if characteristic!="Year of diagn
+> osis" ///
+>  ,   effect(RRR) null(1) lcols(level) by(characteristic
+> ) dp(2) ///
+>         nowt nosubgroup nooverall  nobox  ///
+>         graphregion(color(white)) scheme(sj) astext(75)
+>  texts(150)      /// 
+>         xlab(0.1, 1, 2.5) ///
+>         subtitle(`i', size(medium)) legend(off) ///
+>         graphregion(margin(zero)) 
+
+.         graph save "$pathReleased/FP_adequate_v_optimal
+> ", replace
+(file /Users/lsh152058/OneDrive - London School of Hygien
+> e and Tropical Medicine/#Wellcome Fellowship/Objective 
+> 3/FP_adequate_v_optimal.gph saved)
+
+.         graph export "$pathReleased/FP_adequate_v_optim
+> al.jpg", replace
+(file /Users/lsh152058/OneDrive - London School of Hygien
+> e and Tropical Medicine/#Wellcome Fellowship/Objective 
+> 3/FP_adequate_v_optimal.jpg written in JPG format)
+
+. 
+end of do-file
+
+. do "/var/folders/jg/zvg1wn090ps86p3lwtn901140000gn/T//S
+> D80927.000000"
+
+. qui metan RRR lci uci if characteristic!="Year of diagn
+> osis" ///
+>  ,   effect(RRR) null(1) lcols(level) by(characteristic
+> ) dp(2) ///
+>         nowt nosubgroup nooverall  nobox  ///
+>         graphregion(color(white)) scheme(sj) astext(75)
+>  texts(150)      /// 
+>         xlab(0.1, 1, 2.5) ///
+>         subtitle(`i', size(medium)) legend(off) ///
+>         graphregion(margin(zero)) 
+
+.         graph save "$pathReleased/FP_adequate_v_optimal
+> ", replace
+(file /Users/lsh152058/OneDrive - London School of Hygien
+> e and Tropical Medicine/#Wellcome Fellowship/Objective 
+> 3/FP_adequate_v_optimal.gph saved)
+
+.         graph export "$pathReleased/FP_adequate_v_optim
+> al.jpg", replace
+(file /Users/lsh152058/OneDrive - London School of Hygien
+> e and Tropical Medicine/#Wellcome Fellowship/Objective 
+> 3/FP_adequate_v_optimal.jpg written in JPG format)
+
+. 
+. 
+. 
+end of do-file
+
+. clear
+
+. edit
+
+. *(4 variables, 18 observations pasted into data editor)
+
+. do "/var/folders/jg/zvg1wn090ps86p3lwtn901140000gn/T//S
+> D80927.000000"
+
+. ren var1 characteristic
+
+. ren var2 level
+
+. ren var3 RRR
+
+. ren var4 ci
+
+. replace characteristic=characteristic[_n-1] if characte
+> ristic==""
+(12 real changes made)
+
+. 
+. save "$pathReleased/ob3_Fig1b.dta", replace
+(note: file /Users/lsh152058/OneDrive - London School of 
+> Hygiene and Tropical Medicine/#Wellcome Fellowship/Obje
+> ctive 3/ob3_Fig1b.dta not found)
+file /Users/lsh152058/OneDrive - London School of Hygiene
+>  and Tropical Medicine/#Wellcome Fellowship/Objective 3
+> /ob3_Fig1b.dta saved
+
+. 
+end of do-file
+
+. do "/var/folders/jg/zvg1wn090ps86p3lwtn901140000gn/T//S
+> D80927.000000"
+
+. split ci,p(,)
+variables created as string: 
+ci1  ci2
+
+. gen lci=substr(ci1,2,.)
+
+. gen uci=substr(ci2,1,4)
+
+. 
+. drop ci1 ci2 ci
+
+. destring, replace
+characteristic: contains nonnumeric characters; no replac
+> e
+level: contains nonnumeric characters; no replace
+RRR already numeric; no replace
+lci: all characters numeric; replaced as double
+uci: all characters numeric; replaced as double
+
+. 
+end of do-file
+
+. do "/var/folders/jg/zvg1wn090ps86p3lwtn901140000gn/T//S
+> D80927.000000"
+
+. use "$pathReleased/ob3_Fig1.dta", clear
+
+. 
+. split ci,p(,)
+variables created as string: 
+ci1  ci2
+
+. gen lci=substr(ci1,2,.)
+
+. gen uci=substr(ci2,1,4)
+
+. 
+. drop ci1 ci2 ci
+
+. destring, replace
+characteristic: contains nonnumeric characters; no replac
+> e
+level: contains nonnumeric characters; no replace
+RRR already numeric; no replace
+lci: all characters numeric; replaced as double
+uci: all characters numeric; replaced as double
+
+. 
+. qui metan RRR lci uci if characteristic!="Year of diagn
+> osis" ///
+>  ,   effect(RRR) null(1) lcols(level) by(characteristic
+> ) dp(2) ///
+>         nowt nosubgroup nooverall  nobox  ///
+>         graphregion(color(white)) scheme(sj) astext(75)
+>  texts(150)      /// 
+>         xlab(0.1, 1, 2.5) ///
+>         subtitle(`i', size(medium)) legend(off) ///
+>         graphregion(margin(zero)) title("Adequate vs. O
+> ptimal)
+unmatched quote
+r(198);
+
+end of do-file
+
+r(198);
+
+. do "/var/folders/jg/zvg1wn090ps86p3lwtn901140000gn/T//S
+> D80927.000000"
+
+. qui metan RRR lci uci if characteristic!="Year of diagn
+> osis" ///
+>  ,   effect(RRR) null(1) lcols(level) by(characteristic
+> ) dp(2) ///
+>         nowt nosubgroup nooverall  nobox  ///
+>         graphregion(color(white)) scheme(sj) astext(75)
+>  texts(150)      /// 
+>         xlab(0.1, 1, 2.5) ///
+>         subtitle(`i', size(medium)) legend(off) ///
+>         graphregion(margin(zero)) title("Adequate vs. O
+> ptimal")
+
+.         graph save "$pathReleased/FP_adequate_v_optimal
+> ", replace
+(file /Users/lsh152058/OneDrive - London School of Hygien
+> e and Tropical Medicine/#Wellcome Fellowship/Objective 
+> 3/FP_adequate_v_optimal.gph saved)
+
+.         graph export "$pathReleased/FP_adequate_v_optim
+> al.jpg", replace
+(file /Users/lsh152058/OneDrive - London School of Hygien
+> e and Tropical Medicine/#Wellcome Fellowship/Objective 
+> 3/FP_adequate_v_optimal.jpg written in JPG format)
+
+. 
+end of do-file
+
+. do "/var/folders/jg/zvg1wn090ps86p3lwtn901140000gn/T//S
+> D80927.000000"
+
+. qui metan RRR lci uci if characteristic!="Year of diagn
+> osis" ///
+>  ,   effect(RRR) null(1) lcols(level) by(characteristic
+> ) dp(2) ///
+>         nowt nosubgroup nooverall  nobox  ///
+>         graphregion(color(white)) scheme(sj) astext(75)
+>  texts(150)      /// 
+>         xlab(0.1, 1, 2.5) ///
+>         subtitle(`i', size(medium)) legend(off) ///
+>         graphregion(margin(zero)) title("Poor vs. Optim
+> al")
+
+.         graph save "$pathReleased/FP_poor_v_optimal", r
+> eplace
+(note: file /Users/lsh152058/OneDrive - London School of 
+> Hygiene and Tropical Medicine/#Wellcome Fellowship/Obje
+> ctive 3/FP_poor_v_optimal.gph not found)
+(file /Users/lsh152058/OneDrive - London School of Hygien
+> e and Tropical Medicine/#Wellcome Fellowship/Objective 
+> 3/FP_poor_v_optimal.gph saved)
+
+.         graph export "$pathReleased/FP_poor_v_optimal.j
+> pg", replace
+(file /Users/lsh152058/OneDrive - London School of Hygien
+> e and Tropical Medicine/#Wellcome Fellowship/Objective 
+> 3/FP_poor_v_optimal.jpg written in JPG format)
+
+. 
+end of do-file
+
+. do "/var/folders/jg/zvg1wn090ps86p3lwtn901140000gn/T//S
+> D80927.000000"
+
+. graph combine ///
+>         "$pathReleased/FP_poor_v_optimal"
+
+.         "$pathReleased/FP_adequate_v_optimal"
+"/Users/lsh152058/OneDrive - London School of Hygiene and
+>  Tropical Medicine/#Wellcome Fellowship/Objective 3/FP_
+> adequate_v_optim is not a valid command name
+r(199);
+
+end of do-file
+
+r(199);
+
+. do "/var/folders/jg/zvg1wn090ps86p3lwtn901140000gn/T//S
+> D80927.000000"
+
+. graph combine ///
+>         "$pathReleased/FP_poor_v_optimal" ///
+>         "$pathReleased/FP_adequate_v_optimal", ///
+>         graphregion(color(white))
+
+.         
+.         graph export "$pathReleased/FP_Figure1.jpg", re
+> place
+(file /Users/lsh152058/OneDrive - London School of Hygien
+> e and Tropical Medicine/#Wellcome Fellowship/Objective 
+> 3/FP_Figure1.jpg written in JPG format)
+
+. 
+end of do-file
+
+. do "/var/folders/jg/zvg1wn090ps86p3lwtn901140000gn/T//S
+> D80927.000000"
+
+. use "$pathReleased/ob3_Fig1b.dta", clear
+
+. 
+end of do-file
+
+. l
+
+     +----------------------------------------+
+  1. |                     characteristic     |
+     |                                Age     |
+     |----------------------------------------|
+     |                           level |  RRR |
+     |                           18-39 |  6.6 |
+     |----------------------------------------|
+     |                       ci               |
+     |              [6.08,7.17]               |
+     +----------------------------------------+
+
+     +----------------------------------------+
+  2. |                     characteristic     |
+     |                                Age     |
+     |----------------------------------------|
+     |                           level |  RRR |
+     |                           40-64 | 2.81 |
+     |----------------------------------------|
+     |                       ci               |
+     |              [2.67,2.96]               |
+     +----------------------------------------+
+
+     +----------------------------------------+
+  3. |                     characteristic     |
+     |                                Age     |
+     |----------------------------------------|
+     |                           level |  RRR |
+     |                       65+ (ref) |    1 |
+     |----------------------------------------|
+     |                       ci               |
+     |              [1.00,1.00]               |
+     +----------------------------------------+
+
+     +----------------------------------------+
+  4. |                     characteristic     |
+     |                        Deprivation     |
+     |----------------------------------------|
+     |                           level |  RRR |
+     |         1 (most affluent) (ref) |    1 |
+     |----------------------------------------|
+     |                       ci               |
+     |              [1.00,1.00]               |
+     +----------------------------------------+
+
+     +----------------------------------------+
+  5. |                     characteristic     |
+     |                        Deprivation     |
+     |----------------------------------------|
+     |                           level |  RRR |
+     |                               2 | 1.18 |
+     |----------------------------------------|
+     |                       ci               |
+     |              [1.09,1.26]               |
+     +----------------------------------------+
+
+     +----------------------------------------+
+  6. |                     characteristic     |
+     |                        Deprivation     |
+     |----------------------------------------|
+     |                           level |  RRR |
+     |                               3 | 1.24 |
+     |----------------------------------------|
+     |                       ci               |
+     |              [1.15,1.33]               |
+     +----------------------------------------+
+
+     +----------------------------------------+
+  7. |                     characteristic     |
+     |                        Deprivation     |
+     |----------------------------------------|
+     |                           level |  RRR |
+     |                               4 | 1.45 |
+     |----------------------------------------|
+     |                       ci               |
+     |              [1.36,1.56]               |
+     +----------------------------------------+
+
+     +----------------------------------------+
+  8. |                     characteristic     |
+     |                        Deprivation     |
+     |----------------------------------------|
+     |                           level |  RRR |
+     |               5 (most deprived) | 1.45 |
+     |----------------------------------------|
+     |                       ci               |
+     |              [1.36,1.55]               |
+     +----------------------------------------+
+
+     +----------------------------------------+
+  9. |                     characteristic     |
+     |                                BMI     |
+     |----------------------------------------|
+     |                           level |  RRR |
+     |           Underweight (15-18.4) | 2.01 |
+     |----------------------------------------|
+     |                       ci               |
+     |              [1.49,2.72]               |
+     +----------------------------------------+
+
+     +----------------------------------------+
+ 10. |                     characteristic     |
+     |                                BMI     |
+     |----------------------------------------|
+     |                           level |  RRR |
+     | Normal Weight (18.5-24.9) (ref) |    1 |
+     |----------------------------------------|
+     |                       ci               |
+     |              [1.00,1.00]               |
+     +----------------------------------------+
+
+     +----------------------------------------+
+ 11. |                     characteristic     |
+     |                                BMI     |
+     |----------------------------------------|
+     |                           level |  RRR |
+     |            Overweight (25-29.9) |  .65 |
+     |----------------------------------------|
+     |                       ci               |
+     |              [0.60,0.70]               |
+     +----------------------------------------+
+
+     +----------------------------------------+
+ 12. |                     characteristic     |
+     |                                BMI     |
+     |----------------------------------------|
+     |                           level |  RRR |
+     |                   Obese I (30+) |  .82 |
+     |----------------------------------------|
+     |                       ci               |
+     |              [0.76,0.88]               |
+     +----------------------------------------+
+
+     +----------------------------------------+
+ 13. |                     characteristic     |
+     |     Baseline macrovascular disease     |
+     |----------------------------------------|
+     |                           level |  RRR |
+     |                             No  |    1 |
+     |----------------------------------------|
+     |                       ci               |
+     |              [1.00,1.00]               |
+     +----------------------------------------+
+
+     +----------------------------------------+
+ 14. |                     characteristic     |
+     |     Baseline macrovascular disease     |
+     |----------------------------------------|
+     |                           level |  RRR |
+     |                            Yes  |  .85 |
+     |----------------------------------------|
+     |                       ci               |
+     |              [0.79,0.92]               |
+     +----------------------------------------+
+
+     +----------------------------------------+
+ 15. |                     characteristic     |
+     |     Baseline microvascular disease     |
+     |----------------------------------------|
+     |                           level |  RRR |
+     |                             No  |    1 |
+     |----------------------------------------|
+     |                       ci               |
+     |              [1.00,1.00]               |
+     +----------------------------------------+
+
+     +----------------------------------------+
+ 16. |                     characteristic     |
+     |     Baseline microvascular disease     |
+     |----------------------------------------|
+     |                           level |  RRR |
+     |                            Yes  | 1.87 |
+     |----------------------------------------|
+     |                       ci               |
+     |              [1.67,2.10]               |
+     +----------------------------------------+
+
+     +----------------------------------------+
+ 17. |                     characteristic     |
+     |                      Smoing status     |
+     |----------------------------------------|
+     |                           level |  RRR |
+     |                   Non/Ex smoker |    1 |
+     |----------------------------------------|
+     |                       ci               |
+     |              [1.00,1.00]               |
+     +----------------------------------------+
+
+     +----------------------------------------+
+ 18. |                     characteristic     |
+     |                      Smoing status     |
+     |----------------------------------------|
+     |                           level |  RRR |
+     |                  Current smoker | 1.17 |
+     |----------------------------------------|
+     |                       ci               |
+     |              [1.12,1.22]               |
+     +----------------------------------------+
+
+. do "/var/folders/jg/zvg1wn090ps86p3lwtn901140000gn/T//S
+> D80927.000000"
+
+. use "$pathReleased/ob3_Fig1b.dta", clear
+
+. 
+. split ci,p(,)
+variables created as string: 
+ci1  ci2
+
+. gen lci=substr(ci1,2,.)
+
+. gen uci=substr(ci2,1,4)
+
+. 
+. drop ci1 ci2 ci
+
+. destring, replace
+characteristic: contains nonnumeric characters; no replac
+> e
+level: contains nonnumeric characters; no replace
+RRR already numeric; no replace
+lci: all characters numeric; replaced as double
+uci: all characters numeric; replaced as double
+
+. 
+. qui metan RRR lci uci if characteristic!="Year of diagn
+> osis" ///
+>  ,   effect(RRR) null(1) lcols(level) by(characteristic
+> ) dp(2) ///
+>         nowt nosubgroup nooverall  nobox  ///
+>         graphregion(color(white)) scheme(sj) astext(75)
+>  texts(150)      /// 
+>         xlab(0.1, 1, 2.5) ///
+>         subtitle(`i', size(medium)) legend(off) ///
+>         graphregion(margin(zero)) title("Poor vs. Optim
+> al")
+
+.         graph save "$pathReleased/FP_poor_v_optimal", r
+> eplace
+(file /Users/lsh152058/OneDrive - London School of Hygien
+> e and Tropical Medicine/#Wellcome Fellowship/Objective 
+> 3/FP_poor_v_optimal.gph saved)
+
+.         graph export "$pathReleased/FP_poor_v_optimal.j
+> pg", replace
+(file /Users/lsh152058/OneDrive - London School of Hygien
+> e and Tropical Medicine/#Wellcome Fellowship/Objective 
+> 3/FP_poor_v_optimal.jpg written in JPG format)
+
+. 
+end of do-file
+
+. do "/var/folders/jg/zvg1wn090ps86p3lwtn901140000gn/T//SD80927.000000"
+
+. use "$pathReleased/ob3_Fig1b.dta", clear
+
+. 
+. split ci,p(,)
+variables created as string: 
+ci1  ci2
+
+. gen lci=substr(ci1,2,.)
+
+. gen uci=substr(ci2,1,4)
+
+. 
+. drop ci1 ci2 ci
+
+. destring, replace
+characteristic: contains nonnumeric characters; no replace
+level: contains nonnumeric characters; no replace
+RRR already numeric; no replace
+lci: all characters numeric; replaced as double
+uci: all characters numeric; replaced as double
+
+. 
+. qui metan RRR lci uci if characteristic!="Year of diagnosis" ///
+>  ,   effect(RRR) null(1) lcols(level) by(characteristic) dp(2) ///
+>         nowt nosubgroup nooverall  nobox  ///
+>         graphregion(color(white)) scheme(sj) astext(75) texts(150)      /// 
+>         xlab(0.1, 1, 3,6) ///
+>         subtitle(`i', size(medium)) legend(off) ///
+>         graphregion(margin(zero)) title("Poor vs. Optimal")
+
+.         graph save "$pathReleased/FP_poor_v_optimal", replace
+(file /Users/lsh152058/OneDrive - London School of Hygiene and Tropical Medicin
+> e/#Wellcome Fellowship/Objective 3/FP_poor_v_optimal.gph saved)
+
+.         graph export "$pathReleased/FP_poor_v_optimal.jpg", replace
+(file /Users/lsh152058/OneDrive - London School of Hygiene and Tropical Medicin
+> e/#Wellcome Fellowship/Objective 3/FP_poor_v_optimal.jpg written in JPG forma
+> t)
+
+. 
+. graph combine ///
+>         "$pathReleased/FP_poor_v_optimal" ///
+>         "$pathReleased/FP_adequate_v_optimal", ///
+>         graphregion(color(white))
+
+.         
+.         graph export "$pathReleased/FP_Figure1.jpg", replace
+(file /Users/lsh152058/OneDrive - London School of Hygiene and Tropical Medicin
+> e/#Wellcome Fellowship/Objective 3/FP_Figure1.jpg written in JPG format)
+
+. 
+end of do-file
+
+. do "/var/folders/jg/zvg1wn090ps86p3lwtn901140000gn/T//SD80927.000000"
+
+. qui metan RRR lci uci if characteristic!="Year of diagnosis" ///
+>  ,   effect(RRR) null(1) lcols(level) by(characteristic) dp(2) ///
+>         nowt nosubgroup nooverall  nobox  ///
+>         graphregion(color(white)) scheme(sj) astext(75) texts(150)      /// 
+>         xlab(0.1, 1, 3, 7) ///
+>         subtitle(`i', size(medium)) legend(off) ///
+>         graphregion(margin(zero)) title("Poor vs. Optimal")
+
+.         graph save "$pathReleased/FP_poor_v_optimal", replace
+(file /Users/lsh152058/OneDrive - London School of Hygiene and Tropical Medicin
+> e/#Wellcome Fellowship/Objective 3/FP_poor_v_optimal.gph saved)
+
+.         graph export "$pathReleased/FP_poor_v_optimal.jpg", replace
+(file /Users/lsh152058/OneDrive - London School of Hygiene and Tropical Medicin
+> e/#Wellcome Fellowship/Objective 3/FP_poor_v_optimal.jpg written in JPG forma
+> t)
+
+. 
+. graph combine ///
+>         "$pathReleased/FP_poor_v_optimal" ///
+>         "$pathReleased/FP_adequate_v_optimal", ///
+>         graphregion(color(white))
+
+.         
+.         graph export "$pathReleased/FP_Figure1.jpg", replace
+(file /Users/lsh152058/OneDrive - London School of Hygiene and Tropical Medicin
+> e/#Wellcome Fellowship/Objective 3/FP_Figure1.jpg written in JPG format)
+
+. 
+end of do-file
+

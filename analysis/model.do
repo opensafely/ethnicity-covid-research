@@ -44,18 +44,19 @@ Data cleaning
 
 *Create analysis dataset
 do "$Dodir/01_eth_cr_analysis_dataset.do"
-/*
-*Checks 
+
+/*Checks 
 do "$Dodir/02_eth_an_data_checks.do"
 
-*/
+
 *Table 0: Numbers of outcomes in study population
 do "$Dodir/03a_eth_outcomes_checks_eth16.do"
-/*do "$Dodir/03b_eth_outcomes_checks_eth5.do"
+do "$Dodir/03b_eth_outcomes_checks_eth5.do"
 
 /**********************
 ETH 5
 **********************/
+*/
 *Table 1 baseline characteristics
 do "$Dodir/05b_eth_table1_descriptives_eth5.do"
 
@@ -63,15 +64,15 @@ do "$Dodir/05b_eth_table1_descriptives_eth5.do"
 do "$Dodir/06b_eth_an_multivariable_eth5.do" 
 
 *Table 3: Odds of receiving ventilation - in those admitted to ICU
-do "$Dodir/09b_eth_an_ventilation_eth5"
-*/
+*do "$Dodir/09b_eth_an_ventilation_eth5"
+
 *Table 4: Odds of testing positive amongst those with SGSS testing data
 do "$Dodir/11b_eth_an_testedpop_eth5" 
 
 
 /**********************
 ETH 16
-**********************
+**********************/
 
 *Table 1 baseline characteristics
 do "$Dodir/05a_eth_table1_descriptives_eth16.do"
@@ -80,7 +81,7 @@ do "$Dodir/05a_eth_table1_descriptives_eth16.do"
 do "$Dodir/06a_eth_an_multivariable_eth16.do" 
 
 *Table 3: Odds of receiving ventilation - in those admitted to ICU
-do "$Dodir/09a_eth_an_ventilation_eth16"
+*do "$Dodir/09a_eth_an_ventilation_eth16"
 
 *Table 4: Odds of testing positive amongst those with SGSS testing data
 do "$Dodir/11a_eth_an_testedpop_eth16" 
@@ -88,7 +89,7 @@ do "$Dodir/11a_eth_an_testedpop_eth16"
 
 /**********************
 SENSITIVITY  ANALYSIS
-**********************/
+**********************
 
 *Table 2 sens analysis excluding large households
 do "$Dodir/18a_eth_an_sens_exclude_large_hh_eth16.do"
