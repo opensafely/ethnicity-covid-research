@@ -130,7 +130,7 @@ local hr "`hr' "$Tempdir/model3_`i'_eth5" "
 else di "WARNING MODEL3 DID NOT FIT (OUTCOME `i')"
 
 /* Estout================================================================*/ 
-esttab model1 model2 model3 model4 model5  using "$Tabfigdir\estout_table2_eth5.txt", b(a2) ci(2) label wide compress eform ///
+esttab model1 model2 model3 model4 model5  using "$Tabfigdir/estout_table2_eth5.txt", b(a2) ci(2) label wide compress eform ///
 	title ("`i'") ///
 	varlabels(`e(labels)') ///
 	stats(N_sub) ///
@@ -220,5 +220,5 @@ outsheet using "$Tabfigdir/FP_multivariable_eth5.txt", replace
 log close
 
 insheet using $Tabfigdir/table2_eth5.txt, clear
-insheet using $Tabfigdir\estout_table2_eth5.txt, clear
+insheet using $Tabfigdir/estout_table2_eth5.txt, clear
 
