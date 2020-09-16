@@ -138,10 +138,10 @@ else di "WARNING MODEL3 DID NOT FIT (OUTCOME `i')"
 
 /* Estout================================================================*/ 
 esttab model1 model2 model3 model4 model5  using "$Tabfigdir\estout_table2_eth16.txt", b(a2) ci(2) label wide compress eform ///
-	title ("table2_eth16") ///
+	title ("`i'") ///
 	varlabels(`e(labels)') ///
 	stats(N_sub) ///
-	replace 
+	append 
 eststo clear
 
 										

@@ -44,6 +44,7 @@ use "$Tempdir/analysis_dataset_STSET_`i'.dta", clear
 
 stcox i.eth5, strata(stp) nolog
 estimates save "$Tempdir/crude_`i'_eth5", replace 
+eststo model1
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/crude_`i'_eth5", replace) idstr("crude_`i'_eth5") 
 local hr "`hr' "$Tempdir/crude_`i'_eth5" "
 
@@ -52,6 +53,7 @@ local hr "`hr' "$Tempdir/crude_`i'_eth5" "
 *Age and gender
 stcox i.eth5 i.male age1 age2 age3, strata(stp) nolog
 estimates save "$Tempdir/model0_`i'_eth5", replace 
+eststo model2 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model0_`i'_eth5", replace) idstr("model0_`i'_eth5")
 local hr "`hr' "$Tempdir/model0_`i'_eth5" "
  
@@ -61,6 +63,7 @@ local hr "`hr' "$Tempdir/model0_`i'_eth5" "
 stcox i.eth5 i.male age1 age2 age3 i.imd, strata(stp) nolog
 if _rc==0{
 estimates
+eststo model3
 estimates save "$Tempdir/model1_`i'_eth5", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model1_`i'_eth5", replace) idstr("model1_`i'_eth5") 
 local hr "`hr' "$Tempdir/model1_`i'_eth5" "
@@ -90,6 +93,7 @@ stcox i.eth5 i.male age1 age2 age3 	i.imd						///
 if _rc==0{
 estimates
 estimates save "$Tempdir/model2_`i'_eth5", replace 
+eststo model4
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model2_`i'_eth5", replace) idstr("model2_`i'_eth5") 
 local hr "`hr' "$Tempdir/model2_`i'_eth5" "
 }
@@ -119,10 +123,19 @@ stcox i.eth5 i.male age1 age2 age3 	i.imd						///
 if _rc==0{
 estimates
 estimates save "$Tempdir/model3_`i'_eth5", replace
+eststo model5
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model3_`i'_eth5", replace) idstr("model3_`i'_eth5") 
 local hr "`hr' "$Tempdir/model3_`i'_eth5" "
 }
 else di "WARNING MODEL3 DID NOT FIT (OUTCOME `i')"
+
+/* Estout================================================================*/ 
+esttab model1 model2 model3 model4 model5  using "$Tabfigdir\estout_table2_eth5.txt", b(a2) ci(2) label wide compress eform ///
+	title ("`i'") ///
+	varlabels(`e(labels)') ///
+	stats(N_sub) ///
+	append 
+eststo clear
 
 										
 /* Print table================================================================*/ 
@@ -138,6 +151,7 @@ local lab2: label eth5 2
 local lab3: label eth5 3
 local lab4: label eth5 4
 local lab5: label eth5 5
+local lab5: label eth5 6
 
 /* counts */
  
@@ -155,7 +169,7 @@ local lab5: label eth5 5
 	file write tablecontent ("1.00") _tab _tab ("1.00") _tab _tab ("1.00")  _tab _tab ("1.00") _tab _tab ("1.00") _n
 	
 * Subsequent ethnic groups
-forvalues eth=2/5 {
+forvalues eth=2/6 {
 	qui safecount if eth5==`eth'
 	local denominator = r(N)
 	qui safecount if eth5 == `eth' & `i' == 1
@@ -206,4 +220,5 @@ outsheet using "$Tabfigdir/FP_multivariable_eth5.txt", replace
 log close
 
 insheet using $Tabfigdir/table2_eth5.txt, clear
+insheet using $Tabfigdir\estout_table2_eth5.txt, clear
 
