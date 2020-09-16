@@ -280,7 +280,7 @@ foreach i of global outcomes {
 
 *Set up output file
 cap file close tablecontent
-file open tablecontent using $Tabfigdir/table0_outcomes_ethnicity_16.txt, write text replace
+file open tablecontent using $Tabfigdir/table0_outcomes_eth16.txt, write text replace
 
 file write tablecontent ("Table 0: Outcome counts by ethnic group") _n
 
