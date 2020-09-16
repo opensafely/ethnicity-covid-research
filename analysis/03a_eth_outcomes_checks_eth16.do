@@ -1,11 +1,11 @@
 /*==============================================================================
-DO FILE NAME:			03a_outcomes_checks_eth16
+DO FILE NAME:			03a_outcomes_checks_ethnicity_16
 PROJECT:				Ethnicity and COVID-19 
 DATE: 					14 July 2020 
 AUTHOR:					R Mathur
 						adapted from A Schultze 	
 DESCRIPTION OF FILE:	Produce a table of baseline characteristics, by ethnicity
-						Generalised to produce same columns as levels of eth16
+						Generalised to produce same columns as levels of ethnicity_16
 						Output to a textfile for further formatting
 DATASETS USED:			$Tempdir\analysis_dataset.dta
 DATASETS CREATED: 		None
@@ -20,7 +20,6 @@ USER-INSTALLED ADO:
  change the analysis_dataset to exlucde people with any of the following as of Feb 1st 2020:
  COVID identified in primary care
  COVID test result via  SGSS
- A&E admission for COVID-19
  ICU admission for COVID-19
  
 
@@ -52,10 +51,10 @@ syntax, variable(varname) condition(string)
 	local colpct = 100*(r(N)/`overalldenom')
 	file write tablecontent %9.0gc (`rowdenom')  (" (") %3.1f (`colpct') (")") _tab
 
-	forvalues i=1/12{
-	qui cou if eth16 == `i'
+	forvalues i=1/17{
+	qui cou if  == `i'
 	local rowdenom = r(N)
-	qui cou if eth16 == `i' & `variable' `condition'
+	qui cou if ethnicity_16 == `i' & `variable' `condition'
 	local pct = 100*(r(N)/`rowdenom') 
 	file write tablecontent %9.0gc (r(N)) (" (") %3.1f (`pct') (")") _tab
 	}
@@ -78,10 +77,10 @@ syntax, variable(varname) condition(string)
 	local colpct = 100*(r(N)/`overalldenom')
 	file write tablecontent %9.0gc (`rowdenom')  (" (") %3.1f (`colpct') (")") _tab
 
-	forvalues i=1/14{
-	qui cou if eth16 == `i'
+	forvalues i=1/17{
+	qui cou if ethnicity_16 == `i'
 	local rowdenom = r(N)
-	qui cou if eth16 == `i' & `variable' `condition'
+	qui cou if ethnicity_16 == `i' & `variable' `condition'
 	local pct = 100*(r(N)/`rowdenom') 
 	file write tablecontent %9.0gc (r(N)) (" (") %3.1f (`pct') (")") _tab
 	}
@@ -162,7 +161,7 @@ syntax, variable(varname)
 	file write tablecontent  %3.1f (r(mean)) (" (") %3.1f (r(sd)) (")") _tab
 	
 	forvalues i=1/12{							
-	qui summarize `variable' if eth16 == `i', d
+	qui summarize `variable' if ethnicity_16 == `i', d
 	file write tablecontent  %3.1f (r(mean)) (" (") %3.1f (r(sd)) (")") _tab
 	}
 
@@ -173,8 +172,8 @@ file write tablecontent _n
 	file write tablecontent ("Median (IQR)") _tab 
 	file write tablecontent %3.1f (r(p50)) (" (") %3.1f (r(p25)) ("-") %3.1f (r(p75)) (")") _tab
 	
-	forvalues i=1/12{
-	qui summarize `variable' if eth16 == `i', d
+	forvalues i=1/17{
+	qui summarize `variable' if ethnicity_16 == `i', d
 	file write tablecontent %3.1f (r(p50)) (" (") %3.1f (r(p25)) ("-") %3.1f (r(p75)) (")") _tab
 	}
 	
@@ -223,37 +222,7 @@ safetab ethnicity_16,m
 
 * Ethnicity (16 category grouped further)
 * Generate a version of the full breakdown with mixed in one group
-gen eth16 = ethnicity_16
-recode eth16 4/7 = 99 //mixed
-recode eth16 8 = 4
-recode eth16 9 = 5
-recode eth16 10 = 6
-recode eth16 11= 7
-recode eth16 12 = 8
-recode eth16 13 = 9
-recode eth16 14 = 10
-recode eth16 15 = 11
-recode eth16 99 = 12
-recode eth16 16 = 13
-recode eth16 17 = 14
-
-label define eth16 	///
-						1 "British" ///
-						2 "Irish" ///
-						3 "Other White" ///
-						4 "Indian" ///
-						5 "Pakistani" ///
-						6 "Bangladeshi" ///	
-						7 "Other Asian" ///
-						8 "Caribbean" ///
-						9 "African" ///
-						10 "Other Black" ///
-						11 "Chinese" ///
-						12 "All mixed" ///
-						13 "Other" ///
-						14 "Unknown"
-label values eth16 eth16
-safetab eth16,m
+safetab ethnicity_16,m
 
 /* OUTCOME AND SURVIVAL TIME==================================================*/
 
@@ -311,11 +280,11 @@ foreach i of global outcomes {
 
 *Set up output file
 cap file close tablecontent
-file open tablecontent using $Tabfigdir/table0_outcomes_eth16.txt, write text replace
+file open tablecontent using $Tabfigdir/table0_outcomes_ethnicity_16.txt, write text replace
 
 file write tablecontent ("Table 0: Outcome counts by ethnic group") _n
 
-* eth16 labelled columns
+* ethnicity_16 labelled columns
 
 local lab1: label ethnicity_16 1
 local lab2: label ethnicity_16 2
