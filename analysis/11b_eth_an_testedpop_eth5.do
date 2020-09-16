@@ -68,7 +68,7 @@ parmest, label eform format(estimate p lb ub) saving("$Tempdir/model1_positivete
 eststo model3
 
 * Age, Gender, IMD and Comorbidities  
-logistic positivetest i.eth5 i.male age1 age2 age3 	i.imd						///
+cap logistic positivetest i.eth5 i.male age1 age2 age3 	i.imd						///
 										bmi	hba1c_pct				///
 										gp_consult_count			///
 										i.smoke_nomiss				///
@@ -92,7 +92,7 @@ parmest, label eform format(estimate p lb ub) saving("$Tempdir/model2_positivete
 eststo model4
 
 * Age, Gender, IMD and Comorbidities  and household size and carehome
-logistic positivetest i.eth5 i.male age1 age2 age3 	i.imd						///
+cap logistic positivetest i.eth5 i.male age1 age2 age3 	i.imd						///
 										bmi	hba1c_pct				///
 										gp_consult_count			///
 										i.smoke_nomiss				///
