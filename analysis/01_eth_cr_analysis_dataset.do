@@ -307,12 +307,16 @@ codebook  hh_size, d
 *gen categories of household size.
 *hh size zero is people with invalid addresses
 
+*drop ridiculous hh_size
+drop if hh_size>100
+
 gen hh_total_cat=.
 replace hh_total_cat=1 if hh_size >=1 & hh_size<=2
 replace hh_total_cat=2 if hh_size >=3 & hh_size<=5
 replace hh_total_cat=3 if hh_size >=6 & hh_size<=10
-replace hh_total_cat=4 if hh_size >=11 & hh_size<=15
-replace hh_total_cat=.u if hh_size==0 | hh_size>=16
+replace hh_total_cat=4 if hh_size >=11 
+replace hh_total_cat=.u if hh_size==0 
+
 
 *who are people with missing household size
 safecount if hh_total_cat==.
@@ -322,7 +326,7 @@ bysort  hh_total_cat: summ hh_size
 label define hh_total_cat 1 "1-2" ///
 						2 "3-5" ///
 						3 "6-10" ///
-						4 "11-15" ///
+						4 "11+" ///
 						.u "Unknown"
 											
 label values hh_total_cat hh_total_cat
