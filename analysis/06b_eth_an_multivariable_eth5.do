@@ -119,7 +119,7 @@ stcox i.eth5 i.male age1 age2 age3 	i.imd						///
 										i.esrf						///
 										i.immunosuppressed	 		///
 										i.ra_sle_psoriasis			///
-										i.hh_total_cat i.carehome, strata(stp) nolog		
+										i.hh_total_cat, strata(stp) nolog		
 if _rc==0{
 estimates
 estimates save "$Tempdir/model3_`i'_eth5", replace

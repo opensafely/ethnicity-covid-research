@@ -54,7 +54,7 @@ noisily mi impute mlogit ethnicity_16 `i' i.stp i.male age1 age2 age3 	i.imd				
 										i.esrf						///
 										i.immunosuppressed	 		///
 										i.ra_sle_psoriasis			///
-										i.hh_total_cat i.carehome, ///
+										i.hh_total_cat, ///
 										add(10) rseed(70548) augment force // can maybe remove the force option in the server
 										
 
