@@ -70,10 +70,20 @@ stcox i.ethnicity_16 i.male age1 age2 age3 	i.imd						///
 if _rc==0{
 estimates
 estimates save "$Tempdir/model3_`i'_eth16", replace
+eststo model1
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model3_`i'_eth16", replace) idstr("model3_`i'_eth16") 
 local hr "`hr' "$Tempdir/model3_`i'_eth16" "
 }
 else di "WARNING MODEL3 DID NOT FIT (OUTCOME `i')"
+
+/* Estout================================================================*/ 
+esttab model1 using "$Tabfigdir/estout_sense_hh_eth16.txt", b(a2) ci(2) label wide compress eform ///
+	title ("`i'") ///
+	varlabels(`e(labels)') ///
+	stats(N_sub) ///
+	append 
+eststo clear
+
 
 										
 /* Print table================================================================*/ 
@@ -159,3 +169,4 @@ log close
 
 
 insheet using $Tabfigdir/table2_sens_exclude_large_hh_eth16.txt, clear
+insheet using $Tabfigdir/estout_sense_hh_eth16.txt, clear

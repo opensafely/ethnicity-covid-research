@@ -263,7 +263,7 @@ file write tablecontent _n
 qui summarizevariable, variable(hh_size)
 file write tablecontent _n
 
-qui tabulatevariable, variable(hh_total_cat) min(1) max(4) missing
+qui tabulatevariable, variable(hh_total_cat) min(1) max(9) missing
 file write tablecontent _n 
 
 qui tabulatevariable, variable(carehome) min(0) max(1) missing
