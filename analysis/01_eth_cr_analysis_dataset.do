@@ -307,8 +307,8 @@ codebook  hh_size, d
 *gen categories of household size.
 *hh size zero is people with invalid addresses
 
-*drop ridiculous hh_size
-drop if hh_size>100
+*drop ridiculous hh_size unless carehome
+drop if hh_size>100 &  carehome==0
 
 gen hh_total_cat=.
 replace hh_total_cat=1 if hh_size >=1 & hh_size<=2
