@@ -1,0 +1,351 @@
+-------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  E:\analyses\ethnicity-covid-research/output/log\08b_eth_cr_imputed
+> _mi_eth5.log
+  log type:  text
+ opened on:  15 Sep 2020, 20:35:09
+
+. 
+. 
+. foreach i of global outcomes {
+  2. * Open Stata dataset
+. use "$Tempdir/analysis_dataset_STSET_`i'.dta", clear
+  3. 
+. *mi set the data
+. mi set mlong
+  4. 
+. *mi register 
+. replace eth5=. if eth5==6 //set unknown to missing
+  5. mi register imputed eth5
+  6. 
+. *mi impute the dataset - remove variables with missing values - bmi     hba1c
+> _pct bp_map 
+. noisily mi impute mlogit eth5 `i' i.stp i.male age1 age2 age3   i.imd        
+>                                    ///
+>                                                                              
+>    bmi     hba1c_pct                               ///
+>                                                                              
+>    gp_consult_count                        ///
+>                                                                              
+>    i.smoke_nomiss                          ///
+>                                                                              
+>    i.hypertension bp_map                   ///     
+>                                                                              
+>    i.asthma                                        ///
+>                                                                              
+>    i.chronic_respiratory_disease ///
+>                                                                              
+>    i.chronic_cardiac_disease       ///
+>                                                                              
+>    i.dm_type                                       ///     
+>                                                                              
+>    i.cancer                    ///
+>                                                                              
+>    i.chronic_liver_disease         ///
+>                                                                              
+>    i.stroke                                        ///
+>                                                                              
+>    i.dementia                                      ///
+>                                                                              
+>    i.other_neuro                           ///
+>                                                                              
+>    i.egfr60                                        ///
+>                                                                              
+>    i.esrf                                          ///
+>                                                                              
+>    i.immunosuppressed                      ///
+>                                                                              
+>    i.ra_sle_psoriasis                      ///
+>                                                                              
+>    i.hh_total_cat i.carehome, ///
+>                                                                              
+>    add(10) rseed(70548) augment force // can maybe remove the force option in
+>  the server
+  7.                                                                           
+>       
+. 
+. *mi stset
+. mi      stset stime_`i', fail(`i')      id(patient_id) enter(indexdate) origi
+> n(indexdate)
+  8. save "$Tempdir/analysis_dataset_STSET_`i'_eth5_mi.dta", replace
+  9. }
+(4,602,822 real changes made, 4,602,822 to missing)
+(4602822 m=0 obs. now marked as incomplete)
+
+Univariate imputation                       Imputations =       10
+Multinomial logistic regression                   added =       10
+Imputed: m=1 through m=10                       updated =        0
+
+------------------------------------------------------------------
+                   |               Observations per m             
+                   |----------------------------------------------
+          Variable |   Complete   Incomplete   Imputed |     Total
+-------------------+-----------------------------------+----------
+              eth5 |   12907180      4602822   1152719 |  17510002
+------------------------------------------------------------------
+(complete + incomplete = total; imputed is the minimum across m
+ of the number of filled-in observations.)
+
+Note: Right-hand-side variables (or weights) have missing values;
+      model parameters estimated using listwise deletion.
+
+Note: Perfect prediction was not detected.
+
+                id:  patient_id
+     failure event:  tested != 0 & tested < .
+obs. time interval:  (stime_tested[_n-1], stime_tested]
+ enter on or after:  time indexdate
+ exit on or before:  failure
+    t for analysis:  (time-origin)
+            origin:  time indexdate
+
+------------------------------------------------------------------------------
+   17510002  total observations
+          0  exclusions
+------------------------------------------------------------------------------
+   17510002  observations remaining, representing
+   17510002  subjects
+  1,275,669  failures in single-failure-per-subject data
+ 3.1498e+09  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =         0
+                                          last observed exit t =       184
+(note: file E:\analyses\ethnicity-covid-research/output/tempdata/analysis_datas
+> et_STSET_tested_eth5_mi.dta not found)
+file E:\analyses\ethnicity-covid-research/output/tempdata/analysis_dataset_STSE
+> T_tested_eth5_mi.dta saved
+(4,602,822 real changes made, 4,602,822 to missing)
+(4602822 m=0 obs. now marked as incomplete)
+
+Univariate imputation                       Imputations =       10
+Multinomial logistic regression                   added =       10
+Imputed: m=1 through m=10                       updated =        0
+
+------------------------------------------------------------------
+                   |               Observations per m             
+                   |----------------------------------------------
+          Variable |   Complete   Incomplete   Imputed |     Total
+-------------------+-----------------------------------+----------
+              eth5 |   12907180      4602822   1152719 |  17510002
+------------------------------------------------------------------
+(complete + incomplete = total; imputed is the minimum across m
+ of the number of filled-in observations.)
+
+Note: Right-hand-side variables (or weights) have missing values;
+      model parameters estimated using listwise deletion.
+
+Note: Perfect prediction was not detected.
+
+                id:  patient_id
+     failure event:  positivetest != 0 & positivetest < .
+obs. time interval:  (stime_positivetest[_n-1], stime_positivetest]
+ enter on or after:  time indexdate
+ exit on or before:  failure
+    t for analysis:  (time-origin)
+            origin:  time indexdate
+
+------------------------------------------------------------------------------
+   17510002  total observations
+          0  exclusions
+------------------------------------------------------------------------------
+   17510002  observations remaining, representing
+   17510002  subjects
+     78,214  failures in single-failure-per-subject data
+ 3.2059e+09  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =         0
+                                          last observed exit t =       184
+(note: file E:\analyses\ethnicity-covid-research/output/tempdata/analysis_datas
+> et_STSET_positivetest_eth5_mi.dta not found)
+file E:\analyses\ethnicity-covid-research/output/tempdata/analysis_dataset_STSE
+> T_positivetest_eth5_mi.dta saved
+(4,602,822 real changes made, 4,602,822 to missing)
+(4602822 m=0 obs. now marked as incomplete)
+
+Univariate imputation                       Imputations =       10
+Multinomial logistic regression                   added =       10
+Imputed: m=1 through m=10                       updated =        0
+
+------------------------------------------------------------------
+                   |               Observations per m             
+                   |----------------------------------------------
+          Variable |   Complete   Incomplete   Imputed |     Total
+-------------------+-----------------------------------+----------
+              eth5 |   12907180      4602822   1152719 |  17510002
+------------------------------------------------------------------
+(complete + incomplete = total; imputed is the minimum across m
+ of the number of filled-in observations.)
+
+Note: Right-hand-side variables (or weights) have missing values;
+      model parameters estimated using listwise deletion.
+
+Note: Perfect prediction was not detected.
+
+                id:  patient_id
+     failure event:  icu != 0 & icu < .
+obs. time interval:  (stime_icu[_n-1], stime_icu]
+ enter on or after:  time indexdate
+ exit on or before:  failure
+    t for analysis:  (time-origin)
+            origin:  time indexdate
+
+------------------------------------------------------------------------------
+   17510002  total observations
+          0  exclusions
+------------------------------------------------------------------------------
+   17510002  observations remaining, representing
+   17510002  subjects
+      3,113  failures in single-failure-per-subject data
+ 3.1419e+09  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =         0
+                                          last observed exit t =       180
+(note: file E:\analyses\ethnicity-covid-research/output/tempdata/analysis_datas
+> et_STSET_icu_eth5_mi.dta not found)
+file E:\analyses\ethnicity-covid-research/output/tempdata/analysis_dataset_STSE
+> T_icu_eth5_mi.dta saved
+(4,602,822 real changes made, 4,602,822 to missing)
+(4602822 m=0 obs. now marked as incomplete)
+
+Univariate imputation                       Imputations =       10
+Multinomial logistic regression                   added =       10
+Imputed: m=1 through m=10                       updated =        0
+
+------------------------------------------------------------------
+                   |               Observations per m             
+                   |----------------------------------------------
+          Variable |   Complete   Incomplete   Imputed |     Total
+-------------------+-----------------------------------+----------
+              eth5 |   12907180      4602822   1152719 |  17510002
+------------------------------------------------------------------
+(complete + incomplete = total; imputed is the minimum across m
+ of the number of filled-in observations.)
+
+Note: Right-hand-side variables (or weights) have missing values;
+      model parameters estimated using listwise deletion.
+
+Note: Perfect prediction was not detected.
+
+                id:  patient_id
+     failure event:  onscoviddeath != 0 & onscoviddeath < .
+obs. time interval:  (stime_onscoviddeath[_n-1], stime_onscoviddeath]
+ enter on or after:  time indexdate
+ exit on or before:  failure
+    t for analysis:  (time-origin)
+            origin:  time indexdate
+
+------------------------------------------------------------------------------
+   17510002  total observations
+          0  exclusions
+------------------------------------------------------------------------------
+   17510002  observations remaining, representing
+   17510002  subjects
+     15,627  failures in single-failure-per-subject data
+ 3.2118e+09  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =         0
+                                          last observed exit t =       184
+(note: file E:\analyses\ethnicity-covid-research/output/tempdata/analysis_datas
+> et_STSET_onscoviddeath_eth5_mi.dta not found)
+file E:\analyses\ethnicity-covid-research/output/tempdata/analysis_dataset_STSE
+> T_onscoviddeath_eth5_mi.dta saved
+(4,602,822 real changes made, 4,602,822 to missing)
+(4602822 m=0 obs. now marked as incomplete)
+
+Univariate imputation                       Imputations =       10
+Multinomial logistic regression                   added =       10
+Imputed: m=1 through m=10                       updated =        0
+
+------------------------------------------------------------------
+                   |               Observations per m             
+                   |----------------------------------------------
+          Variable |   Complete   Incomplete   Imputed |     Total
+-------------------+-----------------------------------+----------
+              eth5 |   12907180      4602822   1152719 |  17510002
+------------------------------------------------------------------
+(complete + incomplete = total; imputed is the minimum across m
+ of the number of filled-in observations.)
+
+Note: Right-hand-side variables (or weights) have missing values;
+      model parameters estimated using listwise deletion.
+
+Note: Perfect prediction was not detected.
+
+                id:  patient_id
+     failure event:  ons_noncoviddeath != 0 & ons_noncoviddeath < .
+obs. time interval:  (stime_ons_noncoviddeath[_n-1], stime_ons_noncoviddeath]
+ enter on or after:  time indexdate
+ exit on or before:  failure
+    t for analysis:  (time-origin)
+            origin:  time indexdate
+
+------------------------------------------------------------------------------
+   17510002  total observations
+          0  exclusions
+------------------------------------------------------------------------------
+   17510002  observations remaining, representing
+   17510002  subjects
+     84,872  failures in single-failure-per-subject data
+ 3.2118e+09  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =         0
+                                          last observed exit t =       184
+(note: file E:\analyses\ethnicity-covid-research/output/tempdata/analysis_datas
+> et_STSET_ons_noncoviddeath_eth5_mi.dta not found)
+file E:\analyses\ethnicity-covid-research/output/tempdata/analysis_dataset_STSE
+> T_ons_noncoviddeath_eth5_mi.dta saved
+(4,602,822 real changes made, 4,602,822 to missing)
+(4602822 m=0 obs. now marked as incomplete)
+
+Univariate imputation                       Imputations =       10
+Multinomial logistic regression                   added =       10
+Imputed: m=1 through m=10                       updated =        0
+
+------------------------------------------------------------------
+                   |               Observations per m             
+                   |----------------------------------------------
+          Variable |   Complete   Incomplete   Imputed |     Total
+-------------------+-----------------------------------+----------
+              eth5 |   12907180      4602822   1152719 |  17510002
+------------------------------------------------------------------
+(complete + incomplete = total; imputed is the minimum across m
+ of the number of filled-in observations.)
+
+Note: Right-hand-side variables (or weights) have missing values;
+      model parameters estimated using listwise deletion.
+
+Note: Perfect prediction was not detected.
+
+                id:  patient_id
+     failure event:  onsdeath != 0 & onsdeath < .
+obs. time interval:  (stime_onsdeath[_n-1], stime_onsdeath]
+ enter on or after:  time indexdate
+ exit on or before:  failure
+    t for analysis:  (time-origin)
+            origin:  time indexdate
+
+------------------------------------------------------------------------------
+   17510002  total observations
+          0  exclusions
+------------------------------------------------------------------------------
+   17510002  observations remaining, representing
+   17510002  subjects
+    100,499  failures in single-failure-per-subject data
+ 3.2118e+09  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =         0
+                                          last observed exit t =       184
+(note: file E:\analyses\ethnicity-covid-research/output/tempdata/analysis_datas
+> et_STSET_onsdeath_eth5_mi.dta not found)
+file E:\analyses\ethnicity-covid-research/output/tempdata/analysis_dataset_STSE
+> T_onsdeath_eth5_mi.dta saved
+
+.  
+. 
+. log close
+      name:  <unnamed>
+       log:  E:\analyses\ethnicity-covid-research/output/log\08b_eth_cr_imputed
+> _mi_eth5.log
+  log type:  text
+ closed on:  16 Sep 2020, 08:17:47
+-------------------------------------------------------------------------------

@@ -1,0 +1,132 @@
+-------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  E:\analyses\ethnicity-covid-research/output/log/08c_eth_an_mi_eth5
+> .log
+  log type:  text
+ opened on:  16 Sep 2020, 08:17:47
+
+. 
+. 
+. 
+. /* Main Model================================================================
+> =*/
+. foreach i of global outcomes {
+  2. * Open Stata dataset
+. 
+. use "$Tempdir/analysis_dataset_STSET_`i'_eth5_mi.dta", clear
+  3. 
+. /* Multivariable models */ 
+. 
+. * Age, Gender, IMD and Comorbidities  and household size and carehome
+.  cap mi estimate, dots eform: stcox i.eth5 i.male age1 age2 age3        i.imd
+>                                            ///
+>                                                                              
+>    bmi     hba1c_pct                               ///
+>                                                                              
+>    gp_consult_count                        ///
+>                                                                              
+>    i.smoke_nomiss                          ///
+>                                                                              
+>    i.hypertension bp_map                   ///     
+>                                                                              
+>    i.asthma                                        ///
+>                                                                              
+>    i.chronic_respiratory_disease ///
+>                                                                              
+>    i.chronic_cardiac_disease       ///
+>                                                                              
+>    i.dm_type                                       ///     
+>                                                                              
+>    i.cancer                    ///
+>                                                                              
+>    i.chronic_liver_disease         ///
+>                                                                              
+>    i.stroke                                        ///
+>                                                                              
+>    i.dementia                                      ///
+>                                                                              
+>    i.other_neuro                           ///
+>                                                                              
+>    i.egfr60                                        ///
+>                                                                              
+>    i.esrf                                          ///
+>                                                                              
+>    i.immunosuppressed                      ///
+>                                                                              
+>    i.ra_sle_psoriasis                      ///
+>                                                                              
+>    i.hh_total_cat i.carehome, strata(stp) nolog            
+  4.         
+. parmest, label eform format(estimate p lb ub) saving("$Tempdir/model3_`i'_eth
+> 5_mi", replace) idstr("model3_`i'_eth5") 
+  5. local hr "`hr' "$Tempdir/model3_`i'_eth5_mi" "
+  6. 
+. } //end outcomes
+(note: file E:\analyses\ethnicity-covid-research/output/tempdata/model3_tested_
+> eth5_mi.dta not found)
+file E:\analyses\ethnicity-covid-research/output/tempdata/model3_tested_eth5_mi
+> .dta saved
+(note: file E:\analyses\ethnicity-covid-research/output/tempdata/model3_positiv
+> etest_eth5_mi.dta not found)
+file E:\analyses\ethnicity-covid-research/output/tempdata/model3_positivetest_e
+> th5_mi.dta saved
+(note: file E:\analyses\ethnicity-covid-research/output/tempdata/model3_icu_eth
+> 5_mi.dta not found)
+file E:\analyses\ethnicity-covid-research/output/tempdata/model3_icu_eth5_mi.dt
+> a saved
+(note: file E:\analyses\ethnicity-covid-research/output/tempdata/model3_onscovi
+> ddeath_eth5_mi.dta not found)
+file E:\analyses\ethnicity-covid-research/output/tempdata/model3_onscoviddeath_
+> eth5_mi.dta saved
+(note: file E:\analyses\ethnicity-covid-research/output/tempdata/model3_ons_non
+> coviddeath_eth5_mi.dta not found)
+file E:\analyses\ethnicity-covid-research/output/tempdata/model3_ons_noncovidde
+> ath_eth5_mi.dta saved
+(note: file E:\analyses\ethnicity-covid-research/output/tempdata/model3_onsdeat
+> h_eth5_mi.dta not found)
+file E:\analyses\ethnicity-covid-research/output/tempdata/model3_onsdeath_eth5_
+> mi.dta saved
+
+. 
+. ************************************************create forestplot dataset
+. dsconcat `hr'
+
+. duplicates drop
+
+Duplicates in terms of all variables
+
+(0 observations are duplicates)
+
+. split idstr, p(_)
+variables created as string: 
+idstr1  idstr2  idstr3  idstr4
+
+. ren idstr1 model
+
+. ren idstr2 outcome
+
+. drop idstr idstr3
+
+. tab model
+
+      model |      Freq.     Percent        Cum.
+------------+-----------------------------------
+     model3 |        348      100.00      100.00
+------------+-----------------------------------
+      Total |        348      100.00
+
+. 
+. *save dataset for later
+. outsheet using "$Tabfigdir/FP_mi_eth5.txt", replace
+(note: file E:\analyses\ethnicity-covid-research/output/tabfig/FP_mi_eth5.txt n
+> ot found)
+
+. 
+. * Close log file 
+. log close
+      name:  <unnamed>
+       log:  E:\analyses\ethnicity-covid-research/output/log/08c_eth_an_mi_eth5
+> .log
+  log type:  text
+ closed on:  17 Sep 2020, 05:22:41
+-------------------------------------------------------------------------------
