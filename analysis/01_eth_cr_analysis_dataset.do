@@ -306,16 +306,16 @@ codebook  hh_size, d
 
 *gen categories of household size.
 *hh size zero is people with invalid addresses
+replace hh_size=. if hh_size>10 & carehome==0
 
-*drop ridiculous hh_size unless carehome
-drop if hh_size>100 &  carehome==0
-
+*replace ridiculous hh_size as missing unless carehome
 gen hh_total_cat=.
 replace hh_total_cat=1 if hh_size >=1 & hh_size<=2
 replace hh_total_cat=2 if hh_size >=3 & hh_size<=5
 replace hh_total_cat=3 if hh_size >=6 & hh_size<=10
-replace hh_total_cat=4 if hh_size >=11 
-replace hh_total_cat=.u if hh_size==0 
+replace hh_total_cat=4 if hh_size>10 & hh_size!=.
+replace hh_total_cat=5 if carehome==1  
+replace hh_total_cat=9 if hh_size==0  //unknown
 
 
 *who are people with missing household size
@@ -327,20 +327,19 @@ label define hh_total_cat 1 "1-2" ///
 						2 "3-5" ///
 						3 "6-10" ///
 						4 "11+" ///
-						.u "Unknown"
+						5 "carehome" ///
+						9 "Unknown"
 											
 label values hh_total_cat hh_total_cat
 
 safetab hh_total_cat,m
 safetab hh_total_cat carehome,m 
 
-
 *create second hh_total_cat excluding 11+ households for sensitivity analysis
 gen hh_cat_2=hh_total_cat
-replace hh_cat_2=. if hh_total_cat>=4
+replace hh_cat_2=. if hh_total_cat==4
 label values  hh_cat_2 hh_total_cat
 
-safetab hh_cat_2 hh_total_cat, m
 
 *log linear household size
 gen hh_linear=hh_size if hh_size>=1 & hh_size!=.
@@ -818,7 +817,7 @@ label var hh_total "# people in household calculated"
 label var hh_total_cat "Number of people in household"
 label var hh_log_linear "Log linear household size"
 label var hh_linear "Linear household size"
-label var hh_cat_2 "Household category excluding 11+"
+label var hh_cat_2 "Household carehome excluding 11+"
 label var is_prison "Household status is a prison"
 
 * Demographics

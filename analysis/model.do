@@ -75,7 +75,7 @@ do "$Dodir/11a_eth_an_testedpop_eth16"
 
 /**********************
 SENSITIVITY  ANALYSIS
-**********************/
+**********************
 
 *Table 2 sens analysis excluding large households
 do "$Dodir/18a_eth_an_sens_exclude_large_hh_eth16.do"
