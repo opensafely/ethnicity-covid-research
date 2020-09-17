@@ -48,6 +48,7 @@ use "$Tempdir/analysis_dataset_STSET_`i'.dta", clear
 
 stcox i.ethnicity_16, strata(stp) nolog
 estimates save "$Tempdir/crude_`i'_eth16", replace 
+eststo model1
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/crude_`i'_eth16", replace) idstr("crude_`i'_eth16") 
 local hr "`hr' "$Tempdir/crude_`i'_eth16" "
 
@@ -56,6 +57,8 @@ local hr "`hr' "$Tempdir/crude_`i'_eth16" "
 *Age and gender
 stcox i.ethnicity_16 i.male age1 age2 age3, strata(stp) nolog
 estimates save "$Tempdir/model0_`i'_eth16", replace 
+eststo model2
+
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model0_`i'_eth16", replace) idstr("model0_`i'_eth16")
 local hr "`hr' "$Tempdir/model0_`i'_eth16" "
  
@@ -66,6 +69,8 @@ stcox i.ethnicity_16 i.male age1 age2 age3 i.imd, strata(stp) nolog
 if _rc==0{
 estimates
 estimates save "$Tempdir/model1_`i'_eth16", replace 
+eststo model3
+
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model1_`i'_eth16", replace) idstr("model1_`i'_eth16") 
 local hr "`hr' "$Tempdir/model1_`i'_eth16" "
 }
@@ -93,6 +98,8 @@ stcox i.ethnicity_16 i.male age1 age2 age3 	i.imd						///
 if _rc==0{
 estimates
 estimates save "$Tempdir/model2_`i'_eth16", replace 
+eststo model4
+
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model2_`i'_eth16", replace) idstr("model2_`i'_eth16") 
 local hr "`hr' "$Tempdir/model2_`i'_eth16" "
 }
@@ -118,14 +125,24 @@ stcox i.ethnicity_16 i.male age1 age2 age3 	i.imd						///
 										i.esrf						///
 										i.immunosuppressed	 		///
 										i.ra_sle_psoriasis			///
-										i.hh_total_cat i.carehome, strata(stp) nolog		
+										i.hh_total_cat, strata(stp) nolog		
 if _rc==0{
 estimates
 estimates save "$Tempdir/model3_`i'_eth16", replace
+eststo model5
+
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model3_`i'_eth16", replace) idstr("model3_`i'_eth16") 
 local hr "`hr' "$Tempdir/model3_`i'_eth16" "
 }
 else di "WARNING MODEL3 DID NOT FIT (OUTCOME `i')"
+
+/* Estout================================================================*/ 
+esttab model1 model2 model3 model4 model5  using "$Tabfigdir/estout_table2_eth16.txt", b(a2) ci(2) label wide compress eform ///
+	title ("`i'") ///
+	varlabels(`e(labels)') ///
+	stats(N_sub) ///
+	append 
+eststo clear
 
 										
 /* Print table================================================================*/ 
@@ -154,9 +171,6 @@ local lab14: label ethnicity_16 14
 local lab15: label ethnicity_16 15
 local lab16: label ethnicity_16 16
 local lab17: label ethnicity_16 17
-
-
-
 
 /* counts */
  
@@ -225,4 +239,5 @@ outsheet using "$Tabfigdir/FP_multivariable_eth16.txt", replace
 log close
 
 insheet using $Tabfigdir/table2_eth16.txt, clear
+insheet using $Tabfigdir/estout_table2_eth16.txt, clear
 

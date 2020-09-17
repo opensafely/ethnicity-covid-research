@@ -52,7 +52,7 @@ safetab ethnicity_16 positivetest, missing row
 logistic positivetest i.ethnicity_16 i.stp, nolog 
 estimates save "$Tempdir/crude_positivetest_eth16", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/crude_positivetest_eth16", replace) idstr("crude_positivetest_eth16") 
-
+eststo model1
 
 
 /* Multivariable models */ 
@@ -60,12 +60,13 @@ parmest, label eform format(estimate p lb ub) saving("$Tempdir/crude_positivetes
 logistic positivetest i.ethnicity_16 i.male age1 age2 age3 i.stp, nolog 
 estimates save "$Tempdir/model0_positivetest_eth16", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model0_positivetest_eth16", replace) idstr("model0_positivetest_eth16") 
+eststo model2
 
 * Age, Gender, IMD
 logistic positivetest i.ethnicity_16 i.male age1 age2 age3 i.imd i.stp , nolog 
 estimates save "$Tempdir/model1_positivetest_eth16", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model1_positivetest_eth16", replace) idstr("model1_positivetest_eth16") 
-
+eststo model3
 
 * Age, Gender, IMD and Comorbidities  
 cap logistic positivetest i.ethnicity_16 i.male age1 age2 age3 	i.imd						///
@@ -87,13 +88,12 @@ cap logistic positivetest i.ethnicity_16 i.male age1 age2 age3 	i.imd						///
 										i.immunosuppressed	 		///
 										i.ra_sle_psoriasis	i. stp, nolog 		
 										
-estimates save "$Tempdir/model2_positivetest_eth16", replace 
+cap estimates save "$Tempdir/model2_positivetest_eth16", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model2_positivetest_eth16", replace) idstr("model2_positivetest_eth16") 
-
-* Age, Gender, IMD and Comorbidities and household size
+eststo model4
 
 * Age, Gender, IMD and Comorbidities  and household size and carehome
-logistic positivetest i.ethnicity_16 i.male age1 age2 age3 	i.imd						///
+cap logistic positivetest i.ethnicity_16 i.male age1 age2 age3 	i.imd						///
 										bmi	hba1c_pct				///
 										gp_consult_count			///
 										i.smoke_nomiss				///
@@ -111,10 +111,21 @@ logistic positivetest i.ethnicity_16 i.male age1 age2 age3 	i.imd						///
 										i.esrf						///
 										i.immunosuppressed	 		///
 										i.ra_sle_psoriasis			///
-										i.hh_total_cat i.carehome i.stp, nolog 		
+										i.hh_total_cat i.stp, nolog 		
 										
-estimates save "$Tempdir/model3_positivetest_eth16", replace 
+cap estimates save "$Tempdir/model3_positivetest_eth16", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model3_positivetest_eth16", replace) idstr("model3_positivetest_eth16") 
+eststo model5
+
+/* Estout================================================================*/ 
+esttab model1 model2 model3 model4 model5  using "$Tabfigdir/estout_table4_testedpop_eth16.txt", b(a2) ci(2) label wide compress eform ///
+	title ("`i'") ///
+	varlabels(`e(labels)') ///
+	stats(N_sub) ///
+	append 
+eststo clear
+
+
 
 /* Print table================================================================*/ 
 *  Print the results for the main model 
@@ -203,6 +214,7 @@ outsheet using "$Tabfigdir/FP_testedpop_eth16.txt", replace
 * Close log file 
 log close
 insheet using "$Tabfigdir/table4_testedpop_eth16.txt", clear
+insheet using "$Tabfigdir/estout_table4_testedpop_eth16.txt", clear
 
 
 

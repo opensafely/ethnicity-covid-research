@@ -106,7 +106,7 @@ logistic ventilated i.ethnicity_16 i.male age1 age2 age3 	i.imd						///
 										i.esrf						///
 										i.immunosuppressed	 		///
 										i.ra_sle_psoriasis			///
-										i.hh_total_cat i.carehome i.stp, nolog		
+										i.hh_total_cat i.stp, nolog		
 										
 estimates save "$Tempdir/model3_ventilated_eth16", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model3_ventilated_eth16", replace) idstr("model3_ventilated_eth16") 

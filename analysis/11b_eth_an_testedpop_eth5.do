@@ -52,18 +52,20 @@ safetab eth5 positivetest, missing row
 logistic positivetest i.eth5 i.stp, nolog
 estimates save "$Tempdir/crude_positivetest_eth5", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/crude_positivetest_eth5", replace) idstr("crude_positivetest_eth5") 
+eststo model1
 
 /* Multivariable models */ 
 *Age Gender
 logistic positivetest i.eth5 i.male age1 age2 age3 i.stp, nolog
 estimates save "$Tempdir/model0_positivetest_eth5", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model0_positivetest_eth5", replace) idstr("model0_positivetest_eth5") 
+eststo model2
 
 * Age, Gender, IMD
 logistic positivetest i.eth5 i.male age1 age2 age3 i.imd i.stp, nolog
 estimates save "$Tempdir/model1_positivetest_eth5", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model1_positivetest_eth5", replace) idstr("model1_positivetest_eth5") 
-
+eststo model3
 
 * Age, Gender, IMD and Comorbidities  
 cap logistic positivetest i.eth5 i.male age1 age2 age3 	i.imd						///
@@ -83,10 +85,11 @@ cap logistic positivetest i.eth5 i.male age1 age2 age3 	i.imd						///
 										i.egfr60					///
 										i.esrf						///
 										i.immunosuppressed	 		///
-										i.ra_sle_psoriasis || stp:, nolog		
+										i.ra_sle_psoriasis i.stp, nolog		
 										
-estimates save "$Tempdir/model2_positivetest_eth5", replace 
-parmest, label eform format(estimate p lb ub) saving("$Tempdir/model2_positivetest_eth5", replace) idstr("model2_positivetest_eth5") 
+cap estimates save "$Tempdir/model2_positivetest_eth5", replace 
+ parmest, label eform format(estimate p lb ub) saving("$Tempdir/model2_positivetest_eth5", replace) idstr("model2_positivetest_eth5") 
+eststo model4
 
 * Age, Gender, IMD and Comorbidities  and household size and carehome
 cap logistic positivetest i.eth5 i.male age1 age2 age3 	i.imd						///
@@ -107,10 +110,21 @@ cap logistic positivetest i.eth5 i.male age1 age2 age3 	i.imd						///
 										i.esrf						///
 										i.immunosuppressed	 		///
 										i.ra_sle_psoriasis			///
-										i.hh_total_cat i.carehome || stp:, nolog		
+										i.hh_total_cat i.stp, nolog		
 										
-estimates save "$Tempdir/model3_positivetest_eth5", replace 
+cap estimates save "$Tempdir/model3_positivetest_eth5", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model3_positivetest_eth5", replace) idstr("model3_positivetest_eth5") 
+eststo model5
+
+/* Estout================================================================*/ 
+esttab model1 model2 model3 model4 model5  using "$Tabfigdir/estout_table4_testedpop_eth5.txt", b(a2) ci(2) label wide compress eform ///
+	title ("`i'") ///
+	varlabels(`e(labels)') ///
+	stats(N_sub) ///
+	append 
+eststo clear
+
+
 
 /* Print table================================================================*/ 
 *  Print the results for the main model 
@@ -125,6 +139,7 @@ local lab2: label eth5 2
 local lab3: label eth5 3
 local lab4: label eth5 4
 local lab5: label eth5 5
+local lab6: label eth5 6
 
 /* Counts */
  
@@ -139,7 +154,7 @@ local lab5: label eth5 5
 	file write tablecontent ("1.00") _tab _tab ("1.00") _tab _tab ("1.00")  _tab _tab ("1.00") _tab _tab ("1.00") _n
 	
 * Subsequent ethnic groups
-forvalues eth=2/5 {
+forvalues eth=2/6 {
 	qui safecount if eth5==`eth'
 	local denominator = r(N)
 	qui safecount if eth5 == `eth' & positivetest == 1
@@ -191,7 +206,7 @@ log close
 
 
 insheet using "$Tabfigdir/table4_testedpop_eth5.txt", clear
-
+insheet using "$Tabfigdir/estout_table4_testedpop_eth5.txt", clear
 
 
 
