@@ -735,6 +735,7 @@ safetab diabcat, m
 /*  Asthma  */
 * Asthma  (coded: 0 No, 1 Yes no OCS, 2 Yes with OCS)
 safetab asthma
+replace asthma=0 if asthma==.
 replace asthma=1 if asthma==2
 safetab asthma
 
