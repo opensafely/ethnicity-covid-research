@@ -65,4 +65,3 @@ outsheet using "$Tabfigdir/FP_mi_eth5.txt", replace
 log close
 
 insheet using "$Tabfigdir/FP_mi_eth5.txt", clear
-insheet using "$Tabfigdir\estout_mi_eth5.txt", clear
