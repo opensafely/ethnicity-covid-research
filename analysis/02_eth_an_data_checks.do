@@ -30,17 +30,6 @@ use "$Tempdir/analysis_dataset.dta", clear
 datacheck _n==1, by(patient_id) nol
 
 
-/* CHECK A&E AND CPNS DEATH =====================================*/ 
-tab ae cpnsdeath
-tab ae onsdeath
-tab ae onscoviddeath
-tab ae ons_noncoviddeath
-tab ae icu
-tab ae any_resp_support_flag
-tab ae basic_resp_support_flag
-tab ae advanced_resp_support_flag
-tab ae tested
-tab ae positivetest
 
 
 

@@ -26,10 +26,10 @@ use "$Tempdir/analysis_dataset_STSET_`i'_eth5_mi.dta", clear
 
 * Age, Gender, IMD and Comorbidities  and household size and carehome
 mi estimate, dots eform: stcox i.eth5 i.male age1 age2 age3 	i.imd						///
-										bmi	hba1c_pct				///
+										bmicat_sa	hba1ccat			///
 										gp_consult_count			///
 										i.smoke_nomiss				///
-										i.hypertension bp_map		 	///	
+										i.hypertension bp_cat	 	///	
 										i.asthma					///
 										i.chronic_respiratory_disease ///
 										i.chronic_cardiac_disease	///
@@ -65,4 +65,3 @@ outsheet using "$Tabfigdir/FP_mi_eth5.txt", replace
 log close
 
 insheet using "$Tabfigdir/FP_mi_eth5.txt", clear
-insheet using "$Tabfigdir\estout_mi_eth5.txt", clear
