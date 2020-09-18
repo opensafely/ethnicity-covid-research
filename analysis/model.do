@@ -87,10 +87,10 @@ do "$Dodir/03a_eth_outcomes_checks_eth16.do"
 do "$Dodir/03b_eth_outcomes_checks_eth5.do"
 
 
-/*Table 5: Characteristics of people with and without key outcomes
+*Table 5: Characteristics of people with and without key outcomes
 do "$Dodir/16_eth_an_outcome_characteristics.do"
 do "$Dodir/19_eth_an_prison_characteristics.do"
-
+*/
 /**********************
 MULTIPLE IMPUTATION
 **********************/
