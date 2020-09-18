@@ -241,20 +241,14 @@ file write tablecontent _tab ("Total")				  			  _tab ///
 format hba1c_pct bmi egfr %9.2f
 
 
-gen byte cons=1
-qui tabulatevariable, variable(cons) min(1) max(1) 
+gen byte Denominator=1
+qui tabulatevariable, variable(Denominator) min(1) max(1) 
 file write tablecontent _n 
 
 qui summarizevariable, variable(age) 
 file write tablecontent _n
 
-qui tabulatevariable, variable(agegroup) min(1) max(7) 
-file write tablecontent _n 
-
 qui tabulatevariable, variable(male) min(0) max(1) 
-file write tablecontent _n 
-
-qui summarizevariable, variable(gp_consult_count) 
 file write tablecontent _n 
 
 qui tabulatevariable, variable(imd) min(1) max(5) 
@@ -266,10 +260,7 @@ file write tablecontent _n
 qui tabulatevariable, variable(hh_total_cat) min(1) max(9) missing
 file write tablecontent _n 
 
-qui tabulatevariable, variable(carehome) min(0) max(1) missing
-file write tablecontent _n 
-
-qui tabulatevariable, variable(is_prison) min(0) max(1) missing
+qui summarizevariable, variable(gp_consult_count) 
 file write tablecontent _n 
 
 qui tabulatevariable, variable(smoke_nomiss) min(1) max(3)  
@@ -278,7 +269,7 @@ file write tablecontent _n
 qui summarizevariable, variable(bmi)
 file write tablecontent _n
 
-qui tabulatevariable, variable(obese4cat_sa) min(1) max(4) 
+qui tabulatevariable, variable(bmicat_sa) min(1) max(7) 
 file write tablecontent _n 
 
 qui summarizevariable, variable(hba1c_pct)
@@ -287,10 +278,7 @@ file write tablecontent _n
 qui summarizevariable, variable(hba1c_mmol_per_mol)
 file write tablecontent _n
 
-qui tabulatevariable, variable(dm_type) min(0) max(3)  
-file write tablecontent _n 
-
-qui tabulatevariable, variable(dm_type_exeter_os) min(0) max(2)  
+qui tabulatevariable, variable(hba1ccat) min(0) max(5)  
 file write tablecontent _n 
 
 qui summarizevariable, variable(bp_sys) 
@@ -299,12 +287,13 @@ file write tablecontent _n
 qui summarizevariable, variable(bp_dias) 
 file write tablecontent _n
 
-qui summarizevariable, variable(bp_map) 
-file write tablecontent _n
+qui tabulatevariable, variable(bpcat) min(1) max(5)  
+file write tablecontent _n 
 
-file write tablecontent _n _n
+qui tabulatevariable, variable(dm_type) min(0) max(3)  
+file write tablecontent _n 
 
-** COMORBIDITIES (binary)
+* COMORBIDITIES (binary)
 qui summarizevariable, variable(comorbidity_count)
 file write tablecontent _n
 
@@ -328,7 +317,7 @@ foreach comorb of varlist 		///
 	file write tablecontent ("`lab'") _tab
 								
 	generaterow2, variable(`comorb') condition("==1")
-	file write tablecontent _n
+	file write tablecontent _n _n
 }
 
 ** OTHER TREATMENT VARIABLES (binary)
@@ -346,7 +335,11 @@ generaterow2, variable(`treat') condition("==1")
 file write tablecontent _n
 }
 
+qui tabulatevariable, variable(is_prison) min(0) max(1) missing
+file write tablecontent _n 
 
+qui tabulatevariable, variable(dm_type_exeter_os) min(0) max(2)  
+file write tablecontent _n 
 
 file close tablecontent
 
