@@ -287,7 +287,7 @@ file write tablecontent _n
 qui summarizevariable, variable(bp_dias) 
 file write tablecontent _n
 
-qui tabulatevariable, variable(bpcat) min(1) max(5)  
+qui tabulatevariable, variable(bp_cat) min(1) max(5)  
 file write tablecontent _n 
 
 qui tabulatevariable, variable(dm_type) min(0) max(3)  
