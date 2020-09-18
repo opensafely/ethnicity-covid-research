@@ -305,17 +305,13 @@ safetab  carehometype carehome, m
 codebook  hh_size, d
 
 *gen categories of household size.
-*hh size zero is people with invalid addresses
-replace hh_size=. if hh_size>10 & carehome==0
-
-*replace ridiculous hh_size as missing unless carehome
 gen hh_total_cat=.
 replace hh_total_cat=1 if hh_size >=1 & hh_size<=2
 replace hh_total_cat=2 if hh_size >=3 & hh_size<=5
 replace hh_total_cat=3 if hh_size >=6 & hh_size<=10
 replace hh_total_cat=4 if hh_size>10 & hh_size!=.
-replace hh_total_cat=5 if carehome==1  
 replace hh_total_cat=9 if hh_size==0  //unknown
+replace hh_total_cat=5 if carehome==1  
 
 
 *who are people with missing household size
@@ -517,6 +513,7 @@ replace bmicat_sa = 3 if bmi>=23 & bmi < 27.5 & eth5==2
 replace bmicat_sa = 4 if bmi>=27.5 & bmi < 32.5 & eth5==2
 replace bmicat_sa = 5 if bmi>=32.5 & bmi < 37.5 & eth5==2
 replace bmicat_sa = 6 if bmi>=37.5 & bmi < . & eth5==2
+replace bmicat_sa = 7 if bmi==.
 
 safetab bmicat_sa
 
@@ -526,8 +523,8 @@ label define bmicat_sa 1 "Underweight (<18.5)" 	///
 					4 "Obese I (30-34.9 / 27.4-32.4)"		///
 					5 "Obese II (35-39.9 / 32.5- 37.4)"		///
 					6 "Obese III (40+ / 37.5+)"			///
-					.u "Unknown (.u)"
-label values bmicat bmicat
+					7 "Unknown"
+label values bmicat_sa bmicat_sa
 
 * Create more granular categorisation
 recode bmicat_sa 1/3 .u = 1 4=2 5=3 6=4, gen(obese4cat_sa)
@@ -587,18 +584,25 @@ safetab immunosuppressed
 
 /*  Blood pressure   */
 
+/*set implausible BP values to missing
+https://onlinelibrary.wiley.com/doi/full/10.1111/jch.12743
+SBP (DBP) values outside of the range of 50–300 (30–250) mm Hg were considered implausible and threrefore excluded. */
+
+replace bp_sys=. if bp_sys<50 | bp_sys>300
+replace bp_dias=. if bp_dias<30 | bp_dias>250
+
 * Categorise
 gen     bpcat = 1 if bp_sys < 120 &  bp_dias < 80
 replace bpcat = 2 if inrange(bp_sys, 120, 130) & bp_dias<80
 replace bpcat = 3 if inrange(bp_sys, 130, 140) | inrange(bp_dias, 80, 90)
 replace bpcat = 4 if (bp_sys>=140 & bp_sys<.) | (bp_dias>=90 & bp_dias<.) 
-replace bpcat = .u if bp_sys>=. | bp_dias>=. | bp_sys==0 | bp_dias==0
+replace bpcat = 5 if bp_sys>=. | bp_dias>=. | bp_sys==0 | bp_dias==0
 
 label define bpcat 1 "Normal" 2 "Elevated" 3 "High, stage I"	///
-					4 "High, stage II" .u "Unknown"
+					4 "High, stage II" 5 "Unknown"
 label values bpcat bpcat
 
-recode bpcat .u=1, gen(bpcat_nomiss)
+recode bpcat 5=1, gen(bpcat_nomiss)
 label values bpcat_nomiss bpcat
 
 * Create non-missing indicator of known high blood pressure
@@ -610,15 +614,11 @@ gen htdiag_or_highbp = bphigh
 recode htdiag_or_highbp 0 = 1 if hypertension==1 
 
 
-/*set implausible BP values to missing
-https://onlinelibrary.wiley.com/doi/full/10.1111/jch.12743
-SBP (DBP) values outside of the range of 50–300 (30–250) mm Hg were considered implausible and threrefore excluded. */
-
-replace bp_sys=. if bp_sys<50 | bp_sys>300
-replace bp_dias=. if bp_dias<30 | bp_dias>250
 
 *Mean arterial pressure MAP = (SBP+(DBP*2))/3
 gen bp_map=(bp_sys + (bp_dias*2))/3
+
+ren bpcat bp_cat
 ************
 *   eGFR   *
 ************
@@ -704,7 +704,8 @@ replace hba1ccat = 1 if hba1c_pct >= 6.5  & hba1c_pct < 7.5
 replace hba1ccat = 2 if hba1c_pct >= 7.5  & hba1c_pct < 8
 replace hba1ccat = 3 if hba1c_pct >= 8    & hba1c_pct < 9
 replace hba1ccat = 4 if hba1c_pct >= 9    & hba1c_pct !=.
-label define hba1ccat 0 "<6.5%" 1">=6.5-7.4" 2">=7.5-7.9" 3">=8-8.9" 4">=9"
+replace hba1ccat = 5 if hba1c_pct==.
+label define hba1ccat 0 "<6.5%" 1">=6.5-7.4" 2">=7.5-7.9" 3">=8-8.9" 4">=9" 5"Unknown"
 label values hba1ccat hba1ccat
 safetab hba1ccat
 
@@ -734,6 +735,7 @@ safetab diabcat, m
 /*  Asthma  */
 * Asthma  (coded: 0 No, 1 Yes no OCS, 2 Yes with OCS)
 safetab asthma
+replace asthma=0 if asthma==.
 replace asthma=1 if asthma==2
 safetab asthma
 
@@ -871,7 +873,7 @@ lab var egfr							"eGFR"
 lab var egfr_cat						"CKD category defined by eGFR"
 lab var egfr60							"CKD defined by egfr<60"
 lab var  bphigh 						"non-missing indicator of known high blood pressure"
-lab var bpcat 							"Blood pressure four levels non-missing"
+lab var bp_cat 							"Blood pressure four levels non-missing"
 lab var htdiag_or_highbp 				"High blood pressure or hypertension diagnosis"
 lab var bp_sys							"Systolic BP"
 lab var bp_dias							"Diastolic BP"

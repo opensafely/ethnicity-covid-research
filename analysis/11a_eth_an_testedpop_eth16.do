@@ -70,10 +70,10 @@ eststo model3
 
 * Age, Gender, IMD and Comorbidities  
 cap logistic positivetest i.ethnicity_16 i.male age1 age2 age3 	i.imd						///
-										bmi	hba1c_pct				///
+										bmicat_sa	hba1ccat			///
 										gp_consult_count			///
 										i.smoke_nomiss				///
-										i.hypertension bp_map		 	///	
+										i.hypertension bp_cat	 	///	
 										i.asthma					///
 										i.chronic_respiratory_disease ///
 										i.chronic_cardiac_disease	///
@@ -94,10 +94,10 @@ eststo model4
 
 * Age, Gender, IMD and Comorbidities  and household size and carehome
 cap logistic positivetest i.ethnicity_16 i.male age1 age2 age3 	i.imd						///
-										bmi	hba1c_pct				///
+										bmicat_sa	hba1ccat			///
 										gp_consult_count			///
 										i.smoke_nomiss				///
-										i.hypertension bp_map		 	///	
+										i.hypertension bp_cat	 	///	
 										i.asthma					///
 										i.chronic_respiratory_disease ///
 										i.chronic_cardiac_disease	///
