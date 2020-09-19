@@ -52,6 +52,29 @@ label values male male
 safetab male
 safecount
 
+/*  IMD  */
+* Group into 5 groups
+rename imd imd_o
+egen imd = cut(imd_o), group(5) icodes
+
+* add one to create groups 1 - 5 
+replace imd = imd + 1
+
+* - 1 is missing, should be excluded from population 
+replace imd = .u if imd_o == -1
+drop imd_o
+
+* Reverse the order (so high is more deprived)
+recode imd 5 = 1 4 = 2 3 = 3 2 = 4 1 = 5 .u = .u
+
+label define imd 1 "1 least deprived" 2 "2" 3 "3" 4 "4" 5 "5 most deprived" .u "Unknown"
+label values imd imd 
+safetab imd, m
+
+drop if imd==.u
+safecount
+
+
 * Create restricted cubic splines for age
 mkspline age = age, cubic nknots(4)
 
@@ -244,24 +267,7 @@ bysort stp_old: gen stp = 1 if _n==1
 replace stp = sum(stp)
 drop stp_old
 
-/*  IMD  */
-* Group into 5 groups
-rename imd imd_o
-egen imd = cut(imd_o), group(5) icodes
 
-* add one to create groups 1 - 5 
-replace imd = imd + 1
-
-* - 1 is missing, should be excluded from population 
-replace imd = .u if imd_o == -1
-drop imd_o
-
-* Reverse the order (so high is more deprived)
-recode imd 5 = 1 4 = 2 3 = 3 2 = 4 1 = 5 .u = .u
-
-label define imd 1 "1 least deprived" 2 "2" 3 "3" 4 "4" 5 "5 most deprived" .u "Unknown"
-label values imd imd 
-safetab imd, m
 
 
 /*  Age variables  */ 
