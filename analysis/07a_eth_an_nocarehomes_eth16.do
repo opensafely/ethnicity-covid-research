@@ -81,10 +81,10 @@ else di "WARNING MODEL1 DID NOT FIT (OUTCOME `i')"
 
 * Age, Gender, IMD and Comorbidities 
 stcox i.eth16 i.male age1 age2 age3 	i.imd						///
-										bmi	hba1c_pct				///
+										i.bmicat_sa	i.hba1ccat			///
 										gp_consult_count			///
 										i.smoke_nomiss				///
-										i.hypertension bp_map		 	///	
+										i.hypertension i.bp_cat	 	///	
 										i.asthma					///
 										i.chronic_respiratory_disease ///
 										i.chronic_cardiac_disease	///
@@ -110,10 +110,10 @@ else di "WARNING MODEL2 DID NOT FIT (OUTCOME `i')"
 										
 * Age, Gender, IMD and Comorbidities  and household size and carehome
 stcox i.eth16 i.male age1 age2 age3 	i.imd						///
-										bmi	hba1c_pct				///
+										i.bmicat_sa	i.hba1ccat			///
 										gp_consult_count			///
 										i.smoke_nomiss				///
-										i.hypertension bp_map		 	///	
+										i.hypertension i.bp_cat	 	///	
 										i.asthma					///
 										i.chronic_respiratory_disease ///
 										i.chronic_cardiac_disease	///
