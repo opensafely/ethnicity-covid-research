@@ -45,6 +45,9 @@ Data cleaning
 *Create analysis dataset
 do "$Dodir/01_eth_cr_analysis_dataset.do"
 
+*Table 0: Numbers of outcomes in study population
+do "$Dodir/03a_eth_outcomes_checks_eth16.do"
+do "$Dodir/03b_eth_outcomes_checks_eth5.do"
 
 /**********************
 ETH 5
@@ -84,19 +87,12 @@ do "$Dodir/08a_eth_cr_imputed_eth16.do"
 do "$Dodir/08d_eth_an_multivariable_eth16_mi.do" 
 
 *Checks 
-
-*Table 0: Numbers of outcomes in study population
-do "$Dodir/03a_eth_outcomes_checks_eth16.do"
-do "$Dodir/03b_eth_outcomes_checks_eth5.do"
 do "$Dodir/02_eth_an_data_checks.do"
+
 
 /**********************
 SENSITIVITY  ANALYSIS
 **********************
-
-*Table 2 sens analysis excluding large households
-do "$Dodir/18a_eth_an_sens_exclude_large_hh_eth16.do"
-do "$Dodir/18b_eth_an_sens_exclude_large_hh_eth5.do"
 
 
 *Table 5: Characteristics of people with and without key outcomes
