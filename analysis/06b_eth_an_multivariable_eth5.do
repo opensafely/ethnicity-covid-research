@@ -151,7 +151,7 @@ local lab2: label eth5 2
 local lab3: label eth5 3
 local lab4: label eth5 4
 local lab5: label eth5 5
-local lab5: label eth5 6
+local lab6: label eth5 6
 
 /* counts */
  
