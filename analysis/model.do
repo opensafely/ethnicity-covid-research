@@ -90,13 +90,8 @@ do "$Dodir/08d_eth_an_multivariable_eth16_mi.do"
 do "$Dodir/02_eth_an_data_checks.do"
 
 
-/**********************
-SENSITIVITY  ANALYSIS
-**********************
-
-
 *Table 5: Characteristics of people with and without key outcomes
 do "$Dodir/16_eth_an_outcome_characteristics.do"
 do "$Dodir/19_eth_an_prison_characteristics.do"
-*/
+
 
