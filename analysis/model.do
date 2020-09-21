@@ -83,8 +83,8 @@ MULTIPLE IMPUTATION
 do "$Dodir/08b_eth_cr_imputed_eth5.do"
 do "$Dodir/08c_eth_an_multivariable_eth5_mi.do" 
 
-do "$Dodir/08a_eth_cr_imputed_eth16.do"
-do "$Dodir/08d_eth_an_multivariable_eth16_mi.do" 
+*do "$Dodir/08a_eth_cr_imputed_eth16.do"
+*do "$Dodir/08d_eth_an_multivariable_eth16_mi.do" 
 
 *Checks 
 do "$Dodir/02_eth_an_data_checks.do"
@@ -92,6 +92,5 @@ do "$Dodir/02_eth_an_data_checks.do"
 
 *Table 5: Characteristics of people with and without key outcomes
 do "$Dodir/16_eth_an_outcome_characteristics.do"
-do "$Dodir/19_eth_an_prison_characteristics.do"
 
 
