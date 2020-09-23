@@ -1,17 +1,13 @@
-# OpenSAFELY Research Template
+# Ethnicity and COVID-19
 
-This is a template repository for making new OpenSAFELY resarch projects.  Eventually it'll become a framework. To get started, create a new repo using this repo as a template, delete this front matter, and edit the text that follows.
+# This is a work in progress
 
-# _title goes here_
-
-This is the code and configuration for our paper, _name goes here_
-
-* The paper is [here]()
-* Raw model outputs, including charts, crosstabs, etc, are in `released_analysis_results/`
-* If you are interested in how we defined our covarates, take a look at the [study definition](analysis/study_definition.py); this is written in `python`, but non-programmers should be able to understand what is going on there
+* The paper will be [here](https://www.medrxiv.org/content/10.1101/2020.09.22.20198754v1) when available
+* Raw model outputs, including charts, crosstabs, etc, are in `released_outputs/`
+* If you are interested in how we defined our covariates, take a look at the [study definition](analysis/study_definition.py); this is written in `python`, but non-programmers should be able to understand what is going on there
 * If you are interested in how we defined our code lists, look in the [codelists folder](./codelists/).
 * Developers and epidemiologists interested in the code should review
-[DEVELOPERS.md](./DEVELOPERS.md).
+[DEVELOPERS.md](docs/DEVELOPERS.md).
 
 # About the OpenSAFELY framework
 
