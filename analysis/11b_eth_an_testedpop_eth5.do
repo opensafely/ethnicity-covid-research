@@ -141,7 +141,7 @@ cap logistic positivetest i.eth5  i.male age1 age2 age3 	i.imd						///
 cap estimates save "$Tempdir/model4_`i'_eth5", replace
 eststo model6
 
-parmest, label eform format(estimate p lb ub) saving("$Tempdir/model4_`i'_eth5", replace) idstr("model4_`i'_eth5") 
+cap parmest, label eform format(estimate p lb ub) saving("$Tempdir/model4_`i'_eth5", replace) idstr("model4_`i'_eth5") 
 local hr "`hr' "$Tempdir/model4_`i'_eth5" "
 
 * Age, Gender, IMD and Comorbidities carehomes only
@@ -167,7 +167,7 @@ cap logistic positivetest i.eth5 i.male age1 age2 age3 	i.imd						///
 cap estimates save "$Tempdir/model5_`i'_eth5", replace
 cap eststo model7
 
-parmest, label eform format(estimate p lb ub) saving("$Tempdir/model5_`i'_eth5", replace) idstr("model5_`i'_eth5") 
+cap parmest, label eform format(estimate p lb ub) saving("$Tempdir/model5_`i'_eth5", replace) idstr("model5_`i'_eth5") 
 local hr "`hr' "$Tempdir/model5_`i'_eth5" "
 
 
