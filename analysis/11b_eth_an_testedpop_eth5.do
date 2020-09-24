@@ -138,7 +138,7 @@ cap logistic positivetest i.eth5  i.male age1 age2 age3 	i.imd						///
 										i.immunosuppressed	 		///
 										i.ra_sle_psoriasis			///
 										i.hh_total_cat i.stp if carehome==0,  nolog		
-estimates save "$Tempdir/model4_`i'_eth5", replace
+cap estimates save "$Tempdir/model4_`i'_eth5", replace
 eststo model6
 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model4_`i'_eth5", replace) idstr("model4_`i'_eth5") 
@@ -164,7 +164,7 @@ cap logistic positivetest i.eth5 i.male age1 age2 age3 	i.imd						///
 										i.immunosuppressed	 		///
 										i.ra_sle_psoriasis	i.stp		///
 										if carehome==1, nolog		
-estimates save "$Tempdir/model5_`i'_eth5", replace
+cap estimates save "$Tempdir/model5_`i'_eth5", replace
 eststo model7
 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model5_`i'_eth5", replace) idstr("model5_`i'_eth5") 
