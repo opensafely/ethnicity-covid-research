@@ -173,7 +173,7 @@ local hr "`hr' "$Tempdir/model5_`i'_eth5" "
 
 
 /* Estout================================================================*/ 
-esttab model1 model2 model3 model4 model5  model6 model7 using "$Tabfigdir/estout_table4_testedpop_eth5.txt", b(a2) ci(2) label wide compress eform ///
+esttab model1 model2 model3 model4 model5  model6  using "$Tabfigdir/estout_table4_testedpop_eth5.txt", b(a2) ci(2) label wide compress eform ///
 	title ("`i'") ///
 	varlabels(`e(labels)') ///
 	stats(N_sub) ///
