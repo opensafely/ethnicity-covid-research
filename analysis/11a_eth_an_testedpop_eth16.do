@@ -164,7 +164,7 @@ cap logistic positivetest i.ethnicity_16 i.male age1 age2 age3 	i.imd						///
 										i.immunosuppressed	 		///
 										i.ra_sle_psoriasis	i.stp		///
 										if carehome==1, nolog		
-estimates save "$Tempdir/model5_`i'_eth16", replace
+cap estimates save "$Tempdir/model5_`i'_eth16", replace
 cap eststo model7
 
 cap parmest, label eform format(estimate p lb ub) saving("$Tempdir/model5_`i'_eth16", replace) idstr("model5_`i'_eth16") 
