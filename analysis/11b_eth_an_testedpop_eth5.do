@@ -6,7 +6,7 @@ DATE: 					15 July 2020
 DESCRIPTION OF FILE:	Risk of test positive in people receiving a test 
 						univariable regression
 						multivariable regression 
-DATASETS USED:			data in memory ($tempdir/analysis_dataset_STSET_outcome)
+DATASETS USED:			data in memory ($tempdir/analysis_dataset)
 DATASETS CREATED: 		none
 OTHER OUTPUT: 			logfiles, printed to folder analysis/$logdir
 						table2, printed to analysis/$outdir
@@ -22,8 +22,9 @@ log using "$Logdir/11b_eth_an_testedpop_eth5", replace t
 cap file close tablecontent
 file open tablecontent using $Tabfigdir/table4_testedpop_eth5.txt, write text replace
 file write tablecontent ("Table 4: Odds of testing positive amongst those receiving a test - Complete Case Analysis") _n
-file write tablecontent _tab ("Denominator") _tab ("Event") _tab ("%") _tab ("Crude") _tab _tab ("Age/Sex Adjusted") _tab _tab ("Age/Sex/IMD Adjusted") _tab _tab 	("plus co-morbidities") _tab _tab 	("plus hh size/carehome")  _tab _tab  _n
-file write tablecontent _tab _tab _tab _tab   ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _n
+file write tablecontent _tab ("Denominator") _tab ("Event") _tab ("%") _tab ("Crude") _tab _tab ("Age/Sex Adjusted") _tab _tab ("Age/Sex/IMD Adjusted") _tab _tab 	("plus co-morbidities") _tab _tab 	("plus hh size/carehome") _tab _tab 	("no carehomes") _tab _tab 	("carehomes only")  _tab _tab  _n
+
+file write tablecontent _tab _tab _tab _tab   ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("95% CI") _tab ("95% CI") _n
 
 
 
@@ -49,20 +50,21 @@ safetab eth5 positivetest, missing row
 
 /* Univariable model */ 
 
-logistic positivetest i.eth5 i.stp, nolog
+logistic positivetest i.eth5 i.stp, nolog 
 estimates save "$Tempdir/crude_positivetest_eth5", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/crude_positivetest_eth5", replace) idstr("crude_positivetest_eth5") 
 eststo model1
 
+
 /* Multivariable models */ 
 *Age Gender
-logistic positivetest i.eth5 i.male age1 age2 age3 i.stp, nolog
+logistic positivetest i.eth5 i.male age1 age2 age3 i.stp, nolog 
 estimates save "$Tempdir/model0_positivetest_eth5", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model0_positivetest_eth5", replace) idstr("model0_positivetest_eth5") 
 eststo model2
 
 * Age, Gender, IMD
-logistic positivetest i.eth5 i.male age1 age2 age3 i.imd i.stp, nolog
+logistic positivetest i.eth5 i.male age1 age2 age3 i.imd i.stp , nolog 
 estimates save "$Tempdir/model1_positivetest_eth5", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model1_positivetest_eth5", replace) idstr("model1_positivetest_eth5") 
 eststo model3
@@ -74,7 +76,7 @@ cap logistic positivetest i.eth5 i.male age1 age2 age3 	i.imd						///
 										i.smoke_nomiss				///
 										i.hypertension i.bp_cat	 	///	
 										i.asthma					///
-										chronic_respiratory_disease ///
+										i.chronic_respiratory_disease ///
 										i.chronic_cardiac_disease	///
 										i.dm_type 					///	
 										i.cancer                    ///
@@ -85,10 +87,10 @@ cap logistic positivetest i.eth5 i.male age1 age2 age3 	i.imd						///
 										i.egfr60					///
 										i.esrf						///
 										i.immunosuppressed	 		///
-										i.ra_sle_psoriasis i.stp, nolog		
+										i.ra_sle_psoriasis	i. stp, nolog 		
 										
 cap estimates save "$Tempdir/model2_positivetest_eth5", replace 
- parmest, label eform format(estimate p lb ub) saving("$Tempdir/model2_positivetest_eth5", replace) idstr("model2_positivetest_eth5") 
+parmest, label eform format(estimate p lb ub) saving("$Tempdir/model2_positivetest_eth5", replace) idstr("model2_positivetest_eth5") 
 eststo model4
 
 * Age, Gender, IMD and Comorbidities  and household size and carehome
@@ -98,7 +100,7 @@ cap logistic positivetest i.eth5 i.male age1 age2 age3 	i.imd						///
 										i.smoke_nomiss				///
 										i.hypertension i.bp_cat	 	///	
 										i.asthma					///
-										chronic_respiratory_disease ///
+										i.chronic_respiratory_disease ///
 										i.chronic_cardiac_disease	///
 										i.dm_type 					///	
 										i.cancer                    ///
@@ -110,14 +112,68 @@ cap logistic positivetest i.eth5 i.male age1 age2 age3 	i.imd						///
 										i.esrf						///
 										i.immunosuppressed	 		///
 										i.ra_sle_psoriasis			///
-										i.hh_total_cat i.stp, nolog		
+										i.hh_total_cat i.stp, nolog 		
 										
 cap estimates save "$Tempdir/model3_positivetest_eth5", replace 
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model3_positivetest_eth5", replace) idstr("model3_positivetest_eth5") 
 eststo model5
 
+* Age, Gender, IMD and Comorbidities  and household size no carehome
+cap logistic positivetest i.eth5  i.male age1 age2 age3 	i.imd						///
+										i.bmicat_sa	i.hba1ccat			///
+										gp_consult_count			///
+										i.smoke_nomiss				///
+										i.hypertension i.bp_cat	 	///	
+										i.asthma					///
+										i.chronic_respiratory_disease ///
+										i.chronic_cardiac_disease	///
+										i.dm_type 					///	
+										i.cancer                    ///
+										i.chronic_liver_disease		///
+										i.stroke					///
+										i.dementia					///
+										i.other_neuro				///
+										i.egfr60					///
+										i.esrf						///
+										i.immunosuppressed	 		///
+										i.ra_sle_psoriasis			///
+										i.hh_total_cat i.stp if carehome==0,  nolog		
+estimates save "$Tempdir/model4_`i'_eth5", replace
+eststo model6
+
+parmest, label eform format(estimate p lb ub) saving("$Tempdir/model4_`i'_eth5", replace) idstr("model4_`i'_eth5") 
+local hr "`hr' "$Tempdir/model4_`i'_eth5" "
+
+* Age, Gender, IMD and Comorbidities carehomes only
+cap logistic positivetest i.eth5 i.male age1 age2 age3 	i.imd						///
+										i.bmicat_sa	i.hba1ccat			///
+										gp_consult_count			///
+										i.smoke_nomiss				///
+										i.hypertension i.bp_cat	 	///	
+										i.asthma					///
+										i.chronic_respiratory_disease ///
+										i.chronic_cardiac_disease	///
+										i.dm_type 					///	
+										i.cancer                    ///
+										i.chronic_liver_disease		///
+										i.stroke					///
+										i.dementia					///
+										i.other_neuro				///
+										i.egfr60					///
+										i.esrf						///
+										i.immunosuppressed	 		///
+										i.ra_sle_psoriasis	i.stp		///
+										if carehome==1, nolog		
+estimates save "$Tempdir/model5_`i'_eth5", replace
+eststo model7
+
+parmest, label eform format(estimate p lb ub) saving("$Tempdir/model5_`i'_eth5", replace) idstr("model5_`i'_eth5") 
+local hr "`hr' "$Tempdir/model5_`i'_eth5" "
+
+
+
 /* Estout================================================================*/ 
-esttab model1 model2 model3 model4 model5  using "$Tabfigdir/estout_table4_testedpop_eth5.txt", b(a2) ci(2) label wide compress eform ///
+esttab model1 model2 model3 model4 model5  model6 model7 using "$Tabfigdir/estout_table4_testedpop_eth5.txt", b(a2) ci(2) label wide compress eform ///
 	title ("`i'") ///
 	varlabels(`e(labels)') ///
 	stats(N_sub) ///
@@ -133,7 +189,8 @@ eststo clear
 * Column headings 
 file write tablecontent ("Positive Test") _n
 
-* Row headings 
+* eth5 labelled columns
+
 local lab1: label eth5 1
 local lab2: label eth5 2
 local lab3: label eth5 3
@@ -149,7 +206,6 @@ local lab6: label eth5 6
 	qui safecount if eth5 == 1 & positivetest == 1
 	local event = r(N)
 	local pct =(`event'/`denominator')
-	
 	file write tablecontent  ("`lab1'") _tab (`denominator') _tab (`event') _tab %3.2f (`pct') _tab
 	file write tablecontent ("1.00") _tab _tab ("1.00") _tab _tab ("1.00")  _tab _tab ("1.00") _tab _tab ("1.00") _n
 	
@@ -161,8 +217,8 @@ forvalues eth=2/6 {
 	local event = r(N)
 	local pct =(`event'/`denominator')
 	file write tablecontent  ("`lab`eth''") _tab (`denominator') _tab (`event') _tab %3.2f (`pct') _tab
-	estimates use "$Tempdir/crude_positivetest_eth5" 
-	lincom `eth'.eth5, eform
+	cap estimates use "$Tempdir/crude_positivetest_eth5" 
+	cap lincom `eth'.eth5, eform
 	file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (" - ") %4.2f (r(ub)) (")") _tab 
 	cap estimates clear
 	cap estimates use "$Tempdir/model0_positivetest_eth5" 
@@ -179,16 +235,24 @@ forvalues eth=2/6 {
 	cap estimates clear
 	cap estimates use "$Tempdir/model3_positivetest_eth5" 
 	cap lincom `eth'.eth5, eform
+	file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (" - ") %4.2f (r(ub)) (")") _tab
+	cap estimates clear
+	cap estimates use "$Tempdir/model4_positivetest_eth5" 
+	cap lincom `eth'.eth5, eform
+	file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (" - ") %4.2f (r(ub)) (")") _tab
+	cap estimates clear
+	cap estimates use "$Tempdir/model5_positivetest_eth5" 
+	cap lincom `eth'.eth5, eform
 	file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (" - ") %4.2f (r(ub)) (")") _n
+
 }  //end ethnic group
+
 
 file close tablecontent
 
-
-
 /* Foresplot================================================================*/ 
 
-dsconcat "$Tempdir/model0_positivetest_eth5"  "$Tempdir/model1_positivetest_eth5" "$Tempdir/model2_positivetest_eth5" "$Tempdir/model3_positivetest_eth5"
+dsconcat "$Tempdir/model0_positivetest_eth5"  "$Tempdir/model1_positivetest_eth5" "$Tempdir/model2_positivetest_eth5" "$Tempdir/model3_positivetest_eth5" "$Tempdir/model4_positivetest_eth5" "$Tempdir/model5_positivetest_eth5"
 duplicates drop
 
 split idstr, p(_)
@@ -196,17 +260,15 @@ drop idstr
 ren idstr1 model
 drop idstr2 idstr3 eq
 
-
 *save dataset for later
 outsheet using "$Tabfigdir/FP_testedpop_eth5.txt", replace
 
 
 * Close log file 
 log close
-
-
 insheet using "$Tabfigdir/table4_testedpop_eth5.txt", clear
 insheet using "$Tabfigdir/estout_table4_testedpop_eth5.txt", clear
+
 
 
 
