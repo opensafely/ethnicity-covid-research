@@ -93,12 +93,12 @@ cap logistic positivetest i.ethnicity_16 i.male age1 age2 age3 	i.imd						///
 										i.ra_sle_psoriasis	i. stp, nolog 		
 										
 cap estimates save "$Tempdir/model2_positivetest_eth16", replace 
-parmest, label eform format(estimate p lb ub) saving("$Tempdir/model2_positivetest_eth16", replace) idstr("model2_positivetest_eth16") 
-eststo model4
+cap parmest, label eform format(estimate p lb ub) saving("$Tempdir/model2_positivetest_eth16", replace) idstr("model2_positivetest_eth16") 
+cap eststo model4
 
 
 /* Estout================================================================*/ 
-esttab model1 model2 model3 model4    using "$Tabfigdir/estout_table4_testedpop_eth16_carehomesonly.txt", b(a2) ci(2) label wide compress eform ///
+cap esttab model1 model2 model3 model4   using "$Tabfigdir/estout_table4_testedpop_eth16_carehomesonly.txt", b(a2) ci(2) label wide compress eform ///
 	title ("`i'") ///
 	varlabels(`e(labels)') ///
 	stats(N_sub) ///
@@ -189,7 +189,7 @@ outsheet using "$Tabfigdir/FP_testedpop_eth16_carehomesonly.txt", replace
 * Close log file 
 log close
 insheet using "$Tabfigdir/table4_testedpop_eth16_carehomesonly.txt", clear
-insheet using "$Tabfigdir/estout_table4_testedpop_eth16_carehomesonly.txt", clear
+cap insheet using "$Tabfigdir/estout_table4_testedpop_eth16_carehomesonly.txt", clear
 
 
 

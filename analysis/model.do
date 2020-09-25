@@ -78,6 +78,8 @@ do "$Dodir/06a_eth_an_multivariable_eth16_carehomesonly.do"
 
 *Table 4: Odds of testing positive amongst those with SGSS testing data
 do "$Dodir/11a_eth_an_testedpop_eth16" 
+do "$Dodir/11a_eth_an_testedpop_eth16_nocarehomes" 
+do "$Dodir/11a_eth_an_testedpop_eth16_carehomesonly" 
 
 
 /**********************
