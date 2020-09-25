@@ -1,5 +1,5 @@
 /*==============================================================================
-DO FILE NAME:			11a_eth_an_testedpop_eth16
+DO FILE NAME:			11b_eth_an_testedpop_eth5
 PROJECT:				Ethnicity and COVID
 AUTHOR:					R Mathur (modified from A wong and A Schultze)
 DATE: 					15 July 2020					
@@ -17,14 +17,14 @@ OTHER OUTPUT: 			logfiles, printed to folder analysis/$logdir
 * Open a log file
 
 cap log close
-log using "$Logdir/11a_eth_an_testedpop_eth16", replace t
+log using "$Logdir/11b_eth_an_testedpop_eth5", replace t
 
 cap file close tablecontent
-file open tablecontent using $Tabfigdir/table4_testedpop_eth16_carehomesonly.txt, write text replace
-file write tablecontent ("Table 4: Odds of testing positive amongst those receiving a test -carehomes only") _n
+file open tablecontent using $Tabfigdir/table4_testedpop_eth5_carehomesonly.txt, write text replace
+file write tablecontent ("Table 4: Odds of testing positive amongst those receiving a test - carehomes only") _n
 file write tablecontent _tab ("Denominator") _tab ("Event") _tab ("%") _tab ("Crude") _tab _tab ("Age/Sex Adjusted") _tab _tab ("Age/Sex/IMD Adjusted") _tab _tab 	("plus co-morbidities")   _n
 
-file write tablecontent _tab _tab _tab _tab   ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab  _n
+file write tablecontent _tab _tab _tab _tab   ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _n
 
 
 
@@ -46,34 +46,34 @@ safecount
 /* Sense check outcomes=======================================================*/ 
 safetab positivetest
 
-safetab ethnicity_16 positivetest, missing row
+safetab eth5 positivetest, missing row
 
 
 /* Main Model=================================================================*/
 
 /* Univariable model */ 
 
-logistic positivetest i.ethnicity_16 i.stp, nolog 
-estimates save "$Tempdir/crude_positivetest_eth16", replace 
-parmest, label eform format(estimate p lb ub) saving("$Tempdir/crude_positivetest_eth16", replace) idstr("crude_positivetest_eth16") 
+logistic positivetest i.eth5 i.stp, nolog 
+estimates save "$Tempdir/crude_positivetest_eth5", replace 
+parmest, label eform format(estimate p lb ub) saving("$Tempdir/crude_positivetest_eth5", replace) idstr("crude_positivetest_eth5") 
 eststo model1
 
 
 /* Multivariable models */ 
 *Age Gender
-logistic positivetest i.ethnicity_16 i.male age1 age2 age3 i.stp, nolog 
-estimates save "$Tempdir/model0_positivetest_eth16", replace 
-parmest, label eform format(estimate p lb ub) saving("$Tempdir/model0_positivetest_eth16", replace) idstr("model0_positivetest_eth16") 
+logistic positivetest i.eth5 i.male age1 age2 age3 i.stp, nolog 
+estimates save "$Tempdir/model0_positivetest_eth5", replace 
+parmest, label eform format(estimate p lb ub) saving("$Tempdir/model0_positivetest_eth5", replace) idstr("model0_positivetest_eth5") 
 eststo model2
 
 * Age, Gender, IMD
-logistic positivetest i.ethnicity_16 i.male age1 age2 age3 i.imd i.stp , nolog 
-estimates save "$Tempdir/model1_positivetest_eth16", replace 
-parmest, label eform format(estimate p lb ub) saving("$Tempdir/model1_positivetest_eth16", replace) idstr("model1_positivetest_eth16") 
+logistic positivetest i.eth5 i.male age1 age2 age3 i.imd i.stp , nolog 
+estimates save "$Tempdir/model1_positivetest_eth5", replace 
+parmest, label eform format(estimate p lb ub) saving("$Tempdir/model1_positivetest_eth5", replace) idstr("model1_positivetest_eth5") 
 eststo model3
 
 * Age, Gender, IMD and Comorbidities  
-cap logistic positivetest i.ethnicity_16 i.male age1 age2 age3 	i.imd						///
+cap logistic positivetest i.eth5 i.male age1 age2 age3 	i.imd						///
 										i.bmicat_sa	i.hba1ccat			///
 										gp_consult_count			///
 										i.smoke_nomiss				///
@@ -92,13 +92,13 @@ cap logistic positivetest i.ethnicity_16 i.male age1 age2 age3 	i.imd						///
 										i.immunosuppressed	 		///
 										i.ra_sle_psoriasis	i. stp, nolog 		
 										
-cap estimates save "$Tempdir/model2_positivetest_eth16", replace 
-cap parmest, label eform format(estimate p lb ub) saving("$Tempdir/model2_positivetest_eth16", replace) idstr("model2_positivetest_eth16") 
+cap estimates save "$Tempdir/model2_positivetest_eth5", replace 
+cap parmest, label eform format(estimate p lb ub) saving("$Tempdir/model2_positivetest_eth5", replace) idstr("model2_positivetest_eth5") 
 cap eststo model4
 
 
 /* Estout================================================================*/ 
-cap esttab model1 model2 model3 model4   using "$Tabfigdir/estout_table4_testedpop_eth16_carehomesonly.txt", b(a2) ci(2) label wide compress eform ///
+cap esttab model1 model2 model3 model4   using "$Tabfigdir/estout_table4_testedpop_eth5_carehomesonly.txt", b(a2) ci(2) label wide compress eform ///
 	title ("`i'") ///
 	varlabels(`e(labels)') ///
 	stats(N_sub) ///
@@ -114,59 +114,48 @@ eststo clear
 * Column headings 
 file write tablecontent ("Positive Test") _n
 
-* eth16 labelled columns
+* eth5 labelled columns
 
-local lab1: label ethnicity_16 1
-local lab2: label ethnicity_16 2
-local lab3: label ethnicity_16 3
-local lab4: label ethnicity_16 4
-local lab5: label ethnicity_16 5
-local lab6: label ethnicity_16 6
-local lab7: label ethnicity_16 7
-local lab8: label ethnicity_16 8
-local lab9: label ethnicity_16 9
-local lab10: label ethnicity_16 10
-local lab11: label ethnicity_16 11
-local lab12: label ethnicity_16 12
-local lab13: label ethnicity_16 13
-local lab14: label ethnicity_16 14
-local lab15: label ethnicity_16 15
-local lab16: label ethnicity_16 16
-local lab17: label ethnicity_16 17
+local lab1: label eth5 1
+local lab2: label eth5 2
+local lab3: label eth5 3
+local lab4: label eth5 4
+local lab5: label eth5 5
+local lab6: label eth5 6
 
 /* Counts */
  
-* First row, eth16 = 1 (White) reference cat
-	qui safecount if ethnicity_16==1
+* First row, eth5 = 1 (White) reference cat
+	qui safecount if eth5==1
 	local denominator = r(N)
-	qui safecount if ethnicity_16 == 1 & positivetest == 1
+	qui safecount if eth5 == 1 & positivetest == 1
 	local event = r(N)
 	local pct =(`event'/`denominator')
 	file write tablecontent  ("`lab1'") _tab (`denominator') _tab (`event') _tab %3.2f (`pct') _tab
-	file write tablecontent ("1.00") _tab _tab ("1.00") _tab _tab ("1.00")  _tab _tab ("1.00")  _n
+	file write tablecontent ("1.00") _tab _tab ("1.00") _tab _tab ("1.00")  _tab _tab ("1.00") _tab _tab ("1.00") _n
 	
 * Subsequent ethnic groups
-forvalues eth=2/17 {
-	qui safecount if ethnicity_16==`eth'
+forvalues eth=2/6 {
+	qui safecount if eth5==`eth'
 	local denominator = r(N)
-	qui safecount if ethnicity_16 == `eth' & positivetest == 1
+	qui safecount if eth5 == `eth' & positivetest == 1
 	local event = r(N)
 	local pct =(`event'/`denominator')
 	file write tablecontent  ("`lab`eth''") _tab (`denominator') _tab (`event') _tab %3.2f (`pct') _tab
-	cap estimates use "$Tempdir/crude_positivetest_eth16" 
-	cap lincom `eth'.ethnicity_16, eform
+	cap estimates use "$Tempdir/crude_positivetest_eth5" 
+	cap lincom `eth'.eth5, eform
 	file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (" - ") %4.2f (r(ub)) (")") _tab 
 	cap estimates clear
-	cap estimates use "$Tempdir/model0_positivetest_eth16" 
-	cap lincom `eth'.ethnicity_16, eform
+	cap estimates use "$Tempdir/model0_positivetest_eth5" 
+	cap lincom `eth'.eth5, eform
 	file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (" - ") %4.2f (r(ub)) (")") _tab 
 	cap estimates clear
-	cap estimates use "$Tempdir/model1_positivetest_eth16" 
-	cap lincom `eth'.ethnicity_16, eform
+	cap estimates use "$Tempdir/model1_positivetest_eth5" 
+	cap lincom `eth'.eth5, eform
 	file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (" - ") %4.2f (r(ub)) (")") _tab 
 	cap estimates clear
-	cap estimates use "$Tempdir/model2_positivetest_eth16" 
-	cap lincom `eth'.ethnicity_16, eform
+	cap estimates use "$Tempdir/model2_positivetest_eth5" 
+	cap lincom `eth'.eth5, eform
 	file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (" - ") %4.2f (r(ub)) (")") _n
 }  //end ethnic group
 
@@ -175,7 +164,7 @@ file close tablecontent
 
 /* Foresplot================================================================*/ 
 
-dsconcat "$Tempdir/model0_positivetest_eth16"  "$Tempdir/model1_positivetest_eth16" "$Tempdir/model2_positivetest_eth16" 
+dsconcat "$Tempdir/model0_positivetest_eth5"  "$Tempdir/model1_positivetest_eth5" "$Tempdir/model2_positivetest_eth5" 
 
 split idstr, p(_)
 drop idstr
@@ -183,13 +172,13 @@ ren idstr1 model
 drop idstr2 idstr3 eq
 
 *save dataset for later
-outsheet using "$Tabfigdir/FP_testedpop_eth16_carehomesonly.txt", replace
+outsheet using "$Tabfigdir/FP_testedpop_eth5_carehomesonly.txt", replace
 
 
 * Close log file 
 log close
-insheet using "$Tabfigdir/table4_testedpop_eth16_carehomesonly.txt", clear
-cap insheet using "$Tabfigdir/estout_table4_testedpop_eth16_carehomesonly.txt", clear
+insheet using "$Tabfigdir/table4_testedpop_eth5_carehomesonly.txt", clear
+cap insheet using "$Tabfigdir/estout_table4_testedpop_eth5_carehomesonly.txt", clear
 
 
 
