@@ -202,16 +202,16 @@ safetab eth5, m
 * Ethnicity (16 category)
 replace ethnicity_16 = 17 if ethnicity_16==.
 label define ethnicity_16 									///
-						1 "British or Mixed British" 		///
+						1 "British" 		///
 						2 "Irish" 							///
 						3 "Other White" 					///
-						4 "White + Black Caribbean" 		///
-						5 "White + Black African"			///
+						4 "White + Caribbean" 		///
+						5 "White + African"			///
 						6 "White + Asian" 					///
  						7 "Other mixed" 					///
-						8 "Indian or British Indian" 		///
-						9 "Pakistani or British Pakistani" 	///
-						10 "Bangladeshi or British Bangladeshi" ///
+						8 "Indian" 		///
+						9 "Pakistani" 	///
+						10 "Bangladeshi" ///
 						11 "Other Asian" 					///
 						12 "Caribbean" 						///
 						13 "African" 						///
