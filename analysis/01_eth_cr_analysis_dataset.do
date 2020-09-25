@@ -52,6 +52,29 @@ label values male male
 safetab male
 safecount
 
+/*  IMD  */
+* Group into 5 groups
+rename imd imd_o
+egen imd = cut(imd_o), group(5) icodes
+
+* add one to create groups 1 - 5 
+replace imd = imd + 1
+
+* - 1 is missing, should be excluded from population 
+replace imd = .u if imd_o == -1
+drop imd_o
+
+* Reverse the order (so high is more deprived)
+recode imd 5 = 1 4 = 2 3 = 3 2 = 4 1 = 5 .u = .u
+
+label define imd 1 "1 least deprived" 2 "2" 3 "3" 4 "4" 5 "5 most deprived" .u "Unknown"
+label values imd imd 
+safetab imd, m
+
+drop if imd==.u
+safecount
+
+
 * Create restricted cubic splines for age
 mkspline age = age, cubic nknots(4)
 
@@ -179,16 +202,16 @@ safetab eth5, m
 * Ethnicity (16 category)
 replace ethnicity_16 = 17 if ethnicity_16==.
 label define ethnicity_16 									///
-						1 "British or Mixed British" 		///
+						1 "British" 		///
 						2 "Irish" 							///
 						3 "Other White" 					///
-						4 "White + Black Caribbean" 		///
-						5 "White + Black African"			///
+						4 "White + Caribbean" 		///
+						5 "White + African"			///
 						6 "White + Asian" 					///
  						7 "Other mixed" 					///
-						8 "Indian or British Indian" 		///
-						9 "Pakistani or British Pakistani" 	///
-						10 "Bangladeshi or British Bangladeshi" ///
+						8 "Indian" 		///
+						9 "Pakistani" 	///
+						10 "Bangladeshi" ///
 						11 "Other Asian" 					///
 						12 "Caribbean" 						///
 						13 "African" 						///
@@ -244,24 +267,7 @@ bysort stp_old: gen stp = 1 if _n==1
 replace stp = sum(stp)
 drop stp_old
 
-/*  IMD  */
-* Group into 5 groups
-rename imd imd_o
-egen imd = cut(imd_o), group(5) icodes
 
-* add one to create groups 1 - 5 
-replace imd = imd + 1
-
-* - 1 is missing, should be excluded from population 
-replace imd = .u if imd_o == -1
-drop imd_o
-
-* Reverse the order (so high is more deprived)
-recode imd 5 = 1 4 = 2 3 = 3 2 = 4 1 = 5 .u = .u
-
-label define imd 1 "1 least deprived" 2 "2" 3 "3" 4 "4" 5 "5 most deprived" .u "Unknown"
-label values imd imd 
-safetab imd, m
 
 
 /*  Age variables  */ 

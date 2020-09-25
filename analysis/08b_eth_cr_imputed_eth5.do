@@ -36,10 +36,10 @@ mi register imputed eth5
 
 *mi impute the dataset - remove variables with missing values - bmi	hba1c_pct bp_map 
 noisily mi impute mlogit eth5 `i' i.stp i.male age1 age2 age3 	i.imd						///
-										bmicat_sa	hba1ccat			///
+										i.bmicat_sa	i.hba1ccat			///
 										gp_consult_count			///
 										i.smoke_nomiss				///
-										i.hypertension bp_cat	 	///	
+										i.hypertension i.bp_cat	 	///	
 										i.asthma					///
 										i.chronic_respiratory_disease ///
 										i.chronic_cardiac_disease	///
