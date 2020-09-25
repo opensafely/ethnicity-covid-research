@@ -1,5 +1,5 @@
 /*==============================================================================
-DO FILE NAME:			05a_eth_table1_descriptives_eth16
+DO FILE NAME:			05a_eth_table1_descriptives_eth16_nocarehomes
 PROJECT:				Ethnicity and COVID-19 
 DATE: 					14 July 2020 
 AUTHOR:					R Mathur
@@ -28,10 +28,11 @@ USER-INSTALLED ADO:
 
 * Open a log file
 capture log close
-log using "$Logdir/05a_eth_table1_descriptives_eth16", replace t
+log using "$Logdir/05a_eth_table1_descriptives_eth16_nocarehomes", replace t
 
 * Open Stata dataset
 use $Tempdir/analysis_dataset, clear
+keep if carehome==0
 safetab ethnicity_16,m 
 
  /* PROGRAMS TO AUTOMATE TABULATIONS===========================================*/ 
@@ -189,7 +190,7 @@ end
 
 *Set up output file
 cap file close tablecontent
-file open tablecontent using $Tabfigdir/table1_eth16.txt, write text replace
+file open tablecontent using $Tabfigdir/table1_eth16_nocarehomes.txt, write text replace
 
 file write tablecontent ("Table 1: Demographic and Clinical Characteristics") _n
 
@@ -335,8 +336,6 @@ generaterow2, variable(`treat') condition("==1")
 file write tablecontent _n
 }
 
-qui tabulatevariable, variable(dm_type_exeter_os) min(0) max(2)  
-file write tablecontent _n 
 
 file close tablecontent
 
@@ -345,4 +344,4 @@ file close tablecontent
 log close
 
 clear
-insheet using "$Tabfigdir/table1_eth16.txt", clear
+insheet using "$Tabfigdir/table1_eth16_nocarehomes.txt", clear
