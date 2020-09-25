@@ -20,11 +20,11 @@ cap log close
 log using "$Logdir/11a_eth_an_testedpop_eth16", replace t
 
 cap file close tablecontent
-file open tablecontent using $Tabfigdir/table4_testedpop_eth16.txt, write text replace
-file write tablecontent ("Table 4: Odds of testing positive amongst those receiving a test - Complete Case Analysis") _n
-file write tablecontent _tab ("Denominator") _tab ("Event") _tab ("%") _tab ("Crude") _tab _tab ("Age/Sex Adjusted") _tab _tab ("Age/Sex/IMD Adjusted") _tab _tab 	("plus co-morbidities") _tab _tab 	("plus hh size/carehome")  _n
+file open tablecontent using $Tabfigdir/table4_testedpop_eth16_carehomesonly.txt, write text replace
+file write tablecontent ("Table 4: Odds of testing positive amongst those receiving a test -carehomes only") _n
+file write tablecontent _tab ("Denominator") _tab ("Event") _tab ("%") _tab ("Crude") _tab _tab ("Age/Sex Adjusted") _tab _tab ("Age/Sex/IMD Adjusted") _tab _tab 	("plus co-morbidities")   _n
 
-file write tablecontent _tab _tab _tab _tab   ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("95% CI") _tab ("95% CI") _n
+file write tablecontent _tab _tab _tab _tab   ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab  _n
 
 
 
@@ -35,6 +35,9 @@ safecount
 
 *define population as anyone who has received a test
 keep if tested==1
+safecount
+
+keep if carehome==1
 safecount
 
 
@@ -90,36 +93,12 @@ cap logistic positivetest i.ethnicity_16 i.male age1 age2 age3 	i.imd						///
 										i.ra_sle_psoriasis	i. stp, nolog 		
 										
 cap estimates save "$Tempdir/model2_positivetest_eth16", replace 
-parmest, label eform format(estimate p lb ub) saving("$Tempdir/model2_positivetest_eth16", replace) idstr("model2_positivetest_eth16") 
-eststo model4
+cap parmest, label eform format(estimate p lb ub) saving("$Tempdir/model2_positivetest_eth16", replace) idstr("model2_positivetest_eth16") 
+cap eststo model4
 
-* Age, Gender, IMD and Comorbidities  and household size and carehome
-cap logistic positivetest i.ethnicity_16 i.male age1 age2 age3 	i.imd						///
-										i.bmicat_sa	i.hba1ccat			///
-										gp_consult_count			///
-										i.smoke_nomiss				///
-										i.hypertension i.bp_cat	 	///	
-										i.asthma					///
-										i.chronic_respiratory_disease ///
-										i.chronic_cardiac_disease	///
-										i.dm_type 					///	
-										i.cancer                    ///
-										i.chronic_liver_disease		///
-										i.stroke					///
-										i.dementia					///
-										i.other_neuro				///
-										i.egfr60					///
-										i.esrf						///
-										i.immunosuppressed	 		///
-										i.ra_sle_psoriasis			///
-										i.hh_total_cat i.stp, nolog 		
-										
-cap estimates save "$Tempdir/model3_positivetest_eth16", replace 
-parmest, label eform format(estimate p lb ub) saving("$Tempdir/model3_positivetest_eth16", replace) idstr("model3_positivetest_eth16") 
-eststo model5
 
 /* Estout================================================================*/ 
-esttab model1 model2 model3 model4 model5   using "$Tabfigdir/estout_table4_testedpop_eth16.txt", b(a2) ci(2) label wide compress eform ///
+cap esttab model1 model2 model3 model4   using "$Tabfigdir/estout_table4_testedpop_eth16_carehomesonly.txt", b(a2) ci(2) label wide compress eform ///
 	title ("`i'") ///
 	varlabels(`e(labels)') ///
 	stats(N_sub) ///
@@ -164,7 +143,7 @@ local lab17: label ethnicity_16 17
 	local event = r(N)
 	local pct =(`event'/`denominator')
 	file write tablecontent  ("`lab1'") _tab (`denominator') _tab (`event') _tab %3.2f (`pct') _tab
-	file write tablecontent ("1.00") _tab _tab ("1.00") _tab _tab ("1.00")  _tab _tab ("1.00") _tab _tab ("1.00") _n
+	file write tablecontent ("1.00") _tab _tab ("1.00") _tab _tab ("1.00")  _tab _tab ("1.00")  _n
 	
 * Subsequent ethnic groups
 forvalues eth=2/17 {
@@ -188,10 +167,6 @@ forvalues eth=2/17 {
 	cap estimates clear
 	cap estimates use "$Tempdir/model2_positivetest_eth16" 
 	cap lincom `eth'.ethnicity_16, eform
-	file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (" - ") %4.2f (r(ub)) (")") _tab 
-	cap estimates clear
-	cap estimates use "$Tempdir/model3_positivetest_eth16" 
-	cap lincom `eth'.ethnicity_16, eform
 	file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (" - ") %4.2f (r(ub)) (")") _n
 }  //end ethnic group
 
@@ -200,8 +175,7 @@ file close tablecontent
 
 /* Foresplot================================================================*/ 
 
-dsconcat "$Tempdir/model0_positivetest_eth16"  "$Tempdir/model1_positivetest_eth16" "$Tempdir/model2_positivetest_eth16" "$Tempdir/model3_positivetest_eth16" 
-duplicates drop
+dsconcat "$Tempdir/model0_positivetest_eth16"  "$Tempdir/model1_positivetest_eth16" "$Tempdir/model2_positivetest_eth16" 
 
 split idstr, p(_)
 drop idstr
@@ -209,13 +183,13 @@ ren idstr1 model
 drop idstr2 idstr3 eq
 
 *save dataset for later
-outsheet using "$Tabfigdir/FP_testedpop_eth16.txt", replace
+outsheet using "$Tabfigdir/FP_testedpop_eth16_carehomesonly.txt", replace
 
 
 * Close log file 
 log close
-insheet using "$Tabfigdir/table4_testedpop_eth16.txt", clear
-insheet using "$Tabfigdir/estout_table4_testedpop_eth16.txt", clear
+insheet using "$Tabfigdir/table4_testedpop_eth16_carehomesonly.txt", clear
+cap insheet using "$Tabfigdir/estout_table4_testedpop_eth16_carehomesonly.txt", clear
 
 
 

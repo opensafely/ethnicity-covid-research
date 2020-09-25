@@ -1,4 +1,4 @@
-* 00000004
+* 00000006
 *! version 1.0.0
 * Do not erase or edit this file
 * It is used by Stata to track the ado and help
@@ -220,4 +220,52 @@ f e/estpost.ado
 f e/estpost.hlp
 f e/esttab.ado
 f e/esttab.hlp
+e
+S http://fmwww.bc.edu/repec/bocode/m
+N motivate.pkg
+D 19 Sep 2020
+U 5
+d 'MOTIVATE': module providing motivation to users
+d 
+d  motivate provides motivational quotes for users directly in the
+d results window as they continue their work. The randomly
+d generated quotes are inspirational and/or humorous. Some quotes
+d are generic while others are Stata-specific.
+d 
+d KW: motivation
+d 
+d Requires: Stata version 10
+d 
+d Distribution-Date: 20181126
+d 
+d Author:  Kabira Namit, World Bank
+d Support: email knamit@@worldbank.org
+d 
+f m/motivate.ado
+f m/motivate.sthlp
+e
+S http://fmwww.bc.edu/repec/bocode/d
+N demotivate.pkg
+D 19 Sep 2020
+U 6
+d 'DEMOTIVATE': module to remind users of the harsh reality of econometric & statistical practice
+d 
+d  demotivate provides quotes for users directly in the results
+d window as they endlessly toil at the coalface of data analysis.
+d The random quotes, somewhat humorous, provide a much needed
+d antithesis to Kabira Namit’s motivate package.
+d 
+d KW: harsh reality
+d KW: econometrics
+d KW: statistics
+d 
+d Requires: Stata version 14
+d 
+d Distribution-Date: 20181229
+d 
+d Author:  Kevin Denny, University College Dublin
+d Support: email kevin.denny@@ucd.ie
+d 
+f d/demotivate.ado
+f d/demotivate.sthlp
 e

@@ -1,5 +1,5 @@
 /*==============================================================================
-DO FILE NAME:			06a_eth_an_multivariable_eth16
+DO FILE NAME:			06a_eth_an_multivariable_eth16_carehomesonly
 PROJECT:				Ethnicity and COVID
 AUTHOR:					R Mathur (modified from A wong and A Schultze)
 DATE: 					15 July 2020					
@@ -17,18 +17,19 @@ OTHER OUTPUT: 			logfiles, printed to folder analysis/$logdir
 
 cap log close
 macro drop hr
-log using "$Logdir/06a_eth_an_multivariable_eth16", replace t 
+log using "$Logdir/06a_eth_an_multivariable_eth16_carehomesonly", replace t 
 
 cap file close tablecontent
-file open tablecontent using $Tabfigdir/table2_eth16.txt, write text replace
-file write tablecontent ("Table 2: Association between ethnicity in 16 categories and COVID-19 outcomes - Complete Case Analysis") _n
-file write tablecontent _tab ("Denominator") _tab ("Event") _tab ("Total person-weeks") _tab ("Rate per 1,000") _tab ("Crude") _tab _tab ("Age/Sex Adjusted") _tab _tab ("Age/Sex/IMD Adjusted") _tab _tab 	("plus co-morbidities") _tab _tab 	("plus hh size/carehome")  _tab _tab  _n
-file write tablecontent _tab _tab _tab _tab _tab   ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _tab _tab _n
+file open tablecontent using $Tabfigdir/table2_eth16_carehomesonly.txt, write text replace
+file write tablecontent ("Table 2: Association between ethnicity in 16 categories and COVID-19 outcomes - No care homes") _n
+file write tablecontent _tab ("Denominator") _tab ("Event") _tab ("Total person-weeks") _tab ("Rate per 1,000") _tab ("Crude") _tab _tab ("Age/Sex Adjusted") _tab _tab ("Age/Sex/IMD Adjusted") _tab _tab 	("plus co-morbidities") _tab _tab  _n
+file write tablecontent _tab _tab _tab _tab _tab   ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _tab _tab _n
 
 
 
 foreach i of global outcomes {
 use "$Tempdir/analysis_dataset_STSET_`i'.dta", clear
+drop if carehome==0
 safetab ethnicity_16 `i', missing row
 } //end outcomes
 
@@ -37,10 +38,7 @@ foreach i of global outcomes {
 	
 * Open Stata dataset
 use "$Tempdir/analysis_dataset_STSET_`i'.dta", clear
-
-*drop irish for icu due to small numbers
-*drop if eth16==2 & "`i'"=="icu"
-
+drop if carehome==0
 
 /* Main Model=================================================================*/
 
@@ -77,7 +75,7 @@ local hr "`hr' "$Tempdir/model1_`i'_eth16" "
 else di "WARNING MODEL1 DID NOT FIT (OUTCOME `i')"
 
 * Age, Gender, IMD and Comorbidities 
-stcox i.ethnicity_16 i.male age1 age2 age3 	i.imd						///
+cap stcox i.ethnicity_16 i.male age1 age2 age3 	i.imd						///
 										i.bmicat_sa	i.hba1ccat			///
 										gp_consult_count			///
 										i.smoke_nomiss				///
@@ -95,47 +93,16 @@ stcox i.ethnicity_16 i.male age1 age2 age3 	i.imd						///
 										i.esrf						///
 										i.immunosuppressed	 		///
 										i.ra_sle_psoriasis, strata(stp) nolog		
-if _rc==0{
-estimates
-estimates save "$Tempdir/model2_`i'_eth16", replace 
-eststo model4
+cap estimates save "$Tempdir/model2_`i'_eth16", replace 
+cap eststo model4
 
-parmest, label eform format(estimate p lb ub) saving("$Tempdir/model2_`i'_eth16", replace) idstr("model2_`i'_eth16") 
+cap parmest, label eform format(estimate p lb ub) saving("$Tempdir/model2_`i'_eth16", replace) idstr("model2_`i'_eth16") 
 local hr "`hr' "$Tempdir/model2_`i'_eth16" "
-}
-else di "WARNING MODEL2 DID NOT FIT (OUTCOME `i')"
 
 										
-* Age, Gender, IMD and Comorbidities  and household size and carehome
-stcox i.ethnicity_16 i.male age1 age2 age3 	i.imd						///
-										i.bmicat_sa	i.hba1ccat			///
-										gp_consult_count			///
-										i.smoke_nomiss				///
-										i.hypertension i.bp_cat	 	///	
-										i.asthma					///
-										i.chronic_respiratory_disease ///
-										i.chronic_cardiac_disease	///
-										i.dm_type 					///	
-										i.cancer                    ///
-										i.chronic_liver_disease		///
-										i.stroke					///
-										i.dementia					///
-										i.other_neuro				///
-										i.egfr60					///
-										i.esrf						///
-										i.immunosuppressed	 		///
-										i.ra_sle_psoriasis			///
-										i.hh_total_cat, strata(stp) nolog		
-estimates save "$Tempdir/model3_`i'_eth16", replace
-eststo model5
-
-parmest, label eform format(estimate p lb ub) saving("$Tempdir/model3_`i'_eth16", replace) idstr("model3_`i'_eth16") 
-local hr "`hr' "$Tempdir/model3_`i'_eth16" "
-
-
 
 /* Estout================================================================*/ 
-esttab model1 model2 model3 model4 model5 using "$Tabfigdir/estout_table2_eth16.txt", b(a2) ci(2) label wide compress eform ///
+cap esttab model1 model2 model3 model4 using "$Tabfigdir/estout_table2_eth16_carehomesonly.txt", b(a2) ci(2) label wide compress eform ///
 	title ("`i'") ///
 	varlabels(`e(labels)') ///
 	stats(N_sub) ///
@@ -183,7 +150,7 @@ local lab17: label ethnicity_16 17
 	local rate = 1000*(`event'/`person_week')
 	
 	file write tablecontent  ("`lab1'") _tab (`denominator') _tab (`event') _tab %10.0f (`person_week') _tab %3.2f (`rate') _tab
-	file write tablecontent ("1.00") _tab _tab ("1.00") _tab _tab ("1.00")  _tab _tab ("1.00") _tab _tab ("1.00") _n
+	file write tablecontent ("1.00") _tab _tab ("1.00") _tab _tab ("1.00")  _tab _tab ("1.00")  _n
 	
 * Subsequent ethnic groups
 forvalues eth=2/17 {
@@ -209,10 +176,6 @@ forvalues eth=2/17 {
 	cap estimates clear
 	cap estimates use "$Tempdir/model2_`i'_eth16" 
 	 cap lincom `eth'.ethnicity_16, eform
-	file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (" - ") %4.2f (r(ub)) (")") _tab 
-	cap estimates clear
-	cap estimates use "$Tempdir/model3_`i'_eth16" 
-	 cap lincom `eth'.ethnicity_16, eform
 	file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (" - ") %4.2f (r(ub)) (")") _n
 }  //end ethnic group
 
@@ -231,11 +194,11 @@ drop idstr idstr3
 tab model
 
 *save dataset for later
-outsheet using "$Tabfigdir/FP_multivariable_eth16.txt", replace
+outsheet using "$Tabfigdir/FP_multivariable_eth16_carehomesonly.txt", replace
 
 * Close log file 
 log close
 
-insheet using $Tabfigdir/table2_eth16.txt, clear
-insheet using $Tabfigdir/estout_table2_eth16.txt, clear
+insheet using $Tabfigdir/table2_eth16_carehomesonly.txt, clear
+insheet using $Tabfigdir/estout_table2_eth16_carehomesonly.txt, clear
 

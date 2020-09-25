@@ -300,9 +300,9 @@ local lab11: label ethnicity_16 11
 local lab12: label ethnicity_16 12
 local lab13: label ethnicity_16 13
 local lab14: label ethnicity_16 14
-local lab14: label ethnicity_16 15
-local lab14: label ethnicity_16 16
-local lab14: label ethnicity_16 17
+local lab15: label ethnicity_16 15
+local lab16: label ethnicity_16 16
+local lab17: label ethnicity_16 17
 
 
 

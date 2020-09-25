@@ -5,7 +5,7 @@ AUTHOR:					R Mathur (modified from A wong and A Schultze)
 DATE: 					15 July 2020					
 DESCRIPTION OF FILE:	program 08
 						multivariable regression with multiple imputation
-DATASETS USED:			data in memory ($tempdir/analysis_dataset_STSET_outcome_eth5_mi)
+DATASETS USED:			data in memory ($tempdir/analysis_dataset_STSET_outcome_eth16_mi)
 DATASETS CREATED: 		none
 OTHER OUTPUT: 			logfiles, printed to folder analysis/$logdir
 						estimates output to dataset							
@@ -25,10 +25,10 @@ use "$Tempdir/analysis_dataset_STSET_`i'_eth16_mi.dta", clear
 					
 * Age, Gender, IMD and Comorbidities  and household size and carehome
 mi estimate, dots eform: stcox i.ethnicity_16 i.male age1 age2 age3 	i.imd						///
-										bmicat_sa	hba1ccat			///
+										i.bmicat_sa	i.hba1ccat			///
 										gp_consult_count			///
 										i.smoke_nomiss				///
-										i.hypertension bp_cat	 	///	
+										i.hypertension i.bp_cat	 	///	
 										i.asthma					///
 										i.chronic_respiratory_disease ///
 										i.chronic_cardiac_disease	///
@@ -46,6 +46,60 @@ mi estimate, dots eform: stcox i.ethnicity_16 i.male age1 age2 age3 	i.imd						
 	
 parmest, label eform format(estimate p lb ub) saving("$Tempdir/model3_`i'_eth16_mi", replace) idstr("model3_`i'_eth16") 
 local hr "`hr' "$Tempdir/model3_`i'_eth16_mi" "
+
+* Age, Gender, IMD and Comorbidities  and household size no carehome
+mi estimate, dots eform: stcox i.ethnicity_16 i.male age1 age2 age3 	i.imd						///
+										i.bmicat_sa	i.hba1ccat			///
+										gp_consult_count			///
+										i.smoke_nomiss				///
+										i.hypertension i.bp_cat	 	///	
+										i.asthma					///
+										i.chronic_respiratory_disease ///
+										i.chronic_cardiac_disease	///
+										i.dm_type 					///	
+										i.cancer                    ///
+										i.chronic_liver_disease		///
+										i.stroke					///
+										i.dementia					///
+										i.other_neuro				///
+										i.egfr60					///
+										i.esrf						///
+										i.immunosuppressed	 		///
+										i.ra_sle_psoriasis			///
+										i.hh_total_cat if carehome==0, strata(stp) nolog		
+estimates save "$Tempdir/model4_`i'_eth16_mi", replace
+eststo model6
+
+parmest, label eform format(estimate p lb ub) saving("$Tempdir/model4_`i'_eth16_mi", replace) idstr("model4_`i'_eth16_mi") 
+local hr "`hr' "$Tempdir/model4_`i'_eth16_mi" "
+
+* Age, Gender, IMD and Comorbidities carehomes only
+mi estimate, dots eform: stcox i.ethnicity_16  i.male age1 age2 age3 	i.imd						///
+										i.bmicat_sa	i.hba1ccat			///
+										gp_consult_count			///
+										i.smoke_nomiss				///
+										i.hypertension i.bp_cat	 	///	
+										i.asthma					///
+										i.chronic_respiratory_disease ///
+										i.chronic_cardiac_disease	///
+										i.dm_type 					///	
+										i.cancer                    ///
+										i.chronic_liver_disease		///
+										i.stroke					///
+										i.dementia					///
+										i.other_neuro				///
+										i.egfr60					///
+										i.esrf						///
+										i.immunosuppressed	 		///
+										i.ra_sle_psoriasis			///
+										if carehome==1, strata(stp) nolog		
+estimates save "$Tempdir/model5_`i'_eth16_mi", replace
+eststo model7
+
+parmest, label eform format(estimate p lb ub) saving("$Tempdir/model5_`i'_eth16_mi", replace) idstr("model5_`i'_eth16_mi") 
+local hr "`hr' "$Tempdir/model5_`i'_eth16_mi" "
+
+
 
 } //end outcomes
 

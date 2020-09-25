@@ -1,4 +1,4 @@
-* 00000003
+* 00000005
 *! version 1.0.0
 * Do not erase or edit this file
 * It is used by Stata to track the ado and help
@@ -177,4 +177,70 @@ f i/ipdmetan.ado
 f i/ipdmetan.sthlp
 f i/ipdover.ado
 f i/ipdover.sthlp
+e
+S http://fmwww.bc.edu/repec/bocode/e
+N estout.pkg
+D 16 Sep 2020
+U 4
+d 'ESTOUT': module to make regression tables
+d 
+d  estout produces a table of regression results from one or
+d several models for use with spreadsheets, LaTeX, HTML, or a
+d word-processor table. eststo stores a quick copy of the active
+d estimation results for later tabulation. esttab is a wrapper for
+d estout. It displays a pretty looking publication-style regression
+d table without much typing. estadd adds additional results to the
+d e()-returns for one or several models previously fitted and
+d stored. This package subsumes the previously circulated esto,
+d esta, estadd,  and estadd_plus. An earlier version of estout is
+d available  as estout1.
+d 
+d KW: estimates
+d KW: LaTeX
+d KW: HTML
+d KW: word processor
+d KW: output
+d 
+d Requires: Stata version 8.2
+d 
+d Distribution-Date: 20190613
+d 
+d Author: Ben Jann, University of Bern
+d Support: email jann@@soz.unibe.ch
+d 
+f _/_eststo.ado
+f _/_eststo.hlp
+f e/estadd.ado
+f e/estadd.hlp
+f e/estout.ado
+f e/estout.hlp
+f e/eststo.ado
+f e/eststo.hlp
+f e/estpost.ado
+f e/estpost.hlp
+f e/esttab.ado
+f e/esttab.hlp
+e
+S http://fmwww.bc.edu/repec/bocode/m
+N motivate.pkg
+D 19 Sep 2020
+U 5
+d 'MOTIVATE': module providing motivation to users
+d 
+d  motivate provides motivational quotes for users directly in the
+d results window as they continue their work. The randomly
+d generated quotes are inspirational and/or humorous. Some quotes
+d are generic while others are Stata-specific.
+d 
+d KW: motivation
+d 
+d Requires: Stata version 10
+d 
+d Distribution-Date: 20181126
+d 
+d Author:  Kabira Namit, World Bank
+d Support: email knamit@@worldbank.org
+d 
+f m/motivate.ado
+f m/motivate.sthlp
 e
