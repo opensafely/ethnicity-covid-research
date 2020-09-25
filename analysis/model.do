@@ -58,6 +58,8 @@ do "$Dodir/05b_eth_table1_descriptives_eth5.do"
 
 *Table 2: multivariable analysis - complete case 
 do "$Dodir/06b_eth_an_multivariable_eth5.do" 
+do "$Dodir/06b_eth_an_multivariable_eth5_nocarehomes.do" 
+do "$Dodir/06b_eth_an_multivariable_eth5_carehomesonly.do" 
 
 *Table 4: Odds of testing positive amongst those with SGSS testing data
 do "$Dodir/11b_eth_an_testedpop_eth5" 
@@ -71,6 +73,8 @@ do "$Dodir/05a_eth_table1_descriptives_eth16.do"
 
 *Table 2: multivariable analysis - complete case 
 do "$Dodir/06a_eth_an_multivariable_eth16.do" 
+do "$Dodir/06a_eth_an_multivariable_eth16_nocarehomes.do" 
+do "$Dodir/06a_eth_an_multivariable_eth16_carehomesonly.do" 
 
 *Table 4: Odds of testing positive amongst those with SGSS testing data
 do "$Dodir/11a_eth_an_testedpop_eth16" 
