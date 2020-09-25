@@ -1,5 +1,5 @@
 /*==============================================================================
-DO FILE NAME:			06a_eth_an_multivariable_eth16
+DO FILE NAME:			06a_eth_an_multivariable_eth16_nocarehomes
 PROJECT:				Ethnicity and COVID
 AUTHOR:					R Mathur (modified from A wong and A Schultze)
 DATE: 					15 July 2020					
@@ -17,11 +17,11 @@ OTHER OUTPUT: 			logfiles, printed to folder analysis/$logdir
 
 cap log close
 macro drop hr
-log using "$Logdir/06a_eth_an_multivariable_eth16", replace t 
+log using "$Logdir/06a_eth_an_multivariable_eth16_nocarehomes", replace t 
 
 cap file close tablecontent
-file open tablecontent using $Tabfigdir/table2_eth16.txt, write text replace
-file write tablecontent ("Table 2: Association between ethnicity in 16 categories and COVID-19 outcomes - Complete Case Analysis") _n
+file open tablecontent using $Tabfigdir/table2_eth16_nocarehomes.txt, write text replace
+file write tablecontent ("Table 2: Association between ethnicity in 16 categories and COVID-19 outcomes - No care homes") _n
 file write tablecontent _tab ("Denominator") _tab ("Event") _tab ("Total person-weeks") _tab ("Rate per 1,000") _tab ("Crude") _tab _tab ("Age/Sex Adjusted") _tab _tab ("Age/Sex/IMD Adjusted") _tab _tab 	("plus co-morbidities") _tab _tab 	("plus hh size/carehome")  _tab _tab  _n
 file write tablecontent _tab _tab _tab _tab _tab   ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _tab _tab _n
 
@@ -29,6 +29,7 @@ file write tablecontent _tab _tab _tab _tab _tab   ("HR") _tab ("95% CI") _tab (
 
 foreach i of global outcomes {
 use "$Tempdir/analysis_dataset_STSET_`i'.dta", clear
+drop if carehome==1
 safetab ethnicity_16 `i', missing row
 } //end outcomes
 
@@ -37,9 +38,7 @@ foreach i of global outcomes {
 	
 * Open Stata dataset
 use "$Tempdir/analysis_dataset_STSET_`i'.dta", clear
-
-*drop irish for icu due to small numbers
-*drop if eth16==2 & "`i'"=="icu"
+drop if carehome==1
 
 
 /* Main Model=================================================================*/
@@ -135,7 +134,7 @@ local hr "`hr' "$Tempdir/model3_`i'_eth16" "
 
 
 /* Estout================================================================*/ 
-esttab model1 model2 model3 model4 model5 using "$Tabfigdir/estout_table2_eth16.txt", b(a2) ci(2) label wide compress eform ///
+esttab model1 model2 model3 model4 model5 using "$Tabfigdir/estout_table2_eth16_nocarehomes.txt", b(a2) ci(2) label wide compress eform ///
 	title ("`i'") ///
 	varlabels(`e(labels)') ///
 	stats(N_sub) ///
@@ -231,11 +230,11 @@ drop idstr idstr3
 tab model
 
 *save dataset for later
-outsheet using "$Tabfigdir/FP_multivariable_eth16.txt", replace
+outsheet using "$Tabfigdir/FP_multivariable_eth16_nocarehomes.txt", replace
 
 * Close log file 
 log close
 
-insheet using $Tabfigdir/table2_eth16.txt, clear
-insheet using $Tabfigdir/estout_table2_eth16.txt, clear
+insheet using $Tabfigdir/table2_eth16_nocarehomes.txt, clear
+insheet using $Tabfigdir/estout_table2_eth16_nocarehomes.txt, clear
 
