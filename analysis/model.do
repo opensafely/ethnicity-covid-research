@@ -110,8 +110,8 @@ EXTRA DESCRIPTIVES
 *Table 1 baseline characteristics - stratified by carehome status
 do "$Dodir/05b_eth_table1_descriptives_eth5_nocarehomes.do"
 do "$Dodir/05b_eth_table1_descriptives_eth5_carehomesonly.do"
-do "$Dodir/05b_eth_table1_descriptives_eth16_nocarehomes.do"
-do "$Dodir/05b_eth_table1_descriptives_eth16_carehomesonly.do"
+do "$Dodir/05a_eth_table1_descriptives_eth16_nocarehomes.do"
+do "$Dodir/05a_eth_table1_descriptives_eth16_carehomesonly.do"
 
 *Table 5: Characteristics of people with and without key outcomes
 do "$Dodir/16_eth_an_outcome_characteristics.do"
