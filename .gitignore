@@ -17,5 +17,6 @@ venv/
 .DS_Store
 *.dta
 output/*
+redaction/*
 .idea/
 
