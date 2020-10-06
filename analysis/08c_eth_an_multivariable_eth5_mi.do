@@ -24,30 +24,6 @@ use "$Tempdir/analysis_dataset_STSET_`i'_eth5_mi.dta", clear
 
 /* Multivariable models */ 
 
-* Age, Gender, IMD and Comorbidities  and household size and carehome
-mi estimate, dots eform: stcox i.eth5 i.male age1 age2 age3 	i.imd						///
-										i.bmicat_sa	i.hba1ccat			///
-										gp_consult_count			///
-										i.smoke_nomiss				///
-										i.hypertension i.bp_cat	 	///	
-										i.asthma					///
-										i.chronic_respiratory_disease ///
-										i.chronic_cardiac_disease	///
-										i.dm_type 					///	
-										i.cancer                    ///
-										i.chronic_liver_disease		///
-										i.stroke					///
-										i.dementia					///
-										i.other_neuro				///
-										i.egfr60					///
-										i.esrf						///
-										i.immunosuppressed	 		///
-										i.ra_sle_psoriasis			///
-										i.hh_total_cat i.carehome, strata(stp) nolog		
-	
-parmest, label eform format(estimate p lb ub) saving("$Tempdir/model3_`i'_eth5_mi", replace) idstr("model3_`i'_eth5") 
-local hr "`hr' "$Tempdir/model3_`i'_eth5_mi" "
-
 * Age, Gender, IMD and Comorbidities  and household size no carehome
 mi estimate, dots eform: stcox i.eth5 i.male age1 age2 age3 	i.imd						///
 										i.bmicat_sa	i.hba1ccat			///
