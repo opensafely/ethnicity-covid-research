@@ -182,105 +182,6 @@ file write tablecontent _n
 	
 end
 
-*******************************************************************Open Raw Data
-import delimited `c(pwd)'/output/input.csv, clear
-di "STARTING safecount FROM IMPORT:"
-safecount
-
-
-*Generate outcomes
-
-*Start dates
-gen index 			= "01/02/2020"
-
-* Date of cohort entry, 1 Feb 2020
-gen indexdate = date(index, "DMY")
-format indexdate %d
-
-
-
-* Ethnicity (5 category)
-replace ethnicity = . if ethnicity==.
-label define ethnicity 	1 "White"  					///
-						2 "Mixed" 					///
-						3 "Asian or Asian British"	///
-						4 "Black"  					///
-						5 "Other"					
-						
-label values ethnicity ethnicity
-safetab ethnicity, m
-
- *re-order ethnicity
- gen eth5=1 if ethnicity==1
- replace eth5=2 if ethnicity==3
- replace eth5=3 if ethnicity==4
- replace eth5=4 if ethnicity==2
- replace eth5=5 if ethnicity==5
- replace eth5=6 if ethnicity==.
-
- label define eth5	 	1 "White"  					///
-						2 "South Asian"		  ///						
-						3 "Black"  					///
-						4 "Mixed"					///
-						5 "Other"					///
-						6 "Unknown"
-					
-
-label values eth5 eth5
-safetab eth5, m
-
-
-/* OUTCOME AND SURVIVAL TIME==================================================*/
-
-	
-/****   Outcome definitions   ****/
-ren primary_care_suspect_case	suspected_date
-ren primary_care_case			confirmed_date
-ren first_tested_for_covid		tested_date
-ren first_positive_test_date	positivetest_date
-ren a_e_consult_date 			ae_date
-ren icu_date_admitted			icu_date
-ren died_date_cpns				cpnsdeath_date
-ren died_date_ons				onsdeath_date
-
-* Date of Covid death in ONS
-gen onscoviddeath_date = onsdeath_date if died_ons_covid_flag_any == 1
-gen onsconfirmeddeath_date = onsdeath_date if died_ons_confirmedcovid_flag_any ==1
-gen onssuspecteddeath_date = onsdeath_date if died_ons_suspectedcovid_flag_any ==1
-
-* Date of non-COVID death in ONS 
-* If missing date of death resulting died_date will also be missing
-gen ons_noncoviddeath_date = onsdeath_date if died_ons_covid_flag_any != 1
-
-
-
-/* CONVERT STRINGS TO DATE FOR OUTCOME VARIABLES =============================*/
-* Recode to dates from the strings 
-
-foreach var of global outcomes {
-	confirm string variable `var'_date
-	rename `var'_date `var'_dstr
-	gen `var'_date = date(`var'_dstr, "YMD")
-	drop `var'_dstr
-	format `var'_date %td 
-
-}
-
-*If outcome occurs on the first day of follow-up add one day
-foreach i of global outcomes {
-	di "`i'"
-	qui count if `i'_date==indexdate
-	replace `i'_date=`i'_date+1 if `i'_date==indexdate
-}
-
-* Binary indicators for outcomes
-foreach i of global outcomes {
-		gen `i'=0
-		replace  `i'=1 if `i'_date < .
-		safetab `i'
-}
-
-
 
 /* INVOKE PROGRAMS FOR TABLE 1================================================*/ 
 
@@ -309,10 +210,13 @@ file write tablecontent _tab ("Total")				  			  _tab ///
 							 ("`lab5'")  						  _tab ///
 							 ("`lab6'")  						  _n 							 
 
-/*STEP 1: WHOLE POPULATION WITHOUT EXCLUSIONS*/
+/*STEP 1: NO CARE HOMES*/
+
+use "$Tempdir/analysis_dataset.dta", clear
+keep if carehome==0
 							 
 *Denominator
-file write tablecontent ("Whole study population- no exclusions") _n
+file write tablecontent ("Main population: no care homes") _n
 gen byte cons=1
 file write tablecontent ("N") _tab
 
@@ -335,17 +239,13 @@ generaterow2, variable(`var') condition("==1")
 }
 
 
-/* STEP 2: KEEP THOSE AGED 18-105 */
-
-* Sex: Exclude categories other than M and F
-drop if inlist(sex, "I", "U")
-
-
-drop if age<18
-drop if age>105
+/* STEP 2: CAREHOMES*/
+use "$Tempdir/analysis_dataset.dta", clear
+keep if carehome==1
+gen byte cons=1
 
 *Denominator
-file write tablecontent ("Adults aged 18-105") _n
+file write tablecontent ("Care home population") _n
 file write tablecontent ("N") _tab
 
 generaterow2, variable(cons) condition("==1")
