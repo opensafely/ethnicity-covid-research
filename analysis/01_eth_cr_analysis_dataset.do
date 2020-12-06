@@ -104,6 +104,7 @@ ren a_e_consult_date 			ae_date
 ren icu_date_admitted			icu_date
 ren died_date_cpns				cpnsdeath_date
 ren died_date_ons				onsdeath_date
+ren covid_admission_date		hes_date
 
 * Date of Covid death in ONS
 gen onscoviddeath_date = onsdeath_date if died_ons_covid_flag_any == 1
@@ -156,6 +157,7 @@ foreach i of global outcomes {
 gen tested_censor_date = d("03/08/2020")
 gen positivetest_censor_date = d("03/08/2020")
 gen ae_censor_date = d("03/08/2020")
+gen hes_censor_date = d("03/08/2020")
 gen icu_censor_date = d("30/07/2020")
 gen cpnsdeath_censor_date  = d("03/08/2020")
 gen onsdeath_censor_date = d("03/08/2020")
@@ -978,9 +980,7 @@ save "$Tempdir/analysis_dataset.dta", replace
 
 foreach i of global outcomes {
 	use "$Tempdir/analysis_dataset.dta", clear
-	
 	drop if `i'_date <= indexdate 
-
 	stset stime_`i', fail(`i') 				///	
 	id(patient_id) enter(indexdate) origin(indexdate)
 	save "$Tempdir/analysis_dataset_STSET_`i'.dta", replace

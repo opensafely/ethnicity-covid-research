@@ -120,6 +120,27 @@ study = StudyDefinition(
        },
     ),
 
+    #SUS HOSPITAL ADMISSION
+    covid_admission_date=patients.admitted_to_hospital(
+        returning= "date_admitted" ,  # defaults to "binary_flag"
+        with_these_diagnoses=covid_codelist,  # optional
+        on_or_after="2020-02-01",
+        find_first_match_in_period=True,  
+        date_format="YYYY-MM-DD",  
+        return_expectations={"date": {"earliest": "2020-02-01"}, "incidence" : 0.25},
+   ),
+    covid_admission_primary_diagnosis=patients.admitted_to_hospital(
+        returning="primary_diagnosis",
+        with_these_diagnoses=covid_codelist,  # optional
+        on_or_after="2020-02-01",
+        find_first_match_in_period=True,  
+        date_format="YYYY-MM-DD", 
+        return_expectations={"date": {"earliest": "2020-02-01"},"incidence" : 0.25,
+            "category": {"ratios": {"U071":0.5, "U072":0.5}},
+        },
+    ),
+
+    #ICU ADMISSION
     icu_date_admitted=patients.admitted_to_icu(
         on_or_after="2020-02-01",
         find_first_match_in_period=True,
