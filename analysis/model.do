@@ -65,8 +65,8 @@ do "$Dodir/06a_eth_an_multivariable_eth16_nocarehomes.do"
 do "$Dodir/06b_eth_an_multivariable_eth5_nocarehomes.do" 
 
 *Table 4: Odds of testing positive amongst those with SGSS testing data
-do "$Dodir/11a_eth_an_testedpop_eth16_nocarehomes" 
-do "$Dodir/11b_eth_an_testedpop_eth5_nocarehomes" 
+*do "$Dodir/11a_eth_an_testedpop_eth16_nocarehomes" 
+*do "$Dodir/11b_eth_an_testedpop_eth5_nocarehomes" 
 
 
 /**********************
