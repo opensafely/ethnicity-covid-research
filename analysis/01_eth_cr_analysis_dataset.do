@@ -976,13 +976,13 @@ save "$Tempdir/analysis_dataset.dta", replace
 *****************************************************************
 
 
-foreach i of global outcomes {
+foreach i of global outcomes3 {
 	use "$Tempdir/analysis_dataset.dta", clear
 	
 	drop if `i'_date <= indexdate 
-
+	gen startfup=max(indexdate, covid_date)
 	stset stime_`i', fail(`i') 				///	
-	id(patient_id) enter(indexdate) origin(indexdate)
+	id(patient_id) enter(startfup) origin(startfup)
 	save "$Tempdir/analysis_dataset_STSET_`i'.dta", replace
 }	
 
