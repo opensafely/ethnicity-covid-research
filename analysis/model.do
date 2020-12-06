@@ -50,11 +50,11 @@ do "$Dodir/03a_eth_outcomes_checks_eth16.do"
 do "$Dodir/03b_eth_outcomes_checks_eth5.do"
 
 
-*Table 1 baseline characteristics - stratified by carehome status
+/*Table 1 baseline characteristics - stratified by carehome status
 do "$Dodir/05a_eth_table1_descriptives_eth16_nocarehomes.do"
 do "$Dodir/05b_eth_table1_descriptives_eth5_nocarehomes.do"
 do "$Dodir/05b_eth_table1_descriptives_eth5_carehomesonly.do"
-
+*/
 
 /**********************
 NO CARE HOMES
@@ -76,7 +76,7 @@ CARE HOMES ONLY
 do "$Dodir/06b_eth_an_multivariable_eth5_carehomesonly.do" 
 
 *Table 4: Odds of testing positive amongst those with SGSS testing data
-do "$Dodir/11b_eth_an_testedpop_eth5_carehomesonly" 
+*do "$Dodir/11b_eth_an_testedpop_eth5_carehomesonly" 
 
 /**********************
 MULTIPLE IMPUTATION
