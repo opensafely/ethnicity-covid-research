@@ -70,8 +70,8 @@ do "$Dodir/06b_eth_an_multivariable_eth5_nocarehomes.do"
 *do "$Dodir/11b_eth_an_testedpop_eth5_nocarehomes" 
 
 *Sensitivity analysis - models without adjustment for region
-do "$Dodir/07a_eth_an_sensanalysis_nostp_eth16.do" 
-do "$Dodir/07b_eth_an_sensanalysis_nostp_eth16.do" 
+do "$Dodir/07a_eth_sensanalysis_nostp_eth16.do" 
+do "$Dodir/07b_eth_sensanalysis_nostp_eth16.do" 
 
 *Sensitivity analysis - urban vs. rural
 do "$Dodir/07a_eth_sensanalysis_ruralurban.do"
