@@ -35,8 +35,8 @@ global tempdir    "$Tempdir"
 
 
 * Set globals for  outcomes
-global outcomes " hes onsconfirmeddeath  onsdeath" //tested positivetest icu onscoviddeath ons_noncoviddeath
-global alloutcomes " tested positivetest icu onscoviddeath ons_noncoviddeath hes onsconfirmeddeath  onsdeath" //
+global outcomes "onsconfirmeddeath onsdeath" //tested positivetest icu onscoviddeath ons_noncoviddeath
+global alloutcomes "tested positivetest icu onscoviddeath ons_noncoviddeath hes onsconfirmeddeath  onsdeath" //
 
 
 /**********************
@@ -70,15 +70,16 @@ do "$Dodir/06b_eth_an_multivariable_eth5_nocarehomes.do"
 *do "$Dodir/11b_eth_an_testedpop_eth5_nocarehomes" 
 
 *Sensitivity analysis - models without adjustment for region
+do "$Dodir/07a_eth_an_multivariable_eth16_nostp.do" 
+do "$Dodir/07b_eth_an_multivariable_eth5_nostp.do" 
 
+*Sensitivity analysis - proportional hazards assumptions checks
+do "$Dodir/20_eth_an_model_checks.do"
 /**********************
 CARE HOMES ONLY
 **********************/
 *Table 2: multivariable analysis - complete case 
 do "$Dodir/06b_eth_an_multivariable_eth5_carehomesonly.do" 
-
-*Table 4: Odds of testing positive amongst those with SGSS testing data
-*do "$Dodir/11b_eth_an_testedpop_eth5_carehomesonly" 
 
 /**********************
 MULTIPLE IMPUTATION
