@@ -1,5 +1,5 @@
 /*==============================================================================
-DO FILE NAME:			07a_eth_sensanalysis_ruralurban
+DO FILE NAME:			07c_eth_sensanalysis_ruralurban_eth16
 PROJECT:				Ethnicity and COVID
 AUTHOR:					R Mathur (modified from A wong and A Schultze)
 DATE: 					15 July 2020					
@@ -17,7 +17,7 @@ OTHER OUTPUT: 			logfiles, printed to folder analysis/$logdir
 
 cap log close
 macro drop hr
-log using "$Logdir/07a_eth_sensanalysis_ruralurban", replace t 
+log using "$Logdir/07c_eth_sensanalysis_ruralurban_eth16", replace t 
 
 foreach i of global alloutcomes {
 	di "`i'"

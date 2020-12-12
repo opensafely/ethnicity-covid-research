@@ -74,7 +74,7 @@ do "$Dodir/07a_eth_sensanalysis_nostp_eth16.do"
 do "$Dodir/07b_eth_sensanalysis_nostp_eth5.do" 
 
 *Sensitivity analysis - urban vs. rural
-do "$Dodir/07a_eth_sensanalysis_ruralurban.do"
+do "$Dodir/07c_eth_sensanalysis_ruralurban_eth16.do"
 
 *Sensitivity analysis - proportional hazards assumptions checks
 do "$Dodir/20_eth_an_model_checks.do"
