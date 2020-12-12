@@ -163,7 +163,7 @@ gen cpnsdeath_censor_date  = d("03/08/2020")
 gen onsdeath_censor_date = d("03/08/2020")
 gen onscoviddeath_censor_date = d("03/08/2020")
 gen ons_noncoviddeath_censor_date = d("03/08/2020")
-
+gen onsconfirmeddeath_censor_date=d("03/08/2020")
 
 *******************************************************************************
 format *censor_date %d
