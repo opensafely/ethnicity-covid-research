@@ -85,7 +85,7 @@ do "$Dodir/06b_eth_an_multivariable_eth5_carehomesonly.do"
 
 /**********************
 MULTIPLE IMPUTATION
-**********************/
+**********************
 *Table 2: multiple imputation
 do "$Dodir/08b_eth_cr_imputed_eth5.do"
 do "$Dodir/08c_eth_an_multivariable_eth5_mi.do" 
