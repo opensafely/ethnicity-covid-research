@@ -35,7 +35,7 @@ global tempdir    "$Tempdir"
 
 
 * Set globals for  outcomes
-global outcomes "tested positivetest icu hes onscoviddeath ons_noncoviddeath onsdeath onsconfirmeddeath onsdeath" 
+global outcomes "tested positivetest icu hes onscoviddeath ons_noncoviddeath onsdeath onsconfirmeddeath" 
 global alloutcomes "tested positivetest icu hes onscoviddeath ons_noncoviddeath onsdeath" 
 
 
