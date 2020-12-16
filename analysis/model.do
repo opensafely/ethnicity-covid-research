@@ -35,7 +35,7 @@ global tempdir    "$Tempdir"
 
 
 * Set globals for  outcomes
-global outcomes "tested positivetest icu hes onscoviddeath ons_noncoviddeath onsdeath onsconfirmeddeath" 
+global outcomes /*tested positivetest icu hes onscoviddeath ons_noncoviddeath */ "onsdeath onsconfirmeddeath" 
 global alloutcomes "tested positivetest icu hes onscoviddeath ons_noncoviddeath onsdeath" 
 
 
@@ -44,7 +44,7 @@ Data cleaning
 **********************/
 
 *Create analysis dataset
-do "$Dodir/01_eth_cr_analysis_dataset.do"
+*do "$Dodir/01_eth_cr_analysis_dataset.do"
 
 *Table 0: Numbers of outcomes in study population
 *do "$Dodir/03a_eth_outcomes_checks_eth16.do"
@@ -70,10 +70,42 @@ NO CARE HOMES
 *do "$Dodir/11b_eth_an_testedpop_eth5_nocarehomes" 
 
 *Sensitivity analysis - models without adjustment for region
-do "$Dodir/07b_eth_sensanalysis_nostp_eth5.do" 
+*do "$Dodir/07b_eth_sensanalysis_nostp_eth5.do" 
 
 *Sensitivity analysis - proportional hazards assumptions checks
 do "$Dodir/20_eth_an_model_checks.do"
+
+
+/**********************
+MULTIPLE IMPUTATION
+**********************/
+
+*Table 2: multiple imputation
+do "$Dodir/08b_eth_cr_imputed_eth5.do"
+do "$Dodir/08c_eth_an_multivariable_eth5_mi.do"
+
+
+*sensitivity analysis no STP, eth16
+do "$Dodir/07a_eth_sensanalysis_nostp_eth16.do" 
+*Sensitivity analysis - urban vs. rural
+*do "$Dodir/07c_eth_sensanalysis_ruralurban_eth16.do"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*Sensitivity analysis - models without adjustment for region
+do "$Dodir/07b_eth_sensanalysis_nostp_eth5.do" 
+
 
 /**********************
 CARE HOMES ONLY
@@ -81,17 +113,6 @@ CARE HOMES ONLY
 *Table 2: multivariable analysis - complete case 
 do "$Dodir/06b_eth_an_multivariable_eth5_carehomesonly.do" 
 
-/**********************
-MULTIPLE IMPUTATION
-**********************/
-/*
-*Table 2: multiple imputation
-do "$Dodir/08b_eth_cr_imputed_eth5.do"
-do "$Dodir/08c_eth_an_multivariable_eth5_mi.do"
-*/
 
-*sensitivity analysis no STP, eth16
-do "$Dodir/07a_eth_sensanalysis_nostp_eth16.do" 
 *Sensitivity analysis - urban vs. rural
 do "$Dodir/07c_eth_sensanalysis_ruralurban_eth16.do"
-
