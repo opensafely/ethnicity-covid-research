@@ -17,7 +17,7 @@ OTHER OUTPUT: 			logfiles, printed to folder analysis/$logdir
 
 cap log close
 macro drop hr
-log using "$Logdir/07a_eth_sensanalysis_no_stp", replace t 
+log using "$Logdir/07b_eth_sensanalysis_no_stp", replace t 
 
 cap file close tablecontent
 file open tablecontent using $Tabfigdir/sens_eth5_nostp.txt, write text replace

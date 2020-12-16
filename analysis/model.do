@@ -35,7 +35,7 @@ global tempdir    "$Tempdir"
 
 
 * Set globals for  outcomes
-global outcomes "tested positivetest icu onscoviddeath ons_noncoviddeath hes onsconfirmeddeath onsdeath" 
+global outcomes "onsconfirmeddeath onsdeath" 
 global alloutcomes "tested positivetest icu hes onscoviddeath onsconfirmeddeath  ons_noncoviddeath onsdeath" 
 
 
@@ -70,7 +70,6 @@ do "$Dodir/06b_eth_an_multivariable_eth5_nocarehomes.do"
 *do "$Dodir/11b_eth_an_testedpop_eth5_nocarehomes" 
 
 *Sensitivity analysis - models without adjustment for region
-do "$Dodir/07a_eth_sensanalysis_nostp_eth16.do" 
 do "$Dodir/07b_eth_sensanalysis_nostp_eth5.do" 
 
 *Sensitivity analysis - urban vs. rural
@@ -88,6 +87,7 @@ do "$Dodir/06b_eth_an_multivariable_eth5_carehomesonly.do"
 MULTIPLE IMPUTATION
 **********************/
 *Table 2: multiple imputation
-*do "$Dodir/08b_eth_cr_imputed_eth5.do"
-*do "$Dodir/08c_eth_an_multivariable_eth5_mi.do" 
+do "$Dodir/08b_eth_cr_imputed_eth5.do"
+do "$Dodir/08c_eth_an_multivariable_eth5_mi.do" 
+do "$Dodir/07a_eth_sensanalysis_nostp_eth16.do" 
 
