@@ -1,0 +1,295 @@
+-------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /workspace/logs/05_region_check.log
+  log type:  text
+ opened on:   6 Jan 2021, 13:01:37
+
+. 
+. use ./output/analysis_dataset.dta, clear
+
+. keep if carehome==0
+(1,170 observations deleted)
+
+. 
+.  /* PROGRAMS TO AUTOMATE TABULATIONS=========================================
+> ==*/ 
+. 
+. *****************************************************************************
+> ***
+. * All below code from K Baskharan 
+. * Generic code to output one row of table
+. 
+. cap prog drop generaterow
+
+. program define generaterow
+  1. syntax, variable(varname) condition(string) 
+  2.         
+.         qui cou
+  3.         local overalldenom=r(N)
+  4.         
+.         sum `variable' if `variable' `condition'
+  5.         file write tablecontent (r(max)) _tab
+  6.         
+.         qui cou if `variable' `condition'
+  7.         local rowdenom = r(N)
+  8.         local colpct = 100*(r(N)/`overalldenom')
+  9.         file write tablecontent %9.0gc (`rowdenom')  (" (") %3.1f (`colpct
+> ') (")") _tab
+ 10. 
+.         forvalues i=1/6{
+ 11.         qui cou if eth5 == `i'
+ 12.         local rowdenom = r(N)
+ 13.         qui cou if eth5 == `i' & `variable' `condition'
+ 14.         local pct = 100*(r(N)/`rowdenom') 
+ 15.         file write tablecontent %9.0gc (r(N)) (" (") %3.1f (`pct') (")") _
+> tab
+ 16.         }
+ 17.         
+.         file write tablecontent _n
+ 18. end
+
+. 
+. 
+. * Output one row of table for co-morbidities and meds
+. 
+. cap prog drop generaterow2
+
+. program define generaterow2
+  1. syntax, variable(varname) condition(string) 
+  2.         
+.         qui cou
+  3.         local overalldenom=r(N)
+  4.         
+.         qui cou if `variable' `condition'
+  5.         local rowdenom = r(N)
+  6.         local colpct = 100*(r(N)/`overalldenom')
+  7.         file write tablecontent %9.0gc (`rowdenom')  (" (") %3.1f (`colpct
+> ') (")") _tab
+  8. 
+.         forvalues i=1/6{
+  9.         qui cou if eth5 == `i'
+ 10.         local rowdenom = r(N)
+ 11.         qui cou if eth5 == `i' & `variable' `condition'
+ 12.         local pct = 100*(r(N)/`rowdenom') 
+ 13.         file write tablecontent %9.0gc (r(N)) (" (") %3.1f (`pct') (")") _
+> tab
+ 14.         }
+ 15.         
+.         file write tablecontent _n
+ 16. end
+
+. 
+. 
+. 
+. /* Explanatory Notes 
+> 
+> defines a program (SAS macro/R function equivalent), generate row
+> the syntax row specifies two inputs for the program: 
+> 
+>         a VARNAME which is your variable 
+>         a CONDITION which is a string of some condition you impose 
+>         
+> the program qui counts if variable and condition and returns the qui counts
+> column percentages are then automatically generated
+> this is then written to the text file 'tablecontent' 
+> the number followed by space, brackets, formatted pct, end bracket and then t
+> ab
+> 
+> the format %3.1f specifies length of 3, followed by 1 dp. 
+> 
+> */ 
+. 
+. *****************************************************************************
+> ***
+. * Generic code to output one section (varible) within table (calls above)
+. 
+. cap prog drop tabulatevariable
+
+. prog define tabulatevariable
+  1. syntax, variable(varname) min(real) max(real) [missing]
+  2. 
+.         local lab: variable label `variable'
+  3.         file write tablecontent ("`lab'") _n 
+  4. 
+.         forvalues varlevel = `min'/`max'{ 
+  5.                 generaterow, variable(`variable') condition("==`varlevel'"
+> )
+  6.         }
+  7.         
+.         if "`missing'"!="" generaterow, variable(`variable') condition("== 12
+> ")
+  8.         
+. 
+. 
+. end
+
+. 
+. *****************************************************************************
+> ***
+. 
+. /* Explanatory Notes 
+> 
+> defines program tabulate variable 
+> syntax is : 
+> 
+>         - a VARNAME which you stick in variable 
+>         - a numeric minimum 
+>         - a numeric maximum 
+>         - optional missing option, default value is . 
+> 
+> forvalues lowest to highest of the variable, manually set for each var
+> run the generate row program for the level of the variable 
+> if there is a missing specified, then run the generate row for missing vals
+> 
+> */ 
+. 
+. *****************************************************************************
+> ***
+. * Generic code to qui summarize a continous variable 
+. 
+. cap prog drop summarizevariable 
+
+. prog define summarizevariable
+  1. syntax, variable(varname) 
+  2. 
+.         local lab: variable label `variable'
+  3.         file write tablecontent ("`lab'") _n 
+  4. 
+. 
+.         qui summarize `variable', d
+  5.         file write tablecontent ("Mean (SD)") _tab 
+  6.         file write tablecontent  %3.1f (r(mean)) (" (") %3.1f (r(sd)) (")"
+> ) _tab
+  7.         
+.         forvalues i=1/6{                                                     
+>    
+  8.         qui summarize `variable' if eth5 == `i', d
+  9.         file write tablecontent  %3.1f (r(mean)) (" (") %3.1f (r(sd)) (")"
+> ) _tab
+ 10.         }
+ 11. 
+. file write tablecontent _n
+ 12. 
+.         
+.         qui summarize `variable', d
+ 13.         file write tablecontent ("Median (IQR)") _tab 
+ 14.         file write tablecontent %3.1f (r(p50)) (" (") %3.1f (r(p25)) ("-")
+>  %3.1f (r(p75)) (")") _tab
+ 15.         
+.         forvalues i=1/6{
+ 16.         qui summarize `variable' if eth5 == `i', d
+ 17.         file write tablecontent %3.1f (r(p50)) (" (") %3.1f (r(p25)) ("-")
+>  %3.1f (r(p75)) (")") _tab
+ 18.         }
+ 19.         
+. file write tablecontent _n
+ 20.         
+. end
+
+. 
+. 
+. /* INVOKE PROGRAMS FOR TABLE 1===============================================
+> =*/ 
+. 
+. *Set up output file
+. cap file close tablecontent
+
+. file open tablecontent using ./output/table3_region.txt, write text replace
+(note: file ./output/table3_region.txt not found)
+
+. 
+. file write tablecontent ("Table 3: Regional breakdown of ethnicity and COVID-
+> 19 death") _n
+
+. 
+. * eth5 labelled columns
+. 
+. local lab1: label eth5 1
+
+. local lab2: label eth5 2
+
+. local lab3: label eth5 3
+
+. local lab4: label eth5 4
+
+. local lab5: label eth5 5
+
+. local lab6: label eth5 6
+
+. 
+. 
+. 
+. file write tablecontent _tab ("Total")                                       
+>              _tab ///
+>                                                          ("`lab1'")          
+>                                      _tab ///
+>                                                          ("`lab2'")          
+>                                      _tab ///
+>                                                          ("`lab3'")          
+>                                      _tab ///
+>                                                          ("`lab4'")          
+>                                      _tab ///
+>                                                          ("`lab5'")          
+>                                      _tab ///
+>                                                          ("`lab6'")          
+>                                      _n                                      
+>                
+
+.                                                          
+. 
+. 
+. gen byte Denominator=1
+
+. qui tabulatevariable, variable(Denominator) min(1) max(1) 
+
+. file write tablecontent _n 
+
+. 
+. encode region, gen(region2)
+
+. 
+. qui tabulatevariable, variable(region2) min(1) max(8) 
+
+. file write tablecontent _n 
+
+. 
+. *covid deaths by region
+. preserve
+
+. keep if onscoviddeath==1
+(6,687 observations deleted)
+
+. file write tablecontent "COVID-19 deaths by region" _n
+
+. qui tabulatevariable, variable(region2) min(1) max(8) 
+
+. file write tablecontent _n 
+
+. restore
+
+. 
+. preserve
+
+. keep if onsdeath==1
+(6,677 observations deleted)
+
+. file write tablecontent "All deaths by region" _n
+
+. qui tabulatevariable, variable(region2) min(1) max(8) 
+
+. file write tablecontent _n 
+
+. restore
+
+. 
+. file close tablecontent
+
+. 
+. 
+. * Close log file 
+. log close
+      name:  <unnamed>
+       log:  /workspace/logs/05_region_check.log
+  log type:  text
+ closed on:   6 Jan 2021, 13:01:37
+-------------------------------------------------------------------------------

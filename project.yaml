@@ -1,0 +1,66 @@
+version: "3.0"
+
+expectations:
+  population_size: 100000
+
+actions:
+  generate_cohorts:
+    run: cohortextractor:latest generate_cohort --study-definition study_definition
+    outputs:
+      highly_sensitive:
+        cohort: output/input.csv
+
+
+  crmain:
+    run: stata-mp:latest analysis/01_eth_cr_analysis_dataset.do
+    needs: [generate_cohorts]
+    outputs:
+      highly_sensitive:
+        data: output/analysis_dataset.dta
+        stsettested: output/analysis_dataset_STSET_tested.dta
+        stsetpositiivetest: output/analysis_dataset_STSET_positivetest.dta
+        stseticu: output/analysis_dataset_STSET_icu.dta
+        stsethes: output/analysis_dataset_STSET_hes.dta
+        stsetonscoviddeath: output/analysis_dataset_STSET_onscoviddeath.dta
+        stsetons_noncoviddeath: output/analysis_dataset_STSET_ons_noncoviddeath.dta
+        stsetonsdeath: output/analysis_dataset_STSET_onsdeath.dta 
+      moderately_sensitive:
+        log: logs/01_eth_cr_analysis_dataset.log
+
+  check_region:
+    run: stata-mp:latest analysis/02b_eth_region_check.do
+    needs: [crmain]
+    outputs:
+      moderately_sensitive:
+        log: logs/02b_region_check.log
+        table: output/table0_region.txt
+
+  sens_nostp_eth16:
+    run: stata-mp:latest analysis/07a_eth_sensanalysis_nostp_eth16.do
+    needs: [crmain]
+    outputs:
+      moderately_sensitive:
+        log: logs/07a_eth_sensanalysis_nostp_eth16.log
+        table: output/sens_nostp_eth16.txt
+        estout: output/estout_sens_nostp_eth16.txt
+        graph: output/FP_sens_nostp_eth16.txt
+
+
+  sens_nostp_eth5:
+    run: stata-mp:latest analysis/07b_eth_sensanalysis_nostp_eth5.do
+    needs: [crmain]
+    outputs:
+      moderately_sensitive:
+        log: logs/07b_eth_sensanalysis_nostp_eth5.log
+        table: output/sens_nostp_eth5.txt
+        estout: output/estout_sens_nostp_eth5.txt
+        graph: output/FP_sens_nostp_eth5.txt
+
+sens_region_eth16:
+    run: stata-mp:latest analysis/07c_eth_ruralurban_eteh16.do
+    needs: [crmain]
+    outputs:
+      moderately_sensitive:
+        log: logs/07c_eth_sensanalysis_ruralurban_eth5.log
+        estout: output/estout_sens_ruralurban_eth5.txt
+

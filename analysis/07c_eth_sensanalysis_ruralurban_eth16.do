@@ -12,19 +12,23 @@ OTHER OUTPUT: 			logfiles, printed to folder analysis/$logdir
 						table2, printed to $Tabfigdir
 						complete case analysis	
 ==============================================================================*/
+sysdir set PLUS ./analysis/adofiles
+adopath + ./analysis/adofiles
+sysdir
+
+global outcomes "tested positivetest icu hes onscoviddeath ons_noncoviddeath onsdeath"
 
 * Open a log file
-
 cap log close
 macro drop hr
-log using "$Logdir/07c_eth_sensanalysis_ruralurban_eth16", replace t 
+log using ./logs/07c_eth_sensanalysis_ruralurban_eth16, replace t 
 
 
-foreach i of global alloutcomes {
+foreach i of global outcomes {
 	di "`i'"
 	
 * Open Stata dataset
-use "$Tempdir/analysis_dataset_STSET_`i'.dta", clear
+use ./output/analysis_dataset_STSET_`i'.dta, clear
 drop if carehome==1
 
 gen urban=0 if rural_urban=="rural"
@@ -97,7 +101,7 @@ stcox i.ethnicity_16 i.male age1 age2 age3 	i.imd						///
 										i.hh_total_cat if urban==1, strata(stp) nolog		
 eststo model_urban
 /* Estout================================================================*/ 
-esttab model_adj model_rural model_urban using "$Tabfigdir/estout_sens_ruralurban_eth16.txt", b(a2) ci(2) label wide compress eform ///
+esttab model_adj model_rural model_urban using ./output/estout_sens_ruralurban_eth16.txt, b(a2) ci(2) label wide compress eform ///
 	title ("`i'") ///
 	varlabels(`e(labels)') ///
 	stats(N_sub) ///
@@ -108,4 +112,3 @@ eststo clear
 * Close log file 
 log close
 
-insheet using "$Tabfigdir/estout_sens_ruralurban_eth16.txt", clear

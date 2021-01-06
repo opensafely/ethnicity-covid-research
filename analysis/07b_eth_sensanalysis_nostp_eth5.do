@@ -12,25 +12,31 @@ OTHER OUTPUT: 			logfiles, printed to folder analysis/$logdir
 						table2, printed to $Tabfigdir
 						complete case analysis	
 ==============================================================================*/
+sysdir set PLUS ./analysis/adofiles
+adopath + ./analysis/adofiles
+sysdir
+
+global outcomes "tested positivetest icu hes onscoviddeath ons_noncoviddeath onsdeath"
+
 
 * Open a log file
 
 cap log close
 macro drop hr
-log using "$Logdir/07b_eth_sensanalysis_no_stp", replace t 
+log using ./logs/07a_eth_sensanalysis_nostp_eth5, replace t 
 
 cap file close tablecontent
-file open tablecontent using $Tabfigdir/sens_eth5_nostp.txt, write text replace
+file open tablecontent using ./output/sens_nostp_eth5.txt, write text replace
 file write tablecontent ("Table 2: Association between ethnicity in 16 categories and COVID-19 outcomes - no STP") _n
 file write tablecontent _tab ("Denominator") _tab ("Event") _tab ("Total person-weeks") _tab ("Rate per 1,000") _tab ("with stp") _tab _tab ("without stp")   _tab _tab  _n
 file write tablecontent _tab _tab _tab _tab _tab   ("HR") _tab ("95% CI") _tab  ("HR") _tab ("95% CI")  _tab _tab _n
 
 
-foreach i of global alloutcomes {
+foreach i of global outcomes {
 	di "`i'"
 	
 * Open Stata dataset
-use "$Tempdir/analysis_dataset_STSET_`i'.dta", clear
+use ./output/analysis_dataset_STSET_`i'.dta, clear
 drop if carehome==1
 
 
@@ -57,11 +63,11 @@ stcox i.eth5 i.male age1 age2 age3 	i.imd						///
 										i.immunosuppressed	 		///
 										i.ra_sle_psoriasis			///
 										i.hh_total_cat, strata(stp) nolog		
-estimates save "$Tempdir/modela_`i'_eth5", replace
+estimates save ./output/model/modela_`i'_eth5, replace
 eststo modela
 
-parmest, label eform format(estimate p lb ub) saving("$Tempdir/modela_`i'_eth5", replace) idstr("modela_`i'_eth5") 
-local hr "`hr' "$Tempdir/modela_`i'_eth5" "
+parmest, label eform format(estimate p lb ub) saving(./output/model/modela_`i'_eth5, replace) idstr(modela_`i'_eth5) 
+local hr "`hr' ./output/model/modela_`i'_eth5 "
 
 
 * without strata
@@ -84,14 +90,14 @@ stcox i.eth5 i.male age1 age2 age3 	i.imd						///
 										i.immunosuppressed	 		///
 										i.ra_sle_psoriasis			///
 										i.hh_total_cat,  nolog		
-estimates save "$Tempdir/modelb_`i'_eth5", replace
+estimates save ./output/model/modelb_`i'_eth5, replace
 eststo modelb
 
-parmest, label eform format(estimate p lb ub) saving("$Tempdir/modelb_`i'_eth5", replace) idstr("modelb_`i'_eth5") 
-local hr "`hr' "$Tempdir/modelb_`i'_eth5" "
+parmest, label eform format(estimate p lb ub) saving(./output/model/modelb_`i'_eth5, replace) idstr(modelb_`i'_eth5) 
+local hr "`hr' ./output/model/modelb_`i'_eth5 "
 
 /* Estout================================================================*/ 
-esttab modela modelb using "$Tabfigdir/estout_sens_eth5_nostp.txt", b(a2) ci(2) label wide compress eform ///
+esttab modela modelb using ./output/estout_sens_nostp_eth5.txt, b(a2) ci(2) label wide compress eform ///
 	title ("`i'") ///
 	varlabels(`e(labels)') ///
 	stats(N_sub) ///
@@ -114,7 +120,6 @@ local lab3: label eth5 3
 local lab4: label eth5 4
 local lab5: label eth5 5
 local lab6: label eth5 6
-
 
 /* counts */
  
@@ -141,11 +146,11 @@ forvalues eth=2/6 {
 	local person_week = r(mean)/7
 	local rate = 1000*(`event'/`person_week')
 	file write tablecontent  ("`lab`eth''") _tab (`denominator') _tab (`event') _tab %10.0f (`person_week') _tab %3.2f (`rate') _tab  
-	cap estimates use "$Tempdir/modela_`i'_eth5" 
+	cap estimates use ./output/model/modela_`i'_eth5 
 	 cap lincom `eth'.eth5, eform
 	file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (" - ") %4.2f (r(ub)) (")") _tab 
 	cap estimates clear
-	cap estimates use "$Tempdir/modelb_`i'_eth5" 
+	cap estimates use ./output/model/modelb_`i'_eth5 
 	 cap lincom `eth'.eth5, eform
 	file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (" - ") %4.2f (r(ub)) (")") _n
 }  //end ethnic group
@@ -165,11 +170,5 @@ drop idstr idstr3
 tab model
 
 *save dataset for later
-outsheet using "$Tabfigdir/FP_sens_eth5_nostp.txt", replace
-
-* Close log file 
-log close
-
-insheet using $Tabfigdir/estout_sens_eth5_nostp.txt, clear
-insheet using $Tabfigdir/sens_eth5_nostp.txt, clear
+outsheet using ./output/FP_sens_nostp_eth5.txt, replace
 

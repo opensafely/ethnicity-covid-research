@@ -1,0 +1,2011 @@
+-------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /workspace/logs/04b_eth_an_multivariable_eth5.log
+  log type:  text
+ opened on:   6 Jan 2021, 13:03:01
+
+. cap file close tablecontent
+
+. file open tablecontent using ./output/table2_eth5.txt, write text replace
+(note: file ./output/table2_eth5.txt not found)
+
+. 
+. file write tablecontent ("Table 2: Association between ethnicity in 5 categor
+> ies and COVID-19 outcomes - No care homes") _n
+
+. file write tablecontent _tab ("Denominator") _tab ("Event") _tab ("Total pers
+> on-weeks") _tab ("Rate per 1,000") _tab ("Crude") _tab _tab ("Age/Sex Adjuste
+> d") _tab _tab ("Age/Sex/IMD Adjusted") _tab _tab      ("plus co-morbidities")
+>  _tab _tab       ("plus hh size")  _tab _tab  _n
+
+. file write tablecontent _tab _tab _tab _tab _tab   ("HR") _tab ("95% CI") _ta
+> b ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% C
+> I") _tab ("HR") _tab ("95% CI") _tab _tab _n
+
+. 
+. 
+. 
+. foreach i of global outcomes {
+  2. use ./output/analysis_dataset_STSET_`i'.dta, clear
+  3. drop if carehome==1
+  4. safetab eth5 `i', missing row
+  5. } //end outcomes
+(1,170 observations deleted)
+
+**TABLE OF eth5 tested REDACTED DUE TO SMALL N**
+
+(1,170 observations deleted)
+
+**TABLE OF eth5 positivetest REDACTED DUE TO SMALL N**
+
+(1,170 observations deleted)
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+            |  outcome
+      Eth 5 |    icu
+ categories |         0 |     Total
+------------+-----------+----------
+      White |     1,050 |     1,050 
+            |    100.00 |    100.00 
+------------+-----------+----------
+South Asian |       975 |       975 
+            |    100.00 |    100.00 
+------------+-----------+----------
+      Black |       998 |       998 
+            |    100.00 |    100.00 
+------------+-----------+----------
+      Mixed |     1,011 |     1,011 
+            |    100.00 |    100.00 
+------------+-----------+----------
+      Other |       994 |       994 
+            |    100.00 |    100.00 
+------------+-----------+----------
+    Unknown |     1,660 |     1,660 
+            |    100.00 |    100.00 
+------------+-----------+----------
+      Total |     6,688 |     6,688 
+            |    100.00 |    100.00 
+(1,170 observations deleted)
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+      Eth 5 |      outcome hes
+ categories |         0          1 |     Total
+------------+----------------------+----------
+      White |       914        136 |     1,050 
+            |     87.05      12.95 |    100.00 
+------------+----------------------+----------
+South Asian |       840        135 |       975 
+            |     86.15      13.85 |    100.00 
+------------+----------------------+----------
+      Black |       872        126 |       998 
+            |     87.37      12.63 |    100.00 
+------------+----------------------+----------
+      Mixed |       867        144 |     1,011 
+            |     85.76      14.24 |    100.00 
+------------+----------------------+----------
+      Other |       862        132 |       994 
+            |     86.72      13.28 |    100.00 
+------------+----------------------+----------
+    Unknown |     1,421        239 |     1,660 
+            |     85.60      14.40 |    100.00 
+------------+----------------------+----------
+      Total |     5,776        912 |     6,688 
+            |     86.36      13.64 |    100.00 
+(1,170 observations deleted)
+
+**TABLE OF eth5 onscoviddeath REDACTED DUE TO SMALL N**
+
+(1,170 observations deleted)
+
+**TABLE OF eth5 ons_noncoviddeath REDACTED DUE TO SMALL N**
+
+(1,170 observations deleted)
+
+**TABLE OF eth5 onsdeath REDACTED DUE TO SMALL N**
+
+
+. 
+. foreach i of global outcomes {
+  2.         di "`i'"
+  3.         
+. * Open Stata dataset
+. use ./output/analysis_dataset_STSET_`i'.dta, clear
+  4. drop if carehome==1
+  5. 
+. 
+. /* Main Model================================================================
+> =*/
+. 
+. /* Univariable model */ 
+. 
+. stcox i.eth5, strata(stp) nolog
+  6. estimates save ./output/model/crude_`i'_eth5, replace 
+  7. eststo model1
+  8. parmest, label eform format(estimate p lb ub) saving(./output/model/crude_
+> `i'_eth5, replace) idstr(crude_`i'_eth5) 
+  9. local hr "`hr' ./output/model/crude_`i'_eth5 "
+ 10. 
+. 
+. /* Multivariable models */ 
+. *Age and gender
+. stcox i.eth5 i.male age1 age2 age3, strata(stp) nolog
+ 11. estimates save ./output/model/model0_`i'_eth5, replace 
+ 12. eststo model2
+ 13. 
+. parmest, label eform format(estimate p lb ub) saving(./output/model/model0_`i
+> '_eth5, replace) idstr(model0_`i'_eth5)
+ 14. local hr "`hr' ./output/model/model0_`i'_eth5 "
+ 15.  
+. 
+. * Age, Gender, IMD
+. 
+. stcox i.eth5 i.male age1 age2 age3 i.imd, strata(stp) nolog
+ 16. if _rc==0{
+ 17. estimates
+ 18. estimates save ./output/model/model1_`i'_eth5, replace 
+ 19. eststo model3
+ 20. 
+. parmest, label eform format(estimate p lb ub) saving(./output/model/model1_`i
+> '_eth5, replace) idstr(model1_`i'_eth5) 
+ 21. local hr "`hr' ./output/model/model1_`i'_eth5 "
+ 22. }
+ 23. else di "WARNING MODEL1 DID NOT FIT (OUTCOME `i')"
+ 24. 
+. * Age, Gender, IMD and Comorbidities 
+. stcox i.eth5 i.male age1 age2 age3      i.imd                                
+>            ///
+>                                                                              
+>    i.bmicat_sa     i.hba1ccat                      ///
+>                                                                              
+>    gp_consult_count                        ///
+>                                                                              
+>    i.smoke_nomiss                          ///
+>                                                                              
+>    i.hypertension i.bp_cat         ///     
+>                                                                              
+>    i.asthma                                        ///
+>                                                                              
+>    i.chronic_respiratory_disease ///
+>                                                                              
+>    i.chronic_cardiac_disease       ///
+>                                                                              
+>    i.dm_type                                       ///     
+>                                                                              
+>    i.cancer                    ///
+>                                                                              
+>    i.chronic_liver_disease         ///
+>                                                                              
+>    i.stroke                                        ///
+>                                                                              
+>    i.dementia                                      ///
+>                                                                              
+>    i.other_neuro                           ///
+>                                                                              
+>    i.egfr60                                        ///
+>                                                                              
+>    i.esrf                                          ///
+>                                                                              
+>    i.immunosuppressed                      ///
+>                                                                              
+>    i.ra_sle_psoriasis, strata(stp) nolog           
+ 25. if _rc==0{
+ 26. estimates
+ 27. estimates save ./output/model/model2_`i'_eth5, replace 
+ 28. eststo model4
+ 29. 
+. parmest, label eform format(estimate p lb ub) saving(./output/model/model2_`i
+> '_eth5, replace) idstr(model2_`i'_eth5) 
+ 30. local hr "`hr' ./output/model/model2_`i'_eth5 "
+ 31. }
+ 32. else di "WARNING MODEL2 DID NOT FIT (OUTCOME `i')"
+ 33. 
+.                                                                              
+>    
+. * Age, Gender, IMD and Comorbidities  and household size 
+. stcox i.eth5 i.male age1 age2 age3      i.imd                                
+>            ///
+>                                                                              
+>    i.bmicat_sa     i.hba1ccat                      ///
+>                                                                              
+>    gp_consult_count                        ///
+>                                                                              
+>    i.smoke_nomiss                          ///
+>                                                                              
+>    i.hypertension i.bp_cat         ///     
+>                                                                              
+>    i.asthma                                        ///
+>                                                                              
+>    i.chronic_respiratory_disease ///
+>                                                                              
+>    i.chronic_cardiac_disease       ///
+>                                                                              
+>    i.dm_type                                       ///     
+>                                                                              
+>    i.cancer                    ///
+>                                                                              
+>    i.chronic_liver_disease         ///
+>                                                                              
+>    i.stroke                                        ///
+>                                                                              
+>    i.dementia                                      ///
+>                                                                              
+>    i.other_neuro                           ///
+>                                                                              
+>    i.egfr60                                        ///
+>                                                                              
+>    i.esrf                                          ///
+>                                                                              
+>    i.immunosuppressed                      ///
+>                                                                              
+>    i.ra_sle_psoriasis                      ///
+>                                                                              
+>    i.hh_total_cat, strata(stp) nolog               
+ 34. estimates save ./output/model/model3_`i'_eth5, replace
+ 35. eststo model5
+ 36. 
+. parmest, label eform format(estimate p lb ub) saving(./output/model/model3_`i
+> '_eth5, replace) idstr(model3_`i'_eth5) 
+ 37. local hr "`hr' ./output/model/model3_`i'_eth5 "
+ 38. 
+. 
+. 
+. /* Estout================================================================*/ 
+. esttab model1 model2 model3 model4 model5 using ./output/estout_table2_eth5.t
+> xt, b(a2) ci(2) label wide compress eform ///
+>         title ("`i'") ///
+>         varlabels(`e(labels)') ///
+>         stats(N_sub) ///
+>         append 
+ 39. eststo clear
+ 40. 
+.                                                                              
+>    
+. /* Print table===============================================================
+> =*/ 
+. *  Print the results for the main model 
+. 
+. 
+. * Column headings 
+. file write tablecontent ("`i'") _n
+ 41. 
+. * eth5 labelled columns
+. 
+. local lab1: label eth5 1
+ 42. local lab2: label eth5 2
+ 43. local lab3: label eth5 3
+ 44. local lab4: label eth5 4
+ 45. local lab5: label eth5 5
+ 46. local lab6: label eth5 6
+ 47. 
+. /* counts */
+.  
+. * First row, eth5 = 1 (White British) reference cat
+.         qui safecount if eth5==1
+ 48.         local denominator = r(N)
+ 49.         qui safecount if eth5 == 1 & `i' == 1
+ 50.         local event = r(N)
+ 51.     bysort eth5: egen total_follow_up = total(_t)
+ 52.         qui su total_follow_up if eth5 == 1
+ 53.         local person_week = r(mean)/7
+ 54.         local rate = 1000*(`event'/`person_week')
+ 55.         
+.         file write tablecontent  ("`lab1'") _tab (`denominator') _tab (`event
+> ') _tab %10.0f (`person_week') _tab %3.2f (`rate') _tab
+ 56.         file write tablecontent ("1.00") _tab _tab ("1.00") _tab _tab ("1.
+> 00")  _tab _tab ("1.00") _tab _tab ("1.00") _n
+ 57.         
+. * Subsequent ethnic groups
+. forvalues eth=2/6 {
+ 58.         qui safecount if eth5==`eth'
+ 59.         local denominator = r(N)
+ 60.         qui safecount if eth5 == `eth' & `i' == 1
+ 61.         local event = r(N)
+ 62.         qui su total_follow_up if eth5 == `eth'
+ 63.         local person_week = r(mean)/7
+ 64.         local rate = 1000*(`event'/`person_week')
+ 65.         file write tablecontent  ("`lab`eth''") _tab (`denominator') _tab 
+> (`event') _tab %10.0f (`person_week') _tab %3.2f (`rate ') _tab  
+ 66.         cap estimates use ./output/model/crude_`i'_eth5 
+ 67.          cap lincom `eth'.eth5, eform
+ 68.         file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(l
+> b)) (" - ") %4.2f (r(ub)) (")") _tab 
+ 69.         cap estimates clear
+ 70.         cap estimates use ./output/model/model0_`i'_eth5 
+ 71.          cap lincom `eth'.eth5, eform
+ 72.         file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(l
+> b)) (" - ") %4.2f (r(ub)) (")") _tab 
+ 73.         cap estimates clear
+ 74.         cap estimates use ./output/model/model1_`i'_eth5 
+ 75.          cap lincom `eth'.eth5, eform
+ 76.         file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(l
+> b)) (" - ") %4.2f (r(ub)) (")") _tab 
+ 77.         cap estimates clear
+ 78.         cap estimates use ./output/model/model2_`i'_eth5 
+ 79.          cap lincom `eth'.eth5, eform
+ 80.         file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(l
+> b)) (" - ") %4.2f (r(ub)) (")") _tab 
+ 81.         cap estimates clear
+ 82.         cap estimates use ./output/model/model3_`i'_eth5 
+ 83.          cap lincom `eth'.eth5, eform
+ 84.         file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(l
+> b)) (" - ") %4.2f (r(ub)) (")") _n
+ 85. }  //end ethnic group
+ 86. 
+. 
+. } //end outcomes
+tested
+(1,170 observations deleted)
+
+         failure _d:  tested
+   analysis time _t:  (stime_tested-origin)
+             origin:  time indexdate
+  enter on or after:  time indexdate
+                 id:  patient_id
+
+Stratified Cox regr. -- no ties
+
+No. of subjects =        6,688                  Number of obs    =       6,688
+No. of failures =            8
+Time at risk    =      1885747
+                                                LR chi2(5)       =       10.12
+Log likelihood  =   -47.106391                  Prob > chi2      =      0.0718
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |   .5387046   .6599868    -0.50   0.614     .0488104    5.945507
+      Black  |   4.80e-17   4.95e-09    -0.00   1.000            0           .
+      Mixed  |   4.80e-17   4.93e-09    -0.00   1.000            0           .
+      Other  |   2.134014   1.851329     0.87   0.382     .3897189    11.68539
+    Unknown  |   .3068381   .3759504    -0.96   0.335      .027796     3.38716
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+(note: file ./output/model/crude_tested_eth5.ster not found)
+file ./output/model/crude_tested_eth5.ster saved
+(note: file ./output/model/crude_tested_eth5.dta not found)
+file ./output/model/crude_tested_eth5.dta saved
+
+         failure _d:  tested
+   analysis time _t:  (stime_tested-origin)
+             origin:  time indexdate
+  enter on or after:  time indexdate
+                 id:  patient_id
+
+Stratified Cox regr. -- no ties
+
+No. of subjects =        6,688                  Number of obs    =       6,688
+No. of failures =            8
+Time at risk    =      1885747
+                                                LR chi2(9)       =       13.70
+Log likelihood  =   -45.315951                  Prob > chi2      =      0.1333
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |   .5639262   .6913578    -0.47   0.640     .0510121     6.23407
+      Black  |   2.97e-19   3.73e-10    -0.00   1.000            0           .
+      Mixed  |   3.46e-19   4.29e-10    -0.00   1.000            0           .
+      Other  |   2.237661   1.947429     0.93   0.355     .4064398    12.31948
+    Unknown  |   .3040805   .3727464    -0.97   0.331     .0275152    3.360502
+             |
+        male |
+       Male  |   .6193602   .4527094    -0.66   0.512     .1478339    2.594853
+        age1 |   1.146836   .2123049     0.74   0.459     .7978569    1.648457
+        age2 |   .7735711   .3945039    -0.50   0.615     .2847125    2.101813
+        age3 |    1.74679   2.162075     0.45   0.652     .1544092    19.76097
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+(note: file ./output/model/model0_tested_eth5.ster not found)
+file ./output/model/model0_tested_eth5.ster saved
+(note: file ./output/model/model0_tested_eth5.dta not found)
+file ./output/model/model0_tested_eth5.dta saved
+
+         failure _d:  tested
+   analysis time _t:  (stime_tested-origin)
+             origin:  time indexdate
+  enter on or after:  time indexdate
+                 id:  patient_id
+
+Stratified Cox regr. -- no ties
+
+No. of subjects =        6,688                  Number of obs    =       6,688
+No. of failures =            8
+Time at risk    =      1885747
+                                                LR chi2(11)      =       15.34
+Log likelihood  =   -44.499149                  Prob > chi2      =      0.1676
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |   .5745832   .7047192    -0.45   0.651     .0519236    6.358302
+      Black  |   3.51e-16   1.34e-08    -0.00   1.000            0           .
+      Mixed  |   3.95e-16   1.47e-08    -0.00   1.000            0           .
+      Other  |   2.319643   2.023286     0.96   0.335     .4197289    12.81957
+    Unknown  |   .3290661   .4041761    -0.90   0.365     .0296342    3.654038
+             |
+        male |
+       Male  |   .6283487    .459663    -0.64   0.525        .1498    2.635662
+        age1 |   1.153983   .2138923     0.77   0.440     .8024685    1.659475
+        age2 |   .7589288   .3884918    -0.54   0.590     .2782757    2.069792
+        age3 |   1.827158   2.275197     0.48   0.628     .1591661    20.97498
+             |
+         imd |
+          4  |   1.577548   1.372507     0.52   0.600     .2866921    8.680598
+5 most de..  |   3.283341   2.855816     1.37   0.172      .596966    18.05853
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+
+-------------------------------------------------------------------------------
+active results
+-------------------------------------------------------------------------------
+
+Stratified Cox regr. -- no ties
+
+No. of subjects =        6,688                  Number of obs    =       6,688
+No. of failures =            8
+Time at risk    =      1885747
+                                                LR chi2(11)      =       15.34
+Log likelihood  =   -44.499149                  Prob > chi2      =      0.1676
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |   .5745832   .7047192    -0.45   0.651     .0519236    6.358302
+      Black  |   3.51e-16   1.34e-08    -0.00   1.000            0           .
+      Mixed  |   3.95e-16   1.47e-08    -0.00   1.000            0           .
+      Other  |   2.319643   2.023286     0.96   0.335     .4197289    12.81957
+    Unknown  |   .3290661   .4041761    -0.90   0.365     .0296342    3.654038
+             |
+        male |
+       Male  |   .6283487    .459663    -0.64   0.525        .1498    2.635662
+        age1 |   1.153983   .2138923     0.77   0.440     .8024685    1.659475
+        age2 |   .7589288   .3884918    -0.54   0.590     .2782757    2.069792
+        age3 |   1.827158   2.275197     0.48   0.628     .1591661    20.97498
+             |
+         imd |
+          4  |   1.577548   1.372507     0.52   0.600     .2866921    8.680598
+5 most de..  |   3.283341   2.855816     1.37   0.172      .596966    18.05853
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+(note: file ./output/model/model1_tested_eth5.ster not found)
+file ./output/model/model1_tested_eth5.ster saved
+(note: file ./output/model/model1_tested_eth5.dta not found)
+file ./output/model/model1_tested_eth5.dta saved
+
+         failure _d:  tested
+   analysis time _t:  (stime_tested-origin)
+             origin:  time indexdate
+  enter on or after:  time indexdate
+                 id:  patient_id
+
+Stratified Cox regr. -- no ties
+
+No. of subjects =        6,688                  Number of obs    =       6,688
+No. of failures =            8
+Time at risk    =      1885747
+                                                LR chi2(36)      =       44.72
+Log likelihood  =   -29.807483                  Prob > chi2      =      0.1510
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |   .5687336   .7446272    -0.43   0.666     .0436973    7.402247
+      Black  |   9.48e-20   2.11e-10    -0.00   1.000            0           .
+      Mixed  |   3.53e-20          .        .       .            .           .
+      Other  |   2.661694    2.60592     1.00   0.317     .3906546    18.13524
+    Unknown  |   .3405367   .4690341    -0.78   0.434     .0228966    5.064729
+             |
+        male |
+       Male  |   .6536705   .5354333    -0.52   0.604     .1312575    3.255319
+        age1 |   1.145129   .2219517     0.70   0.484        .7832    1.674312
+        age2 |    .783335   .4258036    -0.45   0.653     .2699312    2.273222
+        age3 |   1.664284    2.21081     0.38   0.701     .1231697    22.48801
+             |
+         imd |
+          4  |   1.117374   1.074638     0.12   0.908     .1696497    7.359428
+5 most de..  |   3.927037   4.111617     1.31   0.191      .504493    30.56855
+             |
+   bmicat_sa |
+Normal (..)  |   6.40e-10   1.402851    -0.00   1.000            0           .
+Overweig..)  |   4.55e+09   6.25e+09    16.19   0.000     3.08e+08    6.72e+10
+Obese I ..)  |   2.94e+09   3.90e+09    16.40   0.000     2.17e+08    3.98e+10
+Obese II..)  |   4.44e+09   6.07e+09    16.24   0.000     3.04e+08    6.48e+10
+Obese II..)  |   1.09e+09          .        .       .            .           .
+    Unknown  |   3.01e+09   4.64e+09    14.17   0.000     1.47e+08    6.16e+10
+             |
+    hba1ccat |
+  >=6.5-7.4  |   9.61e-20   1.82e-10    -0.00   1.000            0           .
+  >=7.5-7.9  |   2.86e-19   6.77e-10    -0.00   1.000            0           .
+    >=8-8.9  |   1.37e-19   3.24e-10    -0.00   1.000            0           .
+        >=9  |   1.92e-19   4.11e-10    -0.00   1.000            0           .
+    Unknown  |   1.60e-18          .        .       .            .           .
+             |
+gp_consult~t |   1.347107   .2486342     1.61   0.106     .9382028    1.934227
+             |
+smoke_nomiss |
+     Former  |   2.16e-19          .        .       .            .           .
+    Current  |   5.09e-20   1.42e-10    -0.00   1.000            0           .
+             |
+1.hyperten~n |   .7342662   .8483691    -0.27   0.789     .0762742    7.068534
+             |
+      bp_cat |
+High, sta..  |   61151.31   59643.29    11.30   0.000     9040.561      413634
+    Unknown  |   168318.9          .        .       .            .           .
+             |
+    1.asthma |   6.82e-19   2.01e-09    -0.00   1.000            0           .
+1.~y_disease |   1.587752   1.416382     0.52   0.604     .2763458    9.122466
+1.~c_disease |   .3897103     .47525    -0.77   0.440      .035703    4.253813
+             |
+     dm_type |
+       T1DM  |   1.17e-19          .        .       .            .           .
+       T2DM  |   1.005529   .9339326     0.01   0.995     .1628549    6.208523
+ UNKNOWN_DM  |   1.78e-19          .        .       .            .           .
+             |
+    1.cancer |   1.93e-19   2.95e-10    -0.00   1.000            0           .
+1.~r_disease |   1.227139   1.093608     0.23   0.818     .2139517    7.038366
+    1.stroke |   .5809352   .6671447    -0.47   0.636       .06118    5.516272
+  1.dementia |   .7787846   .8787584    -0.22   0.825     .0852993    7.110318
+1.other_ne~o |   .3634943   .4416252    -0.83   0.405     .0335997    3.932419
+             |
+      egfr60 |
+   eGFR <60  |    48.9074   74.55657     2.55   0.011     2.464711    970.4724
+      1.esrf |   .4100298   .4755543    -0.77   0.442     .0422268    3.981461
+1.immunosu~d |   1.646062   1.325167     0.62   0.536     .3397694    7.974588
+1.ra_sle_p~s |   1.724927   1.573449     0.60   0.550     .2886151    10.30914
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+
+-------------------------------------------------------------------------------
+active results
+-------------------------------------------------------------------------------
+
+Stratified Cox regr. -- no ties
+
+No. of subjects =        6,688                  Number of obs    =       6,688
+No. of failures =            8
+Time at risk    =      1885747
+                                                LR chi2(36)      =       44.72
+Log likelihood  =   -29.807483                  Prob > chi2      =      0.1510
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |   .5687336   .7446272    -0.43   0.666     .0436973    7.402247
+      Black  |   9.48e-20   2.11e-10    -0.00   1.000            0           .
+      Mixed  |   3.53e-20          .        .       .            .           .
+      Other  |   2.661694    2.60592     1.00   0.317     .3906546    18.13524
+    Unknown  |   .3405367   .4690341    -0.78   0.434     .0228966    5.064729
+             |
+        male |
+       Male  |   .6536705   .5354333    -0.52   0.604     .1312575    3.255319
+        age1 |   1.145129   .2219517     0.70   0.484        .7832    1.674312
+        age2 |    .783335   .4258036    -0.45   0.653     .2699312    2.273222
+        age3 |   1.664284    2.21081     0.38   0.701     .1231697    22.48801
+             |
+         imd |
+          4  |   1.117374   1.074638     0.12   0.908     .1696497    7.359428
+5 most de..  |   3.927037   4.111617     1.31   0.191      .504493    30.56855
+             |
+   bmicat_sa |
+Normal (..)  |   6.40e-10   1.402851    -0.00   1.000            0           .
+Overweig..)  |   4.55e+09   6.25e+09    16.19   0.000     3.08e+08    6.72e+10
+Obese I ..)  |   2.94e+09   3.90e+09    16.40   0.000     2.17e+08    3.98e+10
+Obese II..)  |   4.44e+09   6.07e+09    16.24   0.000     3.04e+08    6.48e+10
+Obese II..)  |   1.09e+09          .        .       .            .           .
+    Unknown  |   3.01e+09   4.64e+09    14.17   0.000     1.47e+08    6.16e+10
+             |
+    hba1ccat |
+  >=6.5-7.4  |   9.61e-20   1.82e-10    -0.00   1.000            0           .
+  >=7.5-7.9  |   2.86e-19   6.77e-10    -0.00   1.000            0           .
+    >=8-8.9  |   1.37e-19   3.24e-10    -0.00   1.000            0           .
+        >=9  |   1.92e-19   4.11e-10    -0.00   1.000            0           .
+    Unknown  |   1.60e-18          .        .       .            .           .
+             |
+gp_consult~t |   1.347107   .2486342     1.61   0.106     .9382028    1.934227
+             |
+smoke_nomiss |
+     Former  |   2.16e-19          .        .       .            .           .
+    Current  |   5.09e-20   1.42e-10    -0.00   1.000            0           .
+             |
+1.hyperten~n |   .7342662   .8483691    -0.27   0.789     .0762742    7.068534
+             |
+      bp_cat |
+High, sta..  |   61151.31   59643.29    11.30   0.000     9040.561      413634
+    Unknown  |   168318.9          .        .       .            .           .
+             |
+    1.asthma |   6.82e-19   2.01e-09    -0.00   1.000            0           .
+1.~y_disease |   1.587752   1.416382     0.52   0.604     .2763458    9.122466
+1.~c_disease |   .3897103     .47525    -0.77   0.440      .035703    4.253813
+             |
+     dm_type |
+       T1DM  |   1.17e-19          .        .       .            .           .
+       T2DM  |   1.005529   .9339326     0.01   0.995     .1628549    6.208523
+ UNKNOWN_DM  |   1.78e-19          .        .       .            .           .
+             |
+    1.cancer |   1.93e-19   2.95e-10    -0.00   1.000            0           .
+1.~r_disease |   1.227139   1.093608     0.23   0.818     .2139517    7.038366
+    1.stroke |   .5809352   .6671447    -0.47   0.636       .06118    5.516272
+  1.dementia |   .7787846   .8787584    -0.22   0.825     .0852993    7.110318
+1.other_ne~o |   .3634943   .4416252    -0.83   0.405     .0335997    3.932419
+             |
+      egfr60 |
+   eGFR <60  |    48.9074   74.55657     2.55   0.011     2.464711    970.4724
+      1.esrf |   .4100298   .4755543    -0.77   0.442     .0422268    3.981461
+1.immunosu~d |   1.646062   1.325167     0.62   0.536     .3397694    7.974588
+1.ra_sle_p~s |   1.724927   1.573449     0.60   0.550     .2886151    10.30914
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+(note: file ./output/model/model2_tested_eth5.ster not found)
+file ./output/model/model2_tested_eth5.ster saved
+(note: file ./output/model/model2_tested_eth5.dta not found)
+file ./output/model/model2_tested_eth5.dta saved
+
+         failure _d:  tested
+   analysis time _t:  (stime_tested-origin)
+             origin:  time indexdate
+  enter on or after:  time indexdate
+                 id:  patient_id
+
+Stratified Cox regr. -- no ties
+
+No. of subjects =        6,688                  Number of obs    =       6,688
+No. of failures =            8
+Time at risk    =      1885747
+                                                LR chi2(41)      =       44.86
+Log likelihood  =    -29.73714                  Prob > chi2      =      0.3132
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |   .5633994    .735014    -0.44   0.660     .0436852    7.266055
+      Black  |   1.46e-17   2.67e-09    -0.00   1.000            0           .
+      Mixed  |   5.31e-18   1.40e-09    -0.00   1.000            0           .
+      Other  |   2.597971   2.541918     0.98   0.329     .3817666    17.67952
+    Unknown  |   .3401213   .4685656    -0.78   0.434     .0228551    5.061571
+             |
+        male |
+       Male  |   .6666945   .5458251    -0.50   0.620     .1339816    3.317481
+        age1 |   1.143981    .221396     0.70   0.487     .7828613    1.671679
+        age2 |   .7851757   .4258799    -0.45   0.656     .2711905    2.273313
+        age3 |   1.657747   2.196642     0.38   0.703      .123484     22.2549
+             |
+         imd |
+          4  |   1.133908   1.091506     0.13   0.896     .1718724    7.480824
+5 most de..  |   3.916619   4.096558     1.31   0.192     .5042009    30.42419
+             |
+   bmicat_sa |
+Normal (..)  |   8.22e-08    14.6953    -0.00   1.000            0           .
+Overweig..)  |   3.86e+09   5.30e+09    16.06   0.000     2.61e+08    5.70e+10
+Obese I ..)  |   2.49e+09   3.31e+09    16.27   0.000     1.84e+08    3.37e+10
+Obese II..)  |   3.79e+09   5.19e+09    16.11   0.000     2.59e+08    5.54e+10
+Obese II..)  |   9.26e+08          .        .       .            .           .
+    Unknown  |   2.57e+09   3.97e+09    14.03   0.000     1.25e+08    5.31e+10
+             |
+    hba1ccat |
+  >=6.5-7.4  |   1.47e-17   2.28e-09    -0.00   1.000            0           .
+  >=7.5-7.9  |   4.23e-17   8.23e-09    -0.00   1.000            0           .
+    >=8-8.9  |   2.02e-17   3.97e-09    -0.00   1.000            0           .
+        >=9  |   2.86e-17   5.01e-09    -0.00   1.000            0           .
+    Unknown  |   1.17e-17   1.64e-08    -0.00   1.000            0           .
+             |
+gp_consult~t |   1.349886   .2501685     1.62   0.105     .9387452    1.941094
+             |
+smoke_nomiss |
+     Former  |   1.22e-17   5.38e-09    -0.00   1.000            0           .
+    Current  |   7.80e-18   1.77e-09    -0.00   1.000            0           .
+             |
+1.hyperten~n |   .7358694   .8504481    -0.27   0.791     .0763946    7.088246
+             |
+      bp_cat |
+High, sta..  |   61811.65   60241.24    11.32   0.000     9151.553    417489.8
+    Unknown  |   168261.8          .        .       .            .           .
+             |
+    1.asthma |   1.01e-16   2.44e-08    -0.00   1.000            0           .
+1.~y_disease |   1.584729   1.409352     0.52   0.605     .2773022    9.056426
+1.~c_disease |   .3896002   .4756585    -0.77   0.440     .0355957    4.264238
+             |
+     dm_type |
+       T1DM  |   1.75e-17   6.30e-09    -0.00   1.000            0           .
+       T2DM  |   .9889027   .9209968    -0.01   0.990     .1593684    6.136276
+ UNKNOWN_DM  |   9.84e-18   4.29e-09    -0.00   1.000            0           .
+             |
+    1.cancer |   2.89e-17   3.62e-09    -0.00   1.000            0           .
+1.~r_disease |   1.208046   1.077315     0.21   0.832     .2103764    6.936977
+    1.stroke |   .5809058   .6657507    -0.47   0.636     .0614584    5.490736
+  1.dementia |    .770462    .871563    -0.23   0.818     .0839178    7.073731
+1.other_ne~o |   .3656539   .4439202    -0.83   0.407      .033859    3.948816
+             |
+      egfr60 |
+   eGFR <60  |   47.96939   73.02603     2.54   0.011     2.427396    947.9553
+      1.esrf |   .4261603   .4951057    -0.73   0.463     .0437181     4.15417
+1.immunosu~d |   1.659525   1.337822     0.63   0.530     .3418138    8.057083
+1.ra_sle_p~s |   1.719358    1.57282     0.59   0.554     .2862275    10.32812
+             |
+hh_total_cat |
+       6-10  |   1.75e+15          .        .       .            .           .
+        11+  |   .0466768          .        .       .            .           .
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+(note: file ./output/model/model3_tested_eth5.ster not found)
+file ./output/model/model3_tested_eth5.ster saved
+(note: file ./output/model/model3_tested_eth5.dta not found)
+file ./output/model/model3_tested_eth5.dta saved
+(note: file ./output/estout_table2_eth5.txt not found)
+(output written to ./output/estout_table2_eth5.txt)
+positivetest
+(1,170 observations deleted)
+
+         failure _d:  positivetest
+   analysis time _t:  (stime_positivetest-origin)
+             origin:  time indexdate
+  enter on or after:  time indexdate
+                 id:  patient_id
+
+Stratified Cox regr. -- no ties
+
+No. of subjects =        6,688                  Number of obs    =       6,688
+No. of failures =           11
+Time at risk    =      1885726
+                                                LR chi2(5)       =        1.85
+Log likelihood  =     -70.2498                  Prob > chi2      =      0.8697
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |   1.584715   1.446866     0.50   0.614     .2647237     9.48658
+      Black  |    .516542   .6329073    -0.54   0.590     .0467894     5.70248
+      Mixed  |   .5181837   .6347813    -0.54   0.591     .0469625    5.717629
+      Other  |   1.060746   1.061503     0.06   0.953     .1492115    7.540849
+    Unknown  |   .6433859   .6436989    -0.44   0.659     .0905432      4.5718
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+(note: file ./output/model/crude_positivetest_eth5.ster not found)
+file ./output/model/crude_positivetest_eth5.ster saved
+(note: file ./output/model/crude_positivetest_eth5.dta not found)
+file ./output/model/crude_positivetest_eth5.dta saved
+
+         failure _d:  positivetest
+   analysis time _t:  (stime_positivetest-origin)
+             origin:  time indexdate
+  enter on or after:  time indexdate
+                 id:  patient_id
+
+Stratified Cox regr. -- no ties
+
+No. of subjects =        6,688                  Number of obs    =       6,688
+No. of failures =           11
+Time at risk    =      1885726
+                                                LR chi2(9)       =        7.32
+Log likelihood  =   -67.513027                  Prob > chi2      =      0.6036
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |   1.593041   1.456572     0.51   0.611     .2654264    9.561139
+      Black  |   .4905718   .6025527    -0.58   0.562     .0441774    5.447593
+      Mixed  |   .4871768   .5982256    -0.59   0.558     .0438994    5.406473
+      Other  |   1.018845   1.022319     0.02   0.985     .1425621    7.281354
+    Unknown  |   .6075155   .6087264    -0.50   0.619     .0852431    4.329677
+             |
+        male |
+       Male  |   1.367275   .8347516     0.51   0.608     .4132174    4.524111
+        age1 |   .8334463   .0712262    -2.13   0.033     .7049107    .9854196
+        age2 |   1.860129   .6194403     1.86   0.062     .9684676    3.572737
+        age3 |   .2200076   .1947313    -1.71   0.087     .0388177    1.246941
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+(note: file ./output/model/model0_positivetest_eth5.ster not found)
+file ./output/model/model0_positivetest_eth5.ster saved
+(note: file ./output/model/model0_positivetest_eth5.dta not found)
+file ./output/model/model0_positivetest_eth5.dta saved
+
+         failure _d:  positivetest
+   analysis time _t:  (stime_positivetest-origin)
+             origin:  time indexdate
+  enter on or after:  time indexdate
+                 id:  patient_id
+
+Stratified Cox regr. -- no ties
+
+No. of subjects =        6,688                  Number of obs    =       6,688
+No. of failures =           11
+Time at risk    =      1885726
+                                                LR chi2(11)      =       12.63
+Log likelihood  =   -64.860833                  Prob > chi2      =      0.3184
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |   1.531105   1.403841     0.46   0.642     .2538367    9.235392
+      Black  |   .4610133    .566144    -0.63   0.528     .0415338    5.117116
+      Mixed  |     .47621   .5844012    -0.60   0.545     .0429745    5.276992
+      Other  |   1.016111   1.018797     0.02   0.987     .1423934    7.250913
+    Unknown  |   .5702172   .5717991    -0.56   0.575     .0798872    4.070083
+             |
+        male |
+       Male  |   1.369681   .8353015     0.52   0.606     .4144894    4.526115
+        age1 |   .8333806   .0712344    -2.13   0.033     .7048321     .985374
+        age2 |   1.864772   .6217743     1.87   0.062     .9700809    3.584622
+        age3 |   .2181929    .193391    -1.72   0.086     .0384056    1.239614
+             |
+         imd |
+          4  |   1.09e-15   1.89e-08    -0.00   1.000            0           .
+5 most de..  |   .6333303   .6665899    -0.43   0.664     .0804873    4.983483
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+
+-------------------------------------------------------------------------------
+active results
+-------------------------------------------------------------------------------
+
+Stratified Cox regr. -- no ties
+
+No. of subjects =        6,688                  Number of obs    =       6,688
+No. of failures =           11
+Time at risk    =      1885726
+                                                LR chi2(11)      =       12.63
+Log likelihood  =   -64.860833                  Prob > chi2      =      0.3184
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |   1.531105   1.403841     0.46   0.642     .2538367    9.235392
+      Black  |   .4610133    .566144    -0.63   0.528     .0415338    5.117116
+      Mixed  |     .47621   .5844012    -0.60   0.545     .0429745    5.276992
+      Other  |   1.016111   1.018797     0.02   0.987     .1423934    7.250913
+    Unknown  |   .5702172   .5717991    -0.56   0.575     .0798872    4.070083
+             |
+        male |
+       Male  |   1.369681   .8353015     0.52   0.606     .4144894    4.526115
+        age1 |   .8333806   .0712344    -2.13   0.033     .7048321     .985374
+        age2 |   1.864772   .6217743     1.87   0.062     .9700809    3.584622
+        age3 |   .2181929    .193391    -1.72   0.086     .0384056    1.239614
+             |
+         imd |
+          4  |   1.09e-15   1.89e-08    -0.00   1.000            0           .
+5 most de..  |   .6333303   .6665899    -0.43   0.664     .0804873    4.983483
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+(note: file ./output/model/model1_positivetest_eth5.ster not found)
+file ./output/model/model1_positivetest_eth5.ster saved
+(note: file ./output/model/model1_positivetest_eth5.dta not found)
+file ./output/model/model1_positivetest_eth5.dta saved
+
+         failure _d:  positivetest
+   analysis time _t:  (stime_positivetest-origin)
+             origin:  time indexdate
+  enter on or after:  time indexdate
+                 id:  patient_id
+
+Stratified Cox regr. -- no ties
+
+No. of subjects =        6,688                  Number of obs    =       6,688
+No. of failures =           11
+Time at risk    =      1885726
+                                                LR chi2(34)      =       38.76
+Log likelihood  =   -51.794688                  Prob > chi2      =      0.2636
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |   1.952639   1.894328     0.69   0.490      .291635    13.07388
+      Black  |   .5730598   .7279952    -0.44   0.661     .0475185    6.910934
+      Mixed  |   .4672936   .5898384    -0.60   0.547     .0393701    5.546431
+      Other  |   1.297736   1.352252     0.25   0.802     .1683552    10.00336
+    Unknown  |   .4711005   .4981822    -0.71   0.477     .0592898    3.743236
+             |
+        male |
+       Male  |   1.416128   .9084509     0.54   0.588     .4027668    4.979104
+        age1 |   .7610298   .0789272    -2.63   0.008     .6210444    .9325684
+        age2 |    2.45632   .9375803     2.35   0.019     1.162466    5.190266
+        age3 |   .1125286    .111906    -2.20   0.028      .016024     .790232
+             |
+         imd |
+          4  |   3.05e-20   9.39e-11    -0.00   1.000            0           .
+5 most de..  |   .6363695   .6941572    -0.41   0.679      .075026     5.39768
+             |
+   bmicat_sa |
+Normal (..)  |   1.07e-20          .        .       .            .           .
+Overweig..)  |   .4682114   .6404336    -0.55   0.579     .0320733    6.835038
+Obese I ..)  |   .1244539   .1905756    -1.36   0.174     .0061883    2.502929
+Obese II..)  |   .4558325   .6022438    -0.59   0.552     .0342138    6.073078
+Obese II..)  |   .3386119   .4369317    -0.84   0.401     .0269988    4.246781
+    Unknown  |   .0519926   .0840101    -1.83   0.067     .0021906    1.234013
+             |
+    hba1ccat |
+  >=6.5-7.4  |   .7526241   .6555197    -0.33   0.744      .136521    4.149126
+  >=7.5-7.9  |   4.65e-20          .        .       .            .           .
+    >=8-8.9  |   1.235476   1.377068     0.19   0.850     .1390211    10.97964
+        >=9  |   2.850627   3.211483     0.93   0.352     .3133189    25.93548
+    Unknown  |   1.01e-18          .        .       .            .           .
+             |
+gp_consult~t |   .9699296   .1402888    -0.21   0.833     .7305064    1.287824
+             |
+smoke_nomiss |
+     Former  |   1.17e-19          .        .       .            .           .
+    Current  |   3.125281   2.311857     1.54   0.123     .7332156     13.3213
+             |
+1.hyperten~n |   .7758908   .6376285    -0.31   0.758     .1549821    3.884361
+             |
+      bp_cat |
+High, sta..  |   3.487191    2.93164     1.49   0.137     .6712445    18.11635
+    Unknown  |   11.30507          .        .       .            .           .
+             |
+    1.asthma |   1.66e-19          .        .       .            .           .
+1.~y_disease |   .3956305   .4252449    -0.86   0.388     .0481252    3.252422
+1.~c_disease |   .4299745   .4612287    -0.79   0.431     .0525253    3.519791
+             |
+     dm_type |
+       T1DM  |   1.06e-19          .        .       .            .           .
+       T2DM  |   1.288241   .9113889     0.36   0.720     .3219584    5.154597
+ UNKNOWN_DM  |   3.22e-19          .        .       .            .           .
+             |
+    1.cancer |   1.501611   1.070363     0.57   0.568     .3713754    6.071585
+1.~r_disease |   .3051915   .3345254    -1.08   0.279     .0356087    2.615703
+    1.stroke |    1.25935   .9116862     0.32   0.750     .3047422    5.204274
+  1.dementia |   1.155178   .9387545     0.18   0.859     .2349204    5.680377
+1.other_ne~o |   1.027008    .833756     0.03   0.974     .2091911    5.042022
+             |
+      egfr60 |
+   eGFR <60  |   3.50e-19          .        .       .            .           .
+      1.esrf |   .3758183   .4050794    -0.91   0.364     .0454467    3.107805
+1.immunosu~d |   .5645477   .4030507    -0.80   0.423     .1393149    2.287724
+1.ra_sle_p~s |   3.89e-20   1.06e-10    -0.00   1.000            0           .
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+
+-------------------------------------------------------------------------------
+active results
+-------------------------------------------------------------------------------
+
+Stratified Cox regr. -- no ties
+
+No. of subjects =        6,688                  Number of obs    =       6,688
+No. of failures =           11
+Time at risk    =      1885726
+                                                LR chi2(34)      =       38.76
+Log likelihood  =   -51.794688                  Prob > chi2      =      0.2636
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |   1.952639   1.894328     0.69   0.490      .291635    13.07388
+      Black  |   .5730598   .7279952    -0.44   0.661     .0475185    6.910934
+      Mixed  |   .4672936   .5898384    -0.60   0.547     .0393701    5.546431
+      Other  |   1.297736   1.352252     0.25   0.802     .1683552    10.00336
+    Unknown  |   .4711005   .4981822    -0.71   0.477     .0592898    3.743236
+             |
+        male |
+       Male  |   1.416128   .9084509     0.54   0.588     .4027668    4.979104
+        age1 |   .7610298   .0789272    -2.63   0.008     .6210444    .9325684
+        age2 |    2.45632   .9375803     2.35   0.019     1.162466    5.190266
+        age3 |   .1125286    .111906    -2.20   0.028      .016024     .790232
+             |
+         imd |
+          4  |   3.05e-20   9.39e-11    -0.00   1.000            0           .
+5 most de..  |   .6363695   .6941572    -0.41   0.679      .075026     5.39768
+             |
+   bmicat_sa |
+Normal (..)  |   1.07e-20          .        .       .            .           .
+Overweig..)  |   .4682114   .6404336    -0.55   0.579     .0320733    6.835038
+Obese I ..)  |   .1244539   .1905756    -1.36   0.174     .0061883    2.502929
+Obese II..)  |   .4558325   .6022438    -0.59   0.552     .0342138    6.073078
+Obese II..)  |   .3386119   .4369317    -0.84   0.401     .0269988    4.246781
+    Unknown  |   .0519926   .0840101    -1.83   0.067     .0021906    1.234013
+             |
+    hba1ccat |
+  >=6.5-7.4  |   .7526241   .6555197    -0.33   0.744      .136521    4.149126
+  >=7.5-7.9  |   4.65e-20          .        .       .            .           .
+    >=8-8.9  |   1.235476   1.377068     0.19   0.850     .1390211    10.97964
+        >=9  |   2.850627   3.211483     0.93   0.352     .3133189    25.93548
+    Unknown  |   1.01e-18          .        .       .            .           .
+             |
+gp_consult~t |   .9699296   .1402888    -0.21   0.833     .7305064    1.287824
+             |
+smoke_nomiss |
+     Former  |   1.17e-19          .        .       .            .           .
+    Current  |   3.125281   2.311857     1.54   0.123     .7332156     13.3213
+             |
+1.hyperten~n |   .7758908   .6376285    -0.31   0.758     .1549821    3.884361
+             |
+      bp_cat |
+High, sta..  |   3.487191    2.93164     1.49   0.137     .6712445    18.11635
+    Unknown  |   11.30507          .        .       .            .           .
+             |
+    1.asthma |   1.66e-19          .        .       .            .           .
+1.~y_disease |   .3956305   .4252449    -0.86   0.388     .0481252    3.252422
+1.~c_disease |   .4299745   .4612287    -0.79   0.431     .0525253    3.519791
+             |
+     dm_type |
+       T1DM  |   1.06e-19          .        .       .            .           .
+       T2DM  |   1.288241   .9113889     0.36   0.720     .3219584    5.154597
+ UNKNOWN_DM  |   3.22e-19          .        .       .            .           .
+             |
+    1.cancer |   1.501611   1.070363     0.57   0.568     .3713754    6.071585
+1.~r_disease |   .3051915   .3345254    -1.08   0.279     .0356087    2.615703
+    1.stroke |    1.25935   .9116862     0.32   0.750     .3047422    5.204274
+  1.dementia |   1.155178   .9387545     0.18   0.859     .2349204    5.680377
+1.other_ne~o |   1.027008    .833756     0.03   0.974     .2091911    5.042022
+             |
+      egfr60 |
+   eGFR <60  |   3.50e-19          .        .       .            .           .
+      1.esrf |   .3758183   .4050794    -0.91   0.364     .0454467    3.107805
+1.immunosu~d |   .5645477   .4030507    -0.80   0.423     .1393149    2.287724
+1.ra_sle_p~s |   3.89e-20   1.06e-10    -0.00   1.000            0           .
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+(note: file ./output/model/model2_positivetest_eth5.ster not found)
+file ./output/model/model2_positivetest_eth5.ster saved
+(note: file ./output/model/model2_positivetest_eth5.dta not found)
+file ./output/model/model2_positivetest_eth5.dta saved
+
+         failure _d:  positivetest
+   analysis time _t:  (stime_positivetest-origin)
+             origin:  time indexdate
+  enter on or after:  time indexdate
+                 id:  patient_id
+
+Stratified Cox regr. -- no ties
+
+No. of subjects =        6,688                  Number of obs    =       6,688
+No. of failures =           11
+Time at risk    =      1885726
+                                                LR chi2(44)      =       40.40
+Log likelihood  =   -50.974673                  Prob > chi2      =      0.6267
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |     1.8295   1.796215     0.62   0.538      .267065    12.53279
+      Black  |    .510903   .6558061    -0.52   0.601     .0412779    6.323521
+      Mixed  |   .4729718   .6013274    -0.59   0.556     .0391411    5.715272
+      Other  |   1.313891   1.378178     0.26   0.795     .1681548    10.26619
+    Unknown  |   .4456674   .4755975    -0.76   0.449     .0550357     3.60892
+             |
+        male |
+       Male  |    1.41633    .916404     0.54   0.591      .398487     5.03402
+        age1 |   .7495313   .0797872    -2.71   0.007     .6083869    .9234208
+        age2 |   2.612802   1.023632     2.45   0.014     1.212346    5.631013
+        age3 |   .0956789   .0976881    -2.30   0.022     .0129342    .7077709
+             |
+         imd |
+          4  |   3.62e-17   3.30e-09    -0.00   1.000            0           .
+5 most de..  |   .6577907   .7151396    -0.39   0.700     .0781043    5.539882
+             |
+   bmicat_sa |
+Normal (..)  |   1.07e-17   1.59e-09    -0.00   1.000            0           .
+Overweig..)  |   .4461865   .6110392    -0.59   0.556     .0304664    6.534491
+Obese I ..)  |   .1114145   .1731317    -1.41   0.158     .0052994    2.342394
+Obese II..)  |   .4198052   .5562907    -0.66   0.512     .0312685     5.63623
+Obese II..)  |   .3092679   .4008739    -0.91   0.365     .0243784    3.923419
+    Unknown  |   .0440357   .0722798    -1.90   0.057     .0017646    1.098907
+             |
+    hba1ccat |
+  >=6.5-7.4  |   .7531739   .6583146    -0.32   0.746     .1357998    4.177258
+  >=7.5-7.9  |   4.59e-17   6.41e-09    -0.00   1.000            0           .
+    >=8-8.9  |   1.130344   1.282686     0.11   0.914     .1222612    10.45039
+        >=9  |   2.980918   3.362841     0.97   0.333     .3266556    27.20256
+    Unknown  |   1.08e-16   3.71e-08    -0.00   1.000            0           .
+             |
+gp_consult~t |   .9580357   .1406301    -0.29   0.770     .7185116    1.277408
+             |
+smoke_nomiss |
+     Former  |   4.12e-17   8.42e-09    -0.00   1.000            0           .
+    Current  |   3.497024   2.638421     1.66   0.097     .7970535    15.34298
+             |
+1.hyperten~n |   .7449719   .6175369    -0.36   0.722     .1467388    3.782115
+             |
+      bp_cat |
+High, sta..  |   4.345524   3.684565     1.73   0.083     .8247251    22.89682
+    Unknown  |    14.8534          .        .       .            .           .
+             |
+    1.asthma |   6.95e-17   1.28e-08    -0.00   1.000            0           .
+1.~y_disease |   .4093622   .4407398    -0.83   0.407     .0496206    3.377177
+1.~c_disease |   .4402877   .4735961    -0.76   0.446     .0534737    3.625206
+             |
+     dm_type |
+       T1DM  |   3.62e-17   7.88e-09    -0.00   1.000            0           .
+       T2DM  |   1.320374   .9390588     0.39   0.696     .3275795    5.322028
+ UNKNOWN_DM  |   6.95e-17   1.60e-08    -0.00   1.000            0           .
+             |
+    1.cancer |   1.594396   1.153836     0.64   0.519     .3860087    6.585602
+1.~r_disease |   .3164842   .3491686    -1.04   0.297      .036412    2.750806
+    1.stroke |   1.305855   .9487718     0.37   0.713     .3143785    5.424219
+  1.dementia |    1.22291   .9989016     0.25   0.805     .2466683    6.062836
+1.other_ne~o |   .9307967   .7674775    -0.09   0.931     .1849297     4.68493
+             |
+      egfr60 |
+   eGFR <60  |   4.25e-17   1.81e-08    -0.00   1.000            0           .
+      1.esrf |   .3744341   .4042592    -0.91   0.363     .0451203    3.107266
+1.immunosu~d |   .5448907   .3932701    -0.84   0.400     .1324226    2.242109
+1.ra_sle_p~s |   4.70e-17   3.64e-09    -0.00   1.000            0           .
+             |
+hh_total_cat |
+       6-10  |   .1784479   .2046022    -1.50   0.133     .0188605    1.688378
+        11+  |   3.09e-18   6.44e-09    -0.00   1.000            0           .
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+(note: file ./output/model/model3_positivetest_eth5.ster not found)
+file ./output/model/model3_positivetest_eth5.ster saved
+(note: file ./output/model/model3_positivetest_eth5.dta not found)
+file ./output/model/model3_positivetest_eth5.dta saved
+(output written to ./output/estout_table2_eth5.txt)
+icu
+(1,170 observations deleted)
+
+         failure _d:  icu
+   analysis time _t:  (stime_icu-origin)
+             origin:  time indexdate
+  enter on or after:  time indexdate
+                 id:  patient_id
+
+Stratified Cox regr. -- no ties
+
+No. of subjects =        6,688                  Number of obs    =       6,688
+No. of failures =            0
+Time at risk    =      1203840
+                                                LR chi2(0)       =        0.00
+Log likelihood  =            0                  Prob > chi2      =           .
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |          1  (omitted)
+      Black  |          1  (omitted)
+      Mixed  |          1  (omitted)
+      Other  |          1  (omitted)
+    Unknown  |          1  (omitted)
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+(note: file ./output/model/crude_icu_eth5.ster not found)
+file ./output/model/crude_icu_eth5.ster saved
+(note: file ./output/model/crude_icu_eth5.dta not found)
+file ./output/model/crude_icu_eth5.dta saved
+
+         failure _d:  icu
+   analysis time _t:  (stime_icu-origin)
+             origin:  time indexdate
+  enter on or after:  time indexdate
+                 id:  patient_id
+
+Stratified Cox regr. -- no ties
+
+No. of subjects =        6,688                  Number of obs    =       6,688
+No. of failures =            0
+Time at risk    =      1203840
+                                                LR chi2(0)       =        0.00
+Log likelihood  =            0                  Prob > chi2      =           .
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |          1  (omitted)
+      Black  |          1  (omitted)
+      Mixed  |          1  (omitted)
+      Other  |          1  (omitted)
+    Unknown  |          1  (omitted)
+             |
+        male |
+       Male  |          1  (omitted)
+        age1 |          1  (omitted)
+        age2 |          1  (omitted)
+        age3 |          1  (omitted)
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+(note: file ./output/model/model0_icu_eth5.ster not found)
+file ./output/model/model0_icu_eth5.ster saved
+(note: file ./output/model/model0_icu_eth5.dta not found)
+file ./output/model/model0_icu_eth5.dta saved
+
+         failure _d:  icu
+   analysis time _t:  (stime_icu-origin)
+             origin:  time indexdate
+  enter on or after:  time indexdate
+                 id:  patient_id
+
+Stratified Cox regr. -- no ties
+
+No. of subjects =        6,688                  Number of obs    =       6,688
+No. of failures =            0
+Time at risk    =      1203840
+                                                LR chi2(0)       =        0.00
+Log likelihood  =            0                  Prob > chi2      =           .
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |          1  (omitted)
+      Black  |          1  (omitted)
+      Mixed  |          1  (omitted)
+      Other  |          1  (omitted)
+    Unknown  |          1  (omitted)
+             |
+        male |
+       Male  |          1  (omitted)
+        age1 |          1  (omitted)
+        age2 |          1  (omitted)
+        age3 |          1  (omitted)
+             |
+         imd |
+          4  |          1  (omitted)
+5 most de..  |          1  (omitted)
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+
+-------------------------------------------------------------------------------
+active results
+-------------------------------------------------------------------------------
+
+Stratified Cox regr. -- no ties
+
+No. of subjects =        6,688                  Number of obs    =       6,688
+No. of failures =            0
+Time at risk    =      1203840
+                                                LR chi2(0)       =        0.00
+Log likelihood  =            0                  Prob > chi2      =           .
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |          1  (omitted)
+      Black  |          1  (omitted)
+      Mixed  |          1  (omitted)
+      Other  |          1  (omitted)
+    Unknown  |          1  (omitted)
+             |
+        male |
+       Male  |          1  (omitted)
+        age1 |          1  (omitted)
+        age2 |          1  (omitted)
+        age3 |          1  (omitted)
+             |
+         imd |
+          4  |          1  (omitted)
+5 most de..  |          1  (omitted)
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+(note: file ./output/model/model1_icu_eth5.ster not found)
+file ./output/model/model1_icu_eth5.ster saved
+(note: file ./output/model/model1_icu_eth5.dta not found)
+file ./output/model/model1_icu_eth5.dta saved
+
+         failure _d:  icu
+   analysis time _t:  (stime_icu-origin)
+             origin:  time indexdate
+  enter on or after:  time indexdate
+                 id:  patient_id
+
+Stratified Cox regr. -- no ties
+
+No. of subjects =        6,688                  Number of obs    =       6,688
+No. of failures =            0
+Time at risk    =      1203840
+                                                LR chi2(0)       =        0.00
+Log likelihood  =            0                  Prob > chi2      =           .
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |          1  (omitted)
+      Black  |          1  (omitted)
+      Mixed  |          1  (omitted)
+      Other  |          1  (omitted)
+    Unknown  |          1  (omitted)
+             |
+        male |
+       Male  |          1  (omitted)
+        age1 |          1  (omitted)
+        age2 |          1  (omitted)
+        age3 |          1  (omitted)
+             |
+         imd |
+          4  |          1  (omitted)
+5 most de..  |          1  (omitted)
+             |
+   bmicat_sa |
+Normal (..)  |          1  (omitted)
+Overweig..)  |          1  (omitted)
+Obese I ..)  |          1  (omitted)
+Obese II..)  |          1  (omitted)
+Obese II..)  |          1  (omitted)
+    Unknown  |          1  (omitted)
+             |
+    hba1ccat |
+  >=6.5-7.4  |          1  (omitted)
+  >=7.5-7.9  |          1  (omitted)
+    >=8-8.9  |          1  (omitted)
+        >=9  |          1  (omitted)
+    Unknown  |          1  (omitted)
+             |
+gp_consult~t |          1  (omitted)
+             |
+smoke_nomiss |
+     Former  |          1  (omitted)
+    Current  |          1  (omitted)
+             |
+1.hyperten~n |          1  (omitted)
+             |
+      bp_cat |
+High, sta..  |          1  (omitted)
+    Unknown  |          1  (omitted)
+             |
+    1.asthma |          1  (omitted)
+1.~y_disease |          1  (omitted)
+1.~c_disease |          1  (omitted)
+             |
+     dm_type |
+       T1DM  |          1  (omitted)
+       T2DM  |          1  (omitted)
+ UNKNOWN_DM  |          1  (omitted)
+             |
+    1.cancer |          1  (omitted)
+1.~r_disease |          1  (omitted)
+    1.stroke |          1  (omitted)
+  1.dementia |          1  (omitted)
+1.other_ne~o |          1  (omitted)
+             |
+      egfr60 |
+   eGFR <60  |          1  (omitted)
+      1.esrf |          1  (omitted)
+1.immunosu~d |          1  (omitted)
+1.ra_sle_p~s |          1  (omitted)
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+
+-------------------------------------------------------------------------------
+active results
+-------------------------------------------------------------------------------
+
+Stratified Cox regr. -- no ties
+
+No. of subjects =        6,688                  Number of obs    =       6,688
+No. of failures =            0
+Time at risk    =      1203840
+                                                LR chi2(0)       =        0.00
+Log likelihood  =            0                  Prob > chi2      =           .
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |          1  (omitted)
+      Black  |          1  (omitted)
+      Mixed  |          1  (omitted)
+      Other  |          1  (omitted)
+    Unknown  |          1  (omitted)
+             |
+        male |
+       Male  |          1  (omitted)
+        age1 |          1  (omitted)
+        age2 |          1  (omitted)
+        age3 |          1  (omitted)
+             |
+         imd |
+          4  |          1  (omitted)
+5 most de..  |          1  (omitted)
+             |
+   bmicat_sa |
+Normal (..)  |          1  (omitted)
+Overweig..)  |          1  (omitted)
+Obese I ..)  |          1  (omitted)
+Obese II..)  |          1  (omitted)
+Obese II..)  |          1  (omitted)
+    Unknown  |          1  (omitted)
+             |
+    hba1ccat |
+  >=6.5-7.4  |          1  (omitted)
+  >=7.5-7.9  |          1  (omitted)
+    >=8-8.9  |          1  (omitted)
+        >=9  |          1  (omitted)
+    Unknown  |          1  (omitted)
+             |
+gp_consult~t |          1  (omitted)
+             |
+smoke_nomiss |
+     Former  |          1  (omitted)
+    Current  |          1  (omitted)
+             |
+1.hyperten~n |          1  (omitted)
+             |
+      bp_cat |
+High, sta..  |          1  (omitted)
+    Unknown  |          1  (omitted)
+             |
+    1.asthma |          1  (omitted)
+1.~y_disease |          1  (omitted)
+1.~c_disease |          1  (omitted)
+             |
+     dm_type |
+       T1DM  |          1  (omitted)
+       T2DM  |          1  (omitted)
+ UNKNOWN_DM  |          1  (omitted)
+             |
+    1.cancer |          1  (omitted)
+1.~r_disease |          1  (omitted)
+    1.stroke |          1  (omitted)
+  1.dementia |          1  (omitted)
+1.other_ne~o |          1  (omitted)
+             |
+      egfr60 |
+   eGFR <60  |          1  (omitted)
+      1.esrf |          1  (omitted)
+1.immunosu~d |          1  (omitted)
+1.ra_sle_p~s |          1  (omitted)
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+(note: file ./output/model/model2_icu_eth5.ster not found)
+file ./output/model/model2_icu_eth5.ster saved
+(note: file ./output/model/model2_icu_eth5.dta not found)
+file ./output/model/model2_icu_eth5.dta saved
+
+         failure _d:  icu
+   analysis time _t:  (stime_icu-origin)
+             origin:  time indexdate
+  enter on or after:  time indexdate
+                 id:  patient_id
+
+Stratified Cox regr. -- no ties
+
+No. of subjects =        6,688                  Number of obs    =       6,688
+No. of failures =            0
+Time at risk    =      1203840
+                                                LR chi2(0)       =        0.00
+Log likelihood  =            0                  Prob > chi2      =           .
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |          1  (omitted)
+      Black  |          1  (omitted)
+      Mixed  |          1  (omitted)
+      Other  |          1  (omitted)
+    Unknown  |          1  (omitted)
+             |
+        male |
+       Male  |          1  (omitted)
+        age1 |          1  (omitted)
+        age2 |          1  (omitted)
+        age3 |          1  (omitted)
+             |
+         imd |
+          4  |          1  (omitted)
+5 most de..  |          1  (omitted)
+             |
+   bmicat_sa |
+Normal (..)  |          1  (omitted)
+Overweig..)  |          1  (omitted)
+Obese I ..)  |          1  (omitted)
+Obese II..)  |          1  (omitted)
+Obese II..)  |          1  (omitted)
+    Unknown  |          1  (omitted)
+             |
+    hba1ccat |
+  >=6.5-7.4  |          1  (omitted)
+  >=7.5-7.9  |          1  (omitted)
+    >=8-8.9  |          1  (omitted)
+        >=9  |          1  (omitted)
+    Unknown  |          1  (omitted)
+             |
+gp_consult~t |          1  (omitted)
+             |
+smoke_nomiss |
+     Former  |          1  (omitted)
+    Current  |          1  (omitted)
+             |
+1.hyperten~n |          1  (omitted)
+             |
+      bp_cat |
+High, sta..  |          1  (omitted)
+    Unknown  |          1  (omitted)
+             |
+    1.asthma |          1  (omitted)
+1.~y_disease |          1  (omitted)
+1.~c_disease |          1  (omitted)
+             |
+     dm_type |
+       T1DM  |          1  (omitted)
+       T2DM  |          1  (omitted)
+ UNKNOWN_DM  |          1  (omitted)
+             |
+    1.cancer |          1  (omitted)
+1.~r_disease |          1  (omitted)
+    1.stroke |          1  (omitted)
+  1.dementia |          1  (omitted)
+1.other_ne~o |          1  (omitted)
+             |
+      egfr60 |
+   eGFR <60  |          1  (omitted)
+      1.esrf |          1  (omitted)
+1.immunosu~d |          1  (omitted)
+1.ra_sle_p~s |          1  (omitted)
+             |
+hh_total_cat |
+       6-10  |          1  (omitted)
+        11+  |          1  (omitted)
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+(note: file ./output/model/model3_icu_eth5.ster not found)
+file ./output/model/model3_icu_eth5.ster saved
+(note: file ./output/model/model3_icu_eth5.dta not found)
+file ./output/model/model3_icu_eth5.dta saved
+(output written to ./output/estout_table2_eth5.txt)
+hes
+(1,170 observations deleted)
+
+         failure _d:  hes
+   analysis time _t:  (stime_hes-origin)
+             origin:  time indexdate
+  enter on or after:  time indexdate
+                 id:  patient_id
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects =        6,688                  Number of obs    =       6,688
+No. of failures =          912
+Time at risk    =      1855091
+                                                LR chi2(5)       =        2.34
+Log likelihood  =   -5869.0871                  Prob > chi2      =      0.8004
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |   1.076536   .1308248     0.61   0.544     .8483741    1.366061
+      Black  |   .9802287   .1212878    -0.16   0.872     .7691387    1.249252
+      Mixed  |   1.109799   .1327506     0.87   0.384     .8778622    1.403015
+      Other  |   1.031342   .1260766     0.25   0.801     .8116104    1.310564
+    Unknown  |   1.117251   .1200648     1.03   0.302     .9050588    1.379192
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+(note: file ./output/model/crude_hes_eth5.ster not found)
+file ./output/model/crude_hes_eth5.ster saved
+(note: file ./output/model/crude_hes_eth5.dta not found)
+file ./output/model/crude_hes_eth5.dta saved
+
+         failure _d:  hes
+   analysis time _t:  (stime_hes-origin)
+             origin:  time indexdate
+  enter on or after:  time indexdate
+                 id:  patient_id
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects =        6,688                  Number of obs    =       6,688
+No. of failures =          912
+Time at risk    =      1855091
+                                                LR chi2(9)       =        9.64
+Log likelihood  =   -5865.4353                  Prob > chi2      =      0.3801
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |   1.070212   .1301277     0.56   0.577     .8432797    1.358213
+      Black  |    .976011   .1208739    -0.20   0.845     .7656633    1.244147
+      Mixed  |   1.111205   .1329627     0.88   0.378     .8789065    1.404902
+      Other  |   1.025157   .1254223     0.20   0.839     .8065861    1.302958
+    Unknown  |   1.117041   .1200661     1.03   0.303      .904851    1.378991
+             |
+        male |
+       Male  |   .9045126   .0601577    -1.51   0.131     .7939672    1.030449
+        age1 |   .9834575   .0087897    -1.87   0.062     .9663799    1.000837
+        age2 |   1.069099   .0344248     2.08   0.038     1.003713    1.138745
+        age3 |   .8307537   .0720029    -2.14   0.032     .7009664    .9845719
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+(note: file ./output/model/model0_hes_eth5.ster not found)
+file ./output/model/model0_hes_eth5.ster saved
+(note: file ./output/model/model0_hes_eth5.dta not found)
+file ./output/model/model0_hes_eth5.dta saved
+
+         failure _d:  hes
+   analysis time _t:  (stime_hes-origin)
+             origin:  time indexdate
+  enter on or after:  time indexdate
+                 id:  patient_id
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects =        6,688                  Number of obs    =       6,688
+No. of failures =          912
+Time at risk    =      1855091
+                                                LR chi2(11)      =        9.72
+Log likelihood  =   -5865.3984                  Prob > chi2      =      0.5560
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |   1.069968   .1301059     0.56   0.578     .8430757    1.357923
+      Black  |    .975165   .1208434    -0.20   0.839     .7648854    1.243254
+      Mixed  |   1.110969   .1329644     0.88   0.379     .8786731    1.404677
+      Other  |   1.024976   .1254128     0.20   0.840     .8064243    1.302759
+    Unknown  |   1.116373    .120071     1.02   0.306      .904188    1.378351
+             |
+        male |
+       Male  |    .904627   .0601692    -1.51   0.132      .794061    1.030588
+        age1 |   .9834874   .0087908    -1.86   0.062     .9664078    1.000869
+        age2 |   1.069044   .0344243     2.07   0.038     1.003658    1.138689
+        age3 |   .8308157   .0720092    -2.14   0.032      .701017    .9846475
+             |
+         imd |
+          4  |   .9919478   .0831854    -0.10   0.923     .8416016    1.169152
+5 most de..  |   .9708998   .1079156    -0.27   0.790     .7808423    1.207218
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+
+-------------------------------------------------------------------------------
+active results
+-------------------------------------------------------------------------------
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects =        6,688                  Number of obs    =       6,688
+No. of failures =          912
+Time at risk    =      1855091
+                                                LR chi2(11)      =        9.72
+Log likelihood  =   -5865.3984                  Prob > chi2      =      0.5560
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |   1.069968   .1301059     0.56   0.578     .8430757    1.357923
+      Black  |    .975165   .1208434    -0.20   0.839     .7648854    1.243254
+      Mixed  |   1.110969   .1329644     0.88   0.379     .8786731    1.404677
+      Other  |   1.024976   .1254128     0.20   0.840     .8064243    1.302759
+    Unknown  |   1.116373    .120071     1.02   0.306      .904188    1.378351
+             |
+        male |
+       Male  |    .904627   .0601692    -1.51   0.132      .794061    1.030588
+        age1 |   .9834874   .0087908    -1.86   0.062     .9664078    1.000869
+        age2 |   1.069044   .0344243     2.07   0.038     1.003658    1.138689
+        age3 |   .8308157   .0720092    -2.14   0.032      .701017    .9846475
+             |
+         imd |
+          4  |   .9919478   .0831854    -0.10   0.923     .8416016    1.169152
+5 most de..  |   .9708998   .1079156    -0.27   0.790     .7808423    1.207218
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+(note: file ./output/model/model1_hes_eth5.ster not found)
+file ./output/model/model1_hes_eth5.ster saved
+(note: file ./output/model/model1_hes_eth5.dta not found)
+file ./output/model/model1_hes_eth5.dta saved
+
+         failure _d:  hes
+   analysis time _t:  (stime_hes-origin)
+             origin:  time indexdate
+  enter on or after:  time indexdate
+                 id:  patient_id
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects =        6,688                  Number of obs    =       6,688
+No. of failures =          912
+Time at risk    =      1855091
+                                                LR chi2(43)      =       50.87
+Log likelihood  =   -5844.8209                  Prob > chi2      =      0.1914
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |   1.084291   .1326108     0.66   0.508     .8531831       1.378
+      Black  |   .9770365   .1214663    -0.19   0.852     .7657526    1.246617
+      Mixed  |   1.122513   .1345677     0.96   0.335     .8874596    1.419822
+      Other  |   1.030345    .126336     0.24   0.807     .8102378    1.310246
+    Unknown  |    1.12636   .1215294     1.10   0.270     .9116667    1.391612
+             |
+        male |
+       Male  |   .8874787   .0593091    -1.79   0.074     .7785261    1.011679
+        age1 |   .9812608   .0091487    -2.03   0.042     .9634925    .9993569
+        age2 |   1.077633   .0356595     2.26   0.024      1.00996     1.14984
+        age3 |   .8149738   .0722246    -2.31   0.021     .6850282    .9695692
+             |
+         imd |
+          4  |   .9980938   .0840091    -0.02   0.982     .8463035    1.177109
+5 most de..  |   .9805827   .1092453    -0.18   0.860     .7882302    1.219875
+             |
+   bmicat_sa |
+Normal (..)  |   1.450068   .3770723     1.43   0.153     .8710516    2.413975
+Overweig..)  |   1.415075   .3580763     1.37   0.170     .8617636    2.323652
+Obese I ..)  |   1.388751   .3466679     1.32   0.188     .8514176    2.265198
+Obese II..)  |   1.448937    .359961     1.49   0.136     .8903992    2.357841
+Obese II..)  |   1.286462   .3174026     1.02   0.307     .7932029    2.086459
+    Unknown  |    1.29171   .3246199     1.02   0.308     .7893136    2.113882
+             |
+    hba1ccat |
+  >=6.5-7.4  |   1.049733   .0914532     0.56   0.577     .8849562    1.245191
+  >=7.5-7.9  |   .8177841   .1269199    -1.30   0.195     .6032987    1.108524
+    >=8-8.9  |   1.121688   .1350026     0.95   0.340      .885981    1.420103
+        >=9  |   .7326788    .133422    -1.71   0.088     .5127533    1.046933
+    Unknown  |   .8250037   .4152455    -0.38   0.702     .3076269    2.212521
+             |
+gp_consult~t |   .9866104   .0145198    -0.92   0.360     .9585586    1.015483
+             |
+smoke_nomiss |
+     Former  |   1.462447   .2995712     1.86   0.064     .9788538    2.184954
+    Current  |   1.118463   .1100441     1.14   0.255     .9223019    1.356345
+             |
+1.hyperten~n |    1.00282     .08344     0.03   0.973     .8519191    1.180449
+             |
+      bp_cat |
+High, sta..  |   .3601735   .2576172    -1.43   0.153     .0886507    1.463326
+    Unknown  |   .2782753   .2014798    -1.77   0.077     .0673254    1.150192
+             |
+    1.asthma |   1.465626   .2311521     2.42   0.015     1.075908    1.996507
+1.~y_disease |   .9908426   .0822976    -0.11   0.912      .841987    1.166015
+1.~c_disease |   .9366669   .0794848    -0.77   0.441     .7931457    1.106159
+             |
+     dm_type |
+       T1DM  |   1.189503   .2018799     1.02   0.307     .8529063    1.658936
+       T2DM  |   .9550001   .0805564    -0.55   0.585     .8094737    1.126689
+ UNKNOWN_DM  |    .959222   .2362655    -0.17   0.866      .591916    1.554455
+             |
+    1.cancer |   1.030286   .0860937     0.36   0.721     .8746393    1.213631
+1.~r_disease |   .9371886   .0796977    -0.76   0.446     .7933075    1.107165
+    1.stroke |   .9682174   .0807977    -0.39   0.699     .8221292    1.140265
+  1.dementia |   1.044541    .085643     0.53   0.595     .8894771    1.226638
+1.other_ne~o |   .9263863   .0787609    -0.90   0.368     .7841937    1.094362
+             |
+      egfr60 |
+   eGFR <60  |   .4594081   .2077812    -1.72   0.085      .189329    1.114757
+      1.esrf |   1.057518   .0870039     0.68   0.497     .9000317    1.242561
+1.immunosu~d |   .8534095   .0603978    -2.24   0.025     .7428753    .9803904
+1.ra_sle_p~s |   1.000087   .0828828     0.00   0.999     .8501466    1.176472
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+
+-------------------------------------------------------------------------------
+active results
+-------------------------------------------------------------------------------
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects =        6,688                  Number of obs    =       6,688
+No. of failures =          912
+Time at risk    =      1855091
+                                                LR chi2(43)      =       50.87
+Log likelihood  =   -5844.8209                  Prob > chi2      =      0.1914
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |   1.084291   .1326108     0.66   0.508     .8531831       1.378
+      Black  |   .9770365   .1214663    -0.19   0.852     .7657526    1.246617
+      Mixed  |   1.122513   .1345677     0.96   0.335     .8874596    1.419822
+      Other  |   1.030345    .126336     0.24   0.807     .8102378    1.310246
+    Unknown  |    1.12636   .1215294     1.10   0.270     .9116667    1.391612
+             |
+        male |
+       Male  |   .8874787   .0593091    -1.79   0.074     .7785261    1.011679
+        age1 |   .9812608   .0091487    -2.03   0.042     .9634925    .9993569
+        age2 |   1.077633   .0356595     2.26   0.024      1.00996     1.14984
+        age3 |   .8149738   .0722246    -2.31   0.021     .6850282    .9695692
+             |
+         imd |
+          4  |   .9980938   .0840091    -0.02   0.982     .8463035    1.177109
+5 most de..  |   .9805827   .1092453    -0.18   0.860     .7882302    1.219875
+             |
+   bmicat_sa |
+Normal (..)  |   1.450068   .3770723     1.43   0.153     .8710516    2.413975
+Overweig..)  |   1.415075   .3580763     1.37   0.170     .8617636    2.323652
+Obese I ..)  |   1.388751   .3466679     1.32   0.188     .8514176    2.265198
+Obese II..)  |   1.448937    .359961     1.49   0.136     .8903992    2.357841
+Obese II..)  |   1.286462   .3174026     1.02   0.307     .7932029    2.086459
+    Unknown  |    1.29171   .3246199     1.02   0.308     .7893136    2.113882
+             |
+    hba1ccat |
+  >=6.5-7.4  |   1.049733   .0914532     0.56   0.577     .8849562    1.245191
+  >=7.5-7.9  |   .8177841   .1269199    -1.30   0.195     .6032987    1.108524
+    >=8-8.9  |   1.121688   .1350026     0.95   0.340      .885981    1.420103
+        >=9  |   .7326788    .133422    -1.71   0.088     .5127533    1.046933
+    Unknown  |   .8250037   .4152455    -0.38   0.702     .3076269    2.212521
+             |
+gp_consult~t |   .9866104   .0145198    -0.92   0.360     .9585586    1.015483
+             |
+smoke_nomiss |
+     Former  |   1.462447   .2995712     1.86   0.064     .9788538    2.184954
+    Current  |   1.118463   .1100441     1.14   0.255     .9223019    1.356345
+             |
+1.hyperten~n |    1.00282     .08344     0.03   0.973     .8519191    1.180449
+             |
+      bp_cat |
+High, sta..  |   .3601735   .2576172    -1.43   0.153     .0886507    1.463326
+    Unknown  |   .2782753   .2014798    -1.77   0.077     .0673254    1.150192
+             |
+    1.asthma |   1.465626   .2311521     2.42   0.015     1.075908    1.996507
+1.~y_disease |   .9908426   .0822976    -0.11   0.912      .841987    1.166015
+1.~c_disease |   .9366669   .0794848    -0.77   0.441     .7931457    1.106159
+             |
+     dm_type |
+       T1DM  |   1.189503   .2018799     1.02   0.307     .8529063    1.658936
+       T2DM  |   .9550001   .0805564    -0.55   0.585     .8094737    1.126689
+ UNKNOWN_DM  |    .959222   .2362655    -0.17   0.866      .591916    1.554455
+             |
+    1.cancer |   1.030286   .0860937     0.36   0.721     .8746393    1.213631
+1.~r_disease |   .9371886   .0796977    -0.76   0.446     .7933075    1.107165
+    1.stroke |   .9682174   .0807977    -0.39   0.699     .8221292    1.140265
+  1.dementia |   1.044541    .085643     0.53   0.595     .8894771    1.226638
+1.other_ne~o |   .9263863   .0787609    -0.90   0.368     .7841937    1.094362
+             |
+      egfr60 |
+   eGFR <60  |   .4594081   .2077812    -1.72   0.085      .189329    1.114757
+      1.esrf |   1.057518   .0870039     0.68   0.497     .9000317    1.242561
+1.immunosu~d |   .8534095   .0603978    -2.24   0.025     .7428753    .9803904
+1.ra_sle_p~s |   1.000087   .0828828     0.00   0.999     .8501466    1.176472
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+(note: file ./output/model/model2_hes_eth5.ster not found)
+file ./output/model/model2_hes_eth5.ster saved
+(note: file ./output/model/model2_hes_eth5.dta not found)
+file ./output/model/model2_hes_eth5.dta saved
+
+         failure _d:  hes
+   analysis time _t:  (stime_hes-origin)
+             origin:  time indexdate
+  enter on or after:  time indexdate
+                 id:  patient_id
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects =        6,688                  Number of obs    =       6,688
+No. of failures =          912
+Time at risk    =      1855091
+                                                LR chi2(45)      =       53.45
+Log likelihood  =   -5843.5334                  Prob > chi2      =      0.1816
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |   1.084954   .1326967     0.67   0.505     .8536974    1.378855
+      Black  |   .9813282   .1220319    -0.15   0.880      .769067    1.252173
+      Mixed  |   1.123794     .13475     0.97   0.330      .888428    1.421514
+      Other  |   1.028311   .1261006     0.23   0.820     .8086166    1.307695
+    Unknown  |   1.128091   .1217164     1.12   0.264     .9130682    1.393752
+             |
+        male |
+       Male  |   .8894795    .059454    -1.75   0.080      .780262    1.013985
+        age1 |   .9815004   .0091461    -2.00   0.045     .9637372    .9995911
+        age2 |   1.076817    .035615     2.24   0.025     1.009227    1.148933
+        age3 |   .8164767   .0723217    -2.29   0.022     .6863511     .971273
+             |
+         imd |
+          4  |   .9951448   .0837862    -0.06   0.954     .8437608    1.173689
+5 most de..  |   .9813975   .1093516    -0.17   0.866     .7888607    1.220927
+             |
+   bmicat_sa |
+Normal (..)  |   1.438016   .3740452     1.40   0.163     .8636859    2.394261
+Overweig..)  |   1.398684   .3540611     1.33   0.185     .8516231    2.297162
+Obese I ..)  |   1.369668   .3421002     1.26   0.208     .8394831    2.234698
+Obese II..)  |   1.431655    .355799     1.44   0.149     .8796207    2.330137
+Obese II..)  |   1.274053   .3144152     0.98   0.326     .7854622     2.06657
+    Unknown  |   1.279878      .3217     0.98   0.326     .7820188     2.09469
+             |
+    hba1ccat |
+  >=6.5-7.4  |   1.047769   .0913022     0.54   0.592     .8832674    1.242908
+  >=7.5-7.9  |   .8126879   .1262422    -1.34   0.182     .5993754    1.101917
+    >=8-8.9  |      1.118   .1345587     0.93   0.354     .8830677    1.415433
+        >=9  |   .7301069   .1329681    -1.73   0.084     .5109335    1.043298
+    Unknown  |   .8260706   .4157945    -0.38   0.704      .308016    2.215445
+             |
+gp_consult~t |   .9869564   .0145369    -0.89   0.373     .9588719    1.015863
+             |
+smoke_nomiss |
+     Former  |   1.466367   .3004287     1.87   0.062     .9814061     2.19097
+    Current  |   1.119657   .1101654     1.15   0.251     .9232796    1.357802
+             |
+1.hyperten~n |   1.001383    .083326     0.02   0.987      .850689    1.178771
+             |
+      bp_cat |
+High, sta..  |   .3620551   .2589532    -1.42   0.155     .0891187    1.470892
+    Unknown  |   .2802228   .2028828    -1.76   0.079     .0677999    1.158185
+             |
+    1.asthma |   1.457919   .2299824     2.39   0.017     1.070185    1.986131
+1.~y_disease |   .9917268   .0823762    -0.10   0.920     .8427298    1.167067
+1.~c_disease |   .9357243   .0794165    -0.78   0.434     .7923281    1.105073
+             |
+     dm_type |
+       T1DM  |   1.189298   .2018609     1.02   0.307     .8527372    1.658693
+       T2DM  |   .9541127   .0804901    -0.56   0.578     .8087072    1.125662
+ UNKNOWN_DM  |   .9554204   .2353597    -0.19   0.853     .5895332    1.548392
+             |
+    1.cancer |   1.032626   .0863064     0.38   0.701     .8765973    1.216427
+1.~r_disease |   .9373557   .0797084    -0.76   0.447     .7934547    1.107354
+    1.stroke |   .9721465    .081163    -0.34   0.735     .8254033    1.144978
+  1.dementia |    1.04484    .085729     0.53   0.593     .8896284     1.22713
+1.other_ne~o |   .9258524   .0787257    -0.91   0.365     .7837249    1.093755
+             |
+      egfr60 |
+   eGFR <60  |   .4584036   .2073273    -1.72   0.085     .1889146    1.112322
+      1.esrf |   1.057585   .0870174     0.68   0.496     .9000752    1.242658
+1.immunosu~d |   .8531719   .0603931    -2.24   0.025     .7426479    .9801446
+1.ra_sle_p~s |    1.00154   .0830271     0.02   0.985     .8513423    1.178237
+             |
+hh_total_cat |
+       6-10  |   1.481578   .3870058     1.50   0.132     .8879339    2.472114
+        11+  |   1.464702   1.520904     0.37   0.713     .1913752    11.21018
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+(note: file ./output/model/model3_hes_eth5.ster not found)
+file ./output/model/model3_hes_eth5.ster saved
+(note: file ./output/model/model3_hes_eth5.dta not found)
+file ./output/model/model3_hes_eth5.dta saved
+(output written to ./output/estout_table2_eth5.txt)
+onscoviddeath
+(1,170 observations deleted)
+
+         failure _d:  onscoviddeath
+   analysis time _t:  (stime_onscoviddeath-origin)
+             origin:  time indexdate
+  enter on or after:  time indexdate
+                 id:  patient_id
+
+Stratified Cox regr. -- no ties
+
+No. of subjects =        6,688                  Number of obs    =       6,688
+No. of failures =            1
+Time at risk    =      1885838
+                                                LR chi2(5)       =        3.90
+Log likelihood  =   -4.5643482                  Prob > chi2      =      0.5638
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |   .3678794   4.52e+07    -0.00   1.000            0           .
+      Black  |   .3678794   4.39e+07    -0.00   1.000            0           .
+      Mixed  |   4.49e+15   2.30e+23     0.00   1.000            0           .
+      Other  |   .3678794   4.60e+07    -0.00   1.000            0           .
+    Unknown  |   .3678794   3.51e+07    -0.00   1.000            0           .
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+(note: file ./output/model/crude_onscoviddeath_eth5.ster not found)
+file ./output/model/crude_onscoviddeath_eth5.ster saved
+(note: file ./output/model/crude_onscoviddeath_eth5.dta not found)
+file ./output/model/crude_onscoviddeath_eth5.dta saved
+
+         failure _d:  onscoviddeath
+   analysis time _t:  (stime_onscoviddeath-origin)
+             origin:  time indexdate
+  enter on or after:  time indexdate
+                 id:  patient_id
+flat region resulting in a missing likelihood
+r(430);
+
+end of do-file
+r(430);

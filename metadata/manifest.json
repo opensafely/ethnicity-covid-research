@@ -1,0 +1,123 @@
+{
+  "files": {
+    "logs/01_eth_cr_analysis_dataset.log": {
+      "created_by_action": "crmain",
+      "privacy_level": "moderately_sensitive"
+    },
+    "logs/02b_region_check.log": {
+      "created_by_action": "check_region",
+      "privacy_level": "moderately_sensitive"
+    },
+    "logs/07a_eth_sensanalysis_nostp_eth16.log": {
+      "created_by_action": "sens_nostp_eth16",
+      "privacy_level": "moderately_sensitive"
+    },
+    "output/FP_sens_nostp_eth16.txt": {
+      "created_by_action": "sens_nostp_eth16",
+      "privacy_level": "moderately_sensitive"
+    },
+    "output/analysis_dataset.dta": {
+      "created_by_action": "crmain",
+      "privacy_level": "highly_sensitive"
+    },
+    "output/analysis_dataset_STSET_hes.dta": {
+      "created_by_action": "crmain",
+      "privacy_level": "highly_sensitive"
+    },
+    "output/analysis_dataset_STSET_icu.dta": {
+      "created_by_action": "crmain",
+      "privacy_level": "highly_sensitive"
+    },
+    "output/analysis_dataset_STSET_ons_noncoviddeath.dta": {
+      "created_by_action": "crmain",
+      "privacy_level": "highly_sensitive"
+    },
+    "output/analysis_dataset_STSET_onscoviddeath.dta": {
+      "created_by_action": "crmain",
+      "privacy_level": "highly_sensitive"
+    },
+    "output/analysis_dataset_STSET_onsdeath.dta": {
+      "created_by_action": "crmain",
+      "privacy_level": "highly_sensitive"
+    },
+    "output/analysis_dataset_STSET_positivetest.dta": {
+      "created_by_action": "crmain",
+      "privacy_level": "highly_sensitive"
+    },
+    "output/analysis_dataset_STSET_tested.dta": {
+      "created_by_action": "crmain",
+      "privacy_level": "highly_sensitive"
+    },
+    "output/estout_sens_nostp_eth16.txt": {
+      "created_by_action": "sens_nostp_eth16",
+      "privacy_level": "moderately_sensitive"
+    },
+    "output/estout_sens_nostp_eth5.txt": {
+      "created_by_action": "sens_nostp_eth5",
+      "privacy_level": "moderately_sensitive"
+    },
+    "output/input.csv": {
+      "created_by_action": "generate_cohorts",
+      "privacy_level": "highly_sensitive"
+    },
+    "output/sens_nostp_eth16.txt": {
+      "created_by_action": "sens_nostp_eth16",
+      "privacy_level": "moderately_sensitive"
+    },
+    "output/sens_nostp_eth5.txt": {
+      "created_by_action": "sens_nostp_eth5",
+      "privacy_level": "moderately_sensitive"
+    },
+    "output/table0_region.txt": {
+      "created_by_action": "check_region",
+      "privacy_level": "moderately_sensitive"
+    }
+  },
+  "actions": {
+    "sens_nostp_eth16": {
+      "state": "succeeded",
+      "commit": "none",
+      "docker_image_id": "sha256:e4a676ff497b1550742032051cce1ba5502f65b172e86e4d82aadbaa1e056935",
+      "job_id": "ydtxbgyjb3hfmqrs",
+      "run_by_user": null,
+      "created_at": "2021-01-06T15:54:57Z",
+      "completed_at": "2021-01-06T16:01:14Z"
+    },
+    "sens_nostp_eth5": {
+      "state": "failed",
+      "commit": "none",
+      "docker_image_id": "sha256:e4a676ff497b1550742032051cce1ba5502f65b172e86e4d82aadbaa1e056935",
+      "job_id": "pp57kyebrz7jcz6y",
+      "run_by_user": null,
+      "created_at": "2021-01-06T16:08:53Z",
+      "completed_at": "2021-01-06T16:14:10Z"
+    },
+    "generate_cohorts": {
+      "state": "succeeded",
+      "commit": "none",
+      "docker_image_id": "sha256:0f0f84e012c45836511e3970e9b97fd2203057a2108ff0b58ce544393f9637cc",
+      "job_id": "t7zkvughd2lytkh6",
+      "run_by_user": null,
+      "created_at": "2021-01-06T16:14:45Z",
+      "completed_at": "2021-01-06T16:16:55Z"
+    },
+    "crmain": {
+      "state": "succeeded",
+      "commit": "none",
+      "docker_image_id": "sha256:e4a676ff497b1550742032051cce1ba5502f65b172e86e4d82aadbaa1e056935",
+      "job_id": "fjilt6a5v7itmgvi",
+      "run_by_user": null,
+      "created_at": "2021-01-06T16:14:45Z",
+      "completed_at": "2021-01-06T16:19:40Z"
+    },
+    "check_region": {
+      "state": "succeeded",
+      "commit": "none",
+      "docker_image_id": "sha256:e4a676ff497b1550742032051cce1ba5502f65b172e86e4d82aadbaa1e056935",
+      "job_id": "5fii7cysrvndgacp",
+      "run_by_user": null,
+      "created_at": "2021-01-06T16:14:45Z",
+      "completed_at": "2021-01-06T16:27:59Z"
+    }
+  }
+}

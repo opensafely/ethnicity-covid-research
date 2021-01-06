@@ -10,16 +10,17 @@ DESCRIPTION OF FILE:	program 00, data management for project
 						apply exclusion criteria
 DATASETS USED:			data in memory (from analysis/input.csv)
 DATASETS CREATED: 		none
-OTHER OUTPUT: 			logfiles, printed to folder analysis/$logdir
-
-
-import delimited `c(pwd)'/output/input.csv, clear
-							
+OTHER OUTPUT: 			logfiles, printed to folder analysis/$logdir							
 ==============================================================================*/
 
 * Open a log file
 cap log close
-log using "$Logdir/01_eth_cr_create_analysis_dataset.log", replace t
+log using ./logs/01_eth_cr_analysis_dataset.log, replace t
+
+clear
+import delimited ./output/input.csv
+
+global outcomes "tested positivetest icu hes onscoviddeath ons_noncoviddeath onsdeath"
 
 
 di "STARTING safecount FROM IMPORT:"
@@ -971,7 +972,7 @@ drop if onsdeath_date <= indexdate
 safecount 
 
 sort patient_id
-save "$Tempdir/analysis_dataset.dta", replace
+save ./output/analysis_dataset.dta, replace
 
 ****************************************************************
 *  Create outcome specific datasets for the whole population  *
@@ -979,15 +980,16 @@ save "$Tempdir/analysis_dataset.dta", replace
 
 
 foreach i of global outcomes {
-	use "$Tempdir/analysis_dataset.dta", clear
+	use ./output/analysis_dataset.dta, clear
 	drop if `i'_date <= indexdate 
 	stset stime_`i', fail(`i') 				///	
 	id(patient_id) enter(indexdate) origin(indexdate)
-	save "$Tempdir/analysis_dataset_STSET_`i'.dta", replace
+	save ./output/analysis_dataset_STSET_`i'.dta, replace
 }	
 
 
 	
 * Close log file 
 log close
+
 
