@@ -56,7 +56,7 @@ actions:
         estout: output/estout_sens_nostp_eth5.txt
         graph: output/FP_sens_nostp_eth5.txt
 
-sens_region_eth16:
+  sens_region_eth16:
     run: stata-mp:latest analysis/07c_eth_ruralurban_eteh16.do
     needs: [crmain]
     outputs:
