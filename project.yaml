@@ -20,7 +20,7 @@ actions:
       moderately_sensitive:
         log: logs/01_eth_cr_analysis_dataset.log
 
-    cr_sgss:
+  cr_sgss:
     run: stata-mp:latest analysis/01b_eth_cr_stset_sgss.do
     needs: [crmain]
     outputs:
@@ -51,7 +51,7 @@ actions:
       moderately_sensitive:
         log: logs/01d_eth_cr_stset_death.log
 
-check_region:
+  check_region:
     run: stata-mp:latest analysis/02b_eth_region_check.do
     needs: [crmain]
     outputs:
