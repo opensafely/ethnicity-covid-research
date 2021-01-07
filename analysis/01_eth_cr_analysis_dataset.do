@@ -20,9 +20,6 @@ log using ./logs/01_eth_cr_analysis_dataset.log, replace t
 clear
 import delimited ./output/input.csv
 
-global outcomes "tested positivetest icu hes onscoviddeath ons_noncoviddeath onsdeath"
-
-
 di "STARTING safecount FROM IMPORT:"
 safecount
 
@@ -974,7 +971,7 @@ safecount
 sort patient_id
 save ./output/analysis_dataset.dta, replace
 
-****************************************************************
+/****************************************************************
 *  Create outcome specific datasets for the whole population  *
 *****************************************************************
 

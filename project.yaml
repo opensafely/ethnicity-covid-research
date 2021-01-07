@@ -17,17 +17,41 @@ actions:
     outputs:
       highly_sensitive:
         data: output/analysis_dataset.dta
-        stsettested: output/analysis_dataset_STSET_tested.dta
-        stsetpositiivetest: output/analysis_dataset_STSET_positivetest.dta
-        stseticu: output/analysis_dataset_STSET_icu.dta
-        stsethes: output/analysis_dataset_STSET_hes.dta
-        stsetonscoviddeath: output/analysis_dataset_STSET_onscoviddeath.dta
-        stsetons_noncoviddeath: output/analysis_dataset_STSET_ons_noncoviddeath.dta
-        stsetonsdeath: output/analysis_dataset_STSET_onsdeath.dta 
       moderately_sensitive:
         log: logs/01_eth_cr_analysis_dataset.log
 
-  check_region:
+    cr_sgss:
+    run: stata-mp:latest analysis/01b_eth_cr_stset_sgss.do
+    needs: [crmain]
+    outputs:
+      highly_sensitive:
+        stsettested: output/analysis_dataset_STSET_tested.dta
+        stsetpositiivetest: output/analysis_dataset_STSET_positivetest.dta
+      moderately_sensitive:
+        log: logs/01b_eth_cr_stset_sgss.log
+  
+  cr_hes_covid:
+    run: stata-mp:latest analysis/01c_eth_cr_stset_hes.do
+    needs: [crmain]
+    outputs:
+      highly_sensitive:
+        stsethes: output/analysis_dataset_STSET_hes.dta
+        stseticu: output/analysis_dataset_STSET_icu.dta
+        stsetonscoviddeath: output/analysis_dataset_STSET_onscoviddeath.dta
+      moderately_sensitive:
+        log: logs/01c_eth_cr_stset_hes_covid.log
+
+  cr_ons:
+    run: stata-mp:latest analysis/01d_eth_cr_stset_death.do
+    needs: [crmain]
+    outputs:
+      highly_sensitive:
+        stsetons_noncoviddeath: output/analysis_dataset_STSET_ons_noncoviddeath.dta
+        stsetonsdeath: output/analysis_dataset_STSET_onsdeath.dta 
+      moderately_sensitive:
+        log: logs/01d_eth_cr_stset_death.log
+
+check_region:
     run: stata-mp:latest analysis/02b_eth_region_check.do
     needs: [crmain]
     outputs:
@@ -56,8 +80,8 @@ actions:
         estout: output/estout_sens_nostp_eth5.txt
         graph: output/FP_sens_nostp_eth5.txt
 
-  sens_region_eth16:
-    run: stata-mp:latest analysis/07c_eth_ruralurban_eteh16.do
+  sens_ruralurban_eth16:
+    run: stata-mp:latest analysis/07c_eth_sensanalysis_ruralurban_eth16.do
     needs: [crmain]
     outputs:
       moderately_sensitive:
