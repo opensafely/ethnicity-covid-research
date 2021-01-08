@@ -12,6 +12,10 @@
       "created_by_action": "check_region",
       "privacy_level": "moderately_sensitive"
     },
+    "logs/05b_eth_table1_ages_eth5.log": {
+      "created_by_action": "check_age",
+      "privacy_level": "moderately_sensitive"
+    },
     "logs/07a_eth_sensanalysis_nostp_eth16.log": {
       "created_by_action": "sens_nostp_eth16",
       "privacy_level": "moderately_sensitive"
@@ -78,6 +82,10 @@
     },
     "output/table0_region.txt": {
       "created_by_action": "check_region",
+      "privacy_level": "moderately_sensitive"
+    },
+    "output/table1_eth5_age.txt": {
+      "created_by_action": "check_age",
       "privacy_level": "moderately_sensitive"
     }
   },
@@ -171,6 +179,15 @@
       "run_by_user": null,
       "created_at": "2021-01-07T18:25:47Z",
       "completed_at": "2021-01-07T18:26:44Z"
+    },
+    "check_age": {
+      "state": "succeeded",
+      "commit": "none",
+      "docker_image_id": "sha256:e4a676ff497b1550742032051cce1ba5502f65b172e86e4d82aadbaa1e056935",
+      "job_id": "sa77ogmeqbnwzeyh",
+      "run_by_user": null,
+      "created_at": "2021-01-08T12:02:48Z",
+      "completed_at": "2021-01-08T12:05:08Z"
     }
   }
 }
