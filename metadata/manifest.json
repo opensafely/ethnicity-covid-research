@@ -28,6 +28,10 @@
       "created_by_action": "sens_nostp_eth5",
       "privacy_level": "moderately_sensitive"
     },
+    "output/analysis_dataset.dta": {
+      "created_by_action": "crmain",
+      "privacy_level": "highly_sensitive"
+    },
     "output/analysis_dataset_STSET_hes.dta": {
       "created_by_action": "cr_hes_covid",
       "privacy_level": "highly_sensitive"
@@ -177,13 +181,13 @@
       "completed_at": "2021-01-08T12:05:08Z"
     },
     "crmain": {
-      "state": "failed",
+      "state": "succeeded",
       "commit": "none",
       "docker_image_id": "sha256:e4a676ff497b1550742032051cce1ba5502f65b172e86e4d82aadbaa1e056935",
-      "job_id": "h3dning2wrny3zpm",
+      "job_id": "xasrlf3qxc3cvvrm",
       "run_by_user": null,
-      "created_at": "2021-01-08T21:42:07Z",
-      "completed_at": "2021-01-08T21:44:06Z"
+      "created_at": "2021-01-08T21:46:14Z",
+      "completed_at": "2021-01-08T21:47:08Z"
     }
   }
 }
