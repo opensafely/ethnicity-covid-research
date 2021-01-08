@@ -12,6 +12,7 @@ DATASETS USED:			data in memory (from analysis/input.csv)
 DATASETS CREATED: 		none
 OTHER OUTPUT: 			logfiles, printed to folder analysis/$logdir							
 ==============================================================================*/
+global outcomes "tested positivetest icu hes onscoviddeath ons_noncoviddeath onsdeath"
 
 * Open a log file
 cap log close
