@@ -69,7 +69,7 @@ actions:
 
   sens_nostp_eth16:
     run: stata-mp:latest analysis/07a_eth_sensanalysis_nostp_eth16.do
-    needs: [crmain]
+    needs: [cr_sgss, cr_hes_covid, cr_ons]
     outputs:
       moderately_sensitive:
         log: logs/07a_eth_sensanalysis_nostp_eth16.log
@@ -80,7 +80,7 @@ actions:
 
   sens_nostp_eth5:
     run: stata-mp:latest analysis/07b_eth_sensanalysis_nostp_eth5.do
-    needs: [crmain]
+    needs: [cr_sgss, cr_hes_covid, cr_ons]
     outputs:
       moderately_sensitive:
         log: logs/07b_eth_sensanalysis_nostp_eth5.log
@@ -90,7 +90,7 @@ actions:
 
   sens_ruralurban_eth16:
     run: stata-mp:latest analysis/07c_eth_sensanalysis_ruralurban_eth16.do
-    needs: [crmain]
+    needs: [cr_sgss, cr_hes_covid, cr_ons]
     outputs:
       moderately_sensitive:
         log: logs/07c_eth_sensanalysis_ruralurban_eth5.log
