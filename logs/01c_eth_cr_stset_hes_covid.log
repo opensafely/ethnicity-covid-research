@@ -1,0 +1,102 @@
+-------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /workspace/logs/01c_eth_cr_stset_hes_covid.log
+  log type:  text
+ opened on:   9 Jan 2021, 17:35:48
+
+. 
+. global outcomes "hes icu onscoviddeath"
+
+. 
+. ****************************************************************
+. *  Create outcome specific datasets for the whole population  *
+. *****************************************************************
+. 
+. 
+. foreach i of global outcomes {
+  2.         use ./output/analysis_dataset.dta, clear
+  3.         drop if `i'_date <= indexdate 
+  4.         stset stime_`i', fail(`i')                              ///     
+>         id(patient_id) enter(indexdate) origin(indexdate)
+  5.         save ./output/analysis_dataset_STSET_`i'.dta, replace
+  6. }       
+(0 observations deleted)
+
+                id:  patient_id
+     failure event:  hes != 0 & hes < .
+obs. time interval:  (stime_hes[_n-1], stime_hes]
+ enter on or after:  time indexdate
+ exit on or before:  failure
+    t for analysis:  (time-origin)
+            origin:  time indexdate
+
+------------------------------------------------------------------------------
+     78,865  total observations
+          0  exclusions
+------------------------------------------------------------------------------
+     78,865  observations remaining, representing
+     78,865  subjects
+     10,753  failures in single-failure-per-subject data
+   13523189  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =         0
+                                          last observed exit t =       184
+(note: file ./output/analysis_dataset_STSET_hes.dta not found)
+file ./output/analysis_dataset_STSET_hes.dta saved
+(0 observations deleted)
+
+                id:  patient_id
+     failure event:  icu != 0 & icu < .
+obs. time interval:  (stime_icu[_n-1], stime_icu]
+ enter on or after:  time indexdate
+ exit on or before:  failure
+    t for analysis:  (time-origin)
+            origin:  time indexdate
+
+------------------------------------------------------------------------------
+     78,865  total observations
+          0  exclusions
+------------------------------------------------------------------------------
+     78,865  observations remaining, representing
+     78,865  subjects
+        142  failures in single-failure-per-subject data
+   14186039  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =         0
+                                          last observed exit t =       180
+(note: file ./output/analysis_dataset_STSET_icu.dta not found)
+file ./output/analysis_dataset_STSET_icu.dta saved
+(0 observations deleted)
+
+                id:  patient_id
+     failure event:  onscoviddeath != 0 & onscoviddeath < .
+obs. time interval:  (stime_onscoviddeath[_n-1], stime_onscoviddeath]
+ enter on or after:  time indexdate
+ exit on or before:  failure
+    t for analysis:  (time-origin)
+            origin:  time indexdate
+
+------------------------------------------------------------------------------
+     78,865  total observations
+          0  exclusions
+------------------------------------------------------------------------------
+     78,865  observations remaining, representing
+     78,865  subjects
+         35  failures in single-failure-per-subject data
+   14505629  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =         0
+                                          last observed exit t =       184
+(note: file ./output/analysis_dataset_STSET_onscoviddeath.dta not found)
+file ./output/analysis_dataset_STSET_onscoviddeath.dta saved
+
+. 
+. 
+.         
+. * Close log file 
+. log close
+      name:  <unnamed>
+       log:  /workspace/logs/01c_eth_cr_stset_hes_covid.log
+  log type:  text
+ closed on:   9 Jan 2021, 17:35:53
+-------------------------------------------------------------------------------

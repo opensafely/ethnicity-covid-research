@@ -8,6 +8,14 @@
       "created_by_action": "cr_sgss",
       "privacy_level": "moderately_sensitive"
     },
+    "logs/01c_eth_cr_stset_hes_covid.log": {
+      "created_by_action": "cr_hes_covid",
+      "privacy_level": "moderately_sensitive"
+    },
+    "logs/01d_eth_cr_stset_death.log": {
+      "created_by_action": "cr_ons",
+      "privacy_level": "moderately_sensitive"
+    },
     "logs/02b_region_check.log": {
       "created_by_action": "check_region",
       "privacy_level": "moderately_sensitive"
@@ -153,24 +161,6 @@
       "created_at": "2021-01-07T18:20:12Z",
       "completed_at": "2021-01-07T18:22:26Z"
     },
-    "cr_hes_covid": {
-      "state": "failed",
-      "commit": "none",
-      "docker_image_id": "sha256:e4a676ff497b1550742032051cce1ba5502f65b172e86e4d82aadbaa1e056935",
-      "job_id": "qf2kcp3afdcpbs3z",
-      "run_by_user": null,
-      "created_at": "2021-01-07T18:23:03Z",
-      "completed_at": "2021-01-07T18:24:33Z"
-    },
-    "cr_ons": {
-      "state": "failed",
-      "commit": "none",
-      "docker_image_id": "sha256:e4a676ff497b1550742032051cce1ba5502f65b172e86e4d82aadbaa1e056935",
-      "job_id": "fjqcjonzpci42apl",
-      "run_by_user": null,
-      "created_at": "2021-01-07T18:25:47Z",
-      "completed_at": "2021-01-07T18:26:44Z"
-    },
     "check_age": {
       "state": "succeeded",
       "commit": "none",
@@ -188,6 +178,24 @@
       "run_by_user": null,
       "created_at": "2021-01-08T21:46:14Z",
       "completed_at": "2021-01-08T21:47:08Z"
+    },
+    "cr_hes_covid": {
+      "state": "succeeded",
+      "commit": "none",
+      "docker_image_id": "sha256:e4a676ff497b1550742032051cce1ba5502f65b172e86e4d82aadbaa1e056935",
+      "job_id": "powlh3cpywgqwd2y",
+      "run_by_user": null,
+      "created_at": "2021-01-09T17:34:25Z",
+      "completed_at": "2021-01-09T17:36:21Z"
+    },
+    "cr_ons": {
+      "state": "succeeded",
+      "commit": "none",
+      "docker_image_id": "sha256:e4a676ff497b1550742032051cce1ba5502f65b172e86e4d82aadbaa1e056935",
+      "job_id": "2v3smu2gyvii6mpv",
+      "run_by_user": null,
+      "created_at": "2021-01-09T17:34:25Z",
+      "completed_at": "2021-01-09T17:36:27Z"
     }
   }
 }

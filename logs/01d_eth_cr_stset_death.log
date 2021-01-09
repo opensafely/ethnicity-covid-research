@@ -1,0 +1,79 @@
+-------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /workspace/logs/01d_eth_cr_stset_death.log
+  log type:  text
+ opened on:   9 Jan 2021, 17:36:19
+
+. 
+. global outcomes "ons_noncoviddeath onsdeath"
+
+. 
+. ****************************************************************
+. *  Create outcome specific datasets for the whole population  *
+. *****************************************************************
+. 
+. 
+. foreach i of global outcomes {
+  2.         use ./output/analysis_dataset.dta, clear
+  3.         drop if `i'_date <= indexdate 
+  4.         stset stime_`i', fail(`i')                              ///     
+>         id(patient_id) enter(indexdate) origin(indexdate)
+  5.         save ./output/analysis_dataset_STSET_`i'.dta, replace
+  6. }       
+(0 observations deleted)
+
+                id:  patient_id
+     failure event:  ons_noncoviddeath != 0 & ons_noncoviddeath < .
+obs. time interval:  (stime_ons_noncoviddeath[_n-1], stime_ons_noncoviddeath]
+ enter on or after:  time indexdate
+ exit on or before:  failure
+    t for analysis:  (time-origin)
+            origin:  time indexdate
+
+------------------------------------------------------------------------------
+     78,865  total observations
+          0  exclusions
+------------------------------------------------------------------------------
+     78,865  observations remaining, representing
+     78,865  subjects
+        122  failures in single-failure-per-subject data
+   14505629  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =         0
+                                          last observed exit t =       184
+(note: file ./output/analysis_dataset_STSET_ons_noncoviddeath.dta not found)
+file ./output/analysis_dataset_STSET_ons_noncoviddeath.dta saved
+(0 observations deleted)
+
+                id:  patient_id
+     failure event:  onsdeath != 0 & onsdeath < .
+obs. time interval:  (stime_onsdeath[_n-1], stime_onsdeath]
+ enter on or after:  time indexdate
+ exit on or before:  failure
+    t for analysis:  (time-origin)
+            origin:  time indexdate
+
+------------------------------------------------------------------------------
+     78,865  total observations
+          0  exclusions
+------------------------------------------------------------------------------
+     78,865  observations remaining, representing
+     78,865  subjects
+        157  failures in single-failure-per-subject data
+   14505629  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =         0
+                                          last observed exit t =       184
+(note: file ./output/analysis_dataset_STSET_onsdeath.dta not found)
+file ./output/analysis_dataset_STSET_onsdeath.dta saved
+
+. 
+. 
+.         
+. * Close log file 
+. log close
+      name:  <unnamed>
+       log:  /workspace/logs/01d_eth_cr_stset_death.log
+  log type:  text
+ closed on:   9 Jan 2021, 17:36:20
+-------------------------------------------------------------------------------
