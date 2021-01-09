@@ -1,5 +1,5 @@
 /*==============================================================================
-DO FILE NAME:			07a_eth_sensanalysis_no_stp
+DO FILE NAME:			07b_eth_sensanalysis_nostp_eth5
 PROJECT:				Ethnicity and COVID
 AUTHOR:					R Mathur (modified from A wong and A Schultze)
 DATE: 					15 July 2020					
@@ -23,7 +23,7 @@ global outcomes "tested positivetest icu hes onscoviddeath ons_noncoviddeath ons
 
 cap log close
 macro drop hr
-log using ./logs/07a_eth_sensanalysis_nostp_eth5, replace t 
+log using ./logs/07a_eth_sensanalysis_nostp_eth5.log, replace t 
 
 cap file close tablecontent
 file open tablecontent using ./output/sens_nostp_eth5.txt, write text replace
@@ -63,11 +63,11 @@ stcox i.eth5 i.male age1 age2 age3 	i.imd						///
 										i.immunosuppressed	 		///
 										i.ra_sle_psoriasis			///
 										i.hh_total_cat, strata(stp) nolog		
-estimates save ./output/model/modela_`i'_eth5, replace
+estimates save ./output/modela_`i'_eth5, replace
 eststo modela
 
-parmest, label eform format(estimate p lb ub) saving(./output/model/modela_`i'_eth5, replace) idstr(modela_`i'_eth5) 
-local hr "`hr' ./output/model/modela_`i'_eth5 "
+parmest, label eform format(estimate p lb ub) saving(./output/modela_`i'_eth5, replace) idstr(modela_`i'_eth5) 
+local hr "`hr' ./output/modela_`i'_eth5 "
 
 
 * without strata
@@ -90,11 +90,11 @@ stcox i.eth5 i.male age1 age2 age3 	i.imd						///
 										i.immunosuppressed	 		///
 										i.ra_sle_psoriasis			///
 										i.hh_total_cat,  nolog		
-estimates save ./output/model/modelb_`i'_eth5, replace
+estimates save ./output/modelb_`i'_eth5, replace
 eststo modelb
 
-parmest, label eform format(estimate p lb ub) saving(./output/model/modelb_`i'_eth5, replace) idstr(modelb_`i'_eth5) 
-local hr "`hr' ./output/model/modelb_`i'_eth5 "
+parmest, label eform format(estimate p lb ub) saving(./output/modelb_`i'_eth5, replace) idstr(modelb_`i'_eth5) 
+local hr "`hr' ./output/modelb_`i'_eth5 "
 
 /* Estout================================================================*/ 
 esttab modela modelb using ./output/estout_sens_nostp_eth5.txt, b(a2) ci(2) label wide compress eform ///
@@ -146,11 +146,11 @@ forvalues eth=2/6 {
 	local person_week = r(mean)/7
 	local rate = 1000*(`event'/`person_week')
 	file write tablecontent  ("`lab`eth''") _tab (`denominator') _tab (`event') _tab %10.0f (`person_week') _tab %3.2f (`rate') _tab  
-	cap estimates use ./output/model/modela_`i'_eth5 
+	cap estimates use ./output/modela_`i'_eth5 
 	 cap lincom `eth'.eth5, eform
 	file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (" - ") %4.2f (r(ub)) (")") _tab 
 	cap estimates clear
-	cap estimates use ./output/model/modelb_`i'_eth5 
+	cap estimates use ./output/modelb_`i'_eth5 
 	 cap lincom `eth'.eth5, eform
 	file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (" - ") %4.2f (r(ub)) (")") _n
 }  //end ethnic group
