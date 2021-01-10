@@ -191,15 +191,6 @@
       "created_at": "2021-01-10T10:54:34Z",
       "completed_at": "2021-01-10T11:06:52Z"
     },
-    "sens_ruralurban_eth16": {
-      "state": "succeeded",
-      "commit": "none",
-      "docker_image_id": "sha256:e4a676ff497b1550742032051cce1ba5502f65b172e86e4d82aadbaa1e056935",
-      "job_id": "5j254l4blnmiespg",
-      "run_by_user": null,
-      "created_at": "2021-01-10T10:54:34Z",
-      "completed_at": "2021-01-10T11:07:39Z"
-    },
     "sens_nostp_eth16": {
       "state": "succeeded",
       "commit": "none",
@@ -208,6 +199,15 @@
       "run_by_user": null,
       "created_at": "2021-01-10T10:54:34Z",
       "completed_at": "2021-01-10T11:08:23Z"
+    },
+    "sens_ruralurban_eth16": {
+      "state": "succeeded",
+      "commit": "none",
+      "docker_image_id": "sha256:e4a676ff497b1550742032051cce1ba5502f65b172e86e4d82aadbaa1e056935",
+      "job_id": "ymyczmlfyvvwuyg4",
+      "run_by_user": null,
+      "created_at": "2021-01-10T17:25:50Z",
+      "completed_at": "2021-01-10T17:29:49Z"
     }
   }
 }
