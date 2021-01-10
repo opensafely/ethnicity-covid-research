@@ -3,15 +3,14 @@
 state: failed
 commit: none
 docker_image_id: sha256:e4a676ff497b1550742032051cce1ba5502f65b172e86e4d82aadbaa1e056935
-job_id: 3qfvbuikrhgnmt67
+job_id: 4celxsu3t6enaulp
 run_by_user: None
-created_at: 2021-01-10T10:17:21Z
-started_at: 2021-01-10T10:18:38Z
-completed_at: 2021-01-10T10:29:04Z
+created_at: 2021-01-10T10:32:08Z
+started_at: 2021-01-10T10:33:05Z
+completed_at: 2021-01-10T10:44:23Z
 
 No outputs found matching patterns:
- - logs/07c_eth_sensanalysis_ruralurban_eth5.log
- - output/estout_sens_ruralurban_eth5.txt
+ - logs/07c_eth_sensanalysis_ruralurban_eth16.log
 
 Did you mean to match one of these files instead?
  - .DS_Store
@@ -94,7 +93,6 @@ Did you mean to match one of these files instead?
  - logs/05_region_check.log
  - logs/05_stp_check.log
  - logs/07a_eth_sensanalysis_nostp_eth5.log
- - logs/07c_eth_sensanalysis_ruralurban_eth16.log
  - logs/07c_eth_sensanalysis_ruralurban_eth16log.log
  - output/.DS_Store
  - output/analysis_dataset_STSET_hes.dta
@@ -104,7 +102,6 @@ Did you mean to match one of these files instead?
  - output/analysis_dataset_STSET_onsdeath.dta
  - output/analysis_dataset_STSET_positivetest.dta
  - output/analysis_dataset_STSET_tested.dta
- - output/estout_sens_ruralurban_eth16.txt
  - output/model/modela_hes_eth16.dta
  - output/model/modela_hes_eth16.ster
  - output/model/modela_hes_eth5.dta
@@ -166,4 +163,4 @@ Did you mean to match one of these files instead?
  - released_outputs/tabfig/table2_eth5_nocarehomes.txt
 
 outputs:
-  (no outputs)
+  output/estout_sens_ruralurban_eth16.txt  - moderately_sensitive

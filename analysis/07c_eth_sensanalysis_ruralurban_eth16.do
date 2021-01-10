@@ -21,7 +21,7 @@ global outcomes "tested positivetest icu hes onscoviddeath ons_noncoviddeath ons
 * Open a log file
 cap log close
 macro drop hr
-log using ./logs/07c_eth_sensanalysis_ruralurban_eth16log, replace t 
+log using ./logs/07c_eth_sensanalysis_ruralurban_eth16.log, replace t 
 
 
 foreach i of global outcomes {
