@@ -2,7 +2,7 @@
       name:  <unnamed>
        log:  /workspace/logs/01c_eth_cr_stset_hes_covid.log
   log type:  text
- opened on:   9 Jan 2021, 17:35:48
+ opened on:  10 Jan 2021, 10:58:03
 
 . 
 . global outcomes "hes icu onscoviddeath"
@@ -31,13 +31,13 @@ obs. time interval:  (stime_hes[_n-1], stime_hes]
             origin:  time indexdate
 
 ------------------------------------------------------------------------------
-     78,865  total observations
+      7,857  total observations
           0  exclusions
 ------------------------------------------------------------------------------
-     78,865  observations remaining, representing
-     78,865  subjects
-     10,753  failures in single-failure-per-subject data
-   13523189  total analysis time at risk and under observation
+      7,857  observations remaining, representing
+      7,857  subjects
+      1,065  failures in single-failure-per-subject data
+  1,352,074  total analysis time at risk and under observation
                                                 at risk from t =         0
                                      earliest observed entry t =         0
                                           last observed exit t =       184
@@ -54,13 +54,13 @@ obs. time interval:  (stime_icu[_n-1], stime_icu]
             origin:  time indexdate
 
 ------------------------------------------------------------------------------
-     78,865  total observations
+      7,857  total observations
           0  exclusions
 ------------------------------------------------------------------------------
-     78,865  observations remaining, representing
-     78,865  subjects
-        142  failures in single-failure-per-subject data
-   14186039  total analysis time at risk and under observation
+      7,857  observations remaining, representing
+      7,857  subjects
+         16  failures in single-failure-per-subject data
+  1,413,259  total analysis time at risk and under observation
                                                 at risk from t =         0
                                      earliest observed entry t =         0
                                           last observed exit t =       180
@@ -77,13 +77,13 @@ obs. time interval:  (stime_onscoviddeath[_n-1], stime_onscoviddeath]
             origin:  time indexdate
 
 ------------------------------------------------------------------------------
-     78,865  total observations
+      7,857  total observations
           0  exclusions
 ------------------------------------------------------------------------------
-     78,865  observations remaining, representing
-     78,865  subjects
-         35  failures in single-failure-per-subject data
-   14505629  total analysis time at risk and under observation
+      7,857  observations remaining, representing
+      7,857  subjects
+          4  failures in single-failure-per-subject data
+  1,445,059  total analysis time at risk and under observation
                                                 at risk from t =         0
                                      earliest observed entry t =         0
                                           last observed exit t =       184
@@ -98,5 +98,5 @@ file ./output/analysis_dataset_STSET_onscoviddeath.dta saved
       name:  <unnamed>
        log:  /workspace/logs/01c_eth_cr_stset_hes_covid.log
   log type:  text
- closed on:   9 Jan 2021, 17:35:53
+ closed on:  10 Jan 2021, 10:58:04
 -------------------------------------------------------------------------------

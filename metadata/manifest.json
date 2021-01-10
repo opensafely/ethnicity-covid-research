@@ -28,6 +28,14 @@
       "created_by_action": "sens_nostp_eth16",
       "privacy_level": "moderately_sensitive"
     },
+    "logs/07b_eth_sensanalysis_nostp_eth5.log": {
+      "created_by_action": "sens_nostp_eth5",
+      "privacy_level": "moderately_sensitive"
+    },
+    "logs/07c_eth_sensanalysis_ruralurban_eth16.log": {
+      "created_by_action": "sens_ruralurban_eth16",
+      "privacy_level": "moderately_sensitive"
+    },
     "output/FP_sens_nostp_eth16.txt": {
       "created_by_action": "sens_nostp_eth16",
       "privacy_level": "moderately_sensitive"
@@ -102,33 +110,6 @@
     }
   },
   "actions": {
-    "sens_nostp_eth16": {
-      "state": "succeeded",
-      "commit": "none",
-      "docker_image_id": "sha256:e4a676ff497b1550742032051cce1ba5502f65b172e86e4d82aadbaa1e056935",
-      "job_id": "ydtxbgyjb3hfmqrs",
-      "run_by_user": null,
-      "created_at": "2021-01-06T15:54:57Z",
-      "completed_at": "2021-01-06T16:01:14Z"
-    },
-    "generate_cohorts": {
-      "state": "succeeded",
-      "commit": "none",
-      "docker_image_id": "sha256:0f0f84e012c45836511e3970e9b97fd2203057a2108ff0b58ce544393f9637cc",
-      "job_id": "t7zkvughd2lytkh6",
-      "run_by_user": null,
-      "created_at": "2021-01-06T16:14:45Z",
-      "completed_at": "2021-01-06T16:16:55Z"
-    },
-    "check_region": {
-      "state": "succeeded",
-      "commit": "none",
-      "docker_image_id": "sha256:e4a676ff497b1550742032051cce1ba5502f65b172e86e4d82aadbaa1e056935",
-      "job_id": "5fii7cysrvndgacp",
-      "run_by_user": null,
-      "created_at": "2021-01-06T16:14:45Z",
-      "completed_at": "2021-01-06T16:27:59Z"
-    },
     "sens_region_eth16": {
       "state": "failed",
       "commit": "none",
@@ -138,68 +119,95 @@
       "created_at": "2021-01-06T17:45:40Z",
       "completed_at": "2021-01-06T17:57:35Z"
     },
-    "cr_sgss": {
+    "generate_cohorts": {
       "state": "succeeded",
       "commit": "none",
-      "docker_image_id": "sha256:e4a676ff497b1550742032051cce1ba5502f65b172e86e4d82aadbaa1e056935",
-      "job_id": "vb6stcyc3eil53tr",
+      "docker_image_id": "sha256:0f0f84e012c45836511e3970e9b97fd2203057a2108ff0b58ce544393f9637cc",
+      "job_id": "7r7z3rp2pdrans73",
       "run_by_user": null,
-      "created_at": "2021-01-07T18:20:12Z",
-      "completed_at": "2021-01-07T18:22:26Z"
-    },
-    "check_age": {
-      "state": "succeeded",
-      "commit": "none",
-      "docker_image_id": "sha256:e4a676ff497b1550742032051cce1ba5502f65b172e86e4d82aadbaa1e056935",
-      "job_id": "sa77ogmeqbnwzeyh",
-      "run_by_user": null,
-      "created_at": "2021-01-08T12:02:48Z",
-      "completed_at": "2021-01-08T12:05:08Z"
+      "created_at": "2021-01-10T10:54:34Z",
+      "completed_at": "2021-01-10T10:55:45Z"
     },
     "crmain": {
       "state": "succeeded",
       "commit": "none",
       "docker_image_id": "sha256:e4a676ff497b1550742032051cce1ba5502f65b172e86e4d82aadbaa1e056935",
-      "job_id": "xasrlf3qxc3cvvrm",
+      "job_id": "akzeaoyeobu7qa2p",
       "run_by_user": null,
-      "created_at": "2021-01-08T21:46:14Z",
-      "completed_at": "2021-01-08T21:47:08Z"
+      "created_at": "2021-01-10T10:54:34Z",
+      "completed_at": "2021-01-10T10:56:34Z"
+    },
+    "cr_sgss": {
+      "state": "succeeded",
+      "commit": "none",
+      "docker_image_id": "sha256:e4a676ff497b1550742032051cce1ba5502f65b172e86e4d82aadbaa1e056935",
+      "job_id": "bantuohqyd73j7g7",
+      "run_by_user": null,
+      "created_at": "2021-01-10T10:54:34Z",
+      "completed_at": "2021-01-10T10:58:42Z"
     },
     "cr_hes_covid": {
       "state": "succeeded",
       "commit": "none",
       "docker_image_id": "sha256:e4a676ff497b1550742032051cce1ba5502f65b172e86e4d82aadbaa1e056935",
-      "job_id": "powlh3cpywgqwd2y",
+      "job_id": "hvho2eop3y35bmcf",
       "run_by_user": null,
-      "created_at": "2021-01-09T17:34:25Z",
-      "completed_at": "2021-01-09T17:36:21Z"
+      "created_at": "2021-01-10T10:54:34Z",
+      "completed_at": "2021-01-10T10:58:47Z"
     },
     "cr_ons": {
       "state": "succeeded",
       "commit": "none",
       "docker_image_id": "sha256:e4a676ff497b1550742032051cce1ba5502f65b172e86e4d82aadbaa1e056935",
-      "job_id": "2v3smu2gyvii6mpv",
+      "job_id": "pzkk7vjbr7unlvc3",
       "run_by_user": null,
-      "created_at": "2021-01-09T17:34:25Z",
-      "completed_at": "2021-01-09T17:36:27Z"
+      "created_at": "2021-01-10T10:54:34Z",
+      "completed_at": "2021-01-10T10:58:54Z"
+    },
+    "check_region": {
+      "state": "succeeded",
+      "commit": "none",
+      "docker_image_id": "sha256:e4a676ff497b1550742032051cce1ba5502f65b172e86e4d82aadbaa1e056935",
+      "job_id": "xdq6ddskveb3mlpw",
+      "run_by_user": null,
+      "created_at": "2021-01-10T10:54:34Z",
+      "completed_at": "2021-01-10T11:00:43Z"
+    },
+    "check_age": {
+      "state": "succeeded",
+      "commit": "none",
+      "docker_image_id": "sha256:e4a676ff497b1550742032051cce1ba5502f65b172e86e4d82aadbaa1e056935",
+      "job_id": "pymzqgvstf3esfcn",
+      "run_by_user": null,
+      "created_at": "2021-01-10T10:54:34Z",
+      "completed_at": "2021-01-10T11:00:47Z"
     },
     "sens_nostp_eth5": {
-      "state": "failed",
+      "state": "succeeded",
       "commit": "none",
       "docker_image_id": "sha256:e4a676ff497b1550742032051cce1ba5502f65b172e86e4d82aadbaa1e056935",
-      "job_id": "xghhcrn2lq7fi26p",
+      "job_id": "gept2i5v42nkuxpm",
       "run_by_user": null,
-      "created_at": "2021-01-09T17:34:25Z",
-      "completed_at": "2021-01-09T17:49:36Z"
+      "created_at": "2021-01-10T10:54:34Z",
+      "completed_at": "2021-01-10T11:06:52Z"
     },
     "sens_ruralurban_eth16": {
-      "state": "failed",
+      "state": "succeeded",
       "commit": "none",
       "docker_image_id": "sha256:e4a676ff497b1550742032051cce1ba5502f65b172e86e4d82aadbaa1e056935",
-      "job_id": "4celxsu3t6enaulp",
+      "job_id": "5j254l4blnmiespg",
       "run_by_user": null,
-      "created_at": "2021-01-10T10:32:08Z",
-      "completed_at": "2021-01-10T10:44:23Z"
+      "created_at": "2021-01-10T10:54:34Z",
+      "completed_at": "2021-01-10T11:07:39Z"
+    },
+    "sens_nostp_eth16": {
+      "state": "succeeded",
+      "commit": "none",
+      "docker_image_id": "sha256:e4a676ff497b1550742032051cce1ba5502f65b172e86e4d82aadbaa1e056935",
+      "job_id": "jhkjisgb5n7qq4ee",
+      "run_by_user": null,
+      "created_at": "2021-01-10T10:54:34Z",
+      "completed_at": "2021-01-10T11:08:23Z"
     }
   }
 }

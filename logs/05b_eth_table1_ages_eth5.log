@@ -2,7 +2,7 @@
       name:  <unnamed>
        log:  /workspace/logs/05b_eth_table1_ages_eth5.log
   log type:  text
- opened on:   8 Jan 2021, 12:05:02
+ opened on:  10 Jan 2021, 11:00:02
 
 . 
 . * Open Stata dataset
@@ -267,5 +267,5 @@
       name:  <unnamed>
        log:  /workspace/logs/05b_eth_table1_ages_eth5.log
   log type:  text
- closed on:   8 Jan 2021, 12:05:05
+ closed on:  10 Jan 2021, 11:00:02
 -------------------------------------------------------------------------------
