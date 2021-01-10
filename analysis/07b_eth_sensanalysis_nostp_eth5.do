@@ -23,7 +23,7 @@ global outcomes "tested positivetest icu hes onscoviddeath ons_noncoviddeath ons
 
 cap log close
 macro drop hr
-log using ./logs/07a_eth_sensanalysis_nostp_eth5.log, replace t 
+log using ./logs/07b_eth_sensanalysis_nostp_eth5.log, replace t 
 
 cap file close tablecontent
 file open tablecontent using ./output/sens_nostp_eth5.txt, write text replace
