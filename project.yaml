@@ -93,6 +93,6 @@ actions:
     needs: [cr_sgss, cr_hes_covid, cr_ons]
     outputs:
       moderately_sensitive:
-        log: logs/07c_eth_sensanalysis_ruralurban_eth5.log
-        estout: output/estout_sens_ruralurban_eth5.txt
+        log: logs/07c_eth_sensanalysis_ruralurban_eth16.log
+        estout: output/estout_sens_ruralurban_eth16.txt
 
