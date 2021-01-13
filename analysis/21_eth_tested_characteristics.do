@@ -107,6 +107,3 @@ tabulatevariable, variable(region2) start(1) end(8) outcome(tested)
 file write tablecontent _n 
 
 file close tablecontent
-di "tested"
-
-insheet using ./output/Table1_tested.txt, clear

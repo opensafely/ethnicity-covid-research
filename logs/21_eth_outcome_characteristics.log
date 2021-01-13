@@ -26984,3 +26984,870 @@ tested
 . 
 end of do-file
 
+. do "/Users/lsh152058/Documents/GitHub/ethnicity-covid-research/analysis/21_
+> eth_tested_characteristics.do"
+
+. *compare characteristics of people with a test
+. *************************************************************************
+. *Purpose: Create content that is ready to paste into a pre-formatted Word 
+. * shell "Table 1" (main cohort descriptives) for the Risk Factors paper
+. *
+. *Requires: final analysis dataset (cr_analysis_dataset.dta)
+. *
+. *Coding: Krishnan Bhaskaran
+. *
+. *Date drafted: 17/4/2020
+. *************************************************************************
+. 
+. ***************************************************************************
+> ****
+. *Generic code to output one row of table
+. cap prog drop generaterow
+
+. program define generaterow
+  1. syntax, variable(varname) condition(string) outcome(string)
+  2.         
+.         *put the varname and condition to left so that alignment can be che
+> cked vs shell
+.         file write tablecontent ("`variable'") _tab ("`condition'") _tab
+  3.         
+.         cou
+  4.         local overalldenom=r(N)
+  5.         
+.         cou if `variable' `condition'
+  6.         local rowdenom = r(N)
+  7.         local colpct = 100*(r(N)/`overalldenom')
+  8.         file write tablecontent (`rowdenom')  (" (") %3.1f (`colpct') ("
+> )") _tab
+  9.         
+.         cou if tested==1 & `variable' `condition'
+ 10.         local pct = 100*(r(N)/`rowdenom')
+ 11.         file write tablecontent (r(N)) (" (") %4.2f  (`pct') (")") _n
+ 12. 
+.         
+. end
+
+. 
+. ***************************************************************************
+> ****
+. *Generic code to output one section (varible) within table (calls above)
+. cap prog drop tabulatevariable
+
+. prog define tabulatevariable
+  1. syntax, variable(varname) start(real) end(real) [missing] outcome(string
+> )
+  2. 
+.         foreach varlevel of numlist `start'/`end'{ 
+  3.                 generaterow, variable(`variable') condition("==`varlevel
+> '") outcome(tested)
+  4.         }
+  5.         if "`missing'"!="" generaterow, variable(`variable') condition("
+> >=.") outcome(tested)
+  6. 
+. end
+
+. 
+. ***************************************************************************
+> ****
+. 
+. ***************************************************************************
+> *****
+. * Generic code to qui summarize a continous variable 
+. 
+. cap prog drop summarizevariable 
+
+. prog define summarizevariable
+  1. syntax, variable(varname) 
+  2. 
+.         local lab: variable label `variable'
+  3.         file write tablecontent ("`lab'") _n 
+  4. 
+.         di "tested"
+  5.         summarize `variable', d
+  6.         file write tablecontent ("Mean (SD)") _tab _tab
+  7.         file write tablecontent  %3.1f (r(mean)) (" (") %3.1f (r(sd)) ("
+> )") _tab
+  8.         
+.         summarize `variable' if tested== 1, d
+  9.         file write tablecontent  %3.1f (r(mean)) (" (") %3.1f (r(sd)) ("
+> )") _tab
+ 10.         
+. 
+. file write tablecontent _n      
+ 11. end
+
+. 
+. use ./output/analysis_dataset.dta, clear
+
+. 
+. *Set up output file
+. cap file close tablecontent
+
+. file open tablecontent using ./output/Table1_tested.txt, write text replace
+
+. 
+. file write tablecontent ("tested characteristics") _n
+
+. 
+. *  labelled columns
+. 
+. local lab1: label tested 1
+
+. 
+. file write tablecontent _tab ("Category") _tab ("Total")  _tab ///
+>                                                          ("`lab1'")        
+>                                        _n
+
+. 
+. gen byte cons=1
+
+. tabulatevariable, variable(cons) start(1) end(1) outcome(tested)
+  ------------------------------------------------ begin tabulatevariable ---
+  - syntax, variable(varname) start(real) end(real) [missing] outcome(string)
+  - foreach varlevel of numlist `start'/`end'{
+  = foreach varlevel of numlist 1/1{
+  - generaterow, variable(`variable') condition("==`varlevel'") outcome(teste
+> d)
+  = generaterow, variable(cons) condition("==1") outcome(tested)
+    --------------------------------------------------- begin generaterow ---
+    - syntax, variable(varname) condition(string) outcome(string)
+    - file write tablecontent ("`variable'") _tab ("`condition'") _tab
+    = file write tablecontent ("cons") _tab ("==1") _tab
+    - cou
+  7,857
+    - local overalldenom=r(N)
+    - cou if `variable' `condition'
+    = cou if cons ==1
+  7,857
+    - local rowdenom = r(N)
+    - local colpct = 100*(r(N)/`overalldenom')
+    = local colpct = 100*(r(N)/7857)
+    - file write tablecontent (`rowdenom') (" (") %3.1f (`colpct') (")") _tab
+    = file write tablecontent (7857) (" (") %3.1f (100) (")") _tab
+    - cou if tested==1 & `variable' `condition'
+    = cou if tested==1 & cons ==1
+  16
+    - local pct = 100*(r(N)/`rowdenom')
+    = local pct = 100*(r(N)/7857)
+    - file write tablecontent (r(N)) (" (") %4.2f (`pct') (")") _n
+    = file write tablecontent (r(N)) (" (") %4.2f (.2036400661830215) (")") _
+> n
+    ----------------------------------------------------- end generaterow ---
+  - }
+  - if "`missing'"!="" generaterow, variable(`variable') condition(">=.") out
+> come(tested)
+  = if ""!="" generaterow, variable(cons) condition(">=.") outcome(tested)
+  -------------------------------------------------- end tabulatevariable ---
+
+. file write tablecontent _n 
+
+. 
+. summarizevariable, variable(age) 
+  ----------------------------------------------- begin summarizevariable ---
+  - syntax, variable(varname)
+  - local lab: variable label `variable'
+  = local lab: variable label age
+  - file write tablecontent ("`lab'") _n
+  = file write tablecontent ("Age (years)") _n
+  - di "tested"
+tested
+  - summarize `variable', d
+  = summarize age, d
+
+                         Age (years)
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%           18             18
+ 5%           21             18
+10%           24             18       Obs               7,857
+25%           33             18       Sum of Wgt.       7,857
+
+50%           48                      Mean           48.74978
+                        Largest       Std. Dev.      18.94281
+75%           63             99
+90%           75             99       Variance       358.8299
+95%           82             99       Skewness       .2697712
+99%           91            103       Kurtosis       2.159501
+  - file write tablecontent ("Mean (SD)") _tab _tab
+  - file write tablecontent %3.1f (r(mean)) (" (") %3.1f (r(sd)) (")") _tab
+  - summarize `variable' if tested== 1, d
+  = summarize age if tested== 1, d
+
+                         Age (years)
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%           23             23
+ 5%           23             23
+10%           23             23       Obs                  16
+25%           29             29       Sum of Wgt.          16
+
+50%           42                      Mean            40.0625
+                        Largest       Std. Dev.      12.42293
+75%         50.5             52
+90%           57             53       Variance       154.3292
+95%           58             57       Skewness      -.0832123
+99%           58             58       Kurtosis       1.597093
+  - file write tablecontent %3.1f (r(mean)) (" (") %3.1f (r(sd)) (")") _tab
+  - file write tablecontent _n
+  ------------------------------------------------- end summarizevariable ---
+
+. file write tablecontent _n
+
+. 
+. tabulatevariable, variable(male) start(0) end(1) outcome(tested)
+  ------------------------------------------------ begin tabulatevariable ---
+  - syntax, variable(varname) start(real) end(real) [missing] outcome(string)
+  - foreach varlevel of numlist `start'/`end'{
+  = foreach varlevel of numlist 0/1{
+  - generaterow, variable(`variable') condition("==`varlevel'") outcome(teste
+> d)
+  = generaterow, variable(male) condition("==0") outcome(tested)
+    --------------------------------------------------- begin generaterow ---
+    - syntax, variable(varname) condition(string) outcome(string)
+    - file write tablecontent ("`variable'") _tab ("`condition'") _tab
+    = file write tablecontent ("male") _tab ("==0") _tab
+    - cou
+  7,857
+    - local overalldenom=r(N)
+    - cou if `variable' `condition'
+    = cou if male ==0
+  3,987
+    - local rowdenom = r(N)
+    - local colpct = 100*(r(N)/`overalldenom')
+    = local colpct = 100*(r(N)/7857)
+    - file write tablecontent (`rowdenom') (" (") %3.1f (`colpct') (")") _tab
+    = file write tablecontent (3987) (" (") %3.1f (50.74455899198167) (")") _
+> tab
+    - cou if tested==1 & `variable' `condition'
+    = cou if tested==1 & male ==0
+  9
+    - local pct = 100*(r(N)/`rowdenom')
+    = local pct = 100*(r(N)/3987)
+    - file write tablecontent (r(N)) (" (") %4.2f (`pct') (")") _n
+    = file write tablecontent (r(N)) (" (") %4.2f (.2257336343115124) (")") _
+> n
+    ----------------------------------------------------- end generaterow ---
+  - }
+  - generaterow, variable(`variable') condition("==`varlevel'") outcome(teste
+> d)
+  = generaterow, variable(male) condition("==1") outcome(tested)
+    --------------------------------------------------- begin generaterow ---
+    - syntax, variable(varname) condition(string) outcome(string)
+    - file write tablecontent ("`variable'") _tab ("`condition'") _tab
+    = file write tablecontent ("male") _tab ("==1") _tab
+    - cou
+  7,857
+    - local overalldenom=r(N)
+    - cou if `variable' `condition'
+    = cou if male ==1
+  3,870
+    - local rowdenom = r(N)
+    - local colpct = 100*(r(N)/`overalldenom')
+    = local colpct = 100*(r(N)/7857)
+    - file write tablecontent (`rowdenom') (" (") %3.1f (`colpct') (")") _tab
+    = file write tablecontent (3870) (" (") %3.1f (49.25544100801833) (")") _
+> tab
+    - cou if tested==1 & `variable' `condition'
+    = cou if tested==1 & male ==1
+  7
+    - local pct = 100*(r(N)/`rowdenom')
+    = local pct = 100*(r(N)/3870)
+    - file write tablecontent (r(N)) (" (") %4.2f (`pct') (")") _n
+    = file write tablecontent (r(N)) (" (") %4.2f (.1808785529715762) (")") _
+> n
+    ----------------------------------------------------- end generaterow ---
+  - }
+  - if "`missing'"!="" generaterow, variable(`variable') condition(">=.") out
+> come(tested)
+  = if ""!="" generaterow, variable(male) condition(">=.") outcome(tested)
+  -------------------------------------------------- end tabulatevariable ---
+
+. file write tablecontent _n 
+
+. 
+. tabulatevariable, variable(eth5) start(1) end(5) missing outcome(tested)
+  ------------------------------------------------ begin tabulatevariable ---
+  - syntax, variable(varname) start(real) end(real) [missing] outcome(string)
+  - foreach varlevel of numlist `start'/`end'{
+  = foreach varlevel of numlist 1/5{
+  - generaterow, variable(`variable') condition("==`varlevel'") outcome(teste
+> d)
+  = generaterow, variable(eth5) condition("==1") outcome(tested)
+    --------------------------------------------------- begin generaterow ---
+    - syntax, variable(varname) condition(string) outcome(string)
+    - file write tablecontent ("`variable'") _tab ("`condition'") _tab
+    = file write tablecontent ("eth5") _tab ("==1") _tab
+    - cou
+  7,857
+    - local overalldenom=r(N)
+    - cou if `variable' `condition'
+    = cou if eth5 ==1
+  1,186
+    - local rowdenom = r(N)
+    - local colpct = 100*(r(N)/`overalldenom')
+    = local colpct = 100*(r(N)/7857)
+    - file write tablecontent (`rowdenom') (" (") %3.1f (`colpct') (")") _tab
+    = file write tablecontent (1186) (" (") %3.1f (15.09481990581647) (")") _
+> tab
+    - cou if tested==1 & `variable' `condition'
+    = cou if tested==1 & eth5 ==1
+  1
+    - local pct = 100*(r(N)/`rowdenom')
+    = local pct = 100*(r(N)/1186)
+    - file write tablecontent (r(N)) (" (") %4.2f (`pct') (")") _n
+    = file write tablecontent (r(N)) (" (") %4.2f (.0843170320404722) (")") _
+> n
+    ----------------------------------------------------- end generaterow ---
+  - }
+  - generaterow, variable(`variable') condition("==`varlevel'") outcome(teste
+> d)
+  = generaterow, variable(eth5) condition("==2") outcome(tested)
+    --------------------------------------------------- begin generaterow ---
+    - syntax, variable(varname) condition(string) outcome(string)
+    - file write tablecontent ("`variable'") _tab ("`condition'") _tab
+    = file write tablecontent ("eth5") _tab ("==2") _tab
+    - cou
+  7,857
+    - local overalldenom=r(N)
+    - cou if `variable' `condition'
+    = cou if eth5 ==2
+  1,220
+    - local rowdenom = r(N)
+    - local colpct = 100*(r(N)/`overalldenom')
+    = local colpct = 100*(r(N)/7857)
+    - file write tablecontent (`rowdenom') (" (") %3.1f (`colpct') (")") _tab
+    = file write tablecontent (1220) (" (") %3.1f (15.52755504645539) (")") _
+> tab
+    - cou if tested==1 & `variable' `condition'
+    = cou if tested==1 & eth5 ==2
+  1
+    - local pct = 100*(r(N)/`rowdenom')
+    = local pct = 100*(r(N)/1220)
+    - file write tablecontent (r(N)) (" (") %4.2f (`pct') (")") _n
+    = file write tablecontent (r(N)) (" (") %4.2f (.0819672131147541) (")") _
+> n
+    ----------------------------------------------------- end generaterow ---
+  - }
+  - generaterow, variable(`variable') condition("==`varlevel'") outcome(teste
+> d)
+  = generaterow, variable(eth5) condition("==3") outcome(tested)
+    --------------------------------------------------- begin generaterow ---
+    - syntax, variable(varname) condition(string) outcome(string)
+    - file write tablecontent ("`variable'") _tab ("`condition'") _tab
+    = file write tablecontent ("eth5") _tab ("==3") _tab
+    - cou
+  7,857
+    - local overalldenom=r(N)
+    - cou if `variable' `condition'
+    = cou if eth5 ==3
+  1,153
+    - local rowdenom = r(N)
+    - local colpct = 100*(r(N)/`overalldenom')
+    = local colpct = 100*(r(N)/7857)
+    - file write tablecontent (`rowdenom') (" (") %3.1f (`colpct') (")") _tab
+    = file write tablecontent (1153) (" (") %3.1f (14.67481226931399) (")") _
+> tab
+    - cou if tested==1 & `variable' `condition'
+    = cou if tested==1 & eth5 ==3
+  1
+    - local pct = 100*(r(N)/`rowdenom')
+    = local pct = 100*(r(N)/1153)
+    - file write tablecontent (r(N)) (" (") %4.2f (`pct') (")") _n
+    = file write tablecontent (r(N)) (" (") %4.2f (.0867302688638335) (")") _
+> n
+    ----------------------------------------------------- end generaterow ---
+  - }
+  - generaterow, variable(`variable') condition("==`varlevel'") outcome(teste
+> d)
+  = generaterow, variable(eth5) condition("==4") outcome(tested)
+    --------------------------------------------------- begin generaterow ---
+    - syntax, variable(varname) condition(string) outcome(string)
+    - file write tablecontent ("`variable'") _tab ("`condition'") _tab
+    = file write tablecontent ("eth5") _tab ("==4") _tab
+    - cou
+  7,857
+    - local overalldenom=r(N)
+    - cou if `variable' `condition'
+    = cou if eth5 ==4
+  1,206
+    - local rowdenom = r(N)
+    - local colpct = 100*(r(N)/`overalldenom')
+    = local colpct = 100*(r(N)/7857)
+    - file write tablecontent (`rowdenom') (" (") %3.1f (`colpct') (")") _tab
+    = file write tablecontent (1206) (" (") %3.1f (15.34936998854525) (")") _
+> tab
+    - cou if tested==1 & `variable' `condition'
+    = cou if tested==1 & eth5 ==4
+  4
+    - local pct = 100*(r(N)/`rowdenom')
+    = local pct = 100*(r(N)/1206)
+    - file write tablecontent (r(N)) (" (") %4.2f (`pct') (")") _n
+    = file write tablecontent (r(N)) (" (") %4.2f (.3316749585406302) (")") _
+> n
+    ----------------------------------------------------- end generaterow ---
+  - }
+  - generaterow, variable(`variable') condition("==`varlevel'") outcome(teste
+> d)
+  = generaterow, variable(eth5) condition("==5") outcome(tested)
+    --------------------------------------------------- begin generaterow ---
+    - syntax, variable(varname) condition(string) outcome(string)
+    - file write tablecontent ("`variable'") _tab ("`condition'") _tab
+    = file write tablecontent ("eth5") _tab ("==5") _tab
+    - cou
+  7,857
+    - local overalldenom=r(N)
+    - cou if `variable' `condition'
+    = cou if eth5 ==5
+  1,133
+    - local rowdenom = r(N)
+    - local colpct = 100*(r(N)/`overalldenom')
+    = local colpct = 100*(r(N)/7857)
+    - file write tablecontent (`rowdenom') (" (") %3.1f (`colpct') (")") _tab
+    = file write tablecontent (1133) (" (") %3.1f (14.42026218658521) (")") _
+> tab
+    - cou if tested==1 & `variable' `condition'
+    = cou if tested==1 & eth5 ==5
+  3
+    - local pct = 100*(r(N)/`rowdenom')
+    = local pct = 100*(r(N)/1133)
+    - file write tablecontent (r(N)) (" (") %4.2f (`pct') (")") _n
+    = file write tablecontent (r(N)) (" (") %4.2f (.264783759929391) (")") _n
+    ----------------------------------------------------- end generaterow ---
+  - }
+  - if "`missing'"!="" generaterow, variable(`variable') condition(">=.") out
+> come(tested)
+  = if "missing"!="" generaterow, variable(eth5) condition(">=.") outcome(tes
+> ted)
+    --------------------------------------------------- begin generaterow ---
+    - syntax, variable(varname) condition(string) outcome(string)
+    - file write tablecontent ("`variable'") _tab ("`condition'") _tab
+    = file write tablecontent ("eth5") _tab (">=.") _tab
+    - cou
+  7,857
+    - local overalldenom=r(N)
+    - cou if `variable' `condition'
+    = cou if eth5 >=.
+  0
+    - local rowdenom = r(N)
+    - local colpct = 100*(r(N)/`overalldenom')
+    = local colpct = 100*(r(N)/7857)
+    - file write tablecontent (`rowdenom') (" (") %3.1f (`colpct') (")") _tab
+    = file write tablecontent (0) (" (") %3.1f (0) (")") _tab
+    - cou if tested==1 & `variable' `condition'
+    = cou if tested==1 & eth5 >=.
+  0
+    - local pct = 100*(r(N)/`rowdenom')
+    = local pct = 100*(r(N)/0)
+    - file write tablecontent (r(N)) (" (") %4.2f (`pct') (")") _n
+    = file write tablecontent (r(N)) (" (") %4.2f (.) (")") _n
+    ----------------------------------------------------- end generaterow ---
+  -------------------------------------------------- end tabulatevariable ---
+
+. file write tablecontent _n 
+
+. 
+. tabulatevariable, variable(imd) start(1) end(5) outcome(tested)
+  ------------------------------------------------ begin tabulatevariable ---
+  - syntax, variable(varname) start(real) end(real) [missing] outcome(string)
+  - foreach varlevel of numlist `start'/`end'{
+  = foreach varlevel of numlist 1/5{
+  - generaterow, variable(`variable') condition("==`varlevel'") outcome(teste
+> d)
+  = generaterow, variable(imd) condition("==1") outcome(tested)
+    --------------------------------------------------- begin generaterow ---
+    - syntax, variable(varname) condition(string) outcome(string)
+    - file write tablecontent ("`variable'") _tab ("`condition'") _tab
+    = file write tablecontent ("imd") _tab ("==1") _tab
+    - cou
+  7,857
+    - local overalldenom=r(N)
+    - cou if `variable' `condition'
+    = cou if imd ==1
+  5,486
+    - local rowdenom = r(N)
+    - local colpct = 100*(r(N)/`overalldenom')
+    = local colpct = 100*(r(N)/7857)
+    - file write tablecontent (`rowdenom') (" (") %3.1f (`colpct') (")") _tab
+    = file write tablecontent (5486) (" (") %3.1f (69.82308769250351) (")") _
+> tab
+    - cou if tested==1 & `variable' `condition'
+    = cou if tested==1 & imd ==1
+  11
+    - local pct = 100*(r(N)/`rowdenom')
+    = local pct = 100*(r(N)/5486)
+    - file write tablecontent (r(N)) (" (") %4.2f (`pct') (")") _n
+    = file write tablecontent (r(N)) (" (") %4.2f (.2005103900838498) (")") _
+> n
+    ----------------------------------------------------- end generaterow ---
+  - }
+  - generaterow, variable(`variable') condition("==`varlevel'") outcome(teste
+> d)
+  = generaterow, variable(imd) condition("==2") outcome(tested)
+    --------------------------------------------------- begin generaterow ---
+    - syntax, variable(varname) condition(string) outcome(string)
+    - file write tablecontent ("`variable'") _tab ("`condition'") _tab
+    = file write tablecontent ("imd") _tab ("==2") _tab
+    - cou
+  7,857
+    - local overalldenom=r(N)
+    - cou if `variable' `condition'
+    = cou if imd ==2
+  0
+    - local rowdenom = r(N)
+    - local colpct = 100*(r(N)/`overalldenom')
+    = local colpct = 100*(r(N)/7857)
+    - file write tablecontent (`rowdenom') (" (") %3.1f (`colpct') (")") _tab
+    = file write tablecontent (0) (" (") %3.1f (0) (")") _tab
+    - cou if tested==1 & `variable' `condition'
+    = cou if tested==1 & imd ==2
+  0
+    - local pct = 100*(r(N)/`rowdenom')
+    = local pct = 100*(r(N)/0)
+    - file write tablecontent (r(N)) (" (") %4.2f (`pct') (")") _n
+    = file write tablecontent (r(N)) (" (") %4.2f (.) (")") _n
+    ----------------------------------------------------- end generaterow ---
+  - }
+  - generaterow, variable(`variable') condition("==`varlevel'") outcome(teste
+> d)
+  = generaterow, variable(imd) condition("==3") outcome(tested)
+    --------------------------------------------------- begin generaterow ---
+    - syntax, variable(varname) condition(string) outcome(string)
+    - file write tablecontent ("`variable'") _tab ("`condition'") _tab
+    = file write tablecontent ("imd") _tab ("==3") _tab
+    - cou
+  7,857
+    - local overalldenom=r(N)
+    - cou if `variable' `condition'
+    = cou if imd ==3
+  0
+    - local rowdenom = r(N)
+    - local colpct = 100*(r(N)/`overalldenom')
+    = local colpct = 100*(r(N)/7857)
+    - file write tablecontent (`rowdenom') (" (") %3.1f (`colpct') (")") _tab
+    = file write tablecontent (0) (" (") %3.1f (0) (")") _tab
+    - cou if tested==1 & `variable' `condition'
+    = cou if tested==1 & imd ==3
+  0
+    - local pct = 100*(r(N)/`rowdenom')
+    = local pct = 100*(r(N)/0)
+    - file write tablecontent (r(N)) (" (") %4.2f (`pct') (")") _n
+    = file write tablecontent (r(N)) (" (") %4.2f (.) (")") _n
+    ----------------------------------------------------- end generaterow ---
+  - }
+  - generaterow, variable(`variable') condition("==`varlevel'") outcome(teste
+> d)
+  = generaterow, variable(imd) condition("==4") outcome(tested)
+    --------------------------------------------------- begin generaterow ---
+    - syntax, variable(varname) condition(string) outcome(string)
+    - file write tablecontent ("`variable'") _tab ("`condition'") _tab
+    = file write tablecontent ("imd") _tab ("==4") _tab
+    - cou
+  7,857
+    - local overalldenom=r(N)
+    - cou if `variable' `condition'
+    = cou if imd ==4
+  1,545
+    - local rowdenom = r(N)
+    - local colpct = 100*(r(N)/`overalldenom')
+    = local colpct = 100*(r(N)/7857)
+    - file write tablecontent (`rowdenom') (" (") %3.1f (`colpct') (")") _tab
+    = file write tablecontent (1545) (" (") %3.1f (19.66399389079801) (")") _
+> tab
+    - cou if tested==1 & `variable' `condition'
+    = cou if tested==1 & imd ==4
+  2
+    - local pct = 100*(r(N)/`rowdenom')
+    = local pct = 100*(r(N)/1545)
+    - file write tablecontent (r(N)) (" (") %4.2f (`pct') (")") _n
+    = file write tablecontent (r(N)) (" (") %4.2f (.1294498381877023) (")") _
+> n
+    ----------------------------------------------------- end generaterow ---
+  - }
+  - generaterow, variable(`variable') condition("==`varlevel'") outcome(teste
+> d)
+  = generaterow, variable(imd) condition("==5") outcome(tested)
+    --------------------------------------------------- begin generaterow ---
+    - syntax, variable(varname) condition(string) outcome(string)
+    - file write tablecontent ("`variable'") _tab ("`condition'") _tab
+    = file write tablecontent ("imd") _tab ("==5") _tab
+    - cou
+  7,857
+    - local overalldenom=r(N)
+    - cou if `variable' `condition'
+    = cou if imd ==5
+  826
+    - local rowdenom = r(N)
+    - local colpct = 100*(r(N)/`overalldenom')
+    = local colpct = 100*(r(N)/7857)
+    - file write tablecontent (`rowdenom') (" (") %3.1f (`colpct') (")") _tab
+    = file write tablecontent (826) (" (") %3.1f (10.51291841669849) (")") _t
+> ab
+    - cou if tested==1 & `variable' `condition'
+    = cou if tested==1 & imd ==5
+  3
+    - local pct = 100*(r(N)/`rowdenom')
+    = local pct = 100*(r(N)/826)
+    - file write tablecontent (r(N)) (" (") %4.2f (`pct') (")") _n
+    = file write tablecontent (r(N)) (" (") %4.2f (.3631961259079903) (")") _
+> n
+    ----------------------------------------------------- end generaterow ---
+  - }
+  - if "`missing'"!="" generaterow, variable(`variable') condition(">=.") out
+> come(tested)
+  = if ""!="" generaterow, variable(imd) condition(">=.") outcome(tested)
+  -------------------------------------------------- end tabulatevariable ---
+
+. file write tablecontent _n 
+
+. 
+. encode region, gen(region2)
+
+. tabulatevariable, variable(region2) start(1) end(8) outcome(tested)
+  ------------------------------------------------ begin tabulatevariable ---
+  - syntax, variable(varname) start(real) end(real) [missing] outcome(string)
+  - foreach varlevel of numlist `start'/`end'{
+  = foreach varlevel of numlist 1/8{
+  - generaterow, variable(`variable') condition("==`varlevel'") outcome(teste
+> d)
+  = generaterow, variable(region2) condition("==1") outcome(tested)
+    --------------------------------------------------- begin generaterow ---
+    - syntax, variable(varname) condition(string) outcome(string)
+    - file write tablecontent ("`variable'") _tab ("`condition'") _tab
+    = file write tablecontent ("region2") _tab ("==1") _tab
+    - cou
+  7,857
+    - local overalldenom=r(N)
+    - cou if `variable' `condition'
+    = cou if region2 ==1
+  815
+    - local rowdenom = r(N)
+    - local colpct = 100*(r(N)/`overalldenom')
+    = local colpct = 100*(r(N)/7857)
+    - file write tablecontent (`rowdenom') (" (") %3.1f (`colpct') (")") _tab
+    = file write tablecontent (815) (" (") %3.1f (10.37291587119766) (")") _t
+> ab
+    - cou if tested==1 & `variable' `condition'
+    = cou if tested==1 & region2 ==1
+  1
+    - local pct = 100*(r(N)/`rowdenom')
+    = local pct = 100*(r(N)/815)
+    - file write tablecontent (r(N)) (" (") %4.2f (`pct') (")") _n
+    = file write tablecontent (r(N)) (" (") %4.2f (.1226993865030675) (")") _
+> n
+    ----------------------------------------------------- end generaterow ---
+  - }
+  - generaterow, variable(`variable') condition("==`varlevel'") outcome(teste
+> d)
+  = generaterow, variable(region2) condition("==2") outcome(tested)
+    --------------------------------------------------- begin generaterow ---
+    - syntax, variable(varname) condition(string) outcome(string)
+    - file write tablecontent ("`variable'") _tab ("`condition'") _tab
+    = file write tablecontent ("region2") _tab ("==2") _tab
+    - cou
+  7,857
+    - local overalldenom=r(N)
+    - cou if `variable' `condition'
+    = cou if region2 ==2
+  795
+    - local rowdenom = r(N)
+    - local colpct = 100*(r(N)/`overalldenom')
+    = local colpct = 100*(r(N)/7857)
+    - file write tablecontent (`rowdenom') (" (") %3.1f (`colpct') (")") _tab
+    = file write tablecontent (795) (" (") %3.1f (10.11836578846888) (")") _t
+> ab
+    - cou if tested==1 & `variable' `condition'
+    = cou if tested==1 & region2 ==2
+  1
+    - local pct = 100*(r(N)/`rowdenom')
+    = local pct = 100*(r(N)/795)
+    - file write tablecontent (r(N)) (" (") %4.2f (`pct') (")") _n
+    = file write tablecontent (r(N)) (" (") %4.2f (.1257861635220126) (")") _
+> n
+    ----------------------------------------------------- end generaterow ---
+  - }
+  - generaterow, variable(`variable') condition("==`varlevel'") outcome(teste
+> d)
+  = generaterow, variable(region2) condition("==3") outcome(tested)
+    --------------------------------------------------- begin generaterow ---
+    - syntax, variable(varname) condition(string) outcome(string)
+    - file write tablecontent ("`variable'") _tab ("`condition'") _tab
+    = file write tablecontent ("region2") _tab ("==3") _tab
+    - cou
+  7,857
+    - local overalldenom=r(N)
+    - cou if `variable' `condition'
+    = cou if region2 ==3
+  1,566
+    - local rowdenom = r(N)
+    - local colpct = 100*(r(N)/`overalldenom')
+    = local colpct = 100*(r(N)/7857)
+    - file write tablecontent (`rowdenom') (" (") %3.1f (`colpct') (")") _tab
+    = file write tablecontent (1566) (" (") %3.1f (19.93127147766323) (")") _
+> tab
+    - cou if tested==1 & `variable' `condition'
+    = cou if tested==1 & region2 ==3
+  2
+    - local pct = 100*(r(N)/`rowdenom')
+    = local pct = 100*(r(N)/1566)
+    - file write tablecontent (r(N)) (" (") %4.2f (`pct') (")") _n
+    = file write tablecontent (r(N)) (" (") %4.2f (.1277139208173691) (")") _
+> n
+    ----------------------------------------------------- end generaterow ---
+  - }
+  - generaterow, variable(`variable') condition("==`varlevel'") outcome(teste
+> d)
+  = generaterow, variable(region2) condition("==4") outcome(tested)
+    --------------------------------------------------- begin generaterow ---
+    - syntax, variable(varname) condition(string) outcome(string)
+    - file write tablecontent ("`variable'") _tab ("`condition'") _tab
+    = file write tablecontent ("region2") _tab ("==4") _tab
+    - cou
+  7,857
+    - local overalldenom=r(N)
+    - cou if `variable' `condition'
+    = cou if region2 ==4
+  756
+    - local rowdenom = r(N)
+    - local colpct = 100*(r(N)/`overalldenom')
+    = local colpct = 100*(r(N)/7857)
+    - file write tablecontent (`rowdenom') (" (") %3.1f (`colpct') (")") _tab
+    = file write tablecontent (756) (" (") %3.1f (9.621993127147768) (")") _t
+> ab
+    - cou if tested==1 & `variable' `condition'
+    = cou if tested==1 & region2 ==4
+  3
+    - local pct = 100*(r(N)/`rowdenom')
+    = local pct = 100*(r(N)/756)
+    - file write tablecontent (r(N)) (" (") %4.2f (`pct') (")") _n
+    = file write tablecontent (r(N)) (" (") %4.2f (.3968253968253968) (")") _
+> n
+    ----------------------------------------------------- end generaterow ---
+  - }
+  - generaterow, variable(`variable') condition("==`varlevel'") outcome(teste
+> d)
+  = generaterow, variable(region2) condition("==5") outcome(tested)
+    --------------------------------------------------- begin generaterow ---
+    - syntax, variable(varname) condition(string) outcome(string)
+    - file write tablecontent ("`variable'") _tab ("`condition'") _tab
+    = file write tablecontent ("region2") _tab ("==5") _tab
+    - cou
+  7,857
+    - local overalldenom=r(N)
+    - cou if `variable' `condition'
+    = cou if region2 ==5
+  798
+    - local rowdenom = r(N)
+    - local colpct = 100*(r(N)/`overalldenom')
+    = local colpct = 100*(r(N)/7857)
+    - file write tablecontent (`rowdenom') (" (") %3.1f (`colpct') (")") _tab
+    = file write tablecontent (798) (" (") %3.1f (10.1565483008782) (")") _ta
+> b
+    - cou if tested==1 & `variable' `condition'
+    = cou if tested==1 & region2 ==5
+  1
+    - local pct = 100*(r(N)/`rowdenom')
+    = local pct = 100*(r(N)/798)
+    - file write tablecontent (r(N)) (" (") %4.2f (`pct') (")") _n
+    = file write tablecontent (r(N)) (" (") %4.2f (.12531328320802) (")") _n
+    ----------------------------------------------------- end generaterow ---
+  - }
+  - generaterow, variable(`variable') condition("==`varlevel'") outcome(teste
+> d)
+  = generaterow, variable(region2) condition("==6") outcome(tested)
+    --------------------------------------------------- begin generaterow ---
+    - syntax, variable(varname) condition(string) outcome(string)
+    - file write tablecontent ("`variable'") _tab ("`condition'") _tab
+    = file write tablecontent ("region2") _tab ("==6") _tab
+    - cou
+  7,857
+    - local overalldenom=r(N)
+    - cou if `variable' `condition'
+    = cou if region2 ==6
+  1,529
+    - local rowdenom = r(N)
+    - local colpct = 100*(r(N)/`overalldenom')
+    = local colpct = 100*(r(N)/7857)
+    - file write tablecontent (`rowdenom') (" (") %3.1f (`colpct') (")") _tab
+    = file write tablecontent (1529) (" (") %3.1f (19.46035382461499) (")") _
+> tab
+    - cou if tested==1 & `variable' `condition'
+    = cou if tested==1 & region2 ==6
+  5
+    - local pct = 100*(r(N)/`rowdenom')
+    = local pct = 100*(r(N)/1529)
+    - file write tablecontent (r(N)) (" (") %4.2f (`pct') (")") _n
+    = file write tablecontent (r(N)) (" (") %4.2f (.3270111183780248) (")") _
+> n
+    ----------------------------------------------------- end generaterow ---
+  - }
+  - generaterow, variable(`variable') condition("==`varlevel'") outcome(teste
+> d)
+  = generaterow, variable(region2) condition("==7") outcome(tested)
+    --------------------------------------------------- begin generaterow ---
+    - syntax, variable(varname) condition(string) outcome(string)
+    - file write tablecontent ("`variable'") _tab ("`condition'") _tab
+    = file write tablecontent ("region2") _tab ("==7") _tab
+    - cou
+  7,857
+    - local overalldenom=r(N)
+    - cou if `variable' `condition'
+    = cou if region2 ==7
+  770
+    - local rowdenom = r(N)
+    - local colpct = 100*(r(N)/`overalldenom')
+    = local colpct = 100*(r(N)/7857)
+    - file write tablecontent (`rowdenom') (" (") %3.1f (`colpct') (")") _tab
+    = file write tablecontent (770) (" (") %3.1f (9.800178185057911) (")") _t
+> ab
+    - cou if tested==1 & `variable' `condition'
+    = cou if tested==1 & region2 ==7
+  1
+    - local pct = 100*(r(N)/`rowdenom')
+    = local pct = 100*(r(N)/770)
+    - file write tablecontent (r(N)) (" (") %4.2f (`pct') (")") _n
+    = file write tablecontent (r(N)) (" (") %4.2f (.1298701298701299) (")") _
+> n
+    ----------------------------------------------------- end generaterow ---
+  - }
+  - generaterow, variable(`variable') condition("==`varlevel'") outcome(teste
+> d)
+  = generaterow, variable(region2) condition("==8") outcome(tested)
+    --------------------------------------------------- begin generaterow ---
+    - syntax, variable(varname) condition(string) outcome(string)
+    - file write tablecontent ("`variable'") _tab ("`condition'") _tab
+    = file write tablecontent ("region2") _tab ("==8") _tab
+    - cou
+  7,857
+    - local overalldenom=r(N)
+    - cou if `variable' `condition'
+    = cou if region2 ==8
+  828
+    - local rowdenom = r(N)
+    - local colpct = 100*(r(N)/`overalldenom')
+    = local colpct = 100*(r(N)/7857)
+    - file write tablecontent (`rowdenom') (" (") %3.1f (`colpct') (")") _tab
+    = file write tablecontent (828) (" (") %3.1f (10.53837342497136) (")") _t
+> ab
+    - cou if tested==1 & `variable' `condition'
+    = cou if tested==1 & region2 ==8
+  2
+    - local pct = 100*(r(N)/`rowdenom')
+    = local pct = 100*(r(N)/828)
+    - file write tablecontent (r(N)) (" (") %4.2f (`pct') (")") _n
+    = file write tablecontent (r(N)) (" (") %4.2f (.2415458937198068) (")") _
+> n
+    ----------------------------------------------------- end generaterow ---
+  - }
+  - if "`missing'"!="" generaterow, variable(`variable') condition(">=.") out
+> come(tested)
+  = if ""!="" generaterow, variable(region2) condition(">=.") outcome(tested)
+  -------------------------------------------------- end tabulatevariable ---
+
+. file write tablecontent _n 
+
+. 
+. file close tablecontent
+
+. 
+end of do-file
+
