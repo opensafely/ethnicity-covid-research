@@ -25,11 +25,11 @@ syntax, variable(varname) condition(string) outcome(string)
 	cou if `variable' `condition'
 	local rowdenom = r(N)
 	local colpct = 100*(r(N)/`overalldenom')
-	file write tablecontent (`rowdenom')  (" (") %3.1f (`colpct') (")") _tab
+	file write tablecontent (`rowdenom') _tab  %3.1f (`colpct')  _tab
 	
 	cou if tested==1 & `variable' `condition'
 	local pct = 100*(r(N)/`rowdenom')
-	file write tablecontent (r(N)) (" (") %4.2f  (`pct') (")") _n
+	file write tablecontent (r(N)) _tab  %4.2f  (`pct')  _n
 
 	
 end
@@ -57,15 +57,14 @@ prog define summarizevariable
 syntax, variable(varname) 
 
 	local lab: variable label `variable'
-	file write tablecontent ("`lab'") _n 
+	file write tablecontent ("`lab'") _tab 
 
-	di "tested"
 	summarize `variable', d
-	file write tablecontent ("Mean (SD)") _tab _tab
-	file write tablecontent  %3.1f (r(mean)) (" (") %3.1f (r(sd)) (")") _tab
+	file write tablecontent ("Mean (SD)") _tab
+	file write tablecontent  %3.1f (r(mean)) _tab  %3.1f (r(sd))  _tab
 	
 	summarize `variable' if tested== 1, d
-	file write tablecontent  %3.1f (r(mean)) (" (") %3.1f (r(sd)) (")") _tab
+	file write tablecontent  %3.1f (r(mean)) _tab %3.1f (r(sd))  _tab
 	
 
 file write tablecontent _n	
@@ -83,8 +82,7 @@ file write tablecontent ("tested characteristics") _n
 
 local lab1: label tested 1
 
-file write tablecontent _tab ("Category") _tab ("Total")  _tab ///
-							 ("`lab1'")  						  _n
+file write tablecontent _tab ("Category") _tab ("Total")  _tab ("%")  _tab  ("Tested") _tab ("%") 	  _n
 
 gen byte cons=1
 tabulatevariable, variable(cons) start(1) end(1) outcome(tested)
@@ -105,5 +103,9 @@ file write tablecontent _n
 encode region, gen(region2)
 tabulatevariable, variable(region2) start(1) end(8) outcome(tested)
 file write tablecontent _n 
+
+summarizevariable, variable(comorbidity_count) 
+file write tablecontent _n
+
 
 file close tablecontent
