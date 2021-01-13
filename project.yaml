@@ -115,7 +115,7 @@ actions:
         estout: output/estout_sens_ruralurban_eth16.txt
 
   sens_confirmed_eth16:
-    run: stata-mp:latest analysis/06c_sens_onsconfirmeddeath_eth16.do
+    run: stata-mp:latest analysis/06c_eth_sensanalysis_confirmedcovid_eth16.do
     needs: [cr_confirmed]
     outputs:
       moderately_sensitive:

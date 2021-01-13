@@ -12,6 +12,9 @@ OTHER OUTPUT: 			logfiles, printed to folder analysis/$logdir
 						table2, printed to $Tabfigdir
 						complete case analysis	
 ==============================================================================*/
+sysdir set PLUS ./analysis/adofiles
+adopath + ./analysis/adofiles
+sysdir
 
 * Open a log file
 

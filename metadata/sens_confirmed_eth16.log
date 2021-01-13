@@ -1,19 +1,187 @@
-2021-01-13T18:14:53.613337300Z Traceback (most recent call last):
-2021-01-13T18:14:53.613658400Z   File "/tmp/entrypoint.py", line 82, in <module>
-2021-01-13T18:14:53.613698600Z     main()
-2021-01-13T18:14:53.613732100Z   File "/tmp/entrypoint.py", line 77, in main
-2021-01-13T18:14:53.613764900Z     raise FileNotFoundError("/workspace/" + options.script)
-2021-01-13T18:14:53.613796400Z FileNotFoundError: /workspace/analysis/06c_sens_onsconfirmeddeath_eth16.do
+2021-01-13T18:17:33.409374700Z Traceback (most recent call last):
+2021-01-13T18:17:33.409478200Z   File "/tmp/entrypoint.py", line 82, in <module>
+2021-01-13T18:17:33.409778800Z     main()
+2021-01-13T18:17:33.409833200Z   File "/tmp/entrypoint.py", line 78, in main
+2021-01-13T18:17:33.410023100Z     run_model(options.script, *options.args)
+2021-01-13T18:17:33.410069100Z   File "/tmp/entrypoint.py", line 41, in run_model
+2021-01-13T18:17:33.410199800Z     return check_output(log_file)
+2021-01-13T18:17:33.410256500Z   File "/tmp/entrypoint.py", line 56, in check_output
+2021-01-13T18:17:33.410316200Z     raise RuntimeError(f"Problem found running stata script:\n\n{output}")
+2021-01-13T18:17:33.410568700Z RuntimeError: Problem found running stata script:
+2021-01-13T18:17:33.410635400Z 
+2021-01-13T18:17:33.410710600Z 
+2021-01-13T18:17:33.410759600Z   ___  ____  ____  ____  ____ (R)
+2021-01-13T18:17:33.410792000Z  /__    /   ____/   /   ____/
+2021-01-13T18:17:33.410848400Z ___/   /   /___/   /   /___/   16.1   Copyright 1985-2019 StataCorp LLC
+2021-01-13T18:17:33.411006700Z   Statistics/Data Analysis            StataCorp
+2021-01-13T18:17:33.411038000Z                                       4905 Lakeway Drive
+2021-01-13T18:17:33.411102000Z      MP - Parallel Edition            College Station, Texas 77845 USA
+2021-01-13T18:17:33.411139700Z                                       800-STATA-PC        http://www.stata.com
+2021-01-13T18:17:33.411201000Z                                       979-696-4600        stata@stata.com
+2021-01-13T18:17:33.411258600Z                                       979-696-4601 (fax)
+2021-01-13T18:17:33.411313400Z 
+2021-01-13T18:17:33.411373800Z 3-user 32-core Stata network license expires 29 Apr 2021:
+2021-01-13T18:17:33.411430000Z        Serial number:  501609309502
+2021-01-13T18:17:33.411619000Z          Licensed to:  EBM DataLab
+2021-01-13T18:17:33.411674500Z                        University of Oxford
+2021-01-13T18:17:33.411707300Z 
+2021-01-13T18:17:33.411739800Z Notes:
+2021-01-13T18:17:33.411771600Z       1.  Stata is running in batch mode.
+2021-01-13T18:17:33.411825900Z Some Unicode string functions will not behave correctly because ICU data file
+2021-01-13T18:17:33.411886400Z     icudt54l.dat cannot be found at directory: "/usr/local/stata/utilities"
+2021-01-13T18:17:33.411946500Z       2.  Unicode is supported; see help unicode_advice.
+2021-01-13T18:17:33.411977700Z       3.  More than 2 billion observations are allowed; see help obs_advice.
+2021-01-13T18:17:33.412010700Z       4.  Maximum number of variables is set to 5000; see help set_maxvar.
+2021-01-13T18:17:33.412042500Z 
+2021-01-13T18:17:33.412096600Z . do analysis/06c_eth_sensanalysis_confirmedcovid_eth16.do 
+2021-01-13T18:17:33.412128400Z 
+2021-01-13T18:17:33.412181800Z . /*===========================================================================
+2021-01-13T18:17:33.412218200Z > ===
+2021-01-13T18:17:33.412250900Z > DO FILE NAME:                   06c_eth_sensanalysis_confirmedcovid_eth16
+2021-01-13T18:17:33.412283300Z > PROJECT:                                Ethnicity and COVID
+2021-01-13T18:17:33.412314700Z > AUTHOR:                                 R Mathur (modified from A wong and A 
+2021-01-13T18:17:33.412346500Z > Schultze)
+2021-01-13T18:17:33.412372800Z > DATE:                                   15 July 2020                         
+2021-01-13T18:17:33.412408300Z >            
+2021-01-13T18:17:33.412446100Z > DESCRIPTION OF FILE:    program 06 
+2021-01-13T18:17:33.422986700Z >                                                 univariable regression
+2021-01-13T18:17:33.423084400Z >                                                 multivariable regression 
+2021-01-13T18:17:33.423151500Z > DATASETS USED:                  data in memory ($tempdir/analysis_dataset_STS
+2021-01-13T18:17:33.423214500Z > ET_outcome)
+2021-01-13T18:17:33.423266200Z > DATASETS CREATED:               none
+2021-01-13T18:17:33.426608000Z > OTHER OUTPUT:                   logfiles, printed to folder analysis/$logdir
+2021-01-13T18:17:33.426671900Z >                                                 table2, printed to $Tabfigdir
+2021-01-13T18:17:33.426703400Z >                                                 complete case analysis  
+2021-01-13T18:17:33.426757200Z > =============================================================================
+2021-01-13T18:17:33.426814100Z > =*/
+2021-01-13T18:17:33.426847200Z . 
+2021-01-13T18:17:33.426905900Z . * Open a log file
+2021-01-13T18:17:33.426936500Z . 
+2021-01-13T18:17:33.426988500Z . cap log close
+2021-01-13T18:17:33.427044400Z 
+2021-01-13T18:17:33.427078000Z . macro drop hr
+2021-01-13T18:17:33.427138800Z 
+2021-01-13T18:17:33.427169000Z . log using ./logs/06c_sens_onsconfirmeddeath_eth16.log, replace t 
+2021-01-13T18:17:33.427221000Z -------------------------------------------------------------------------------
+2021-01-13T18:17:33.427278300Z       name:  <unnamed>
+2021-01-13T18:17:33.427313100Z        log:  /workspace/logs/06c_sens_onsconfirmeddeath_eth16.log
+2021-01-13T18:17:33.427810400Z   log type:  text
+2021-01-13T18:17:33.427856000Z  opened on:  13 Jan 2021, 18:17:30
+2021-01-13T18:17:33.427927900Z 
+2021-01-13T18:17:33.428001900Z . 
+2021-01-13T18:17:33.428969600Z . cap file close tablecontent
+2021-01-13T18:17:33.429017300Z 
+2021-01-13T18:17:33.429198300Z . file open tablecontent using ./output/sens_onsconfirmeddeath_eth16.txt, write
+2021-01-13T18:17:33.429262600Z >  text replace
+2021-01-13T18:17:33.429301700Z 
+2021-01-13T18:17:33.429337600Z . file write tablecontent ("Table 2: Association between ethnicity in 16 catego
+2021-01-13T18:17:33.429372000Z > ries and confirmed COVID-19 death") _n
+2021-01-13T18:17:33.429402900Z 
+2021-01-13T18:17:33.429434500Z . file write tablecontent _tab ("Denominator") _tab ("Event") _tab ("Total pers
+2021-01-13T18:17:33.429555300Z > on-weeks") _tab ("Rate per 1,000") _tab ("Crude") _tab _tab ("Age/Sex Adjuste
+2021-01-13T18:17:33.429591100Z > d") _tab _tab ("Age/Sex/IMD Adjusted") _tab _tab      ("plus co-morbidities")
+2021-01-13T18:17:33.433069800Z >  _tab _tab       ("plus hh siz")  _tab _tab  _n
+2021-01-13T18:17:33.440038000Z 
+2021-01-13T18:17:33.440708200Z . file write tablecontent _tab _tab _tab _tab _tab   ("HR") _tab ("95% CI") _ta
+2021-01-13T18:17:33.440757800Z > b ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% C
+2021-01-13T18:17:33.440799600Z > I") _tab ("HR") _tab ("95% CI") _tab _tab _n
+2021-01-13T18:17:33.440835900Z 
+2021-01-13T18:17:33.440899200Z . 
+2021-01-13T18:17:33.442799300Z . 
+2021-01-13T18:17:33.442844000Z . use ./output/analysis_dataset_STSET_onsconfirmeddeath.dta, clear
+2021-01-13T18:17:33.442879700Z 
+2021-01-13T18:17:33.442913900Z . drop if carehome==1
+2021-01-13T18:17:33.442947200Z (1,189 observations deleted)
+2021-01-13T18:17:33.442981000Z 
+2021-01-13T18:17:33.443014600Z . tab ethnicity_16 `i', missing 
+2021-01-13T18:17:33.443045300Z 
+2021-01-13T18:17:33.443078900Z Eth 16 categories |      Freq.     Percent        Cum.
+2021-01-13T18:17:33.443112200Z ------------------+-----------------------------------
+2021-01-13T18:17:33.443149800Z           British |        311        4.66        4.66
+2021-01-13T18:17:33.443183300Z             Irish |        317        4.75        9.42
+2021-01-13T18:17:33.443216100Z       Other White |        268        4.02       13.44
+2021-01-13T18:17:33.443293000Z White + Caribbean |        276        4.14       17.58
+2021-01-13T18:17:33.443332000Z   White + African |        300        4.50       22.08
+2021-01-13T18:17:33.443369400Z     White + Asian |        339        5.08       27.16
+2021-01-13T18:17:33.443406700Z       Other mixed |        305        4.57       31.73
+2021-01-13T18:17:33.443440500Z            Indian |        291        4.36       36.10
+2021-01-13T18:17:33.443597600Z         Pakistani |        319        4.78       40.88
+2021-01-13T18:17:33.443639400Z       Bangladeshi |        333        4.99       45.88
+2021-01-13T18:17:33.443674400Z       Other Asian |        340        5.10       50.97
+2021-01-13T18:17:33.443754600Z         Caribbean |        331        4.96       55.94
+2021-01-13T18:17:33.443788000Z           African |        312        4.68       60.62
+2021-01-13T18:17:33.443822700Z       Other Black |        279        4.18       64.80
+2021-01-13T18:17:33.443854300Z           Chinese |        318        4.77       69.57
+2021-01-13T18:17:33.443884600Z             Other |        335        5.02       74.60
+2021-01-13T18:17:33.443919500Z           Unknown |      1,694       25.40      100.00
+2021-01-13T18:17:33.443953500Z ------------------+-----------------------------------
+2021-01-13T18:17:33.443987500Z             Total |      6,668      100.00
+2021-01-13T18:17:33.444022200Z 
+2021-01-13T18:17:33.444051200Z . 
+2021-01-13T18:17:33.444080400Z . /* Main Model================================================================
+2021-01-13T18:17:33.444117400Z > =*/
+2021-01-13T18:17:33.444155000Z . 
+2021-01-13T18:17:33.444191300Z . /* Univariable model */ 
+2021-01-13T18:17:33.444223600Z . 
+2021-01-13T18:17:33.444257300Z . stcox i.ethnicity_16, strata(stp) nolog
+2021-01-13T18:17:33.444288900Z 
+2021-01-13T18:17:33.444320500Z          failure _d:  onsconfirmeddeath
+2021-01-13T18:17:33.444353500Z    analysis time _t:  (stime_onsconfirmeddeath-origin)
+2021-01-13T18:17:33.444378300Z              origin:  time indexdate
+2021-01-13T18:17:33.444412000Z   enter on or after:  time indexdate
+2021-01-13T18:17:33.444444700Z                  id:  patient_id
+2021-01-13T18:17:33.444653300Z 
+2021-01-13T18:17:33.444689900Z Stratified Cox regr. -- no ties
+2021-01-13T18:17:33.444722400Z 
+2021-01-13T18:17:33.444755600Z No. of subjects =        6,668                  Number of obs    =       6,668
+2021-01-13T18:17:33.444788500Z No. of failures =            4
+2021-01-13T18:17:33.444821600Z Time at risk    =      1226407
+2021-01-13T18:17:33.444852900Z                                                 LR chi2(3)       =       10.26
+2021-01-13T18:17:33.444883900Z Log likelihood  =   -20.933087                  Prob > chi2      =      0.0165
+2021-01-13T18:17:33.444917200Z 
+2021-01-13T18:17:33.444950300Z ------------------------------------------------------------------------------
+2021-01-13T18:17:33.444984300Z           _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+2021-01-13T18:17:33.445019700Z -------------+----------------------------------------------------------------
+2021-01-13T18:17:33.445053900Z ethnicity_16 |
+2021-01-13T18:17:33.445087000Z       Irish  |   2.06e-09          .        .       .            .           .
+2021-01-13T18:17:33.445126800Z Other White  |   4.11e+10   5.85e+10    17.19   0.000     2.53e+09    6.68e+11
+2021-01-13T18:17:33.445160500Z White + C..  |   2.05e-09          .        .       .            .           .
+2021-01-13T18:17:33.445210500Z White + A..  |   2.08e-09          .        .       .            .           .
+2021-01-13T18:17:33.445235300Z White + A..  |   2.07e-09          .        .       .            .           .
+2021-01-13T18:17:33.445265900Z Other mixed  |   2.05e-09          .        .       .            .           .
+2021-01-13T18:17:33.445296500Z      Indian  |   2.05e-09          .        .       .            .           .
+2021-01-13T18:17:33.445330500Z   Pakistani  |   3.31e+10          .        .       .            .           .
+2021-01-13T18:17:33.445355600Z Bangladeshi  |   2.07e-09          .        .       .            .           .
+2021-01-13T18:17:33.445389200Z Other Asian  |   2.06e-09          .        .       .            .           .
+2021-01-13T18:17:33.445423100Z   Caribbean  |   2.04e-09          .        .       .            .           .
+2021-01-13T18:17:33.445456400Z     African  |   3.33e+10   4.73e+10    17.07   0.000     2.07e+09    5.38e+11
+2021-01-13T18:17:33.445680100Z Other Black  |   2.05e-09          .        .       .            .           .
+2021-01-13T18:17:33.445714500Z     Chinese  |   2.07e-09          .        .       .            .           .
+2021-01-13T18:17:33.445746900Z       Other  |   2.07e-09          .        .       .            .           .
+2021-01-13T18:17:33.445779400Z     Unknown  |   6.24e+09   8.85e+09    15.91   0.000     3.88e+08    1.01e+11
+2021-01-13T18:17:33.445813500Z ------------------------------------------------------------------------------
+2021-01-13T18:17:33.445841200Z                                                              Stratified by stp
+2021-01-13T18:17:33.445872200Z 
+2021-01-13T18:17:33.445903100Z . estimates save ./output/crude_`i'_eth16, replace 
+2021-01-13T18:17:33.445936500Z file ./output/crude__eth16.ster saved
+2021-01-13T18:17:33.445962400Z 
+2021-01-13T18:17:33.445995600Z . eststo model1
+2021-01-13T18:17:33.446028400Z command eststo is unrecognized
+2021-01-13T18:17:33.446061300Z r(199);
+2021-01-13T18:17:33.446094500Z 
+2021-01-13T18:17:33.446761800Z end of do-file
+2021-01-13T18:17:33.446819700Z r(199);
+2021-01-13T18:17:33.446854100Z 
 
 
 state: failed
 commit: none
 docker_image_id: sha256:e4a676ff497b1550742032051cce1ba5502f65b172e86e4d82aadbaa1e056935
-job_id: njb3e43mq2bmgcxh
+job_id: wyl4ke7k2zzetjnw
 run_by_user: None
-created_at: 2021-01-13T18:13:54Z
-started_at: 2021-01-13T18:14:53Z
-completed_at: 2021-01-13T18:14:56Z
+created_at: 2021-01-13T18:16:39Z
+started_at: 2021-01-13T18:17:30Z
+completed_at: 2021-01-13T18:17:35Z
 
 Job exited with an error code
 
