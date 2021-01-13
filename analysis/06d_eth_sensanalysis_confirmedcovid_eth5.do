@@ -126,7 +126,9 @@ local hr "`hr' ./output/model3_onsconfirmeddeath_eth5 "
 
 
 /* Estout================================================================*/ 
-esttab model1 model2 model3 model4 model5 using ./output/estout_onsconfirmeddeath_eth5.txt", b(a2) ci(2) label wide compress eform ///
+esttab model1 model2 model3 model4 model5 ///
+using ./output/estout_onsconfirmeddeath_eth5.txt, ///
+b(a2) ci(2) label wide compress eform ///
 	title ("onsconfirmeddeath") ///
 	varlabels(`e(labels)') ///
 	stats(N_sub) ///

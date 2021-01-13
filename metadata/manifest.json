@@ -28,6 +28,10 @@
       "created_by_action": "check_age",
       "privacy_level": "moderately_sensitive"
     },
+    "logs/06c_sens_onsconfirmeddeath_eth16.log": {
+      "created_by_action": "sens_confirmed_eth16",
+      "privacy_level": "moderately_sensitive"
+    },
     "logs/07a_eth_sensanalysis_nostp_eth16.log": {
       "created_by_action": "sens_nostp_eth16",
       "privacy_level": "moderately_sensitive"
@@ -248,13 +252,13 @@
       "completed_at": "2021-01-13T18:02:12Z"
     },
     "sens_confirmed_eth16": {
-      "state": "failed",
+      "state": "succeeded",
       "commit": "none",
       "docker_image_id": "sha256:e4a676ff497b1550742032051cce1ba5502f65b172e86e4d82aadbaa1e056935",
-      "job_id": "kr2oel2jby4au4m6",
+      "job_id": "buk45qjzachseq2u",
       "run_by_user": null,
-      "created_at": "2021-01-13T18:40:50Z",
-      "completed_at": "2021-01-13T18:44:39Z"
+      "created_at": "2021-01-13T18:45:42Z",
+      "completed_at": "2021-01-13T18:50:11Z"
     }
   }
 }
