@@ -96,7 +96,7 @@ file write tablecontent _n
 tabulatevariable, variable(male) start(0) end(1) outcome(tested)
 file write tablecontent _n 
 
-tabulatevariable, variable(eth5) start(1) end(5) missing outcome(tested)
+tabulatevariable, variable(eth5) start(1) end(6) missing outcome(tested)
 file write tablecontent _n 
 
 tabulatevariable, variable(imd) start(1) end(5) outcome(tested)
