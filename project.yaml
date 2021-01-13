@@ -67,6 +67,14 @@ actions:
         log: logs/05b_eth_table1_ages_eth5.log
         table: output/table1_eth5_age.txt
 
+  check_tested:
+    run: stata-mp:latest analysis/21_eth_tested_characteristics
+    needs: [crmain]
+    outputs:
+      moderately_sensitive:
+        table: output/table1_tested.txt
+
+
   sens_nostp_eth16:
     run: stata-mp:latest analysis/07a_eth_sensanalysis_nostp_eth16.do
     needs: [cr_sgss, cr_hes_covid, cr_ons]
