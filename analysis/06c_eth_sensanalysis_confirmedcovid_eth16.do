@@ -123,7 +123,7 @@ local hr "`hr' ./output/model3_`i'_eth16 "
 
 
 /* Estout================================================================*/ 
-esttab model1 model2 model3 model4 model5 using "$Tabfigdir/estout_table2_eth16_onsconfirmeddeath.txt", b(a2) ci(2) label wide compress eform ///
+esttab model1 model2 model3 model4 model5 using ./output/estout_onsconfirmeddeath_eth16.txt, b(a2) ci(2) label wide compress eform ///
 	title ("`i'") ///
 	varlabels(`e(labels)') ///
 	stats(N_sub) ///
