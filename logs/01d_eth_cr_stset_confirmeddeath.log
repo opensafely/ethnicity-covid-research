@@ -1,0 +1,59 @@
+---------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/logs/01d_eth_cr
+> _stset_confirmeddeath.log
+  log type:  text
+ opened on:  13 Jan 2021, 17:51:57
+
+. 
+. 
+. ****************************************************************
+. *  Create outcome specific datasets for the whole population  *
+. *****************************************************************
+.         use ./output/analysis_dataset.dta, clear
+
+.         drop if onsconfirmeddeath_date <= indexdate 
+onsconfirmeddeath_date not found
+r(111);
+
+end of do-file
+
+r(111);
+
+. do "/Users/lsh152058/Documents/GitHub/ethnicity-covid-resear
+> ch/analysis/01_eth_cr_analysis_dataset.do"
+
+. /*==========================================================
+> ====================
+> DO FILE NAME:                   00_cr_analysis_dataset
+> PROJECT:                                Ethnicity and COVID 
+> outcomes
+> DATE:                                   12th July 2020 
+> AUTHOR:                                 Rohini Mathur adapte
+> d from H Forbes, A Wong, A Schultze, C Rentsch,K Baskharan, 
+> E Williamson                                                
+>                             
+> DESCRIPTION OF FILE:    program 00, data management for proj
+> ect  
+>                                                 reformat var
+> iables 
+>                                                 categorise v
+> ariables
+>                                                 label variab
+> les 
+>                                                 apply exclus
+> ion criteria
+> DATASETS USED:                  data in memory (from analysi
+> s/input.csv)
+> DATASETS CREATED:               none
+> OTHER OUTPUT:                   logfiles, printed to folder 
+> analysis/$logdir                                            
+>         
+> ============================================================
+> ==================*/
+. global outcomes "tested positivetest icu hes onscoviddeath o
+> ns_confirmeddaeth ons_noncoviddeath onsdeath"
+
+. 
+. * Open a log file
+. cap log close

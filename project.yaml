@@ -51,6 +51,16 @@ actions:
       moderately_sensitive:
         log: logs/01d_eth_cr_stset_death.log
 
+  cr_confirmed:
+    run: stata-mp:latest analysis/01e_eth_cr_stset_confirmedcovid.do
+    needs: [crmain]
+    outputs:
+      highly_sensitive:
+        stset_onsconfirmeddeath: output/analysis_dataset_STSET_onsconfirmeddeath.dta 
+      moderately_sensitive:
+        log: logs/01e_eth_cr_stset_onsconfirmeddeath.log
+
+
   check_region:
     run: stata-mp:latest analysis/02b_eth_region_check.do
     needs: [crmain]
@@ -104,3 +114,11 @@ actions:
         log: logs/07c_eth_sensanalysis_ruralurban_eth16.log
         estout: output/estout_sens_ruralurban_eth16.txt
 
+  sens_confirmed_eth16:
+    run: stata-mp:latest analysis/06c_sens_onsconfirmeddeath_eth16.do
+    needs: [cr_confirmed]
+    outputs:
+      moderately_sensitive:
+        log: logs/06c_sens_onsconfirmeddeath_eth16.log
+        estout: output/estout_onsconfirmeddeath_eth16.txt
+        graph: output/FP_sens_onsconfirmeddeath_eth16.txt

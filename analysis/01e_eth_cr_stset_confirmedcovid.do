@@ -1,5 +1,5 @@
 /*==============================================================================
-DO FILE NAME:			01b_eth_cr_stset_death
+DO FILE NAME:			01e_eth_cr_stset_onsconfirmeddeath
 PROJECT:				Ethnicity 
 DATE: 					6th Jan 2020
 AUTHOR:					Rohini Mathur 								
@@ -18,23 +18,17 @@ OTHER OUTPUT: 			logfiles, printed to folder analysis/$logdir
 
 * Open a log file
 cap log close
-log using ./logs/01d_eth_cr_stset_death, replace t
+log using ./logs/01e_eth_cr_stset_onsconfirmeddeath.log, replace t
 
-global outcomes "ons_noncoviddeath  onsdeath"
 
 ****************************************************************
 *  Create outcome specific datasets for the whole population  *
 *****************************************************************
-
-
-foreach i of global outcomes {
 	use ./output/analysis_dataset.dta, clear
-	drop if `i'_date <= indexdate 
-	stset stime_`i', fail(`i') 				///	
+	drop if onsconfirmeddeath_date <= indexdate 
+	stset stime_onsconfirmeddeath, fail(onsconfirmeddeath) 				///	
 	id(patient_id) enter(indexdate) origin(indexdate)
-	save ./output/analysis_dataset_STSET_`i'.dta, replace
-}	
-
+	save ./output/analysis_dataset_STSET_onsconfirmeddeath.dta, replace
 
 	
 * Close log file 

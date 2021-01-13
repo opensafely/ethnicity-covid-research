@@ -1,0 +1,543 @@
+--------------------------------------------------------------
+      name:  <unnamed>
+       log:  /Users/lsh152058/Documents/GitHub/ethnicity-covid
+> -research/logs/06c_sens_onsconfirmeddeath_eth16.log
+  log type:  text
+ opened on:  13 Jan 2021, 18:07:22
+
+. 
+. cap file close tablecontent
+
+. file open tablecontent using ./output/sens_onsconfirmeddeath
+> _eth16.txt, write text replace
+
+. file write tablecontent ("Table 2: Association between ethni
+> city in 16 categories and confirmed COVID-19 death") _n
+
+. file write tablecontent _tab ("Denominator") _tab ("Event") 
+> _tab ("Total person-weeks") _tab ("Rate per 1,000") _tab ("C
+> rude") _tab _tab ("Age/Sex Adjusted") _tab _tab ("Age/Sex/IM
+> D Adjusted") _tab _tab      ("plus co-morbidities") _tab _ta
+> b       ("plus hh siz")  _tab _tab  _n
+
+. file write tablecontent _tab _tab _tab _tab _tab   ("HR") _t
+> ab ("95% CI") _tab ("HR") _tab ("95% CI") _tab ("HR") _tab (
+> "95% CI") _tab ("HR") _tab ("95% CI") _tab ("HR") _tab ("95%
+>  CI") _tab _tab _n
+
+. 
+. 
+. use ./output/analysis_dataset_STSET_onsconfirmeddeath.dta, c
+> lear
+
+. drop if carehome==1
+(1,189 observations deleted)
+
+. tab ethnicity_16 `i', missing 
+
+Eth 16 categories |      Freq.     Percent        Cum.
+------------------+-----------------------------------
+          British |        311        4.66        4.66
+            Irish |        317        4.75        9.42
+      Other White |        268        4.02       13.44
+White + Caribbean |        276        4.14       17.58
+  White + African |        300        4.50       22.08
+    White + Asian |        339        5.08       27.16
+      Other mixed |        305        4.57       31.73
+           Indian |        291        4.36       36.10
+        Pakistani |        319        4.78       40.88
+      Bangladeshi |        333        4.99       45.88
+      Other Asian |        340        5.10       50.97
+        Caribbean |        331        4.96       55.94
+          African |        312        4.68       60.62
+      Other Black |        279        4.18       64.80
+          Chinese |        318        4.77       69.57
+            Other |        335        5.02       74.60
+          Unknown |      1,694       25.40      100.00
+------------------+-----------------------------------
+            Total |      6,668      100.00
+
+. 
+. /* Main Model===============================================
+> ==================*/
+. 
+. /* Univariable model */ 
+. 
+. stcox i.ethnicity_16, strata(stp) nolog
+
+         failure _d:  onsconfirmeddeath
+   analysis time _t:  (stime_onsconfirmeddeath-origin)
+             origin:  time indexdate
+  enter on or after:  time indexdate
+                 id:  patient_id
+
+Stratified Cox regr. -- no ties
+
+No. of subjects =        6,668                  Number of obs 
+>    =       6,668
+No. of failures =            4
+Time at risk    =      1226407
+                                                LR chi2(3)    
+>    =       10.26
+Log likelihood  =   -20.933087                  Prob > chi2   
+>    =      0.0165
+
+--------------------------------------------------------------
+> ----------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95%
+>  Con                                                        
+>     f. Interval]
+-------------+------------------------------------------------
+> ----------------
+ethnicity_16 |
+      Irish  |   2.06e-09          .        .       .         
+>    .                                                        
+>                .
+Other White  |   4.11e+10   5.85e+10    17.19   0.000     2.53
+> e+09                                                        
+>         6.68e+11
+White + C..  |   2.05e-09          .        .       .         
+>    .                                                        
+>                .
+White + A..  |   2.08e-09          .        .       .         
+>    .                                                        
+>                .
+White + A..  |   2.07e-09          .        .       .         
+>    .                                                        
+>                .
+Other mixed  |   2.05e-09          .        .       .         
+>    .                                                        
+>                .
+     Indian  |   2.05e-09          .        .       .         
+>    .                                                        
+>                .
+  Pakistani  |   3.31e+10          .        .       .         
+>    .                                                        
+>                .
+Bangladeshi  |   2.07e-09          .        .       .         
+>    .                                                        
+>                .
+Other Asian  |   2.06e-09          .        .       .         
+>    .                                                        
+>                .
+  Caribbean  |   2.04e-09          .        .       .         
+>    .                                                        
+>                .
+    African  |   3.33e+10   4.73e+10    17.07   0.000     2.07
+> e+09                                                        
+>         5.38e+11
+Other Black  |   2.05e-09          .        .       .         
+>    .                                                        
+>                .
+    Chinese  |   2.07e-09          .        .       .         
+>    .                                                        
+>                .
+      Other  |   2.07e-09          .        .       .         
+>    .                                                        
+>                .
+    Unknown  |   6.24e+09   8.85e+09    15.91   0.000     3.88
+> e+08                                                        
+>         1.01e+11
+--------------------------------------------------------------
+> ----------------
+                                             Stratified by stp
+
+. estimates save ./output/crude_`i'_eth16, replace 
+file ./output/crude__eth16.ster saved
+
+. eststo model1
+
+. parmest, label eform format(estimate p lb ub) saving(./outpu
+> t/crude_`i'_eth16, replace) idstr("crude_`i'_eth16") 
+(note: file ./output/crude__eth16.dta not found)
+file ./output/crude__eth16.dta saved
+
+. local hr "`hr' ./output/crude_`i'_eth16 "
+
+. 
+. 
+. /* Multivariable models */ 
+. *Age and gender
+. stcox i.ethnicity_16 i.male age1 age2 age3, strata(stp) nolo
+> g
+
+         failure _d:  onsconfirmeddeath
+   analysis time _t:  (stime_onsconfirmeddeath-origin)
+             origin:  time indexdate
+  enter on or after:  time indexdate
+                 id:  patient_id
+
+Stratified Cox regr. -- no ties
+
+No. of subjects =        6,668                  Number of obs 
+>    =       6,668
+No. of failures =            4
+Time at risk    =      1226407
+                                                LR chi2(8)    
+>    =       19.72
+Log likelihood  =   -16.201384                  Prob > chi2   
+>    =      0.0114
+
+--------------------------------------------------------------
+> ----------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95%
+>  Con                                                        
+>     f. Interval]
+-------------+------------------------------------------------
+> ----------------
+ethnicity_16 |
+      Irish  |   2.86e-09          .        .       .         
+>    .                                                        
+>                .
+Other White  |   4.79e+10   7.02e+10    16.78   0.000     2.71
+> e+09                                                        
+>         8.47e+11
+White + C..  |   2.59e-09          .        .       .         
+>    .                                                        
+>                .
+White + A..  |   2.89e-09          .        .       .         
+>    .                                                        
+>                .
+White + A..  |   2.37e-09          .        .       .         
+>    .                                                        
+>                .
+Other mixed  |   4.12e-09          .        .       .         
+>    .                                                        
+>                .
+     Indian  |   2.55e-09          .        .       .         
+>    .                                                        
+>                .
+  Pakistani  |   5.08e+10          .        .       .         
+>    .                                                        
+>                .
+Bangladeshi  |   2.89e-09          .        .       .         
+>    .                                                        
+>                .
+Other Asian  |   2.56e-09          .        .       .         
+>    .                                                        
+>                .
+  Caribbean  |   4.07e-09          .        .       .         
+>    .                                                        
+>                .
+    African  |   4.06e+10   6.11e+10    16.24   0.000     2.13
+> e+09                                                        
+>         7.75e+11
+Other Black  |   2.80e-09   8.276007    -0.00   1.000         
+>    0                                                        
+>                .
+    Chinese  |   2.61e-09          .        .       .         
+>    .                                                        
+>                .
+      Other  |   3.68e-09          .        .       .         
+>    .                                                        
+>                .
+    Unknown  |   7.26e+09   1.08e+10    15.31   0.000     3.97
+> e+08                                                        
+>         1.33e+11
+             |
+        male |
+       Male  |   .2873327   .3447041    -1.04   0.299     .027
+> 3669                                                        
+>         3.016791
+        age1 |   .6495338   .1763477    -1.59   0.112     .381
+> 5061                                                        
+>         1.105865
+        age2 |   4.071666   4.371146     1.31   0.191     .496
+> 5497                                                        
+>         33.38732
+        age3 |   .0505752   .1275055    -1.18   0.237     .000
+> 3614                                                        
+>         7.077949
+--------------------------------------------------------------
+> ----------------
+                                             Stratified by stp
+
+. estimates save ./output/model0_`i'_eth16, replace 
+(note: file ./output/model0__eth16.ster not found)
+file ./output/model0__eth16.ster saved
+
+. eststo model2
+
+. 
+. parmest, label eform format(estimate p lb ub) saving(./outpu
+> t/model0_`i'_eth16, replace) idstr("model0_`i'_eth16")
+(note: file ./output/model0__eth16.dta not found)
+file ./output/model0__eth16.dta saved
+
+. local hr "`hr' ./output/model0_`i'_eth16 "
+
+.  
+. 
+. * Age, Gender, IMD
+. 
+. stcox i.ethnicity_16 i.male age1 age2 age3 i.imd, strata(stp
+> ) nolog
+
+         failure _d:  onsconfirmeddeath
+   analysis time _t:  (stime_onsconfirmeddeath-origin)
+             origin:  time indexdate
+  enter on or after:  time indexdate
+                 id:  patient_id
+
+Stratified Cox regr. -- no ties
+
+No. of subjects =        6,668                  Number of obs 
+>    =       6,668
+No. of failures =            4
+Time at risk    =      1226407
+                                                LR chi2(8)    
+>    =       22.11
+Log likelihood  =   -15.008339                  Prob > chi2   
+>    =      0.0047
+
+--------------------------------------------------------------
+> ----------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95%
+>  Con                                                        
+>     f. Interval]
+-------------+------------------------------------------------
+> ----------------
+ethnicity_16 |
+      Irish  |   2.18e-09          .        .       .         
+>    .                                                        
+>                .
+Other White  |   3.16e+10   4.79e+10    15.93   0.000     1.61
+> e+09                                                        
+>         6.19e+11
+White + C..  |   2.47e-09          .        .       .         
+>    .                                                        
+>                .
+White + A..  |   2.03e-09          .        .       .         
+>    .                                                        
+>                .
+White + A..  |   2.11e-09          .        .       .         
+>    .                                                        
+>                .
+Other mixed  |   4.45e-09          .        .       .         
+>    .                                                        
+>                .
+     Indian  |   2.71e-09          .        .       .         
+>    .                                                        
+>                .
+  Pakistani  |   4.48e+10          .        .       .         
+>    .                                                        
+>                .
+Bangladeshi  |   2.64e-09          .        .       .         
+>    .                                                        
+>                .
+Other Asian  |   2.31e-09          .        .       .         
+>    .                                                        
+>                .
+  Caribbean  |   2.49e-09          .        .       .         
+>    .                                                        
+>                .
+    African  |   2.32e+10   3.68e+10    15.05   0.000     1.04
+> e+09                                                        
+>         5.19e+11
+Other Black  |   8.96e-10          .        .       .         
+>    .                                                        
+>                .
+    Chinese  |   2.07e-09          .        .       .         
+>    .                                                        
+>                .
+      Other  |   1.21e-09          .        .       .         
+>    .                                                        
+>                .
+    Unknown  |   4.35e+09   6.79e+09    14.22   0.000     2.04
+> e+08                                                        
+>         9.28e+10
+             |
+        male |
+       Male  |   .2682607   .3235817    -1.09   0.275     .025
+> 2244                                                        
+>          2.85295
+        age1 |   .6434441   .1799626    -1.58   0.115      .37
+> 1913                                                        
+>         1.113218
+        age2 |   4.234146   4.706767     1.30   0.194     .479
+> 2388                                                        
+>          37.4093
+        age3 |   .0460308    .120369    -1.18   0.239     .000
+> 2736                                                        
+>         7.743057
+             |
+         imd |
+          4  |   4.008192   4.476594     1.24   0.214     .449
+> 0294                                                        
+>         35.77852
+5 most de..  |   2.78e-19          .        .       .         
+>    .                                                        
+>                .
+--------------------------------------------------------------
+> ----------------
+                                             Stratified by stp
+
+. if _rc==0{
+. estimates
+
+--------------------------------------------------------------
+active results
+--------------------------------------------------------------
+
+Stratified Cox regr. -- no ties
+
+No. of subjects =        6,668                  Number of obs 
+>    =       6,668
+No. of failures =            4
+Time at risk    =      1226407
+                                                LR chi2(8)    
+>    =       22.11
+Log likelihood  =   -15.008339                  Prob > chi2   
+>    =      0.0047
+
+--------------------------------------------------------------
+> ----------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95%
+>  Con                                                        
+>     f. Interval]
+-------------+------------------------------------------------
+> ----------------
+ethnicity_16 |
+      Irish  |   2.18e-09          .        .       .         
+>    .                                                        
+>                .
+Other White  |   3.16e+10   4.79e+10    15.93   0.000     1.61
+> e+09                                                        
+>         6.19e+11
+White + C..  |   2.47e-09          .        .       .         
+>    .                                                        
+>                .
+White + A..  |   2.03e-09          .        .       .         
+>    .                                                        
+>                .
+White + A..  |   2.11e-09          .        .       .         
+>    .                                                        
+>                .
+Other mixed  |   4.45e-09          .        .       .         
+>    .                                                        
+>                .
+     Indian  |   2.71e-09          .        .       .         
+>    .                                                        
+>                .
+  Pakistani  |   4.48e+10          .        .       .         
+>    .                                                        
+>                .
+Bangladeshi  |   2.64e-09          .        .       .         
+>    .                                                        
+>                .
+Other Asian  |   2.31e-09          .        .       .         
+>    .                                                        
+>                .
+  Caribbean  |   2.49e-09          .        .       .         
+>    .                                                        
+>                .
+    African  |   2.32e+10   3.68e+10    15.05   0.000     1.04
+> e+09                                                        
+>         5.19e+11
+Other Black  |   8.96e-10          .        .       .         
+>    .                                                        
+>                .
+    Chinese  |   2.07e-09          .        .       .         
+>    .                                                        
+>                .
+      Other  |   1.21e-09          .        .       .         
+>    .                                                        
+>                .
+    Unknown  |   4.35e+09   6.79e+09    14.22   0.000     2.04
+> e+08                                                        
+>         9.28e+10
+             |
+        male |
+       Male  |   .2682607   .3235817    -1.09   0.275     .025
+> 2244                                                        
+>          2.85295
+        age1 |   .6434441   .1799626    -1.58   0.115      .37
+> 1913                                                        
+>         1.113218
+        age2 |   4.234146   4.706767     1.30   0.194     .479
+> 2388                                                        
+>          37.4093
+        age3 |   .0460308    .120369    -1.18   0.239     .000
+> 2736                                                        
+>         7.743057
+             |
+         imd |
+          4  |   4.008192   4.476594     1.24   0.214     .449
+> 0294                                                        
+>         35.77852
+5 most de..  |   2.78e-19          .        .       .         
+>    .                                                        
+>                .
+--------------------------------------------------------------
+> ----------------
+                                             Stratified by stp
+. estimates save ./output/model1_`i'_eth16, replace 
+(note: file ./output/model1__eth16.ster not found)
+file ./output/model1__eth16.ster saved
+. eststo model3
+. 
+. parmest, label eform format(estimate p lb ub) saving(./outpu
+> t/model1_`i'_eth16, replace) idstr("model1_`i'_eth16") 
+(note: file ./output/model1__eth16.dta not found)
+file ./output/model1__eth16.dta saved
+. local hr "`hr' ./output/model1_`i'_eth16 "
+. }
+
+. else di "WARNING MODEL1 DID NOT FIT (OUTCOME `i')"
+
+. 
+. * Age, Gender, IMD and Comorbidities 
+. stcox i.ethnicity_16 i.male age1 age2 age3      i.imd       
+>                                     ///
+>                                                             
+>                     i.bmicat_sa     i.hba1ccat              
+>         ///
+>                                                             
+>                     gp_consult_count                        
+> ///
+>                                                             
+>                     i.smoke_nomiss                          
+> ///
+>                                                             
+>                     i.hypertension i.bp_cat         ///     
+>                                                             
+>                     i.asthma                                
+>         ///
+>                                                             
+>                     i.chronic_respiratory_disease ///
+>                                                             
+>                     i.chronic_cardiac_disease       ///
+>                                                             
+>                     i.dm_type                               
+>         ///     
+>                                                             
+>                     i.cancer                    ///
+>                                                             
+>                     i.chronic_liver_disease         ///
+>                                                             
+>                     i.stroke                                
+>         ///
+>                                                             
+>                     i.dementia                              
+>         ///
+>                                                             
+>                     i.other_neuro                           
+> ///
+>                                                             
+>                     i.egfr60                                
+>         ///
+>                                                             
+>                     i.esrf                                  
+>         ///
+>                                                             
+>                     i.immunosuppressed                      
+> ///
+>                                                             
+>                     i.ra_sle_psoriasis, strata(stp) nolog   
+>         
+
+         failure _d:  onsconfirmeddeath
+   analysis time _t:  (stime_onsconfirmeddeath-origin)
+             origin:  time indexdate
+  enter on or after:  time indexdate
+                 id:  patient_id
