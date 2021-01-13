@@ -3,14 +3,14 @@
 state: failed
 commit: none
 docker_image_id: sha256:e4a676ff497b1550742032051cce1ba5502f65b172e86e4d82aadbaa1e056935
-job_id: i5w3gewbpqydc3st
+job_id: 4lnsmklobzmg72z5
 run_by_user: None
-created_at: 2021-01-13T18:31:15Z
-started_at: 2021-01-13T18:32:38Z
-completed_at: 2021-01-13T18:34:14Z
+created_at: 2021-01-13T18:37:11Z
+started_at: 2021-01-13T18:38:01Z
+completed_at: 2021-01-13T18:40:14Z
 
 No outputs found matching patterns:
- - logs/06c_eth_sensanalysis_confirmedcovid_eth16.log
+ - logs/06c_eth_sens_confirmedcovid_eth16.log
 
 Did you mean to match one of these files instead?
  - .DS_Store
