@@ -122,3 +122,13 @@ actions:
         log: logs/06c_sens_onsconfirmeddeath_eth16.log
         estout: output/estout_onsconfirmeddeath_eth16.txt
         graph: output/FP_sens_onsconfirmeddeath_eth16.txt
+
+  sens_confirmed_eth5:
+    run: stata-mp:latest analysis/06d_sens_onsconfirmeddeath_eth5.do
+    needs: [cr_confirmed]
+    outputs:
+      moderately_sensitive:
+        log: logs/06d_sens_onsconfirmeddeath_eth5.log
+        estout: output/estout_onsconfirmeddeath_eth5.txt
+        graph: output/FP_sens_onsconfirmeddeath_eth5.txt
+
