@@ -75,7 +75,7 @@ use ./output/analysis_dataset.dta, clear
 
 *Set up output file
 cap file close tablecontent
-file open tablecontent using ./output/Table1_tested.txt, write text replace
+file open tablecontent using ./output/table1_tested.txt, write text replace
 
 file write tablecontent ("tested characteristics") _n
 
