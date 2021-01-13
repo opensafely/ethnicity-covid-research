@@ -68,7 +68,7 @@ actions:
         table: output/table1_eth5_age.txt
 
   check_tested:
-    run: stata-mp:latest analysis/21_eth_tested_characteristics
+    run: stata-mp:latest analysis/21_eth_tested_characteristics.do
     needs: [crmain]
     outputs:
       moderately_sensitive:
