@@ -12,7 +12,7 @@ DATASETS USED:			data in memory (from analysis/input.csv)
 DATASETS CREATED: 		none
 OTHER OUTPUT: 			logfiles, printed to folder analysis/$logdir							
 ==============================================================================*/
-global outcomes "tested positivetest icu hes onscoviddeath onsconfirmeddeath ons_noncoviddeath onsdeath"
+global outcomes "tested positivetest icu hes onscoviddeath onsconfirmeddeath onsunderlyingdeath ons_noncoviddeath onsdeath"
 
 * Open a log file
 cap log close
@@ -108,7 +108,7 @@ ren covid_admission_date		hes_date
 gen onscoviddeath_date = onsdeath_date if died_ons_covid_flag_any == 1
 gen onsconfirmeddeath_date = onsdeath_date if died_ons_confirmedcovid_flag_any ==1
 gen onssuspecteddeath_date = onsdeath_date if died_ons_suspectedcovid_flag_any ==1
-
+gen onsunderlyingdeath_date= onsdeath_date if died_ons_covid_flag_underlying==1
 * Date of non-COVID death in ONS 
 * If missing date of death resulting died_date will also be missing
 gen ons_noncoviddeath_date = onsdeath_date if died_ons_covid_flag_any != 1
@@ -161,7 +161,7 @@ gen onsdeath_censor_date = d("03/08/2020")
 gen onscoviddeath_censor_date = d("03/08/2020")
 gen ons_noncoviddeath_censor_date = d("03/08/2020")
 gen onsconfirmeddeath_censor_date=d("03/08/2020")
-
+gen onsunderlyingdeath_censor_date=d("03/08/2020")
 *******************************************************************************
 format *censor_date %d
 sum *censor_date, format
