@@ -1,0 +1,16 @@
+
+
+state: succeeded
+commit: none
+docker_image_id: sha256:e4a676ff497b1550742032051cce1ba5502f65b172e86e4d82aadbaa1e056935
+job_id: tsrpwp6ngkmlueog
+run_by_user: None
+created_at: 2021-01-13T18:00:30Z
+started_at: 2021-01-13T18:02:10Z
+completed_at: 2021-01-13T18:02:12Z
+
+Completed successfully
+
+outputs:
+  logs/01e_eth_cr_stset_onsconfirmeddeath.log          - moderately_sensitive
+  output/analysis_dataset_STSET_onsconfirmeddeath.dta  - highly_sensitive    

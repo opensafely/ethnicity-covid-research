@@ -1,35 +1,42 @@
 /*==============================================================================
-DO FILE NAME:			06a_eth_an_multivariable_eth5_carehomesonly
+DO FILE NAME:			06b_eth_an_hes_eth5_carehomesonly
 PROJECT:				Ethnicity and COVID
 AUTHOR:					R Mathur (modified from A wong and A Schultze)
 DATE: 					15 July 2020					
 DESCRIPTION OF FILE:	program 06 
 						univariable regression
-						multivariable regression 
-DATASETS USED:			data in memory ($tempdir/analysis_dataset_STSET_outcome)
+						hes regression 
+DATASETS USED:			data in memory (./output/analysis_dataset_STSET_outcome)
 DATASETS CREATED: 		none
 OTHER OUTPUT: 			logfiles, printed to folder analysis/$logdir
-						table2, printed to $Tabfigdir
+						table2, printed to ./output
 						complete case analysis	
 ==============================================================================*/
+sysdir set PLUS ./analysis/adofiles
+adopath + ./analysis/adofiles
+sysdir
+
+global outcomes "hes"
+
 
 * Open a log file
 
 cap log close
 macro drop hr
-log using "$Logdir/06a_eth_an_multivariable_eth5_carehomesonly", replace t 
+log using ./logs/06b_eth_an_hes_eth5_carehomesonly.log, replace t 
+
 
 cap file close tablecontent
-file open tablecontent using $Tabfigdir/table2_eth5_carehomesonly.txt, write text replace
-file write tablecontent ("Table 2: Association between ethnicity in 6 categories and COVID-19 outcomes - No care homes") _n
+file open tablecontent using ./output/table2_hes_eth5_carehomesonly.txt, write text replace
+file write tablecontent ("Table 2: Association between ethnicity in 6 categories and COVID-19 outcomes - care homes only") _n
 file write tablecontent _tab ("Denominator") _tab ("Event") _tab ("Total person-weeks") _tab ("Rate per 1,000") _tab ("Crude") _tab _tab ("Age/Sex Adjusted") _tab _tab ("Age/Sex/IMD Adjusted") _tab _tab 	("plus co-morbidities") _tab _tab  _n
 file write tablecontent _tab _tab _tab _tab _tab   ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _tab _tab _n
 
 
 
 foreach i of global outcomes {
-use "$Tempdir/analysis_dataset_STSET_`i'.dta", clear
-drop if carehome==0
+use "./output/analysis_dataset_STSET_`i'.dta", clear
+keep if carehome==1
 safetab eth5 `i', missing row
 } //end outcomes
 
@@ -37,28 +44,27 @@ foreach i of global outcomes {
 	di "`i'"
 	
 * Open Stata dataset
-use "$Tempdir/analysis_dataset_STSET_`i'.dta", clear
-drop if carehome==0
+use "./output/analysis_dataset_STSET_`i'.dta", clear
+keep if carehome==1
 
 /* Main Model=================================================================*/
 
 /* Univariable model */ 
 
 stcox i.eth5, strata(stp) nolog
-estimates save "$Tempdir/crude_`i'_eth5", replace 
+estimates save ./output/crude_`i'_eth5, replace 
 eststo model1
-parmest, label eform format(estimate p lb ub) saving("$Tempdir/crude_`i'_eth5", replace) idstr("crude_`i'_eth5") 
-local hr "`hr' "$Tempdir/crude_`i'_eth5" "
+parmest, label eform format(estimate p lb ub) saving(./output/crude_`i'_eth5, replace) idstr("crude_`i'_eth5") 
+local hr "`hr' ./output/crude_`i'_eth5 "
 
-
-/* Multivariable models */ 
+/* hes models */ 
 *Age and gender
 stcox i.eth5 i.male age1 age2 age3, strata(stp) nolog
-estimates save "$Tempdir/model0_`i'_eth5", replace 
+estimates save ./output/model0_`i'_eth5, replace 
 eststo model2
 
-parmest, label eform format(estimate p lb ub) saving("$Tempdir/model0_`i'_eth5", replace) idstr("model0_`i'_eth5")
-local hr "`hr' "$Tempdir/model0_`i'_eth5" "
+parmest, label eform format(estimate p lb ub) saving(./output/model0_`i'_eth5, replace) idstr("model0_`i'_eth5")
+local hr "`hr' ./output/model0_`i'_eth5 "
  
 
 * Age, Gender, IMD
@@ -66,11 +72,11 @@ local hr "`hr' "$Tempdir/model0_`i'_eth5" "
 stcox i.eth5 i.male age1 age2 age3 i.imd, strata(stp) nolog
 if _rc==0{
 estimates
-estimates save "$Tempdir/model1_`i'_eth5", replace 
+estimates save ./output/model1_`i'_eth5, replace 
 eststo model3
 
-parmest, label eform format(estimate p lb ub) saving("$Tempdir/model1_`i'_eth5", replace) idstr("model1_`i'_eth5") 
-local hr "`hr' "$Tempdir/model1_`i'_eth5" "
+parmest, label eform format(estimate p lb ub) saving(./output/model1_`i'_eth5, replace) idstr("model1_`i'_eth5") 
+local hr "`hr' ./output/model1_`i'_eth5 "
 }
 else di "WARNING MODEL1 DID NOT FIT (OUTCOME `i')"
 
@@ -93,16 +99,15 @@ cap stcox i.eth5 i.male age1 age2 age3 	i.imd						///
 										i.esrf						///
 										i.immunosuppressed	 		///
 										i.ra_sle_psoriasis, strata(stp) nolog		
-cap estimates save "$Tempdir/model2_`i'_eth5", replace 
+cap estimates save ./output/model2_`i'_eth5, replace 
 cap eststo model4
 
-cap parmest, label eform format(estimate p lb ub) saving("$Tempdir/model2_`i'_eth5", replace) idstr("model2_`i'_eth5") 
-local hr "`hr' "$Tempdir/model2_`i'_eth5" "
+cap parmest, label eform format(estimate p lb ub) saving(./output/model2_`i'_eth5, replace) idstr("model2_`i'_eth5") 
+local hr "`hr' ./output/model2_`i'_eth5 "
 
-										
 
 /* Estout================================================================*/ 
-cap esttab model1 model2 model3 model4 using "$Tabfigdir/estout_table2_eth5_carehomesonly.txt", b(a2) ci(2) label wide compress eform ///
+cap esttab model1 model2 model3 model4 using ./output/estout_table2_hes_eth5_carehomesonly.txt, b(a2) ci(2) label wide compress eform ///
 	title ("`i'") ///
 	varlabels(`e(labels)') ///
 	stats(N_sub) ///
@@ -151,19 +156,19 @@ forvalues eth=2/6 {
 	local person_week = r(mean)/7
 	local rate = 1000*(`event'/`person_week')
 	file write tablecontent  ("`lab`eth''") _tab (`denominator') _tab (`event') _tab %10.0f (`person_week') _tab %3.2f (`rate') _tab  
-	cap estimates use "$Tempdir/crude_`i'_eth5" 
+	cap estimates use "./output/crude_`i'_eth5 
 	 cap lincom `eth'.eth5, eform
 	file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (" - ") %4.2f (r(ub)) (")") _tab 
 	cap estimates clear
-	cap estimates use "$Tempdir/model0_`i'_eth5" 
+	cap estimates use "./output/model0_`i'_eth5 
 	 cap lincom `eth'.eth5, eform
 	file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (" - ") %4.2f (r(ub)) (")") _tab 
 	cap estimates clear
-	cap estimates use "$Tempdir/model1_`i'_eth5" 
+	cap estimates use "./output/model1_`i'_eth5 
 	 cap lincom `eth'.eth5, eform
 	file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (" - ") %4.2f (r(ub)) (")") _tab 
 	cap estimates clear
-	cap estimates use "$Tempdir/model2_`i'_eth5" 
+	cap estimates use "./output/model2_`i'_eth5 
 	 cap lincom `eth'.eth5, eform
 	file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (" - ") %4.2f (r(ub)) (")") _n
 }  //end ethnic group
@@ -183,11 +188,8 @@ drop idstr idstr3
 tab model
 
 *save dataset for later
-outsheet using "$Tabfigdir/FP_multivariable_eth5_carehomesonly.txt", replace
+outsheet using ./output/FP_hes_eth5_carehomesonly.txt, replace
 
 * Close log file 
 log close
-
-insheet using $Tabfigdir/table2_eth5_carehomesonly.txt, clear
-insheet using $Tabfigdir/estout_table2_eth5_carehomesonly.txt, clear
 

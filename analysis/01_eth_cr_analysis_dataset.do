@@ -10,20 +10,18 @@ DESCRIPTION OF FILE:	program 00, data management for project
 						apply exclusion criteria
 DATASETS USED:			data in memory (from analysis/input.csv)
 DATASETS CREATED: 		none
-OTHER OUTPUT: 			logfiles, printed to folder analysis/$logdir
-
-
-import delimited `c(pwd)'/output/input.csv, clear
-							
+OTHER OUTPUT: 			logfiles, printed to folder analysis/$logdir							
 ==============================================================================*/
+global outcomes "tested positivetest icu hes onscoviddeath onsconfirmeddeath onsunderlyingdeath ons_noncoviddeath onsdeath"
 
 * Open a log file
 cap log close
-log using "$Logdir/01_eth_cr_create_analysis_dataset.log", replace t
+log using ./logs/01_eth_cr_analysis_dataset.log, replace t
 
+clear
+import delimited ./output/input.csv
 
-di "STARTING safecount FROM IMPORT:"
-safecount
+di "STARTING count FROM IMPORT:"
 
 ****************************
 *  Create required cohort  *
@@ -32,13 +30,13 @@ safecount
 /* DROP ALL KIDS */
 noi di "DROPPING AGE<18:" 
 drop if age<18
-safecount
+count
 
 * Age: Exclude those with implausible ages
 cap assert age<.
 noi di "DROPPING AGE<105:" 
 drop if age>105
-safecount
+count
 
 * Sex: Exclude categories other than M and F
 cap assert inlist(sex, "M", "F", "I", "U")
@@ -49,8 +47,8 @@ gen male = 1 if sex == "M"
 replace male = 0 if sex == "F"
 label define male 0"Female" 1"Male"
 label values male male
-safetab male
-safecount
+tab male
+count
 
 /*  IMD  */
 * Group into 5 groups
@@ -69,10 +67,10 @@ recode imd 5 = 1 4 = 2 3 = 3 2 = 4 1 = 5 .u = .u
 
 label define imd 1 "1 least deprived" 2 "2" 3 "3" 4 "4" 5 "5 most deprived" .u "Unknown"
 label values imd imd 
-safetab imd, m
+tab imd, m
 
 drop if imd==.u
-safecount
+count
 
 
 * Create restricted cubic splines for age
@@ -110,7 +108,7 @@ ren covid_admission_date		hes_date
 gen onscoviddeath_date = onsdeath_date if died_ons_covid_flag_any == 1
 gen onsconfirmeddeath_date = onsdeath_date if died_ons_confirmedcovid_flag_any ==1
 gen onssuspecteddeath_date = onsdeath_date if died_ons_suspectedcovid_flag_any ==1
-
+gen onsunderlyingdeath_date= onsdeath_date if died_ons_covid_flag_underlying==1
 * Date of non-COVID death in ONS 
 * If missing date of death resulting died_date will also be missing
 gen ons_noncoviddeath_date = onsdeath_date if died_ons_covid_flag_any != 1
@@ -145,9 +143,8 @@ rename dereg_date dereg_dstr
 foreach i of global outcomes {
 		gen `i'=0
 		replace  `i'=1 if `i'_date < .
-		safetab `i'
+		tab `i'
 }
-
 
 /* CENSORING */
 /* SET FU DATES===============================================================*/ 
@@ -164,7 +161,7 @@ gen onsdeath_censor_date = d("03/08/2020")
 gen onscoviddeath_censor_date = d("03/08/2020")
 gen ons_noncoviddeath_censor_date = d("03/08/2020")
 gen onsconfirmeddeath_censor_date=d("03/08/2020")
-
+gen onsunderlyingdeath_censor_date=d("03/08/2020")
 *******************************************************************************
 format *censor_date %d
 sum *censor_date, format
@@ -180,7 +177,7 @@ label define ethnicity 	1 "White"  					///
 						5 "Other"					
 						
 label values ethnicity ethnicity
-safetab ethnicity, m
+tab ethnicity, m
 
  *re-order ethnicity
  gen eth5=1 if ethnicity==1
@@ -199,7 +196,7 @@ safetab ethnicity, m
 					
 
 label values eth5 eth5
-safetab eth5, m
+tab eth5, m
 
 * Ethnicity (16 category)
 replace ethnicity_16 = 17 if ethnicity_16==.
@@ -223,7 +220,7 @@ label define ethnicity_16 									///
 						17 "Unknown"
 						
 label values ethnicity_16 ethnicity_16
-safetab ethnicity_16,m
+tab ethnicity_16,m
 
 
 * Ethnicity (16 category grouped further)
@@ -258,10 +255,10 @@ label define eth16 	///
 						13  "Other" ///
 						14 "Unknown"
 label values eth16 eth16
-safetab eth16,m
+tab eth16,m
 
-safetab eth16 eth5, m
-bysort eth5: safetab eth16, m
+tab eth16 eth5, m
+bysort eth5: tab eth16, m
 
 * STP 
 rename stp stp_old
@@ -307,7 +304,7 @@ drop care_home_type
 
 gen carehome=0
 replace carehome=1 if carehometype<4
-safetab  carehometype carehome, m
+tab  carehometype carehome, m
 
 *check for missing household size values
 codebook  hh_size, d
@@ -323,8 +320,8 @@ replace hh_total_cat=5 if carehome==1
 
 
 *who are people with missing household size
-safecount if hh_total_cat==.
-safecount if hh_size==.
+count if hh_total_cat==.
+count if hh_size==.
 bysort  hh_total_cat: summ hh_size
 
 label define hh_total_cat 1 "1-2" ///
@@ -336,8 +333,8 @@ label define hh_total_cat 1 "1-2" ///
 											
 label values hh_total_cat hh_total_cat
 
-safetab hh_total_cat,m
-safetab hh_total_cat carehome,m 
+tab hh_total_cat,m
+tab hh_total_cat carehome,m 
 
 *create second hh_total_cat excluding 11+ households for sensitivity analysis
 gen hh_cat_2=hh_total_cat
@@ -457,7 +454,7 @@ foreach var of varlist 	chronic_respiratory_disease ///
 	local newvar =  substr("`var'", 1, length("`var'") - 5)
 	gen `newvar' = (`var'!=. )
 	order `newvar', after(`var')
-	safetab `newvar', m
+	tab `newvar', m
 	
 }
 
@@ -523,7 +520,7 @@ replace bmicat_sa = 5 if bmi>=32.5 & bmi < 37.5 & eth5==2
 replace bmicat_sa = 6 if bmi>=37.5 & bmi < . & eth5==2
 replace bmicat_sa = 7 if bmi==.
 
-safetab bmicat_sa
+tab bmicat_sa
 
 label define bmicat_sa 1 "Underweight (<18.5)" 	///
 					2 "Normal (18.5-24.9 / 22.9)"		///
@@ -588,7 +585,7 @@ gen temp2  = inrange(temp_immunodef_date, (indexdate - 365), indexdate)
 
 gen immunosuppressed=0
 replace immunosuppressed=1 if perm_immunodef==1 | temp_immunodef==1
-safetab immunosuppressed
+tab immunosuppressed
 
 /*  Blood pressure   */
 
@@ -661,7 +658,7 @@ egen egfr_cat = cut(egfr), at(0, 30, 60, 5000)
 label define egfr_cat 5000 "None" 60 "Stage 3 egfr 30-6" 30 "Stage 4/5 egfr<30"
 label values egfr_cat egfr_cat 
 lab var  egfr_cat "CKD category"
-safetab egfr_cat
+tab egfr_cat
 
 gen egfr60=0
 replace egfr60=1 if egfr<60
@@ -696,7 +693,7 @@ replace dm_type=2 if diabetes_type=="T2DM"
 replace dm_type=3 if diabetes_type=="UNKNOWN_DM"
 replace dm_type=0 if diabetes_type=="NO_DM"
 
-safetab dm_type diabetes_type
+tab dm_type diabetes_type
 label define dm_type 0"No DM" 1"T1DM" 2"T2DM" 3"UNKNOWN_DM"
 label values dm_type dm_type
 
@@ -715,12 +712,12 @@ replace hba1ccat = 4 if hba1c_pct >= 9    & hba1c_pct !=.
 replace hba1ccat = 5 if hba1c_pct==.
 label define hba1ccat 0 "<6.5%" 1">=6.5-7.4" 2">=7.5-7.9" 3">=8-8.9" 4">=9" 5"Unknown"
 label values hba1ccat hba1ccat
-safetab hba1ccat
+tab hba1ccat
 
 gen hba1c75=0 if hba1c_pct<7.5
 replace hba1c75=1 if hba1c_pct>=7.5 & hba1c_pct!=.
 label define hba1c75 0"<7.5" 1">=7.5"
-safetab hba1c75, m
+tab hba1c75, m
 
 * Create diabetes, split by control/not
 gen     diabcat = 1 if dm_type==0
@@ -738,14 +735,14 @@ label define diabcat 	1 "No diabetes" 			///
 						5 "T2DM, uncontrolled"		///
 						6 "Diabetes, no HbA1c"
 label values diabcat diabcat
-safetab diabcat, m
+tab diabcat, m
 
 /*  Asthma  */
 * Asthma  (coded: 0 No, 1 Yes no OCS, 2 Yes with OCS)
-safetab asthma
+tab asthma
 replace asthma=0 if asthma==.
 replace asthma=1 if asthma==2
-safetab asthma
+tab asthma
 
 *gen count of co-morbidities
 gen comorbidity_count=0
@@ -773,17 +770,17 @@ summ comorbidity_count
 gen comorbidity_cat =comorbidity_count
 replace comorbidity_cat=4 if comorbidity_count>=4 & comorbidity_count!=.
 bysort comorbidity_cat: sum comorbidity_count
-safetab comorbidity_cat,m
+tab comorbidity_cat,m
 
 *******************************
 *  Recode implausible values  *
 *******************************
 
 *make combination_bp_meds binary
-safetab combination_bp_meds
+tab combination_bp_meds
 replace combination_bp_meds=0 if combination_bp_meds<0 
 replace combination_bp_meds=1 if combination_bp_meds>0 & combination_bp_meds!=.
-safetab combination_bp_meds
+tab combination_bp_meds
 
 * BMI 
 * Set implausible BMIs to missing:
@@ -943,7 +940,7 @@ foreach i of global outcomes {
 * binary outcome indicators
 foreach i of global outcomes {
 	lab var `i' 					"outcome `i'"
-	safetab `i'
+	tab `i'
 }
 label var advanced_resp_support_flag		"outcome: Advanced respiratory support"
 
@@ -958,36 +955,37 @@ drop `r(varlist)'
 
 /* APPLY INCLUSION/EXCLUIONS==================================================*/ 
 
-safecount
+count
 
 noi di "DROP AGE >110:"
 drop if age > 110 & age != .
 
-safecount
+count
 noi di "DROP IF DIED BEFORE INDEX"
 
 *fix death dates
 drop if onsdeath_date <= indexdate
-safecount 
+count 
 
 sort patient_id
-save "$Tempdir/analysis_dataset.dta", replace
+save ./output/analysis_dataset.dta, replace
 
-****************************************************************
+/****************************************************************
 *  Create outcome specific datasets for the whole population  *
 *****************************************************************
 
 
 foreach i of global outcomes {
-	use "$Tempdir/analysis_dataset.dta", clear
+	use ./output/analysis_dataset.dta, clear
 	drop if `i'_date <= indexdate 
 	stset stime_`i', fail(`i') 				///	
 	id(patient_id) enter(indexdate) origin(indexdate)
-	save "$Tempdir/analysis_dataset_STSET_`i'.dta", replace
+	save ./output/analysis_dataset_STSET_`i'.dta, replace
 }	
 
 
 	
 * Close log file 
 log close
+
 

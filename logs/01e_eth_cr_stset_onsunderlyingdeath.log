@@ -1,0 +1,53 @@
+-------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /workspace/logs/01e_eth_cr_stset_onsunderlyingdeath.log
+  log type:  text
+ opened on:  14 Jan 2021, 12:26:27
+
+. 
+. 
+. ****************************************************************
+. *  Create outcome specific datasets for the whole population  *
+. *****************************************************************
+.         use ./output/analysis_dataset.dta, clear
+
+.         drop if onsunderlyingdeath_date <= indexdate 
+(0 observations deleted)
+
+.         stset stime_onsunderlyingdeath, fail(onsunderlyingdeath)             
+>                    ///     
+>         id(patient_id) enter(indexdate) origin(indexdate)
+
+                id:  patient_id
+     failure event:  onsunderlyingdeath != 0 & onsunderlyingdeath < .
+obs. time interval:  (stime_onsunderlyingdeath[_n-1], stime_onsunderlyingdeath]
+ enter on or after:  time indexdate
+ exit on or before:  failure
+    t for analysis:  (time-origin)
+            origin:  time indexdate
+
+------------------------------------------------------------------------------
+      7,817  total observations
+          0  exclusions
+------------------------------------------------------------------------------
+      7,817  observations remaining, representing
+      7,817  subjects
+          8  failures in single-failure-per-subject data
+  1,437,487  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =         0
+                                          last observed exit t =       184
+
+.         save ./output/analysis_dataset_STSET_onsunderlyingdeath.dta, replace
+(note: file ./output/analysis_dataset_STSET_onsunderlyingdeath.dta not found)
+file ./output/analysis_dataset_STSET_onsunderlyingdeath.dta saved
+
+. 
+.         
+. * Close log file 
+. log close
+      name:  <unnamed>
+       log:  /workspace/logs/01e_eth_cr_stset_onsunderlyingdeath.log
+  log type:  text
+ closed on:  14 Jan 2021, 12:26:28
+-------------------------------------------------------------------------------

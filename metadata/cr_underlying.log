@@ -1,0 +1,16 @@
+
+
+state: succeeded
+commit: none
+docker_image_id: sha256:e4a676ff497b1550742032051cce1ba5502f65b172e86e4d82aadbaa1e056935
+job_id: 3mwod66y67lm4x5f
+run_by_user: None
+created_at: 2021-01-14T12:25:28Z
+started_at: 2021-01-14T12:26:27Z
+completed_at: 2021-01-14T12:26:30Z
+
+Completed successfully
+
+outputs:
+  logs/01e_eth_cr_stset_onsunderlyingdeath.log          - moderately_sensitive
+  output/analysis_dataset_STSET_onsunderlyingdeath.dta  - highly_sensitive    

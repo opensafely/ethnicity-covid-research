@@ -1,0 +1,2324 @@
+-------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /workspace/logs/07c_eth_sensanalysis_ruralurban_eth16.log
+  log type:  text
+ opened on:  10 Jan 2021, 17:27:15
+
+. 
+. 
+. foreach i of global outcomes {
+  2.         di "`i'"
+  3.         
+. * Open Stata dataset
+. use ./output/analysis_dataset_STSET_`i'.dta, clear
+  4. drop if carehome==1
+  5. 
+. gen urban=0 if rural_urban=="rural"
+  6. replace urban=1 if rural_urban=="urban"
+  7. tab urban
+  8. 
+. 
+. *Adjusted for rural urban
+. stcox i.ethnicity_16 i.male age1 age2 age3      i.imd                        
+>                    ///
+>                                                                              
+>    i.bmicat_sa     i.hba1ccat                      ///
+>                                                                              
+>    gp_consult_count                        ///
+>                                                                              
+>    i.smoke_nomiss                          ///
+>                                                                              
+>    i.hypertension i.bp_cat         ///     
+>                                                                              
+>    i.asthma                                        ///
+>                                                                              
+>    i.chronic_respiratory_disease ///
+>                                                                              
+>    i.chronic_cardiac_disease       ///
+>                                                                              
+>    i.dm_type                                       ///     
+>                                                                              
+>    i.cancer                    ///
+>                                                                              
+>    i.chronic_liver_disease         ///
+>                                                                              
+>    i.stroke                                        ///
+>                                                                              
+>    i.dementia                                      ///
+>                                                                              
+>    i.other_neuro                           ///
+>                                                                              
+>    i.egfr60                                        ///
+>                                                                              
+>    i.esrf                                          ///
+>                                                                              
+>    i.immunosuppressed                      ///
+>                                                                              
+>    i.ra_sle_psoriasis                      ///
+>                                                                              
+>    i.hh_total_cat i.urban, strata(stp) nolog       
+  9. eststo model_adj
+ 10. 
+. *rural                                                                  
+. stcox i.ethnicity_16 i.male age1 age2 age3      i.imd                        
+>                    ///
+>                                                                              
+>    i.bmicat_sa     i.hba1ccat                      ///
+>                                                                              
+>    gp_consult_count                        ///
+>                                                                              
+>    i.smoke_nomiss                          ///
+>                                                                              
+>    i.hypertension i.bp_cat         ///     
+>                                                                              
+>    i.asthma                                        ///
+>                                                                              
+>    i.chronic_respiratory_disease ///
+>                                                                              
+>    i.chronic_cardiac_disease       ///
+>                                                                              
+>    i.dm_type                                       ///     
+>                                                                              
+>    i.cancer                    ///
+>                                                                              
+>    i.chronic_liver_disease         ///
+>                                                                              
+>    i.stroke                                        ///
+>                                                                              
+>    i.dementia                                      ///
+>                                                                              
+>    i.other_neuro                           ///
+>                                                                              
+>    i.egfr60                                        ///
+>                                                                              
+>    i.esrf                                          ///
+>                                                                              
+>    i.immunosuppressed                      ///
+>                                                                              
+>    i.ra_sle_psoriasis                      ///
+>                                                                              
+>    i.hh_total_cat if urban==0, strata(stp) nolog
+ 11. eststo model_rural
+ 12. *urban
+. stcox i.ethnicity_16 i.male age1 age2 age3      i.imd                        
+>                    ///
+>                                                                              
+>    i.bmicat_sa     i.hba1ccat                      ///
+>                                                                              
+>    gp_consult_count                        ///
+>                                                                              
+>    i.smoke_nomiss                          ///
+>                                                                              
+>    i.hypertension i.bp_cat         ///     
+>                                                                              
+>    i.asthma                                        ///
+>                                                                              
+>    i.chronic_respiratory_disease ///
+>                                                                              
+>    i.chronic_cardiac_disease       ///
+>                                                                              
+>    i.dm_type                                       ///     
+>                                                                              
+>    i.cancer                    ///
+>                                                                              
+>    i.chronic_liver_disease         ///
+>                                                                              
+>    i.stroke                                        ///
+>                                                                              
+>    i.dementia                                      ///
+>                                                                              
+>    i.other_neuro                           ///
+>                                                                              
+>    i.egfr60                                        ///
+>                                                                              
+>    i.esrf                                          ///
+>                                                                              
+>    i.immunosuppressed                      ///
+>                                                                              
+>    i.ra_sle_psoriasis                      ///
+>                                                                              
+>    i.hh_total_cat if urban==1, strata(stp) nolog           
+ 13. eststo model_urban
+ 14. /* Estout================================================================*
+> / 
+. esttab model_adj model_rural model_urban using ./output/estout_sens_ruralurba
+> n_eth16.txt, b(a2) ci(2) label wide compress eform ///
+>         title ("`i'") ///
+>         varlabels(`e(labels)') ///
+>         stats(N_sub) ///
+>         append 
+ 15. eststo clear
+ 16. }
+tested
+(1,189 observations deleted)
+(5,989 missing values generated)
+(5,989 real changes made)
+
+      urban |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |        679       10.18       10.18
+          1 |      5,989       89.82      100.00
+------------+-----------------------------------
+      Total |      6,668      100.00
+
+         failure _d:  tested
+   analysis time _t:  (stime_tested-origin)
+             origin:  time indexdate
+  enter on or after:  time indexdate
+                 id:  patient_id
+
+Stratified Cox regr. -- no ties
+
+No. of subjects =        6,668                  Number of obs    =       6,668
+No. of failures =           14
+Time at risk    =      1225947
+                                                LR chi2(38)      =       49.25
+Log likelihood  =   -66.338133                  Prob > chi2      =      0.1045
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ethnicity_16 |
+      Irish  |   4.30e-20          .        .       .            .           .
+Other White  |    1.20743   1.785593     0.13   0.899     .0665385    21.91042
+White + C..  |   4.49e-20          .        .       .            .           .
+White + A..  |   5.90e-20          .        .       .            .           .
+White + A..  |   .8704363   1.285654    -0.09   0.925     .0481386    15.73913
+Other mixed  |   1.095729   1.635031     0.06   0.951     .0588238     20.4105
+     Indian  |   .8490607   1.260629    -0.11   0.912     .0462521    15.58641
+  Pakistani  |   .7899306   1.180955    -0.16   0.875     .0421728    14.79603
+Bangladeshi  |   5.90e-20          .        .       .            .           .
+Other Asian  |   .8549365   1.279311    -0.10   0.917      .045521    16.05668
+  Caribbean  |   .8202704   1.238003    -0.13   0.896     .0425864     15.7995
+    African  |   5.79e-20          .        .       .            .           .
+Other Black  |   9.82e-20          .        .       .            .           .
+    Chinese  |   .9710605   1.463156    -0.02   0.984     .0506628    18.61244
+      Other  |   4.57e-20          .        .       .            .           .
+    Unknown  |   .8321205   .9599604    -0.16   0.873     .0867388    7.982871
+             |
+        male |
+       Male  |   .6870795   .3885214    -0.66   0.507     .2268192    2.081298
+        age1 |   .9449796   .0794916    -0.67   0.501     .8013449     1.11436
+        age2 |   1.602317   .6873933     1.10   0.272     .6911675    3.714613
+        age3 |   .1067643   .1757722    -1.36   0.174     .0042368    2.690349
+             |
+         imd |
+          4  |   .8130076   .6546571    -0.26   0.797     .1677578    3.940094
+5 most de..  |   2.328429   1.678741     1.17   0.241     .5667183    9.566628
+             |
+   bmicat_sa |
+Normal (..)  |   6.76e-11          .        .       .            .           .
+Overweig..)  |   2.99e+09   3.53e+09    18.46   0.000     2.95e+08    3.03e+10
+Obese I ..)  |   1.40e+09   1.75e+09    16.84   0.000     1.21e+08    1.63e+10
+Obese II..)  |   8.17e+08          .        .       .            .           .
+Obese II..)  |   1.83e+09   2.15e+09    18.14   0.000     1.82e+08    1.83e+10
+    Unknown  |   3.14e+09   3.61e+09    19.02   0.000     3.29e+08    2.99e+10
+             |
+    hba1ccat |
+  >=6.5-7.4  |   .9896164   .8033641    -0.01   0.990     .2015891    4.858103
+  >=7.5-7.9  |   3.562051   2.563172     1.77   0.077     .8693497    14.59505
+    >=8-8.9  |   .8717616   .9693188    -0.12   0.902     .0986143    7.706473
+        >=9  |   1.92e-19          .        .       .            .           .
+    Unknown  |   9.72e-19          .        .       .            .           .
+             |
+gp_consult~t |   .8955377   .1146599    -0.86   0.389     .6967877    1.150978
+             |
+smoke_nomiss |
+     Former  |   1.64e-19          .        .       .            .           .
+    Current  |   .5304579   .5655199    -0.59   0.552     .0656428    4.286618
+             |
+1.hyperten~n |   .5984438   .4738539    -0.65   0.517     .1267749    2.824968
+             |
+      bp_cat |
+High, sta..  |   5.01e+07   4.10e+07    21.70   0.000     1.01e+07    2.49e+08
+    Unknown  |   1.19e+08          .        .       .            .           .
+             |
+    1.asthma |   1.35e-19          .        .       .            .           .
+1.~y_disease |   1.004794   .7119448     0.01   0.995     .2505877    4.028972
+1.~c_disease |   .6730568   .5467247    -0.49   0.626     .1369683    3.307376
+             |
+     dm_type |
+       T1DM  |   3.897243   3.333673     1.59   0.112     .7288628    20.83863
+       T2DM  |   1.196357   .8381545     0.26   0.798     .3030531    4.722839
+ UNKNOWN_DM  |   1.30e-19          .        .       .            .           .
+             |
+    1.cancer |   .5308618   .4234588    -0.79   0.427     .1111715    2.534951
+1.~r_disease |    .685699   .5427924    -0.48   0.634     .1453218    3.235461
+    1.stroke |   .8230709   .6493905    -0.25   0.805     .1753283    3.863869
+  1.dementia |   2.348515   1.418166     1.41   0.157      .719101    7.670025
+1.other_ne~o |   1.511387    .931005     0.67   0.503     .4518982    5.054877
+             |
+      egfr60 |
+   eGFR <60  |   6.74e-19          .        .       .            .           .
+      1.esrf |   1.558906   .9705744     0.71   0.476     .4601104    5.281749
+1.immunosu~d |   .9774846    .569738    -0.04   0.969     .3118728    3.063673
+1.ra_sle_p~s |   1.576456   .9931181     0.72   0.470     .4586186    5.418914
+             |
+hh_total_cat |
+       6-10  |   1.48e+15          .        .       .            .           .
+        11+  |   .0115115          .        .       .            .           .
+             |
+     1.urban |   4.32e+15          .        .       .            .           .
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+
+         failure _d:  tested
+   analysis time _t:  (stime_tested-origin)
+             origin:  time indexdate
+  enter on or after:  time indexdate
+                 id:  patient_id
+
+Stratified Cox regr. -- no ties
+
+No. of subjects =          679                  Number of obs    =         679
+No. of failures =            0
+Time at risk    =       124913
+                                                LR chi2(0)       =        0.00
+Log likelihood  =            0                  Prob > chi2      =           .
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ethnicity_16 |
+      Irish  |          1  (omitted)
+Other White  |          1  (omitted)
+White + C..  |          1  (omitted)
+White + A..  |          1  (omitted)
+White + A..  |          1  (omitted)
+Other mixed  |          1  (omitted)
+     Indian  |          1  (omitted)
+  Pakistani  |          1  (omitted)
+Bangladeshi  |          1  (omitted)
+Other Asian  |          1  (omitted)
+  Caribbean  |          1  (omitted)
+    African  |          1  (omitted)
+Other Black  |          1  (omitted)
+    Chinese  |          1  (omitted)
+      Other  |          1  (omitted)
+    Unknown  |          1  (omitted)
+             |
+        male |
+       Male  |          1  (omitted)
+        age1 |          1  (omitted)
+        age2 |          1  (omitted)
+        age3 |          1  (omitted)
+             |
+         imd |
+          4  |          1  (omitted)
+5 most de..  |          1  (omitted)
+             |
+   bmicat_sa |
+Normal (..)  |          1  (omitted)
+Overweig..)  |          1  (omitted)
+Obese I ..)  |          1  (omitted)
+Obese II..)  |          1  (omitted)
+Obese II..)  |          1  (omitted)
+    Unknown  |          1  (omitted)
+             |
+    hba1ccat |
+  >=6.5-7.4  |          1  (omitted)
+  >=7.5-7.9  |          1  (omitted)
+    >=8-8.9  |          1  (omitted)
+        >=9  |          1  (omitted)
+    Unknown  |          1  (omitted)
+             |
+gp_consult~t |          1  (omitted)
+             |
+smoke_nomiss |
+     Former  |          1  (omitted)
+    Current  |          1  (omitted)
+             |
+1.hyperten~n |          1  (omitted)
+             |
+      bp_cat |
+    Unknown  |          1  (omitted)
+    1.asthma |          1  (omitted)
+1.~y_disease |          1  (omitted)
+1.~c_disease |          1  (omitted)
+             |
+     dm_type |
+       T1DM  |          1  (omitted)
+       T2DM  |          1  (omitted)
+ UNKNOWN_DM  |          1  (omitted)
+             |
+    1.cancer |          1  (omitted)
+1.~r_disease |          1  (omitted)
+    1.stroke |          1  (omitted)
+  1.dementia |          1  (omitted)
+1.other_ne~o |          1  (omitted)
+             |
+      egfr60 |
+   eGFR <60  |          1  (omitted)
+      1.esrf |          1  (omitted)
+1.immunosu~d |          1  (omitted)
+1.ra_sle_p~s |          1  (omitted)
+             |
+hh_total_cat |
+       6-10  |          1  (omitted)
+        11+  |          1  (omitted)
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+
+         failure _d:  tested
+   analysis time _t:  (stime_tested-origin)
+             origin:  time indexdate
+  enter on or after:  time indexdate
+                 id:  patient_id
+
+Stratified Cox regr. -- no ties
+
+No. of subjects =        5,989                  Number of obs    =       5,989
+No. of failures =           14
+Time at risk    =      1101034
+                                                LR chi2(51)      =       46.39
+Log likelihood  =   -66.338133                  Prob > chi2      =      0.6570
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ethnicity_16 |
+      Irish  |   2.38e-18   1.45e-09    -0.00   1.000            0           .
+Other White  |    1.20743   1.785593     0.13   0.899     .0665385    21.91042
+White + C..  |   2.45e-18   1.32e-09    -0.00   1.000            0           .
+White + A..  |   1.19e-18   1.05e-09    -0.00   1.000            0           .
+White + A..  |   .8704363   1.285654    -0.09   0.925     .0481386    15.73913
+Other mixed  |   1.095729   1.635031     0.06   0.951     .0588238     20.4105
+     Indian  |   .8490607   1.260629    -0.11   0.912     .0462521    15.58641
+  Pakistani  |   .7899306   1.180955    -0.16   0.875     .0421728    14.79603
+Bangladeshi  |   1.28e-18   9.94e-10    -0.00   1.000            0           .
+Other Asian  |   .8549365   1.279311    -0.10   0.917      .045521    16.05668
+  Caribbean  |   .8202704   1.238003    -0.13   0.896     .0425864     15.7995
+    African  |   1.22e-18   1.02e-09    -0.00   1.000            0           .
+Other Black  |   1.83e-18   1.45e-09    -0.00   1.000            0           .
+    Chinese  |   .9710605   1.463156    -0.02   0.984     .0506628    18.61244
+      Other  |   2.69e-18   1.37e-09    -0.00   1.000            0           .
+    Unknown  |   .8321205   .9599604    -0.16   0.873     .0867388    7.982871
+             |
+        male |
+       Male  |   .6870795   .3885214    -0.66   0.507     .2268192    2.081298
+        age1 |   .9449796   .0794916    -0.67   0.501     .8013449     1.11436
+        age2 |   1.602317   .6873933     1.10   0.272     .6911675    3.714613
+        age3 |   .1067643   .1757722    -1.36   0.174     .0042368    2.690349
+             |
+         imd |
+          4  |   .8130076   .6546571    -0.26   0.797     .1677578    3.940094
+5 most de..  |   2.328429   1.678741     1.17   0.241     .5667183    9.566628
+             |
+   bmicat_sa |
+Normal (..)  |   3.24e-09   1.969127    -0.00   1.000            0           .
+Overweig..)  |   2.88e+09   3.41e+09    18.43   0.000     2.84e+08    2.92e+10
+Obese I ..)  |   1.35e+09   1.69e+09    16.81   0.000     1.17e+08    1.57e+10
+Obese II..)  |   7.89e+08          .        .       .            .           .
+Obese II..)  |   1.76e+09   2.07e+09    18.11   0.000     1.76e+08    1.77e+10
+    Unknown  |   3.03e+09   3.48e+09    18.99   0.000     3.18e+08    2.88e+10
+             |
+    hba1ccat |
+  >=6.5-7.4  |   .9896164   .8033641    -0.01   0.990     .2015891    4.858103
+  >=7.5-7.9  |   3.562051   2.563172     1.77   0.077     .8693497    14.59505
+    >=8-8.9  |   .8717616   .9693188    -0.12   0.902     .0986143    7.706473
+        >=9  |   1.44e-18   1.72e-09    -0.00   1.000            0           .
+    Unknown  |   1.10e-18          .        .       .            .           .
+             |
+gp_consult~t |   .8955377   .1146599    -0.86   0.389     .6967877    1.150978
+             |
+smoke_nomiss |
+     Former  |   1.28e-18   1.79e-09    -0.00   1.000            0           .
+    Current  |   .5304579   .5655199    -0.59   0.552     .0656428    4.286618
+             |
+1.hyperten~n |   .5984438   .4738539    -0.65   0.517     .1267749    2.824968
+             |
+      bp_cat |
+High, sta..  |   4.56e+07   3.72e+07    21.58   0.000      9183506    2.26e+08
+    Unknown  |   1.08e+08          .        .       .            .           .
+             |
+    1.asthma |   2.86e-18   2.36e-09    -0.00   1.000            0           .
+1.~y_disease |   1.004794   .7119448     0.01   0.995     .2505877    4.028972
+1.~c_disease |   .6730568   .5467247    -0.49   0.626     .1369683    3.307376
+             |
+     dm_type |
+       T1DM  |   3.897243   3.333673     1.59   0.112     .7288628    20.83863
+       T2DM  |   1.196357   .8381545     0.26   0.798     .3030531    4.722839
+ UNKNOWN_DM  |   2.83e-18   2.74e-09    -0.00   1.000            0           .
+             |
+    1.cancer |   .5308618   .4234588    -0.79   0.427     .1111715    2.534951
+1.~r_disease |    .685699   .5427924    -0.48   0.634     .1453218    3.235461
+    1.stroke |   .8230709   .6493905    -0.25   0.805     .1753283    3.863869
+  1.dementia |   2.348515   1.418166     1.41   0.157      .719101    7.670025
+1.other_ne~o |   1.511387    .931005     0.67   0.503     .4518982    5.054877
+             |
+      egfr60 |
+   eGFR <60  |   1.26e-17   1.49e-08    -0.00   1.000            0           .
+      1.esrf |   1.558906   .9705744     0.71   0.476     .4601104    5.281749
+1.immunosu~d |   .9774846    .569738    -0.04   0.969     .3118728    3.063673
+1.ra_sle_p~s |   1.576456   .9931181     0.72   0.470     .4586186    5.418914
+             |
+hh_total_cat |
+       6-10  |   1.26e+16          .        .       .            .           .
+        11+  |   .0048789          .        .       .            .           .
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+(note: file ./output/estout_sens_ruralurban_eth16.txt not found)
+(output written to ./output/estout_sens_ruralurban_eth16.txt)
+positivetest
+(1,189 observations deleted)
+(5,989 missing values generated)
+(5,989 real changes made)
+
+      urban |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |        679       10.18       10.18
+          1 |      5,989       89.82      100.00
+------------+-----------------------------------
+      Total |      6,668      100.00
+
+         failure _d:  positivetest
+   analysis time _t:  (stime_positivetest-origin)
+             origin:  time indexdate
+  enter on or after:  time indexdate
+                 id:  patient_id
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects =        6,668                  Number of obs    =       6,668
+No. of failures =           15
+Time at risk    =      1225918
+                                                LR chi2(39)      =       74.28
+Log likelihood  =   -60.466092                  Prob > chi2      =      0.0006
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ethnicity_16 |
+      Irish  |   1.182003   1.285547     0.15   0.878     .1402333    9.962901
+Other White  |   8.95e-21          .        .       .            .           .
+White + C..  |   1.491026   1.665336     0.36   0.721     .1670218    13.31059
+White + A..  |   6.87e-20          .        .       .            .           .
+White + A..  |   .5549885   .7441347    -0.44   0.661     .0400852    7.683948
+Other mixed  |   1.64e-20          .        .       .            .           .
+     Indian  |   2.55e-20          .        .       .            .           .
+  Pakistani  |   1.71e-20          .        .       .            .           .
+Bangladeshi  |   2.16e-20          .        .       .            .           .
+Other Asian  |   1.42e-20          .        .       .            .           .
+  Caribbean  |   .5130144   .6738775    -0.51   0.611      .039086    6.733449
+    African  |    1.00003    1.07346     0.00   1.000     .1219861    8.198154
+Other Black  |   1.469913   1.605735     0.35   0.724     .1727579    12.50678
+    Chinese  |   .6870794   .8803434    -0.29   0.770     .0557669    8.465201
+      Other  |   6.12e-20          .        .       .            .           .
+    Unknown  |   .1869245    .206918    -1.52   0.130     .0213511    1.636487
+             |
+        male |
+       Male  |   .4396233   .2646945    -1.36   0.172     .1350758    1.430817
+        age1 |   1.246691   .1388908     1.98   0.048      1.00214    1.550919
+        age2 |   .4888691   .1744893    -2.01   0.045     .2428723    .9840272
+        age3 |    5.46802   4.687165     1.98   0.047     1.019022    29.34112
+             |
+         imd |
+          4  |   .5277265   .4542086    -0.74   0.458     .0976762    2.851208
+5 most de..  |   4.309789   3.056789     2.06   0.039     1.073315    17.30552
+             |
+   bmicat_sa |
+Normal (..)  |   .2074769   .3160361    -1.03   0.302     .0104807    4.107238
+Overweig..)  |   .1847552   .2842515    -1.10   0.272     .0090573     3.76874
+Obese I ..)  |    .258079   .3461361    -1.01   0.313      .018626    3.575904
+Obese II..)  |    .508425   .6475739    -0.53   0.595     .0418855    6.171497
+Obese II..)  |   .0800108   .1238062    -1.63   0.103      .003855    1.660623
+    Unknown  |   .8449945    1.03337    -0.14   0.890      .076894    9.285711
+             |
+    hba1ccat |
+  >=6.5-7.4  |   1.060563   .7771494     0.08   0.936     .2522322    4.459355
+  >=7.5-7.9  |   1.569467   1.405962     0.50   0.615     .2711613    9.083992
+    >=8-8.9  |   2.66e-20          .        .       .            .           .
+        >=9  |   7.55e-20          .        .       .            .           .
+    Unknown  |   6.90e-18          .        .       .            .           .
+             |
+gp_consult~t |   1.037736   .1294497     0.30   0.767     .8126543    1.325158
+             |
+smoke_nomiss |
+     Former  |   5.40e-20          .        .       .            .           .
+    Current  |   4.641403   3.166559     2.25   0.024     1.218776    17.67562
+             |
+1.hyperten~n |   .6213929    .514061    -0.58   0.565     .1227979    3.144427
+             |
+      bp_cat |
+High, sta..  |    2362965    2037201    17.02   0.000     436118.7    1.28e+07
+    Unknown  |    3339440          .        .       .            .           .
+             |
+    1.asthma |   4.226795   3.779882     1.61   0.107     .7325036    24.39004
+1.~y_disease |   .8980143   .6479011    -0.15   0.881     .2183518    3.693259
+1.~c_disease |   2.210648   1.444918     1.21   0.225     .6139871    7.959391
+             |
+     dm_type |
+       T1DM  |   7.473053    6.77569     2.22   0.027     1.263945     44.1843
+       T2DM  |   .5740609   .4999077    -0.64   0.524     .1041618    3.163787
+ UNKNOWN_DM  |   2.667508   3.364995     0.78   0.437     .2250797    31.61369
+             |
+    1.cancer |   1.754198   1.142723     0.86   0.388     .4893134    6.288834
+1.~r_disease |   .5868796   .4866747    -0.64   0.520     .1155269    2.981363
+    1.stroke |   .4454738    .394547    -0.91   0.361      .078511    2.527632
+  1.dementia |   .2531945   .2895732    -1.20   0.230     .0269124    2.382075
+1.other_ne~o |   1.585509   1.043989     0.70   0.484     .4362041    5.762991
+             |
+      egfr60 |
+   eGFR <60  |   1.44e-19          .        .       .            .           .
+      1.esrf |   9.85e-21          .        .       .            .           .
+1.immunosu~d |   3.205407   1.885468     1.98   0.048     1.012031    10.15249
+1.ra_sle_p~s |   .3847856   .3348189    -1.10   0.272     .0699119    2.117809
+             |
+hh_total_cat |
+       6-10  |   2.19e+15          .        .       .            .           .
+        11+  |   1.70e+15          .        .       .            .           .
+             |
+     1.urban |   2.49e+18          .        .       .            .           .
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+
+         failure _d:  positivetest
+   analysis time _t:  (stime_positivetest-origin)
+             origin:  time indexdate
+  enter on or after:  time indexdate
+                 id:  patient_id
+
+Stratified Cox regr. -- no ties
+
+No. of subjects =          679                  Number of obs    =         679
+No. of failures =            0
+Time at risk    =       124913
+                                                LR chi2(0)       =        0.00
+Log likelihood  =            0                  Prob > chi2      =           .
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ethnicity_16 |
+      Irish  |          1  (omitted)
+Other White  |          1  (omitted)
+White + C..  |          1  (omitted)
+White + A..  |          1  (omitted)
+White + A..  |          1  (omitted)
+Other mixed  |          1  (omitted)
+     Indian  |          1  (omitted)
+  Pakistani  |          1  (omitted)
+Bangladeshi  |          1  (omitted)
+Other Asian  |          1  (omitted)
+  Caribbean  |          1  (omitted)
+    African  |          1  (omitted)
+Other Black  |          1  (omitted)
+    Chinese  |          1  (omitted)
+      Other  |          1  (omitted)
+    Unknown  |          1  (omitted)
+             |
+        male |
+       Male  |          1  (omitted)
+        age1 |          1  (omitted)
+        age2 |          1  (omitted)
+        age3 |          1  (omitted)
+             |
+         imd |
+          4  |          1  (omitted)
+5 most de..  |          1  (omitted)
+             |
+   bmicat_sa |
+Normal (..)  |          1  (omitted)
+Overweig..)  |          1  (omitted)
+Obese I ..)  |          1  (omitted)
+Obese II..)  |          1  (omitted)
+Obese II..)  |          1  (omitted)
+    Unknown  |          1  (omitted)
+             |
+    hba1ccat |
+  >=6.5-7.4  |          1  (omitted)
+  >=7.5-7.9  |          1  (omitted)
+    >=8-8.9  |          1  (omitted)
+        >=9  |          1  (omitted)
+    Unknown  |          1  (omitted)
+             |
+gp_consult~t |          1  (omitted)
+             |
+smoke_nomiss |
+     Former  |          1  (omitted)
+    Current  |          1  (omitted)
+             |
+1.hyperten~n |          1  (omitted)
+             |
+      bp_cat |
+    Unknown  |          1  (omitted)
+    1.asthma |          1  (omitted)
+1.~y_disease |          1  (omitted)
+1.~c_disease |          1  (omitted)
+             |
+     dm_type |
+       T1DM  |          1  (omitted)
+       T2DM  |          1  (omitted)
+ UNKNOWN_DM  |          1  (omitted)
+             |
+    1.cancer |          1  (omitted)
+1.~r_disease |          1  (omitted)
+    1.stroke |          1  (omitted)
+  1.dementia |          1  (omitted)
+1.other_ne~o |          1  (omitted)
+             |
+      egfr60 |
+   eGFR <60  |          1  (omitted)
+      1.esrf |          1  (omitted)
+1.immunosu~d |          1  (omitted)
+1.ra_sle_p~s |          1  (omitted)
+             |
+hh_total_cat |
+       6-10  |          1  (omitted)
+        11+  |          1  (omitted)
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+
+         failure _d:  positivetest
+   analysis time _t:  (stime_positivetest-origin)
+             origin:  time indexdate
+  enter on or after:  time indexdate
+                 id:  patient_id
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects =        5,989                  Number of obs    =       5,989
+No. of failures =           15
+Time at risk    =      1101005
+                                                LR chi2(39)      =       71.05
+Log likelihood  =   -60.466092                  Prob > chi2      =      0.0013
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ethnicity_16 |
+      Irish  |   1.182003   1.285547     0.15   0.878     .1402333    9.962901
+Other White  |   1.13e-20          .        .       .            .           .
+White + C..  |   1.491026   1.665336     0.36   0.721     .1670218    13.31059
+White + A..  |   7.71e-20          .        .       .            .           .
+White + A..  |   .5549885   .7441347    -0.44   0.661     .0400852    7.683948
+Other mixed  |   3.90e-20          .        .       .            .           .
+     Indian  |   2.82e-20          .        .       .            .           .
+  Pakistani  |   1.81e-20          .        .       .            .           .
+Bangladeshi  |   2.62e-20          .        .       .            .           .
+Other Asian  |   1.54e-20          .        .       .            .           .
+  Caribbean  |   .5130144   .6738775    -0.51   0.611      .039086    6.733449
+    African  |    1.00003    1.07346     0.00   1.000     .1219861    8.198154
+Other Black  |   1.469913   1.605735     0.35   0.724     .1727579    12.50678
+    Chinese  |   .6870794   .8803434    -0.29   0.770     .0557669    8.465201
+      Other  |   2.54e-20          .        .       .            .           .
+    Unknown  |   .1869245    .206918    -1.52   0.130     .0213511    1.636487
+             |
+        male |
+       Male  |   .4396233   .2646945    -1.36   0.172     .1350758    1.430817
+        age1 |   1.246691   .1388908     1.98   0.048      1.00214    1.550919
+        age2 |   .4888691   .1744893    -2.01   0.045     .2428723    .9840272
+        age3 |    5.46802   4.687165     1.98   0.047     1.019022    29.34112
+             |
+         imd |
+          4  |   .5277265   .4542086    -0.74   0.458     .0976762    2.851208
+5 most de..  |   4.309789   3.056789     2.06   0.039     1.073315    17.30552
+             |
+   bmicat_sa |
+Normal (..)  |   .2074769   .3160361    -1.03   0.302     .0104807    4.107238
+Overweig..)  |   .1847552   .2842515    -1.10   0.272     .0090573     3.76874
+Obese I ..)  |    .258079   .3461361    -1.01   0.313      .018626    3.575904
+Obese II..)  |    .508425   .6475739    -0.53   0.595     .0418855    6.171497
+Obese II..)  |   .0800108   .1238062    -1.63   0.103      .003855    1.660623
+    Unknown  |   .8449945    1.03337    -0.14   0.890      .076894    9.285711
+             |
+    hba1ccat |
+  >=6.5-7.4  |   1.060563   .7771494     0.08   0.936     .2522322    4.459355
+  >=7.5-7.9  |   1.569467   1.405962     0.50   0.615     .2711613    9.083992
+    >=8-8.9  |   3.25e-20          .        .       .            .           .
+        >=9  |   7.62e-20          .        .       .            .           .
+    Unknown  |   2.86e-18          .        .       .            .           .
+             |
+gp_consult~t |   1.037736   .1294497     0.30   0.767     .8126543    1.325158
+             |
+smoke_nomiss |
+     Former  |   6.11e-20          .        .       .            .           .
+    Current  |   4.641403   3.166559     2.25   0.024     1.218776    17.67562
+             |
+1.hyperten~n |   .6213929    .514061    -0.58   0.565     .1227979    3.144427
+             |
+      bp_cat |
+High, sta..  |    1936999    1669959    16.79   0.000     357500.5    1.05e+07
+    Unknown  |    2737447          .        .       .            .           .
+             |
+    1.asthma |   4.226795   3.779882     1.61   0.107     .7325036    24.39004
+1.~y_disease |   .8980143   .6479011    -0.15   0.881     .2183518    3.693259
+1.~c_disease |   2.210648   1.444918     1.21   0.225     .6139871    7.959391
+             |
+     dm_type |
+       T1DM  |   7.473053    6.77569     2.22   0.027     1.263945     44.1843
+       T2DM  |   .5740609   .4999077    -0.64   0.524     .1041618    3.163787
+ UNKNOWN_DM  |   2.667508   3.364995     0.78   0.437     .2250797    31.61369
+             |
+    1.cancer |   1.754198   1.142723     0.86   0.388     .4893134    6.288834
+1.~r_disease |   .5868796   .4866747    -0.64   0.520     .1155269    2.981363
+    1.stroke |   .4454738    .394547    -0.91   0.361      .078511    2.527632
+  1.dementia |   .2531945   .2895732    -1.20   0.230     .0269124    2.382075
+1.other_ne~o |   1.585509   1.043989     0.70   0.484     .4362041    5.762991
+             |
+      egfr60 |
+   eGFR <60  |   1.25e-19          .        .       .            .           .
+      1.esrf |   9.56e-21          .        .       .            .           .
+1.immunosu~d |   3.205407   1.885468     1.98   0.048     1.012031    10.15249
+1.ra_sle_p~s |   .3847856   .3348189    -1.10   0.272     .0699119    2.117809
+             |
+hh_total_cat |
+       6-10  |   7.02e+16          .        .       .            .           .
+        11+  |   5.28e+15          .        .       .            .           .
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+(output written to ./output/estout_sens_ruralurban_eth16.txt)
+icu
+(1,189 observations deleted)
+(5,989 missing values generated)
+(5,989 real changes made)
+
+      urban |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |        679       10.18       10.18
+          1 |      5,989       89.82      100.00
+------------+-----------------------------------
+      Total |      6,668      100.00
+
+         failure _d:  icu
+   analysis time _t:  (stime_icu-origin)
+             origin:  time indexdate
+  enter on or after:  time indexdate
+                 id:  patient_id
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects =        6,668                  Number of obs    =       6,668
+No. of failures =           16
+Time at risk    =      1199351
+                                                LR chi2(39)      =       61.33
+Log likelihood  =   -73.384624                  Prob > chi2      =      0.0127
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ethnicity_16 |
+      Irish  |   5.94e-10          .        .       .            .           .
+Other White  |   2.07e-09          .        .       .            .           .
+White + C..  |   2.09e+10   3.13e+10    15.91   0.000     1.12e+09    3.91e+11
+White + A..  |   2.07e+10   3.07e+10    16.01   0.000     1.13e+09    3.78e+11
+White + A..  |   1.04e-09          .        .       .            .           .
+Other mixed  |   9.50e-10          .        .       .            .           .
+     Indian  |   3.89e+10   5.20e+10    18.27   0.000     2.85e+09    5.33e+11
+  Pakistani  |   7.73e-10          .        .       .            .           .
+Bangladeshi  |   3.43e+10   4.47e+10    18.59   0.000     2.66e+09    4.42e+11
+Other Asian  |   2.17e+10   3.21e+10    16.11   0.000     1.20e+09    3.93e+11
+  Caribbean  |   5.29e-10          .        .       .            .           .
+    African  |   1.32e-09          .        .       .            .           .
+Other Black  |   1.80e+10          .        .       .            .           .
+    Chinese  |   1.03e-09          .        .       .            .           .
+      Other  |   1.67e+10   2.45e+10    16.04   0.000     9.39e+08    2.96e+11
+    Unknown  |   2.31e+10   2.62e+10    21.03   0.000     2.49e+09    2.13e+11
+             |
+        male |
+       Male  |   .9372532   .5145512    -0.12   0.906     .3195567    2.748944
+        age1 |   .9011411   .0757421    -1.24   0.216     .7642725    1.062521
+        age2 |   1.384709   .4296032     1.05   0.294     .7538323     2.54356
+        age3 |   .4923238   .3753367    -0.93   0.353     .1104877    2.193754
+             |
+         imd |
+          4  |    .779436   .5262182    -0.37   0.712     .2075446    2.927181
+5 most de..  |   4.27e-20          .        .       .            .           .
+             |
+   bmicat_sa |
+Normal (..)  |   .8435912   1.051219    -0.14   0.891      .073355    9.701403
+Overweig..)  |   .1508312   .2236782    -1.28   0.202     .0082449    2.759294
+Obese I ..)  |    .312951   .3924841    -0.93   0.354     .0267887    3.655961
+Obese II..)  |   .2469537   .3193114    -1.08   0.279      .019589    3.113292
+Obese II..)  |   .4181311   .4882568    -0.75   0.455     .0423988    4.123547
+    Unknown  |   .0755908   .1167822    -1.67   0.095     .0036595    1.561392
+             |
+    hba1ccat |
+  >=6.5-7.4  |   .9663043   .6617751    -0.05   0.960     .2524452    3.698799
+  >=7.5-7.9  |   6.96e-20          .        .       .            .           .
+    >=8-8.9  |   2.128661   1.747446     0.92   0.357     .4259356    10.63822
+        >=9  |   9.21e-20          .        .       .            .           .
+    Unknown  |   13.59684   17.73677     2.00   0.045     1.054546    175.3117
+             |
+gp_consult~t |   .9944364   .1112445    -0.05   0.960     .7986487    1.238221
+             |
+smoke_nomiss |
+     Former  |   4.710272   5.437079     1.34   0.179     .4903452    45.24703
+    Current  |   .5611211   .6053133    -0.54   0.592     .0677356    4.648321
+             |
+1.hyperten~n |    1.30015   .8127137     0.42   0.675     .3818687    4.426627
+             |
+      bp_cat |
+High, sta..  |   1.43e+15          .        .       .            .           .
+    Unknown  |    .000016          .        .       .            .           .
+             |
+    1.asthma |   5.03e-20          .        .       .            .           .
+1.~y_disease |   3.770675   2.068846     2.42   0.016     1.286449    11.05212
+1.~c_disease |   .2594849   .2760646    -1.27   0.205     .0322495    2.087857
+             |
+     dm_type |
+       T1DM  |   2.928359   3.280649     0.96   0.338     .3258523    26.31648
+       T2DM  |   2.338358   1.375295     1.44   0.149     .7383812    7.405279
+ UNKNOWN_DM  |   7.91e-20          .        .       .            .           .
+             |
+    1.cancer |    .725452   .5193957    -0.45   0.654     .1783122    2.951456
+1.~r_disease |   2.329405   1.347228     1.46   0.144      .749802    7.236749
+    1.stroke |   .2177566   .2292362    -1.45   0.148     .0276628    1.714139
+  1.dementia |   .8353803     .56227    -0.27   0.789     .2233394    3.124662
+1.other_ne~o |   .5122746   .4026479    -0.85   0.395     .1097636    2.390823
+             |
+      egfr60 |
+   eGFR <60  |   4.174694   5.042267     1.18   0.237      .391317    44.53696
+      1.esrf |   1.071786   .7209058     0.10   0.918     .2867952    4.005384
+1.immunosu~d |   .6461885   .3941432    -0.72   0.474     .1955096    2.135749
+1.ra_sle_p~s |   1.492843   .9146096     0.65   0.513     .4492776    4.960366
+             |
+hh_total_cat |
+       6-10  |   3.59e+15          .        .       .            .           .
+        11+  |   .0083845          .        .       .            .           .
+             |
+     1.urban |   .6506567   .5201363    -0.54   0.591     .1357999    3.117483
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+
+         failure _d:  icu
+   analysis time _t:  (stime_icu-origin)
+             origin:  time indexdate
+  enter on or after:  time indexdate
+                 id:  patient_id
+
+Stratified Cox regr. -- no ties
+
+No. of subjects =          679                  Number of obs    =         679
+No. of failures =            2
+Time at risk    =       122147
+                                                LR chi2(31)      =       17.50
+Log likelihood  =   -2.842e-14                  Prob > chi2      =      0.9754
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ethnicity_16 |
+      Irish  |   106041.3          .        .       .            .           .
+Other White  |   4.23e-34   6.31e-25    -0.00   1.000            0           .
+White + C..  |   .0000844   158463.2    -0.00   1.000            0           .
+White + A..  |    .000159          .        .       .            .           .
+White + A..  |    125.929          .        .       .            .           .
+Other mixed  |   3.56e-11          .        .       .            .           .
+     Indian  |   .0000143   12342.83    -0.00   1.000            0           .
+  Pakistani  |          1  (omitted)
+Bangladeshi  |   2.23e-09          .        .       .            .           .
+Other Asian  |   4.08e-08          .        .       .            .           .
+  Caribbean  |   3.85e-18   3.90e-09    -0.00   1.000            0           .
+    African  |   4.84e-20          .        .       .            .           .
+Other Black  |   1.95e-12   .0022548    -0.00   1.000            0           .
+    Chinese  |   4.71e-17   2.74e-08    -0.00   1.000            0           .
+      Other  |    110.269          .        .       .            .           .
+    Unknown  |   7.43e-13      .0002    -0.00   1.000            0           .
+             |
+        male |
+       Male  |    .053264   1.24e+07    -0.00   1.000            0           .
+        age1 |   .2642453    2802237    -0.00   1.000            0           .
+        age2 |   2.070991          .        .       .            .           .
+        age3 |   62.65924   8.66e+08     0.00   1.000            0           .
+             |
+         imd |
+          4  |   4519.924          .        .       .            .           .
+5 most de..  |   3.23e-11   .0159589    -0.00   1.000            0           .
+             |
+   bmicat_sa |
+Normal (..)  |   7.23e-18          .        .       .            .           .
+Overweig..)  |   1.95e-24          .        .       .            .           .
+Obese I ..)  |   2.70e-09          .        .       .            .           .
+Obese II..)  |   1.63e-17   9.35e-09    -0.00   1.000            0           .
+Obese II..)  |   310.8535   1.57e+11     0.00   1.000            0           .
+    Unknown  |   7.25e-15   1.65e-06    -0.00   1.000            0           .
+             |
+    hba1ccat |
+  >=6.5-7.4  |   7.86e+08          .        .       .            .           .
+  >=7.5-7.9  |   4.01e+29   2.22e+38     0.00   1.000            0           .
+    >=8-8.9  |   41302.52   2.72e+13     0.00   1.000            0           .
+        >=9  |   8.87e-09          .        .       .            .           .
+    Unknown  |          1  (omitted)
+             |
+gp_consult~t |   .0976258    6816750    -0.00   1.000            0           .
+             |
+smoke_nomiss |
+     Former  |   6.47e-09          .        .       .            .           .
+    Current  |   2.08e-09   4.757362    -0.00   1.000            0           .
+             |
+1.hyperten~n |   82.38426   4.29e+10     0.00   1.000            0           .
+             |
+      bp_cat |
+    Unknown  |   5.00e-08   40.14486    -0.00   1.000            0           .
+    1.asthma |   .8181273          .        .       .            .           .
+1.~y_disease |    8784663   1.60e+15     0.00   1.000            0           .
+1.~c_disease |   5.42e-12   .0037776    -0.00   1.000            0           .
+             |
+     dm_type |
+       T1DM  |   .0002165   625457.3    -0.00   1.000            0           .
+       T2DM  |   9.30e+09   3.06e+18     0.00   1.000            0           .
+ UNKNOWN_DM  |          1  (omitted)
+             |
+    1.cancer |    1823042   2.96e+14     0.00   1.000            0           .
+1.~r_disease |   5.61e+13   8.59e+22     0.00   1.000            0           .
+    1.stroke |   .0701757   5.50e+07    -0.00   1.000            0           .
+  1.dementia |   4.87e-08          .        .       .            .           .
+1.other_ne~o |   402237.1   1.11e+14     0.00   1.000            0           .
+             |
+      egfr60 |
+   eGFR <60  |   3.05e-13          .        .       .            .           .
+      1.esrf |   .0000216   6547.605    -0.00   1.000            0           .
+1.immunosu~d |   80.04243   1.23e+10     0.00   1.000            0           .
+1.ra_sle_p~s |   .0001286   32492.16    -0.00   1.000            0           .
+             |
+hh_total_cat |
+       6-10  |   2.44e-22          .        .       .            .           .
+        11+  |          1  (omitted)
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+
+         failure _d:  icu
+   analysis time _t:  (stime_icu-origin)
+             origin:  time indexdate
+  enter on or after:  time indexdate
+                 id:  patient_id
+
+Stratified Cox regr. -- no ties
+
+No. of subjects =        5,989                  Number of obs    =       5,989
+No. of failures =           14
+Time at risk    =      1077204
+                                                LR chi2(37)      =       61.86
+Log likelihood  =    -58.53819                  Prob > chi2      =      0.0064
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ethnicity_16 |
+      Irish  |   5.90e-10          .        .       .            .           .
+Other White  |   3.25e-09          .        .       .            .           .
+White + C..  |   1.74e+10   2.75e+10    14.96   0.000     7.94e+08    3.83e+11
+White + A..  |   2.49e+10   3.90e+10    15.31   0.000     1.16e+09    5.34e+11
+White + A..  |   4.86e-10          .        .       .            .           .
+Other mixed  |   1.46e-09          .        .       .            .           .
+     Indian  |   1.73e+10          .        .       .            .           .
+  Pakistani  |   9.68e-10          .        .       .            .           .
+Bangladeshi  |   4.92e+10   6.83e+10    17.73   0.000     3.24e+09    7.48e+11
+Other Asian  |   3.35e+10   5.12e+10    15.84   0.000     1.67e+09    6.71e+11
+  Caribbean  |   1.24e-09          .        .       .            .           .
+    African  |   9.56e-10          .        .       .            .           .
+Other Black  |   2.24e+10   3.53e+10    15.07   0.000     1.01e+09    4.95e+11
+    Chinese  |   1.67e-09          .        .       .            .           .
+      Other  |   9.65e-10          .        .       .            .           .
+    Unknown  |   2.61e+10   3.22e+10    19.45   0.000     2.33e+09    2.92e+11
+             |
+        male |
+       Male  |   1.018688   .6316116     0.03   0.976     .3021866    3.434054
+        age1 |   .9623247   .0811753    -0.46   0.649     .8156803    1.135333
+        age2 |   1.000659   .3202281     0.00   0.998     .5344252    1.873636
+        age3 |   1.131117   .9097648     0.15   0.878     .2338195    5.471854
+             |
+         imd |
+          4  |   .9275611   .6541659    -0.11   0.915      .232825     3.69535
+5 most de..  |   4.13e-20          .        .       .            .           .
+             |
+   bmicat_sa |
+Normal (..)  |   .6022367   .7821152    -0.39   0.696     .0472417     7.67731
+Overweig..)  |   .1208531   .1873389    -1.36   0.173     .0057913    2.521954
+Obese I ..)  |   .2604408   .3407222    -1.03   0.304     .0200504    3.382948
+Obese II..)  |   .0820499   .1266923    -1.62   0.105     .0039788    1.692031
+Obese II..)  |    .232119   .2875872    -1.18   0.238     .0204693    2.632201
+    Unknown  |   .0591953   .0958733    -1.75   0.081     .0024756    1.415471
+             |
+    hba1ccat |
+  >=6.5-7.4  |   .6788832   .5568866    -0.47   0.637     .1360054    3.388707
+  >=7.5-7.9  |   3.97e-20          .        .       .            .           .
+    >=8-8.9  |   2.473084   2.111177     1.06   0.289     .4640885    13.17884
+        >=9  |   9.38e-20          .        .       .            .           .
+    Unknown  |   24.88021   32.75614     2.44   0.015     1.884522    328.4784
+             |
+gp_consult~t |   .9904356   .1224992    -0.08   0.938     .7772268    1.262132
+             |
+smoke_nomiss |
+     Former  |   6.035533   7.335681     1.48   0.139     .5573807    65.35506
+    Current  |   .6798238    .754603    -0.35   0.728     .0771906    5.987262
+             |
+1.hyperten~n |   1.596471   1.026444     0.73   0.467     .4527776    5.629078
+             |
+      bp_cat |
+High, sta..  |   5.89e+15          .        .       .            .           .
+    Unknown  |   .0000527          .        .       .            .           .
+             |
+    1.asthma |   9.76e-20          .        .       .            .           .
+1.~y_disease |    4.99003     3.0107     2.66   0.008     1.529455    16.28057
+1.~c_disease |   .3254714   .3475888    -1.05   0.293     .0401299     2.63972
+             |
+     dm_type |
+       T1DM  |   2.712762   3.083724     0.88   0.380     .2922881    25.17749
+       T2DM  |   1.373108   .9787592     0.44   0.656     .3395966    5.551956
+ UNKNOWN_DM  |   1.38e-19          .        .       .            .           .
+             |
+    1.cancer |   .4191568   .3714701    -0.98   0.327     .0737929    2.380885
+1.~r_disease |   2.766045   1.740561     1.62   0.106     .8058096    9.494808
+    1.stroke |   .2273998   .2450576    -1.37   0.169     .0275101    1.879699
+  1.dementia |   .9953011   .7131416    -0.01   0.995     .2443776    4.053662
+1.other_ne~o |   .2740061    .294875    -1.20   0.229     .0332452    2.258349
+             |
+      egfr60 |
+   eGFR <60  |   18.79912   24.51881     2.25   0.024     1.458665    242.2811
+      1.esrf |    1.18134   .8181691     0.24   0.810     .3039851    4.590898
+1.immunosu~d |   .8651973   .5590185    -0.22   0.823     .2438594    3.069664
+1.ra_sle_p~s |   1.369337   .9527618     0.45   0.651     .3501538    5.355032
+             |
+hh_total_cat |
+       6-10  |   2.16e+16          .        .       .            .           .
+        11+  |   .0166789          .        .       .            .           .
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+(output written to ./output/estout_sens_ruralurban_eth16.txt)
+hes
+(1,189 observations deleted)
+(5,989 missing values generated)
+(5,989 real changes made)
+
+      urban |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |        679       10.18       10.18
+          1 |      5,989       89.82      100.00
+------------+-----------------------------------
+      Total |      6,668      100.00
+
+         failure _d:  hes
+   analysis time _t:  (stime_hes-origin)
+             origin:  time indexdate
+  enter on or after:  time indexdate
+                 id:  patient_id
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects =        6,668                  Number of obs    =       6,668
+No. of failures =          892
+Time at risk    =      1150052
+                                                LR chi2(57)      =       68.90
+Log likelihood  =   -5701.9609                  Prob > chi2      =      0.1342
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ethnicity_16 |
+      Irish  |   1.018065    .219304     0.08   0.934     .6674462     1.55287
+Other White  |    .803572   .1926735    -0.91   0.362     .5022629    1.285637
+White + C..  |   .9524367   .2155511    -0.22   0.830     .6112179    1.484144
+White + A..  |    .699535    .169468    -1.48   0.140       .43511    1.124656
+White + A..  |   .9307681   .2016882    -0.33   0.741     .6086878    1.423274
+Other mixed  |   1.018222   .2215901     0.08   0.934     .6646611    1.559857
+     Indian  |   .9944604     .21912    -0.03   0.980     .6457037    1.531587
+  Pakistani  |     1.1774   .2474308     0.78   0.437     .7799087    1.777478
+Bangladeshi  |   .8004619   .1796407    -0.99   0.321     .5155999    1.242706
+Other Asian  |    1.40752   .2816854     1.71   0.088     .9508337    2.083553
+  Caribbean  |   .8819609    .193093    -0.57   0.566     .5742363     1.35459
+    African  |   .9014976   .2026768    -0.46   0.645     .5802236    1.400663
+Other Black  |   .9629717   .2194159    -0.17   0.868     .6161193    1.505089
+    Chinese  |     1.0266   .2199436     0.12   0.902     .6745839    1.562308
+      Other  |   .9205727   .2004101    -0.38   0.704      .600828    1.410477
+    Unknown  |   .9590007   .1618986    -0.25   0.804      .688841    1.335115
+             |
+        male |
+       Male  |   1.037924   .0700176     0.55   0.581     .9093773    1.184641
+        age1 |   .9962794   .0094889    -0.39   0.696     .9778539    1.015052
+        age2 |   1.012796   .0358945     0.36   0.720     .9448318    1.085649
+        age3 |   .9758228   .0865219    -0.28   0.783     .8201602    1.161029
+             |
+         imd |
+          4  |   .8138803   .0745406    -2.25   0.025     .6801455    .9739109
+5 most de..  |   1.087873   .1142548     0.80   0.423     .8854821    1.336523
+             |
+   bmicat_sa |
+Normal (..)  |   1.650983   .4775483     1.73   0.083      .936552    2.910405
+Overweig..)  |   1.437168   .4096228     1.27   0.203     .8220485    2.512568
+Obese I ..)  |   1.580256   .4432476     1.63   0.103     .9119546    2.738305
+Obese II..)  |   1.559336   .4370604     1.59   0.113     .9002428     2.70097
+Obese II..)  |   1.541449    .427321     1.56   0.119     .8952796    2.653991
+    Unknown  |   1.675676   .4689319     1.84   0.065     .9682433    2.899985
+             |
+    hba1ccat |
+  >=6.5-7.4  |   .9617143     .08714    -0.43   0.667     .8052293     1.14861
+  >=7.5-7.9  |   .7748333   .1243302    -1.59   0.112     .5657492    1.061189
+    >=8-8.9  |   1.080842   .1343317     0.63   0.532     .8471717    1.378965
+        >=9  |   1.117462     .17954     0.69   0.489     .8155907    1.531064
+    Unknown  |   1.147551   .5189379     0.30   0.761     .4729852    2.784176
+             |
+gp_consult~t |   1.026205   .0150281     1.77   0.077     .9971693    1.056087
+             |
+smoke_nomiss |
+     Former  |   1.571951     .30037     2.37   0.018     1.080913    2.286059
+    Current  |   .8463411   .0937517    -1.51   0.132     .6811697    1.051564
+             |
+1.hyperten~n |   .9505703   .0808669    -0.60   0.551     .8045829    1.123046
+             |
+      bp_cat |
+High, sta..  |   .4969194   .2919564    -1.19   0.234     .1571004     1.57179
+    Unknown  |   .3751056   .2247763    -1.64   0.102     .1159002    1.214012
+             |
+    1.asthma |   .8002295   .1468104    -1.21   0.224     .5585381    1.146506
+1.~y_disease |   1.027552   .0855936     0.33   0.744     .8727701    1.209783
+1.~c_disease |   .8300672   .0737818    -2.10   0.036     .6973534    .9880378
+             |
+     dm_type |
+       T1DM  |   .8056332   .1648987    -1.06   0.291     .5394009     1.20327
+       T2DM  |   1.045346   .0883322     0.52   0.600     .8857953    1.233636
+ UNKNOWN_DM  |   1.030043   .2298822     0.13   0.894     .6650992    1.595233
+             |
+    1.cancer |   .9788861   .0817175    -0.26   0.798     .8311392    1.152897
+1.~r_disease |   .9213978   .0788749    -0.96   0.339     .7790786    1.089715
+    1.stroke |   .9543182     .08227    -0.54   0.588     .8059585    1.129988
+  1.dementia |   1.053405   .0871067     0.63   0.529     .8957958    1.238745
+1.other_ne~o |   1.091985   .0893551     1.08   0.282     .9301744    1.281943
+             |
+      egfr60 |
+   eGFR <60  |   .5163932   .2140326    -1.59   0.111     .2291806    1.163545
+      1.esrf |    .995692   .0839163    -0.05   0.959     .8440851    1.174529
+1.immunosu~d |    1.05768   .0737179     0.80   0.421     .9226296    1.212498
+1.ra_sle_p~s |   1.096217   .0894478     1.13   0.260     .9342027    1.286328
+             |
+hh_total_cat |
+       6-10  |   1.073993   .2503363     0.31   0.759     .6801353    1.695928
+        11+  |   1.10e-13   4.26e-07    -0.00   1.000            0           .
+             |
+     1.urban |   1.046288   .1176039     0.40   0.687     .8394125    1.304149
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+
+         failure _d:  hes
+   analysis time _t:  (stime_hes-origin)
+             origin:  time indexdate
+  enter on or after:  time indexdate
+                 id:  patient_id
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects =          679                  Number of obs    =         679
+No. of failures =           89
+Time at risk    =       118095
+                                                LR chi2(55)      =       41.46
+Log likelihood  =    -349.4921                  Prob > chi2      =      0.9116
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ethnicity_16 |
+      Irish  |   1.479483   1.097463     0.53   0.597     .3456994    6.331712
+Other White  |    .755871   .6409649    -0.33   0.741     .1434314    3.983375
+White + C..  |   .7544718   .6531297    -0.33   0.745     .1382854    4.116324
+White + A..  |   1.023578   .7779749     0.03   0.976     .2307604    4.540257
+White + A..  |   .5473919   .4686965    -0.70   0.482     .1022043    2.931754
+Other mixed  |   .7174983   .6077207    -0.39   0.695     .1364123    3.773881
+     Indian  |   .9427409   .7544499    -0.07   0.941      .196426    4.524659
+  Pakistani  |   1.196153    .926598     0.23   0.817     .2620625    5.459698
+Bangladeshi  |   .4249421    .401703    -0.91   0.365     .0666313    2.710074
+Other Asian  |   1.141782   .8505276     0.18   0.859     .2651626    4.916476
+  Caribbean  |   .8909338   .6892032    -0.15   0.881     .1956041    4.058007
+    African  |   2.059344   1.562122     0.95   0.341     .4656368    9.107736
+Other Black  |   .8797862   .8411459    -0.13   0.893     .1350705    5.730518
+    Chinese  |   1.772127   1.276644     0.79   0.427     .4318049    7.272811
+      Other  |   .5660894   .4577316    -0.70   0.482     .1160422    2.761558
+    Unknown  |   .9068271   .5896182    -0.15   0.880     .2535561    3.243209
+             |
+        male |
+       Male  |   .7358987   .1700412    -1.33   0.184     .4678797    1.157449
+        age1 |   1.045505   .0342096     1.36   0.174     .9805606    1.114752
+        age2 |   .8765295   .1065208    -1.08   0.278     .6907545    1.112268
+        age3 |   1.285365   .3953256     0.82   0.414     .7034475    2.348666
+             |
+         imd |
+          4  |   .5614956   .1878965    -1.72   0.085     .2914096    1.081904
+5 most de..  |   .9761744   .3111005    -0.08   0.940      .522703    1.823056
+             |
+   bmicat_sa |
+Normal (..)  |    3.55412   3.892229     1.16   0.247      .415484    30.40254
+Overweig..)  |   4.310662   4.624344     1.36   0.173     .5265035    35.29284
+Obese I ..)  |   3.671953   3.928781     1.22   0.224     .4509826    29.89746
+Obese II..)  |   3.723612    3.98232     1.23   0.219     .4577447    30.29044
+Obese II..)  |   4.337365    4.61411     1.38   0.168     .5391549      34.893
+    Unknown  |   4.473309   4.800888     1.40   0.163     .5458763    36.65756
+             |
+    hba1ccat |
+  >=6.5-7.4  |    .959411   .3144707    -0.13   0.899      .504664    1.823925
+  >=7.5-7.9  |   1.759934   .8947481     1.11   0.266     .6497503    4.767011
+    >=8-8.9  |   .9163776    .418895    -0.19   0.848     .3740871    2.244792
+        >=9  |   1.408949    .673207     0.72   0.473     .5523117    3.594232
+    Unknown  |   2.28e-17   1.15e-08    -0.00   1.000            0           .
+             |
+gp_consult~t |   1.040163    .052308     0.78   0.434     .9425317    1.147907
+             |
+smoke_nomiss |
+     Former  |   2.256846   1.275262     1.44   0.150     .7456222     6.83101
+    Current  |    1.05061   .3474884     0.15   0.881     .5494234    2.008981
+             |
+1.hyperten~n |   .6879795    .219333    -1.17   0.241     .3683038    1.285124
+             |
+      bp_cat |
+    Unknown  |   1.306439   .4421615     0.79   0.430     .6729791    2.536159
+    1.asthma |    .574623   .5926692    -0.54   0.591     .0761113    4.338272
+1.~y_disease |   .7457673   .2356132    -0.93   0.353     .4014948    1.385245
+1.~c_disease |   .9885638   .2716737    -0.04   0.967     .5768733    1.694061
+             |
+     dm_type |
+       T1DM  |   1.245943   .6920816     0.40   0.692     .4194527    3.700952
+       T2DM  |   1.129024   .3193047     0.43   0.668     .6485905     1.96533
+ UNKNOWN_DM  |   2.53e-17   3.97e-09    -0.00   1.000            0           .
+             |
+    1.cancer |    .570786   .1889348    -1.69   0.090     .2983449    1.092014
+1.~r_disease |   .7896016   .2520698    -0.74   0.459     .4223507    1.476192
+    1.stroke |   .6544808   .2026554    -1.37   0.171     .3567206    1.200786
+  1.dementia |   .9688768    .277328    -0.11   0.912     .5528706    1.697906
+1.other_ne~o |   1.261846   .3267758     0.90   0.369     .7595803    2.096231
+             |
+      egfr60 |
+   eGFR <60  |   2.856802   2.345395     1.28   0.201     .5715515    14.27923
+      1.esrf |   .5353099   .1781296    -1.88   0.060     .2788429    1.027663
+1.immunosu~d |   1.096579   .2554741     0.40   0.692     .6945959    1.731201
+1.ra_sle_p~s |   1.003783    .284337     0.01   0.989     .5761343    1.748863
+             |
+hh_total_cat |
+       6-10  |   1.179324   .8906963     0.22   0.827      .268383    5.182169
+        11+  |   5.03e-17   2.53e-08    -0.00   1.000            0           .
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+
+         failure _d:  hes
+   analysis time _t:  (stime_hes-origin)
+             origin:  time indexdate
+  enter on or after:  time indexdate
+                 id:  patient_id
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects =        5,989                  Number of obs    =       5,989
+No. of failures =          803
+Time at risk    =      1031957
+                                                LR chi2(56)      =       72.85
+Log likelihood  =   -5041.2923                  Prob > chi2      =      0.0646
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ethnicity_16 |
+      Irish  |   .9593061   .2194416    -0.18   0.856     .6126953       1.502
+Other White  |   .8004653   .2010383    -0.89   0.376     .4892847    1.309554
+White + C..  |   .9416786   .2217049    -0.26   0.799     .5936075    1.493847
+White + A..  |    .658343   .1713562    -1.61   0.108     .3952738    1.096494
+White + A..  |   .9710488   .2181616    -0.13   0.896     .6251799    1.508263
+Other mixed  |   1.061267   .2395298     0.26   0.792     .6818786    1.651743
+     Indian  |   .9873207   .2274441    -0.06   0.956     .6285955    1.550762
+  Pakistani  |   1.162395   .2553592     0.68   0.493     .7557164    1.787923
+Bangladeshi  |   .8288998   .1920859    -0.81   0.418     .5263177    1.305438
+Other Asian  |   1.440409   .3007226     1.75   0.080     .9566991    2.168683
+  Caribbean  |   .8801367   .2025763    -0.55   0.579     .5605749    1.381868
+    African  |   .8180225   .1959823    -0.84   0.402     .5114862    1.308268
+Other Black  |   .9672664   .2277974    -0.14   0.888      .609653    1.534651
+    Chinese  |   .9334481     .21362    -0.30   0.763     .5960633      1.4618
+      Other  |   .9485936   .2154832    -0.23   0.816      .607744    1.480607
+    Unknown  |   .9729946   .1706977    -0.16   0.876     .6898896    1.372276
+             |
+        male |
+       Male  |   1.072979    .076313     0.99   0.322     .9333652    1.233476
+        age1 |   .9914867   .0099283    -0.85   0.393     .9722174    1.011138
+        age2 |   1.028396    .038347     0.75   0.453     .9559181    1.106369
+        age3 |   .9466419   .0882502    -0.59   0.556     .7885567    1.136419
+             |
+         imd |
+          4  |   .8335329   .0798323    -1.90   0.057     .6908729    1.005651
+5 most de..  |   1.089452   .1224612     0.76   0.446     .8740332    1.357965
+             |
+   bmicat_sa |
+Normal (..)  |   1.578539   .4748536     1.52   0.129      .875383    2.846508
+Overweig..)  |    1.33495   .3962735     0.97   0.330     .7460874    2.388581
+Obese I ..)  |   1.504171    .438438     1.40   0.161     .8495477    2.663218
+Obese II..)  |   1.512402   .4405503     1.42   0.156     .8545144    2.676796
+Obese II..)  |   1.469901    .423451     1.34   0.181      .835743    2.585255
+    Unknown  |   1.605162     .46671     1.63   0.104     .9078773    2.837988
+             |
+    hba1ccat |
+  >=6.5-7.4  |   .9700818   .0920605    -0.32   0.749     .8054333    1.168388
+  >=7.5-7.9  |   .7399414   .1264733    -1.76   0.078     .5293063    1.034398
+    >=8-8.9  |   1.108867   .1440927     0.80   0.426     .8595464    1.430506
+        >=9  |   1.098547   .1904084     0.54   0.588     .7821358    1.542963
+    Unknown  |   1.189628   .5389329     0.38   0.702     .4895472    2.890866
+             |
+gp_consult~t |   1.023641   .0158594     1.51   0.132     .9930243    1.055201
+             |
+smoke_nomiss |
+     Former  |   1.511446   .3114296     2.00   0.045     1.009263      2.2635
+    Current  |   .8271822   .0980728    -1.60   0.110     .6556629     1.04357
+             |
+1.hyperten~n |   .9809579   .0871516    -0.22   0.829     .8241889    1.167546
+             |
+      bp_cat |
+High, sta..  |    .495051   .2911792    -1.20   0.232     .1563112    1.567869
+    Unknown  |   .3402061   .2049556    -1.79   0.074     .1044575    1.108012
+             |
+    1.asthma |   .8165752   .1525122    -1.08   0.278     .5662612     1.17754
+1.~y_disease |   1.049292   .0912888     0.55   0.580     .8847928    1.244375
+1.~c_disease |   .8095871   .0768104    -2.23   0.026     .6722101    .9750394
+             |
+     dm_type |
+       T1DM  |   .7639669   .1703902    -1.21   0.227     .4934328    1.182826
+       T2DM  |   1.042552   .0930627     0.47   0.641     .8752175    1.241881
+ UNKNOWN_DM  |   1.109028   .2478622     0.46   0.643     .7156544    1.718628
+             |
+    1.cancer |   1.021366   .0886868     0.24   0.808     .8615298    1.210856
+1.~r_disease |   .9451092   .0844733    -0.63   0.528     .7932354    1.126061
+    1.stroke |    .964651   .0873827    -0.40   0.691     .8077265    1.152063
+  1.dementia |   1.069536   .0929496     0.77   0.439     .9020294     1.26815
+1.other_ne~o |   1.077452   .0937213     0.86   0.391      .908567     1.27773
+             |
+      egfr60 |
+   eGFR <60  |   .3786695   .1914225    -1.92   0.055     .1405939    1.019892
+      1.esrf |   1.039514   .0912093     0.44   0.659     .8752744    1.234573
+1.immunosu~d |   1.049589   .0770656     0.66   0.510     .9089084    1.212044
+1.ra_sle_p~s |   1.110894   .0953463     1.23   0.220     .9388911    1.314407
+             |
+hh_total_cat |
+       6-10  |   1.070506   .2643775     0.28   0.783      .659739    1.737025
+        11+  |   2.70e-16   2.40e-08    -0.00   1.000            0           .
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+(output written to ./output/estout_sens_ruralurban_eth16.txt)
+onscoviddeath
+(1,189 observations deleted)
+(5,989 missing values generated)
+(5,989 real changes made)
+
+      urban |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |        679       10.18       10.18
+          1 |      5,989       89.82      100.00
+------------+-----------------------------------
+      Total |      6,668      100.00
+
+         failure _d:  onscoviddeath
+   analysis time _t:  (stime_onscoviddeath-origin)
+             origin:  time indexdate
+  enter on or after:  time indexdate
+                 id:  patient_id
+
+Stratified Cox regr. -- no ties
+
+No. of subjects =        6,668                  Number of obs    =       6,668
+No. of failures =            3
+Time at risk    =      1226407
+                                                LR chi2(30)      =       39.08
+Log likelihood  =   -9.948e-14                  Prob > chi2      =      0.1240
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ethnicity_16 |
+      Irish  |   8321.489   1.16e+13     0.00   1.000            0           .
+Other White  |   3.99e+22   1.50e+31     0.00   1.000            0           .
+White + C..  |   2.91e+17          .        .       .            .           .
+White + A..  |   1.18e+11          .        .       .            .           .
+White + A..  |   4.95e+15          .        .       .            .           .
+Other mixed  |   1.70e+14   1.18e+23     0.00   1.000            0           .
+     Indian  |   1.46e+18          .        .       .            .           .
+  Pakistani  |   5.27e+30   9.12e+38     0.00   1.000            0           .
+Bangladeshi  |   11234.97          .        .       .            .           .
+Other Asian  |   6.77e+21   1.55e+30     0.00   1.000            0           .
+  Caribbean  |   4.39e+28          .        .       .            .           .
+    African  |   1.90e+32          .        .       .            .           .
+Other Black  |   9.94e+13          .        .       .            .           .
+    Chinese  |   1.96e+20   2.41e+28     0.00   1.000            0           .
+      Other  |   3.98e+16   6.46e+25     0.00   1.000            0           .
+    Unknown  |   1.59e+09   2.73e+17     0.00   1.000            0           .
+             |
+        male |
+       Male  |   1.726312   2.60e+08     0.00   1.000            0           .
+        age1 |   1.198877   2.63e+07     0.00   1.000            0           .
+        age2 |   .5416446   1.21e+07    -0.00   1.000            0           .
+        age3 |   37.12058          .        .       .            .           .
+             |
+         imd |
+          4  |   5.97e+13          .        .       .            .           .
+5 most de..  |   242.3694          .        .       .            .           .
+             |
+   bmicat_sa |
+Normal (..)  |   1.13e+13   1.32e+21     0.00   1.000            0           .
+Overweig..)  |   .1023413          .        .       .            .           .
+Obese I ..)  |   23.47175          .        .       .            .           .
+Obese II..)  |   2.58e-09          .        .       .            .           .
+Obese II..)  |   56211.29   3.24e+12     0.00   1.000            0           .
+    Unknown  |   1.54e+16          .        .       .            .           .
+             |
+    hba1ccat |
+  >=6.5-7.4  |   845843.8          .        .       .            .           .
+  >=7.5-7.9  |   1170.305   2.35e+11     0.00   1.000            0           .
+    >=8-8.9  |   8.87e-21          .        .       .            .           .
+        >=9  |   2239.749   2.22e+12     0.00   1.000            0           .
+    Unknown  |   9.67e-06   12100.48    -0.00   1.000            0           .
+             |
+gp_consult~t |   .0066156   132739.6    -0.00   1.000            0           .
+             |
+smoke_nomiss |
+     Former  |   6.875198          .        .       .            .           .
+    Current  |   4447.074          .        .       .            .           .
+             |
+1.hyperten~n |    .026179          .        .       .            .           .
+             |
+      bp_cat |
+High, sta..  |   6.76e-06          .        .       .            .           .
+    Unknown  |   .0034674     391462    -0.00   1.000            0           .
+             |
+    1.asthma |   .0005423          .        .       .            .           .
+1.~y_disease |   1.45e+09   2.09e+17     0.00   1.000            0           .
+1.~c_disease |   7.48e+08   3.18e+16     0.00   1.000            0           .
+             |
+     dm_type |
+       T1DM  |   3.77e-12   .0011868    -0.00   1.000            0           .
+       T2DM  |   .0002427   14477.76    -0.00   1.000            0           .
+ UNKNOWN_DM  |   8.09e-06   2097.285    -0.00   1.000            0           .
+             |
+    1.cancer |   .0000567          .        .       .            .           .
+1.~r_disease |   .0001638   36915.56    -0.00   1.000            0           .
+    1.stroke |   .7529014   1.57e+08    -0.00   1.000            0           .
+  1.dementia |   70.42551   4.29e+09     0.00   1.000            0           .
+1.other_ne~o |    .006538    1347349    -0.00   1.000            0           .
+             |
+      egfr60 |
+   eGFR <60  |   1.88e-07          .        .       .            .           .
+      1.esrf |   17.62667          .        .       .            .           .
+1.immunosu~d |   .2676436   2.11e+07    -0.00   1.000            0           .
+1.ra_sle_p~s |   39.18695   4.67e+09     0.00   1.000            0           .
+             |
+hh_total_cat |
+       6-10  |   5.67e-06          .        .       .            .           .
+        11+  |   5.68e+23          .        .       .            .           .
+             |
+     1.urban |   6.86e-08   16.20968    -0.00   1.000            0           .
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+
+         failure _d:  onscoviddeath
+   analysis time _t:  (stime_onscoviddeath-origin)
+             origin:  time indexdate
+  enter on or after:  time indexdate
+                 id:  patient_id
+
+Stratified Cox regr. -- no ties
+
+No. of subjects =          679                  Number of obs    =         679
+No. of failures =            1
+Time at risk    =       124913
+                                                LR chi2(0)       =        8.63
+Log likelihood  =            0                  Prob > chi2      =           .
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ethnicity_16 |
+      Irish  |   8.72e-09          .        .       .            .           .
+Other White  |   4.74e-18          .        .       .            .           .
+White + C..  |   5.71e-09          .        .       .            .           .
+White + A..  |   6.99e-06          .        .       .            .           .
+White + A..  |   .0000118          .        .       .            .           .
+Other mixed  |   .0000624          .        .       .            .           .
+     Indian  |   2.91e-10          .        .       .            .           .
+  Pakistani  |   4.22e-08          .        .       .            .           .
+Bangladeshi  |   6.24e-08          .        .       .            .           .
+Other Asian  |   6.89e-06          .        .       .            .           .
+  Caribbean  |   .1820548          .        .       .            .           .
+    African  |   9.66e-12          .        .       .            .           .
+Other Black  |          1  (omitted)
+    Chinese  |   2.91e-09          .        .       .            .           .
+      Other  |   1.66e-09          .        .       .            .           .
+    Unknown  |   4.23e-11          .        .       .            .           .
+             |
+        male |
+       Male  |   .0120225          .        .       .            .           .
+        age1 |   2.977121          .        .       .            .           .
+        age2 |   .0123147          .        .       .            .           .
+        age3 |   89505.31          .        .       .            .           .
+             |
+         imd |
+          4  |   198.1302          .        .       .            .           .
+5 most de..  |   236.2384          .        .       .            .           .
+             |
+   bmicat_sa |
+Normal (..)  |          1  (omitted)
+Overweig..)  |   1035.936          .        .       .            .           .
+Obese I ..)  |   1926.847          .        .       .            .           .
+Obese II..)  |   4.767539          .        .       .            .           .
+Obese II..)  |   63.61467          .        .       .            .           .
+    Unknown  |   5.21e+08          .        .       .            .           .
+             |
+    hba1ccat |
+  >=6.5-7.4  |   4.463666          .        .       .            .           .
+  >=7.5-7.9  |   .0001942          .        .       .            .           .
+    >=8-8.9  |   2.92e-06          .        .       .            .           .
+        >=9  |   4.869835          .        .       .            .           .
+    Unknown  |          1  (omitted)
+             |
+gp_consult~t |   1.248531          .        .       .            .           .
+             |
+smoke_nomiss |
+     Former  |   7.89e-08          .        .       .            .           .
+    Current  |   .0608871          .        .       .            .           .
+             |
+1.hyperten~n |   .2069405          .        .       .            .           .
+             |
+      bp_cat |
+    Unknown  |   .0000227          .        .       .            .           .
+    1.asthma |   .0036281          .        .       .            .           .
+1.~y_disease |   4.271446          .        .       .            .           .
+1.~c_disease |    .129927          .        .       .            .           .
+             |
+     dm_type |
+       T1DM  |   64.99892          .        .       .            .           .
+       T2DM  |   33.32482          .        .       .            .           .
+ UNKNOWN_DM  |   5.629678          .        .       .            .           .
+             |
+    1.cancer |   7.99e-07          .        .       .            .           .
+1.~r_disease |    .763826          .        .       .            .           .
+    1.stroke |   387.4636          .        .       .            .           .
+  1.dementia |   1257.039          .        .       .            .           .
+1.other_ne~o |   6551.067          .        .       .            .           .
+             |
+      egfr60 |
+   eGFR <60  |          1  (omitted)
+      1.esrf |   1990.012          .        .       .            .           .
+1.immunosu~d |   16504.71          .        .       .            .           .
+1.ra_sle_p~s |   7.512119          .        .       .            .           .
+             |
+hh_total_cat |
+       6-10  |   196.9843          .        .       .            .           .
+        11+  |          1  (omitted)
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+
+         failure _d:  onscoviddeath
+   analysis time _t:  (stime_onscoviddeath-origin)
+             origin:  time indexdate
+  enter on or after:  time indexdate
+                 id:  patient_id
+
+Stratified Cox regr. -- no ties
+
+No. of subjects =        5,989                  Number of obs    =       5,989
+No. of failures =            2
+Time at risk    =      1101494
+                                                LR chi2(43)      =       25.61
+Log likelihood  =   -8.527e-14                  Prob > chi2      =      0.9837
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ethnicity_16 |
+      Irish  |   423127.8   4.17e+13     0.00   1.000            0           .
+Other White  |     33.031          .        .       .            .           .
+White + C..  |   1452.492   2.37e+11     0.00   1.000            0           .
+White + A..  |   117.8169   1.96e+10     0.00   1.000            0           .
+White + A..  |   3.61e-07   367.5674    -0.00   1.000            0           .
+Other mixed  |   .0102781    2134998    -0.00   1.000            0           .
+     Indian  |   2851.874   2.14e+11     0.00   1.000            0           .
+  Pakistani  |   2.62e+17   1.94e+25     0.00   1.000            0           .
+Bangladeshi  |    69.0743   1.60e+10     0.00   1.000            0           .
+Other Asian  |   .0056794          .        .       .            .           .
+  Caribbean  |   2.735021   4.41e+08     0.00   1.000            0           .
+    African  |   2.35e+12   1.81e+20     0.00   1.000            0           .
+Other Black  |   .0001534   182171.6    -0.00   1.000            0           .
+    Chinese  |   .3692943          .        .       .            .           .
+      Other  |   .0008426   46626.52    -0.00   1.000            0           .
+    Unknown  |   2236.242          .        .       .            .           .
+             |
+        male |
+       Male  |    2608254   1.22e+14     0.00   1.000            0           .
+        age1 |   3.387819    9855568     0.00   1.000            0           .
+        age2 |   .0000995   318.4472    -0.00   1.000            0           .
+        age3 |   3.05e+11   1.65e+18     0.00   1.000            0           .
+             |
+         imd |
+          4  |   3.13e+11   1.38e+19     0.00   1.000            0           .
+5 most de..  |   510369.7   2.55e+13     0.00   1.000            0           .
+             |
+   bmicat_sa |
+Normal (..)  |   7.61e+09   6.65e+17     0.00   1.000            0           .
+Overweig..)  |   37773.04   3.29e+12     0.00   1.000            0           .
+Obese I ..)  |   885.6263   6.94e+10     0.00   1.000            0           .
+Obese II..)  |    4.02669   3.59e+08     0.00   1.000            0           .
+Obese II..)  |   .0695592    8931887    -0.00   1.000            0           .
+    Unknown  |   1.72e+11   1.11e+19     0.00   1.000            0           .
+             |
+    hba1ccat |
+  >=6.5-7.4  |   .2203942   1.05e+07    -0.00   1.000            0           .
+  >=7.5-7.9  |    82.3745          .        .       .            .           .
+    >=8-8.9  |   4.17e-11          .        .       .            .           .
+        >=9  |   6.913043          .        .       .            .           .
+    Unknown  |   1.71e+20   8.37e+28     0.00   1.000            0           .
+             |
+gp_consult~t |   4.685244   3.33e+07     0.00   1.000            0           .
+             |
+smoke_nomiss |
+     Former  |   2.041254   1.30e+08     0.00   1.000            0           .
+    Current  |   3.42e-11   .0032795    -0.00   1.000            0           .
+             |
+1.hyperten~n |   .0001108   9472.307    -0.00   1.000            0           .
+             |
+      bp_cat |
+High, sta..  |   3.70e+31          .        .       .            .           .
+    Unknown  |   1.15e+29          .        .       .            .           .
+             |
+    1.asthma |   5.03e-07   77.26555    -0.00   1.000            0           .
+1.~y_disease |   .0007836   55527.43    -0.00   1.000            0           .
+1.~c_disease |   2.70e+07   1.31e+15     0.00   1.000            0           .
+             |
+     dm_type |
+       T1DM  |   66.73187          .        .       .            .           .
+       T2DM  |   218.6082   1.46e+10     0.00   1.000            0           .
+ UNKNOWN_DM  |   2.758374   2.66e+08     0.00   1.000            0           .
+             |
+    1.cancer |   .0482076    4008832    -0.00   1.000            0           .
+1.~r_disease |   .0004234   22810.95    -0.00   1.000            0           .
+    1.stroke |      55709   2.73e+12     0.00   1.000            0           .
+  1.dementia |   3.93e-09          .        .       .            .           .
+1.other_ne~o |   .0927649    5640740    -0.00   1.000            0           .
+             |
+      egfr60 |
+   eGFR <60  |   2.93e+12   1.08e+21     0.00   1.000            0           .
+      1.esrf |   397.0914   2.18e+10     0.00   1.000            0           .
+1.immunosu~d |    1.74892   1.02e+08     0.00   1.000            0           .
+1.ra_sle_p~s |   290530.8   2.10e+13     0.00   1.000            0           .
+             |
+hh_total_cat |
+       6-10  |   7.47e-08          .        .       .            .           .
+        11+  |   1.45e+07          .        .       .            .           .
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+(output written to ./output/estout_sens_ruralurban_eth16.txt)
+ons_noncoviddeath
+(1,189 observations deleted)
+(5,989 missing values generated)
+(5,989 real changes made)
+
+      urban |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |        679       10.18       10.18
+          1 |      5,989       89.82      100.00
+------------+-----------------------------------
+      Total |      6,668      100.00
+
+         failure _d:  ons_noncoviddeath
+   analysis time _t:  (stime_ons_noncoviddeath-origin)
+             origin:  time indexdate
+  enter on or after:  time indexdate
+                 id:  patient_id
+
+Stratified Cox regr. -- no ties
+
+No. of subjects =        6,668                  Number of obs    =       6,668
+No. of failures =           12
+Time at risk    =      1226407
+                                                LR chi2(52)      =       56.23
+Log likelihood  =   -49.901517                  Prob > chi2      =      0.3197
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ethnicity_16 |
+      Irish  |   3.23e-07   56.34964    -0.00   1.000            0           .
+Other White  |   2.75e+10   3.63e+10    18.21   0.000     2.07e+09    3.65e+11
+White + C..  |   1.95e-07    43.7808    -0.00   1.000            0           .
+White + A..  |   4.69e-07   58.25178    -0.00   1.000            0           .
+White + A..  |   5.61e+09   9.00e+09    14.00   0.000     2.42e+08    1.30e+11
+Other mixed  |   2.85e-07   64.51225    -0.00   1.000            0           .
+     Indian  |   7.63e+09          .        .       .            .           .
+  Pakistani  |   3.13e-07   63.46715    -0.00   1.000            0           .
+Bangladeshi  |   1.56e+10   2.07e+10    17.72   0.000     1.17e+09    2.10e+11
+Other Asian  |   2.14e-07   42.46925    -0.00   1.000            0           .
+  Caribbean  |   2.89e-07   63.07295    -0.00   1.000            0           .
+    African  |   2.76e+10   3.60e+10    18.39   0.000     2.12e+09    3.57e+11
+Other Black  |   1.36e+10   2.07e+10    15.35   0.000     6.94e+08    2.68e+11
+    Chinese  |   2.53e-07   50.36278    -0.00   1.000            0           .
+      Other  |   8.52e+09   1.30e+10    14.95   0.000     4.26e+08    1.71e+11
+    Unknown  |   3.44e+09   4.52e+09    16.72   0.000     2.62e+08    4.51e+10
+             |
+        male |
+       Male  |    .594268   .3937508    -0.79   0.432     .1621781    2.177572
+        age1 |   .8905797   .0805376    -1.28   0.200     .7459268    1.063284
+        age2 |   1.517872   .5396915     1.17   0.241     .7561075      3.0471
+        age3 |   .3700198   .3289775    -1.12   0.263     .0647796    2.113547
+             |
+         imd |
+          4  |   1.426139   1.073193     0.47   0.637     .3263014    6.233114
+5 most de..  |   1.792825    1.58628     0.66   0.509     .3165193     10.1549
+             |
+   bmicat_sa |
+Normal (..)  |   1.00e-07   9.480616    -0.00   1.000            0           .
+Overweig..)  |   2.55e+09   3.08e+09    17.94   0.000     2.39e+08    2.72e+10
+Obese I ..)  |   1.58e+09   1.92e+09    17.45   0.000     1.46e+08    1.71e+10
+Obese II..)  |   1.27e+09   1.55e+09    17.16   0.000     1.16e+08    1.39e+10
+Obese II..)  |   4.70e+08          .        .       .            .           .
+    Unknown  |   6.65e+08   8.97e+08    15.08   0.000     4.75e+07    9.33e+09
+             |
+    hba1ccat |
+  >=6.5-7.4  |   .2983515   .3315777    -1.09   0.276     .0337856     2.63466
+  >=7.5-7.9  |   2.546484   2.314388     1.03   0.304     .4288656    15.12031
+    >=8-8.9  |   1.118679    1.29554     0.10   0.923     .1155928    10.82631
+        >=9  |   1.19e-16   1.26e-08    -0.00   1.000            0           .
+    Unknown  |   9.51e-17   3.06e-08    -0.00   1.000            0           .
+             |
+gp_consult~t |   1.250956   .1736961     1.61   0.107     .9529106    1.642222
+             |
+smoke_nomiss |
+     Former  |   3.02e-16   2.70e-08    -0.00   1.000            0           .
+    Current  |   .7258804   .8118899    -0.29   0.775     .0810597     6.50018
+             |
+1.hyperten~n |   1.02e-16   4.35e-09    -0.00   1.000            0           .
+             |
+      bp_cat |
+High, sta..  |   7523.638          .        .       .            .           .
+    Unknown  |   9.61e-13   .0000917    -0.00   1.000            0           .
+             |
+    1.asthma |   6.293178   6.140217     1.89   0.059     .9297316    42.59734
+1.~y_disease |   .8580829   .7242498    -0.18   0.856     .1640921    4.487154
+1.~c_disease |   2.039491   1.590367     0.91   0.361     .4423506    9.403227
+             |
+     dm_type |
+       T1DM  |   2.04e-16   2.15e-08    -0.00   1.000            0           .
+       T2DM  |   1.207193   1.042409     0.22   0.827     .2222109    6.558248
+ UNKNOWN_DM  |   2.89e-15   2.08e-07    -0.00   1.000            0           .
+             |
+    1.cancer |   .7768539   .6533858    -0.30   0.764     .1494247    4.038838
+1.~r_disease |   2.312897   1.600505     1.21   0.226     .5958436    8.978017
+    1.stroke |   2.807804    1.93594     1.50   0.134     .7269016    10.84571
+  1.dementia |   .9572849   .7982522    -0.05   0.958     .1867449    4.907198
+1.other_ne~o |    1.60227   1.221055     0.62   0.536     .3597936    7.135395
+             |
+      egfr60 |
+   eGFR <60  |   2.34e-16   4.57e-08    -0.00   1.000            0           .
+      1.esrf |   1.735563    1.27906     0.75   0.454     .4093822    7.357863
+1.immunosu~d |   .5785717   .4340125    -0.73   0.466     .1329942     2.51699
+1.ra_sle_p~s |   1.907868   1.293592     0.95   0.341     .5051356     7.20591
+             |
+hh_total_cat |
+       6-10  |   8.43e+16          .        .       .            .           .
+        11+  |   2.70e+17   3.94e+26     0.00   1.000            0           .
+             |
+     1.urban |   9.22e+15          .        .       .            .           .
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+
+         failure _d:  ons_noncoviddeath
+   analysis time _t:  (stime_ons_noncoviddeath-origin)
+             origin:  time indexdate
+  enter on or after:  time indexdate
+                 id:  patient_id
+
+Stratified Cox regr. -- no ties
+
+No. of subjects =          679                  Number of obs    =         679
+No. of failures =            0
+Time at risk    =       124913
+                                                LR chi2(0)       =        0.00
+Log likelihood  =            0                  Prob > chi2      =           .
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ethnicity_16 |
+      Irish  |          1  (omitted)
+Other White  |          1  (omitted)
+White + C..  |          1  (omitted)
+White + A..  |          1  (omitted)
+White + A..  |          1  (omitted)
+Other mixed  |          1  (omitted)
+     Indian  |          1  (omitted)
+  Pakistani  |          1  (omitted)
+Bangladeshi  |          1  (omitted)
+Other Asian  |          1  (omitted)
+  Caribbean  |          1  (omitted)
+    African  |          1  (omitted)
+Other Black  |          1  (omitted)
+    Chinese  |          1  (omitted)
+      Other  |          1  (omitted)
+    Unknown  |          1  (omitted)
+             |
+        male |
+       Male  |          1  (omitted)
+        age1 |          1  (omitted)
+        age2 |          1  (omitted)
+        age3 |          1  (omitted)
+             |
+         imd |
+          4  |          1  (omitted)
+5 most de..  |          1  (omitted)
+             |
+   bmicat_sa |
+Normal (..)  |          1  (omitted)
+Overweig..)  |          1  (omitted)
+Obese I ..)  |          1  (omitted)
+Obese II..)  |          1  (omitted)
+Obese II..)  |          1  (omitted)
+    Unknown  |          1  (omitted)
+             |
+    hba1ccat |
+  >=6.5-7.4  |          1  (omitted)
+  >=7.5-7.9  |          1  (omitted)
+    >=8-8.9  |          1  (omitted)
+        >=9  |          1  (omitted)
+    Unknown  |          1  (omitted)
+             |
+gp_consult~t |          1  (omitted)
+             |
+smoke_nomiss |
+     Former  |          1  (omitted)
+    Current  |          1  (omitted)
+             |
+1.hyperten~n |          1  (omitted)
+             |
+      bp_cat |
+    Unknown  |          1  (omitted)
+    1.asthma |          1  (omitted)
+1.~y_disease |          1  (omitted)
+1.~c_disease |          1  (omitted)
+             |
+     dm_type |
+       T1DM  |          1  (omitted)
+       T2DM  |          1  (omitted)
+ UNKNOWN_DM  |          1  (omitted)
+             |
+    1.cancer |          1  (omitted)
+1.~r_disease |          1  (omitted)
+    1.stroke |          1  (omitted)
+  1.dementia |          1  (omitted)
+1.other_ne~o |          1  (omitted)
+             |
+      egfr60 |
+   eGFR <60  |          1  (omitted)
+      1.esrf |          1  (omitted)
+1.immunosu~d |          1  (omitted)
+1.ra_sle_p~s |          1  (omitted)
+             |
+hh_total_cat |
+       6-10  |          1  (omitted)
+        11+  |          1  (omitted)
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+
+         failure _d:  ons_noncoviddeath
+   analysis time _t:  (stime_ons_noncoviddeath-origin)
+             origin:  time indexdate
+  enter on or after:  time indexdate
+                 id:  patient_id
+
+Stratified Cox regr. -- no ties
+
+No. of subjects =        5,989                  Number of obs    =       5,989
+No. of failures =           12
+Time at risk    =      1101494
+                                                LR chi2(52)      =       53.44
+Log likelihood  =   -49.901517                  Prob > chi2      =      0.4188
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ethnicity_16 |
+      Irish  |   5.21e-09     6.8742    -0.00   1.000            0           .
+Other White  |   2.54e+10   3.35e+10    18.15   0.000     1.91e+09    3.37e+11
+White + C..  |   3.21e-09   5.403435    -0.00   1.000            0           .
+White + A..  |   7.33e-09   6.993951    -0.00   1.000            0           .
+White + A..  |   5.18e+09   8.30e+09    13.95   0.000     2.24e+08    1.20e+11
+Other mixed  |   4.67e-09    7.93437    -0.00   1.000            0           .
+     Indian  |   7.03e+09          .        .       .            .           .
+  Pakistani  |   5.26e-09   7.899625    -0.00   1.000            0           .
+Bangladeshi  |   1.44e+10   1.91e+10    17.65   0.000     1.08e+09    1.94e+11
+Other Asian  |   3.05e-09   4.869298    -0.00   1.000            0           .
+  Caribbean  |   4.56e-09   7.605433    -0.00   1.000            0           .
+    African  |   2.54e+10   3.32e+10    18.33   0.000     1.96e+09    3.30e+11
+Other Black  |   1.26e+10   1.91e+10    15.30   0.000     6.40e+08    2.48e+11
+    Chinese  |   3.92e-09   6.026437    -0.00   1.000            0           .
+      Other  |   7.86e+09   1.20e+10    14.90   0.000     3.93e+08    1.57e+11
+    Unknown  |   3.17e+09   4.17e+09    16.66   0.000     2.42e+08    4.16e+10
+             |
+        male |
+       Male  |    .594268   .3937508    -0.79   0.432     .1621781    2.177572
+        age1 |   .8905797   .0805376    -1.28   0.200     .7459268    1.063284
+        age2 |   1.517872   .5396915     1.17   0.241     .7561075      3.0471
+        age3 |   .3700198   .3289775    -1.12   0.263     .0647796    2.113547
+             |
+         imd |
+          4  |   1.426139   1.073193     0.47   0.637     .3263014    6.233114
+5 most de..  |   1.792825    1.58628     0.66   0.509     .3165193     10.1549
+             |
+   bmicat_sa |
+Normal (..)  |   3.84e-09   2.755436    -0.00   1.000            0           .
+Overweig..)  |   5.61e+09   6.78e+09    18.59   0.000     5.26e+08    5.98e+10
+Obese I ..)  |   3.48e+09   4.23e+09    18.10   0.000     3.22e+08    3.76e+10
+Obese II..)  |   2.80e+09   3.42e+09    17.81   0.000     2.56e+08    3.07e+10
+Obese II..)  |   1.04e+09          .        .       .            .           .
+    Unknown  |   1.47e+09   1.98e+09    15.67   0.000     1.05e+08    2.06e+10
+             |
+    hba1ccat |
+  >=6.5-7.4  |   .2983515   .3315777    -1.09   0.276     .0337856     2.63466
+  >=7.5-7.9  |   2.546484   2.314388     1.03   0.304     .4288656    15.12031
+    >=8-8.9  |   1.118679    1.29554     0.10   0.923     .1155928    10.82631
+        >=9  |   2.40e-18   1.79e-09    -0.00   1.000            0           .
+    Unknown  |   1.61e-18   3.98e-09    -0.00   1.000            0           .
+             |
+gp_consult~t |   1.250956   .1736961     1.61   0.107     .9529106    1.642222
+             |
+smoke_nomiss |
+     Former  |   5.78e-18   3.74e-09    -0.00   1.000            0           .
+    Current  |   .7258804   .8118899    -0.29   0.775     .0810597     6.50018
+             |
+1.hyperten~n |   1.97e-18   6.05e-10    -0.00   1.000            0           .
+             |
+      bp_cat |
+High, sta..  |   11936.07          .        .       .            .           .
+    Unknown  |   2.70e-14   .0000194    -0.00   1.000            0           .
+             |
+    1.asthma |   6.293178   6.140217     1.89   0.059     .9297316    42.59734
+1.~y_disease |   .8580829   .7242498    -0.18   0.856     .1640921    4.487154
+1.~c_disease |   2.039491   1.590367     0.91   0.361     .4423506    9.403227
+             |
+     dm_type |
+       T1DM  |   1.73e-18   1.98e-09    -0.00   1.000            0           .
+       T2DM  |   1.207193   1.042409     0.22   0.827     .2222109    6.558248
+ UNKNOWN_DM  |   4.37e-17   2.55e-08    -0.00   1.000            0           .
+             |
+    1.cancer |   .7768539   .6533858    -0.30   0.764     .1494247    4.038838
+1.~r_disease |   2.312897   1.600505     1.21   0.226     .5958436    8.978017
+    1.stroke |   2.807804    1.93594     1.50   0.134     .7269016    10.84571
+  1.dementia |   .9572849   .7982522    -0.05   0.958     .1867449    4.907198
+1.other_ne~o |    1.60227   1.221055     0.62   0.536     .3597936    7.135395
+             |
+      egfr60 |
+   eGFR <60  |   3.50e-18   5.59e-09    -0.00   1.000            0           .
+      1.esrf |   1.735563    1.27906     0.75   0.454     .4093822    7.357863
+1.immunosu~d |   .5785717   .4340125    -0.73   0.466     .1329942     2.51699
+1.ra_sle_p~s |   1.907868   1.293592     0.95   0.341     .5051356     7.20591
+             |
+hh_total_cat |
+       6-10  |   7.53e+15   5.06e+23     0.00   1.000            0           .
+        11+  |   5.06e+15          .        .       .            .           .
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+(output written to ./output/estout_sens_ruralurban_eth16.txt)
+onsdeath
+(1,189 observations deleted)
+(5,989 missing values generated)
+(5,989 real changes made)
+
+      urban |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |        679       10.18       10.18
+          1 |      5,989       89.82      100.00
+------------+-----------------------------------
+      Total |      6,668      100.00
+
+         failure _d:  onsdeath
+   analysis time _t:  (stime_onsdeath-origin)
+             origin:  time indexdate
+  enter on or after:  time indexdate
+                 id:  patient_id
+
+Stratified Cox regr. -- no ties
+
+No. of subjects =        6,668                  Number of obs    =       6,668
+No. of failures =           15
+Time at risk    =      1226407
+                                                LR chi2(55)      =       54.85
+Log likelihood  =   -70.126278                  Prob > chi2      =      0.4802
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ethnicity_16 |
+      Irish  |   2.60e-06    269.443    -0.00   1.000            0           .
+Other White  |   6.43e+10   8.23e+10    19.44   0.000     5.23e+09    7.90e+11
+White + C..  |   1.86e-06   192.5728    -0.00   1.000            0           .
+White + A..  |   2.43e-06   205.0849    -0.00   1.000            0           .
+White + A..  |   1.33e+10   2.03e+10    15.34   0.000     6.79e+08    2.62e+11
+Other mixed  |   2.88e-06   275.9368    -0.00   1.000            0           .
+     Indian  |   2.37e+10   3.46e+10    16.41   0.000     1.37e+09    4.12e+11
+  Pakistani  |   2.83e+10   4.16e+10    16.38   0.000     1.59e+09    5.05e+11
+Bangladeshi  |   4.71e+10   6.00e+10    19.27   0.000     3.87e+09    5.73e+11
+Other Asian  |   2.29e-06   216.2749    -0.00   1.000            0           .
+  Caribbean  |   3.10e+10          .        .       .            .           .
+    African  |   8.73e+10   1.04e+11    21.09   0.000     8.40e+09    9.07e+11
+Other Black  |   3.08e+10   4.49e+10    16.55   0.000     1.76e+09    5.38e+11
+    Chinese  |   2.84e-06   262.9069    -0.00   1.000            0           .
+      Other  |   1.86e+10   2.72e+10    16.16   0.000     1.06e+09    3.27e+11
+    Unknown  |   8.55e+09   1.08e+10    18.13   0.000     7.21e+08    1.01e+11
+             |
+        male |
+       Male  |   .8637822   .4741571    -0.27   0.790      .294546    2.533118
+        age1 |     .87095   .0680097    -1.77   0.077     .7473527    1.014988
+        age2 |   1.584309   .4794665     1.52   0.128      .875461    2.867099
+        age3 |   .3644474    .271606    -1.35   0.176     .0845811     1.57035
+             |
+         imd |
+          4  |   2.430862   1.475015     1.46   0.143     .7400522    7.984695
+5 most de..  |   1.528744   1.281923     0.51   0.613     .2955037     7.90873
+             |
+   bmicat_sa |
+Normal (..)  |   9.14e+08          .        .       .            .           .
+Overweig..)  |   2.59e+09   3.14e+09    17.91   0.000     2.42e+08    2.78e+10
+Obese I ..)  |   1.87e+09   2.25e+09    17.75   0.000     1.77e+08    1.97e+10
+Obese II..)  |   1.53e+09   1.84e+09    17.63   0.000     1.46e+08    1.61e+10
+Obese II..)  |   4.76e+08   6.91e+08    13.76   0.000     2.76e+07    8.20e+09
+    Unknown  |   1.44e+09   1.76e+09    17.23   0.000     1.31e+08    1.58e+10
+             |
+    hba1ccat |
+  >=6.5-7.4  |   .4861314   .4023131    -0.87   0.383     .0960098    2.461455
+  >=7.5-7.9  |   2.370202   2.011264     1.02   0.309     .4492496    12.50498
+    >=8-8.9  |   .8355076   .9035366    -0.17   0.868     .1003326    6.957589
+        >=9  |   4.32e-16   2.65e-08    -0.00   1.000            0           .
+    Unknown  |   3.11e-16   5.96e-08    -0.00   1.000            0           .
+             |
+gp_consult~t |   1.065744   .1289484     0.53   0.599     .8407418    1.350961
+             |
+smoke_nomiss |
+     Former  |   3.60e-16   2.29e-08    -0.00   1.000            0           .
+    Current  |   .5327476   .5764761    -0.58   0.561     .0638929    4.442123
+             |
+1.hyperten~n |   3.28e-16   6.67e-09    -0.00   1.000            0           .
+             |
+      bp_cat |
+High, sta..  |   5.89e+13   5.32e+21     0.00   1.000            0           .
+    Unknown  |   .0272954    2701716    -0.00   1.000            0           .
+             |
+    1.asthma |   5.002175   4.285873     1.88   0.060     .9329271    26.82069
+1.~y_disease |   .9291176   .6378596    -0.11   0.915     .2419369    3.568118
+1.~c_disease |    2.21261   1.406767     1.25   0.212     .6363774    7.692985
+             |
+     dm_type |
+       T1DM  |   3.91e-16   2.30e-08    -0.00   1.000            0           .
+       T2DM  |   1.226358   .8558582     0.29   0.770     .3123026    4.815695
+ UNKNOWN_DM  |   1.11e-15   7.40e-08    -0.00   1.000            0           .
+             |
+    1.cancer |   .5309949   .4190873    -0.80   0.423     .1130525    2.494023
+1.~r_disease |   1.505093    .922471     0.67   0.505     .4527537    5.003392
+    1.stroke |   2.759102     1.6023     1.75   0.081       .88399    8.611686
+  1.dementia |   1.073184   .7218156     0.11   0.916     .2871857    4.010384
+1.other_ne~o |   1.569891   .9914913     0.71   0.475     .4552799    5.413278
+             |
+      egfr60 |
+   eGFR <60  |   3.24e-16   4.19e-08    -0.00   1.000            0           .
+      1.esrf |   1.184018   .8044548     0.25   0.804     .3126284    4.484235
+1.immunosu~d |   .6205116   .3804125    -0.78   0.436     .1865993     2.06343
+1.ra_sle_p~s |   1.346957   .8226907     0.49   0.626     .4068733    4.459111
+             |
+hh_total_cat |
+       6-10  |   2.54e+15   2.91e+23     0.00   1.000            0           .
+        11+  |    4.21041   1.64e+09     0.00   1.000            0           .
+             |
+     1.urban |   1.668743   1.807698     0.47   0.636     .1996685    13.94664
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+
+         failure _d:  onsdeath
+   analysis time _t:  (stime_onsdeath-origin)
+             origin:  time indexdate
+  enter on or after:  time indexdate
+                 id:  patient_id
+
+Stratified Cox regr. -- no ties
+
+No. of subjects =          679                  Number of obs    =         679
+No. of failures =            1
+Time at risk    =       124913
+                                                LR chi2(0)       =        8.63
+Log likelihood  =            0                  Prob > chi2      =           .
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ethnicity_16 |
+      Irish  |   8.72e-09          .        .       .            .           .
+Other White  |   4.74e-18          .        .       .            .           .
+White + C..  |   5.71e-09          .        .       .            .           .
+White + A..  |   6.99e-06          .        .       .            .           .
+White + A..  |   .0000118          .        .       .            .           .
+Other mixed  |   .0000624          .        .       .            .           .
+     Indian  |   2.91e-10          .        .       .            .           .
+  Pakistani  |   4.22e-08          .        .       .            .           .
+Bangladeshi  |   6.24e-08          .        .       .            .           .
+Other Asian  |   6.89e-06          .        .       .            .           .
+  Caribbean  |   .1820548          .        .       .            .           .
+    African  |   9.66e-12          .        .       .            .           .
+Other Black  |          1  (omitted)
+    Chinese  |   2.91e-09          .        .       .            .           .
+      Other  |   1.66e-09          .        .       .            .           .
+    Unknown  |   4.23e-11          .        .       .            .           .
+             |
+        male |
+       Male  |   .0120225          .        .       .            .           .
+        age1 |   2.977121          .        .       .            .           .
+        age2 |   .0123147          .        .       .            .           .
+        age3 |   89505.31          .        .       .            .           .
+             |
+         imd |
+          4  |   198.1302          .        .       .            .           .
+5 most de..  |   236.2384          .        .       .            .           .
+             |
+   bmicat_sa |
+Normal (..)  |          1  (omitted)
+Overweig..)  |   1035.936          .        .       .            .           .
+Obese I ..)  |   1926.847          .        .       .            .           .
+Obese II..)  |   4.767539          .        .       .            .           .
+Obese II..)  |   63.61467          .        .       .            .           .
+    Unknown  |   5.21e+08          .        .       .            .           .
+             |
+    hba1ccat |
+  >=6.5-7.4  |   4.463666          .        .       .            .           .
+  >=7.5-7.9  |   .0001942          .        .       .            .           .
+    >=8-8.9  |   2.92e-06          .        .       .            .           .
+        >=9  |   4.869835          .        .       .            .           .
+    Unknown  |          1  (omitted)
+             |
+gp_consult~t |   1.248531          .        .       .            .           .
+             |
+smoke_nomiss |
+     Former  |   7.89e-08          .        .       .            .           .
+    Current  |   .0608871          .        .       .            .           .
+             |
+1.hyperten~n |   .2069405          .        .       .            .           .
+             |
+      bp_cat |
+    Unknown  |   .0000227          .        .       .            .           .
+    1.asthma |   .0036281          .        .       .            .           .
+1.~y_disease |   4.271446          .        .       .            .           .
+1.~c_disease |    .129927          .        .       .            .           .
+             |
+     dm_type |
+       T1DM  |   64.99892          .        .       .            .           .
+       T2DM  |   33.32482          .        .       .            .           .
+ UNKNOWN_DM  |   5.629678          .        .       .            .           .
+             |
+    1.cancer |   7.99e-07          .        .       .            .           .
+1.~r_disease |    .763826          .        .       .            .           .
+    1.stroke |   387.4636          .        .       .            .           .
+  1.dementia |   1257.039          .        .       .            .           .
+1.other_ne~o |   6551.067          .        .       .            .           .
+             |
+      egfr60 |
+   eGFR <60  |          1  (omitted)
+      1.esrf |   1990.012          .        .       .            .           .
+1.immunosu~d |   16504.71          .        .       .            .           .
+1.ra_sle_p~s |   7.512119          .        .       .            .           .
+             |
+hh_total_cat |
+       6-10  |   196.9843          .        .       .            .           .
+        11+  |          1  (omitted)
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+
+         failure _d:  onsdeath
+   analysis time _t:  (stime_onsdeath-origin)
+             origin:  time indexdate
+  enter on or after:  time indexdate
+                 id:  patient_id
+
+Stratified Cox regr. -- no ties
+
+No. of subjects =        5,989                  Number of obs    =       5,989
+No. of failures =           14
+Time at risk    =      1101494
+                                                LR chi2(36)      =       56.91
+Log likelihood  =   -60.966336                  Prob > chi2      =      0.0147
+
+------------------------------------------------------------------------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ethnicity_16 |
+      Irish  |   9.45e-10          .        .       .            .           .
+Other White  |   3.97e+10   5.09e+10    19.01   0.000     3.20e+09    4.91e+11
+White + C..  |   4.76e-10          .        .       .            .           .
+White + A..  |   7.81e-10          .        .       .            .           .
+White + A..  |   6.61e+09   1.02e+10    14.64   0.000     3.20e+08    1.37e+11
+Other mixed  |   9.34e-10          .        .       .            .           .
+     Indian  |   1.33e+10          .        .       .            .           .
+  Pakistani  |   1.96e+10   2.90e+10    16.05   0.000     1.09e+09    3.54e+11
+Bangladeshi  |   2.60e+10   3.34e+10    18.67   0.000     2.10e+09    3.22e+11
+Other Asian  |   5.51e-10          .        .       .            .           .
+  Caribbean  |   8.40e-10          .        .       .            .           .
+    African  |   5.07e+10   6.14e+10    20.34   0.000     4.71e+09    5.45e+11
+Other Black  |   1.72e+10   2.51e+10    16.10   0.000     9.74e+08    3.02e+11
+    Chinese  |   1.06e-09          .        .       .            .           .
+      Other  |   1.01e+10   1.51e+10    15.49   0.000     5.50e+08    1.87e+11
+    Unknown  |   4.48e+09   5.72e+09    17.42   0.000     3.68e+08    5.46e+10
+             |
+        male |
+       Male  |   1.006801   .5891074     0.01   0.991     .3198025    3.169607
+        age1 |   .8621364   .0707825    -1.81   0.071     .7339918    1.012653
+        age2 |   1.616598   .5162872     1.50   0.133     .8644839    3.023064
+        age3 |    .345833   .2730552    -1.34   0.179     .0735857    1.625322
+             |
+         imd |
+          4  |   2.605977   1.653067     1.51   0.131     .7516615    9.034807
+5 most de..  |   1.774323   1.539088     0.66   0.509     .3241017     9.71369
+             |
+   bmicat_sa |
+Normal (..)  |   5.16e+08          .        .       .            .           .
+Overweig..)  |   1.66e+09   2.08e+09    17.01   0.000     1.44e+08    1.92e+10
+Obese I ..)  |   9.61e+08   1.19e+09    16.71   0.000     8.50e+07    1.09e+10
+Obese II..)  |   8.39e+08   1.03e+09    16.68   0.000     7.51e+07    9.39e+09
+Obese II..)  |   2.61e+08   3.89e+08    13.01   0.000     1.41e+07    4.85e+09
+    Unknown  |   5.38e+08   7.10e+08    15.25   0.000     4.07e+07    7.13e+09
+             |
+    hba1ccat |
+  >=6.5-7.4  |   .4478271   .3852507    -0.93   0.350     .0829564    2.417524
+  >=7.5-7.9  |   2.597776   2.287527     1.08   0.278     .4624432    14.59302
+    >=8-8.9  |   .8287892   .9177394    -0.17   0.865     .0945991    7.261079
+        >=9  |   1.37e-19          .        .       .            .           .
+    Unknown  |   6.61e-19          .        .       .            .           .
+             |
+gp_consult~t |   1.113831   .1398791     0.86   0.391      .870808    1.424677
+             |
+smoke_nomiss |
+     Former  |   1.02e-19          .        .       .            .           .
+    Current  |   .5404405   .6053901    -0.55   0.583      .060152    4.855634
+             |
+1.hyperten~n |   5.45e-21          .        .       .            .           .
+             |
+      bp_cat |
+High, sta..  |   7.41e+13          .        .       .            .           .
+    Unknown  |   4.50e-06          .        .       .            .           .
+             |
+    1.asthma |   5.216187   4.690871     1.84   0.066     .8951074    30.39704
+1.~y_disease |   .6693367    .549028    -0.49   0.625     .1341037    3.340785
+1.~c_disease |   2.435907     1.6356     1.33   0.185     .6533081    9.082459
+             |
+     dm_type |
+       T1DM  |   8.09e-20          .        .       .            .           .
+       T2DM  |   1.769872   1.279378     0.79   0.430     .4291789    7.298697
+ UNKNOWN_DM  |   7.43e-19          .        .       .            .           .
+             |
+    1.cancer |   .6313994   .5166975    -0.56   0.574     .1269797    3.139597
+1.~r_disease |   1.708858   1.092034     0.84   0.402      .488373    5.979439
+    1.stroke |   3.310575   2.031384     1.95   0.051     .9944943    11.02058
+  1.dementia |   .7942243   .6346705    -0.29   0.773       .16586    3.803161
+1.other_ne~o |   1.111701   .7925542     0.15   0.882     .2748838    4.496005
+             |
+      egfr60 |
+   eGFR <60  |   8.14e-19          .        .       .            .           .
+      1.esrf |   1.459289   1.018407     0.54   0.588     .3716253    5.730298
+1.immunosu~d |   .4316252   .3053336    -1.19   0.235     .1078855    1.726834
+1.ra_sle_p~s |   1.499496   .9524166     0.64   0.524      .431815    5.207061
+             |
+hh_total_cat |
+       6-10  |   5.86e+15          .        .       .            .           .
+        11+  |   .4538705          .        .       .            .           .
+------------------------------------------------------------------------------
+                                                             Stratified by stp
+(output written to ./output/estout_sens_ruralurban_eth16.txt)
+
+. 
+. * Close log file 
+. log close
+      name:  <unnamed>
+       log:  /workspace/logs/07c_eth_sensanalysis_ruralurban_eth16.log
+  log type:  text
+ closed on:  10 Jan 2021, 17:29:47
+-------------------------------------------------------------------------------

@@ -1,0 +1,17 @@
+
+
+state: succeeded
+commit: none
+docker_image_id: sha256:e4a676ff497b1550742032051cce1ba5502f65b172e86e4d82aadbaa1e056935
+job_id: buk45qjzachseq2u
+run_by_user: None
+created_at: 2021-01-13T18:45:42Z
+started_at: 2021-01-13T18:47:06Z
+completed_at: 2021-01-13T18:50:11Z
+
+Completed successfully
+
+outputs:
+  logs/06c_sens_onsconfirmeddeath_eth16.log   - moderately_sensitive
+  output/FP_sens_onsconfirmeddeath_eth16.txt  - moderately_sensitive
+  output/estout_onsconfirmeddeath_eth16.txt   - moderately_sensitive

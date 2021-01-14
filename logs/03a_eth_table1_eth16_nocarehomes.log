@@ -1,0 +1,459 @@
+-------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /workspace/logs/03a_eth_table1_eth16_nocarehomes.log
+  log type:  text
+ opened on:   6 Jan 2021, 13:02:01
+
+. 
+. * Open Stata dataset
+. use ./output/analysis_dataset.dta, clear
+
+. keep if carehome==0
+(1,170 observations deleted)
+
+. safetab ethnicity_16,m 
+13
+
+Eth 16 categories |      Freq.     Percent        Cum.
+------------------+-----------------------------------
+          British |        315        4.71        4.71
+            Irish |        314        4.69        9.40
+      Other White |        303        4.53       13.94
+White + Caribbean |        303        4.53       18.47
+  White + African |        308        4.61       23.07
+    White + Asian |        326        4.87       27.95
+      Other mixed |        303        4.53       32.48
+           Indian |        314        4.69       37.17
+        Pakistani |        311        4.65       41.82
+      Bangladeshi |        346        5.17       46.99
+      Other Asian |        299        4.47       51.47
+        Caribbean |        312        4.67       56.13
+          African |        295        4.41       60.54
+      Other Black |        351        5.25       65.79
+          Chinese |        311        4.65       70.44
+            Other |        307        4.59       75.03
+          Unknown |      1,670       24.97      100.00
+------------------+-----------------------------------
+            Total |      6,688      100.00
+
+. 
+.  /* PROGRAMS TO AUTOMATE TABULATIONS=========================================
+> ==*/ 
+. 
+. *****************************************************************************
+> ***
+. * All below code from K Baskharan 
+. * Generic code to output one row of table
+. 
+. cap prog drop generaterow
+
+. program define generaterow
+  1. syntax, variable(varname) condition(string) 
+  2.         
+.         qui cou
+  3.         local overalldenom=r(N)
+  4.         
+.         sum `variable' if `variable' `condition'
+  5.         file write tablecontent (r(max)) _tab
+  6.         
+.         qui cou if `variable' `condition'
+  7.         local rowdenom = r(N)
+  8.         local colpct = 100*(r(N)/`overalldenom')
+  9.         file write tablecontent %9.0gc (`rowdenom')  (" (") %3.1f (`colpct
+> ') (")") _tab
+ 10. 
+.         forvalues i=1/17{
+ 11.         qui cou if ethnicity_16 == `i'
+ 12.         local rowdenom = r(N)
+ 13.         qui cou if ethnicity_16 == `i' & `variable' `condition'
+ 14.         local pct = 100*(r(N)/`rowdenom') 
+ 15.         file write tablecontent %9.0gc (r(N)) (" (") %3.1f (`pct') (")") _
+> tab
+ 16.         }
+ 17.         
+.         file write tablecontent _n
+ 18. end
+
+. 
+. 
+. * Output one row of table for co-morbidities and meds
+. 
+. cap prog drop generaterow2
+
+. program define generaterow2
+  1. syntax, variable(varname) condition(string) 
+  2.         
+.         qui cou
+  3.         local overalldenom=r(N)
+  4.         
+.         qui cou if `variable' `condition'
+  5.         local rowdenom = r(N)
+  6.         local colpct = 100*(r(N)/`overalldenom')
+  7.         file write tablecontent %9.0gc (`rowdenom')  (" (") %3.1f (`colpct
+> ') (")") _tab
+  8. 
+.         forvalues i=1/17{
+  9.         qui cou if ethnicity_16 == `i'
+ 10.         local rowdenom = r(N)
+ 11.         qui cou if ethnicity_16 == `i' & `variable' `condition'
+ 12.         local pct = 100*(r(N)/`rowdenom') 
+ 13.         file write tablecontent %9.0gc (r(N)) (" (") %3.1f (`pct') (")") _
+> tab
+ 14.         }
+ 15.         
+.         file write tablecontent _n
+ 16. end
+
+. 
+. 
+. 
+. /* Explanatory Notes 
+> 
+> defines a program (SAS macro/R function equivalent), generate row
+> the syntax row specifies two inputs for the program: 
+> 
+>         a VARNAME which is your variable 
+>         a CONDITION which is a string of some condition you impose 
+>         
+> the program counts if variable and condition and returns the counts
+> column percentages are then automatically generated
+> this is then written to the text file 'tablecontent' 
+> the number followed by space, brackets, formatted pct, end bracket and then t
+> ab
+> 
+> the format %3.1f specifies length of 3, followed by 1 dp. 
+> 
+> */ 
+. 
+. *****************************************************************************
+> ***
+. * Generic code to output one section (varible) within table (calls above)
+. 
+. cap prog drop tabulatevariable
+
+. prog define tabulatevariable
+  1. syntax, variable(varname) min(real) max(real) [missing]
+  2. 
+.         local lab: variable label `variable'
+  3.         file write tablecontent ("`lab'") _n 
+  4. 
+.         forvalues varlevel = `min'/`max'{ 
+  5.                 generaterow, variable(`variable') condition("==`varlevel'"
+> )
+  6.         }
+  7.         
+.         if "`missing'"!="" generaterow, variable(`variable') condition("== 12
+> ")
+  8.         
+. 
+. 
+. end
+
+. 
+. *****************************************************************************
+> ***
+. 
+. /* Explanatory Notes 
+> 
+> defines program tabulate variable 
+> syntax is : 
+> 
+>         - a VARNAME which you stick in variable 
+>         - a numeric minimum 
+>         - a numeric maximum 
+>         - optional missing option, default value is . 
+> 
+> forvalues lowest to highest of the variable, manually set for each var
+> run the generate row program for the level of the variable 
+> if there is a missing specified, then run the generate row for missing vals
+> 
+> */ 
+. 
+. *****************************************************************************
+> ***
+. * Generic code to qui summarize a continous variable 
+. 
+. cap prog drop summarizevariable 
+
+. prog define summarizevariable
+  1. syntax, variable(varname) 
+  2. 
+.         local lab: variable label `variable'
+  3.         file write tablecontent ("`lab'") _n 
+  4. 
+. 
+.         qui summarize `variable', d
+  5.         file write tablecontent ("Mean (SD)") _tab 
+  6.         file write tablecontent  %3.1f (r(mean)) (" (") %3.1f (r(sd)) (")"
+> ) _tab
+  7.         
+.         forvalues i=1/17{                                                    
+>    
+  8.         qui summarize `variable' if ethnicity_16 == `i', d
+  9.         file write tablecontent  %3.1f (r(mean)) (" (") %3.1f (r(sd)) (")"
+> ) _tab
+ 10.         }
+ 11. 
+. file write tablecontent _n
+ 12. 
+.         
+.         qui summarize `variable', d
+ 13.         file write tablecontent ("Median (IQR)") _tab 
+ 14.         file write tablecontent %3.1f (r(p50)) (" (") %3.1f (r(p25)) ("-")
+>  %3.1f (r(p75)) (")") _tab
+ 15.         
+.         forvalues i=1/17{
+ 16.         qui summarize `variable' if ethnicity_16 == `i', d
+ 17.         file write tablecontent %3.1f (r(p50)) (" (") %3.1f (r(p25)) ("-")
+>  %3.1f (r(p75)) (")") _tab
+ 18.         }
+ 19.         
+. file write tablecontent _n
+ 20.         
+. end
+
+. 
+. /* INVOKE PROGRAMS FOR TABLE 1===============================================
+> =*/ 
+. 
+. *Set up output file
+. cap file close tablecontent
+
+. file open tablecontent using ./output/table1_eth16.txt, write text replace
+(note: file ./output/table1_eth16.txt not found)
+
+. 
+. file write tablecontent ("Table 1: Demographic and Clinical Characteristics")
+>  _n
+
+. 
+. * ethnicity_16 labelled columns
+. 
+. local lab1: label ethnicity_16 1
+
+. local lab2: label ethnicity_16 2
+
+. local lab3: label ethnicity_16 3
+
+. local lab4: label ethnicity_16 4
+
+. local lab5: label ethnicity_16 5
+
+. local lab6: label ethnicity_16 6
+
+. local lab7: label ethnicity_16 7
+
+. local lab8: label ethnicity_16 8
+
+. local lab9: label ethnicity_16 9
+
+. local lab10: label ethnicity_16 10
+
+. local lab11: label ethnicity_16 11
+
+. local lab12: label ethnicity_16 12
+
+. local lab13: label ethnicity_16 13
+
+. local lab14: label ethnicity_16 14
+
+. local lab15: label ethnicity_16 15
+
+. local lab16: label ethnicity_16 16
+
+. local lab17: label ethnicity_16 17
+
+. 
+. 
+. 
+. file write tablecontent _tab ("Total")                                       
+>              _tab ///
+>                                                          ("`lab1'")          
+>                                      _tab ///
+>                                                          ("`lab2'")          
+>                                      _tab ///
+>                                                          ("`lab3'")          
+>                                      _tab ///
+>                                                          ("`lab4'")          
+>                                      _tab ///
+>                                                          ("`lab5'")          
+>                                      _tab ///
+>                                                          ("`lab6'")          
+>                                      _tab ///
+>                                                          ("`lab7'")          
+>                                      _tab ///
+>                                                          ("`lab8'")          
+>                                      _tab ///
+>                                                          ("`lab9'")          
+>                                      _tab ///
+>                                                          ("`lab10'")         
+>                                      _tab ///
+>                                                          ("`lab11'")         
+>                                      _tab ///
+>                                                          ("`lab12'")         
+>                                      _tab ///
+>                                                          ("`lab13'")         
+>                                      _tab ///
+>                                                          ("`lab14'")         
+>                                      _tab ///
+>                                                          ("`lab15'")         
+>                                      _tab ///
+>                                                          ("`lab16'")         
+>                                      _tab ///
+>                                                          ("`lab17'")         
+>                                      _n 
+
+.                                                          
+. 
+. 
+. * DEMOGRAPHICS (more than one level, potentially missing) 
+. 
+. format hba1c_pct bmi egfr %9.2f
+
+. 
+. 
+. gen byte Denominator=1
+
+. qui tabulatevariable, variable(Denominator) min(1) max(1) 
+
+. file write tablecontent _n 
+
+. 
+. qui summarizevariable, variable(age) 
+
+. file write tablecontent _n
+
+. 
+. qui tabulatevariable, variable(male) min(0) max(1) 
+
+. file write tablecontent _n 
+
+. 
+. qui tabulatevariable, variable(imd) min(1) max(5) 
+
+. file write tablecontent _n 
+
+. 
+. qui summarizevariable, variable(hh_size)
+
+. file write tablecontent _n
+
+. 
+. qui tabulatevariable, variable(hh_total_cat) min(1) max(9) missing
+
+. file write tablecontent _n 
+
+. 
+. qui summarizevariable, variable(gp_consult_count) 
+
+. file write tablecontent _n 
+
+. 
+. qui tabulatevariable, variable(smoke_nomiss) min(1) max(3)  
+
+. file write tablecontent _n 
+
+. 
+. qui summarizevariable, variable(bmi)
+
+. file write tablecontent _n
+
+. 
+. qui tabulatevariable, variable(bmicat_sa) min(1) max(7) 
+
+. file write tablecontent _n 
+
+. 
+. qui summarizevariable, variable(hba1c_pct)
+
+. file write tablecontent _n
+
+. 
+. qui summarizevariable, variable(hba1c_mmol_per_mol)
+
+. file write tablecontent _n
+
+. 
+. qui tabulatevariable, variable(hba1ccat) min(0) max(5)  
+
+. file write tablecontent _n 
+
+. 
+. qui summarizevariable, variable(bp_sys) 
+
+. file write tablecontent _n
+
+. 
+. qui summarizevariable, variable(bp_dias) 
+
+. file write tablecontent _n
+
+. 
+. qui tabulatevariable, variable(bp_cat) min(1) max(5)  
+
+. file write tablecontent _n 
+
+. 
+. qui tabulatevariable, variable(dm_type) min(0) max(3)  
+
+. file write tablecontent _n 
+
+. 
+. * COMORBIDITIES (binary)
+. qui summarizevariable, variable(comorbidity_count)
+
+. file write tablecontent _n
+
+. 
+. foreach comorb of varlist               ///
+>         hypertension                            ///
+>         chronic_cardiac_disease         ///
+>         stroke                                          ///
+>         egfr60                                                  ///
+>         esrf                                            ///
+>         cancer                                          ///
+>         ra_sle_psoriasis                        ///
+>         immunosuppressed                        ///
+>         chronic_liver_disease           ///
+>         dementia                                        ///
+>         other_neuro                                     ///
+>         asthma                                          ///
+>         chronic_respiratory_disease ///
+>         { 
+  2.         local comorb: subinstr local comorb "i." ""
+  3.         local lab: variable label `comorb'
+  4.         file write tablecontent ("`lab'") _tab
+  5.                                                                 
+.         generaterow2, variable(`comorb') condition("==1")
+  6.         file write tablecontent _n _n
+  7. }
+
+. 
+. ** OTHER TREATMENT VARIABLES (binary)
+. foreach treat of varlist ///
+>         combination_bp_meds     ///
+>         statin                          ///
+>         insulin                         ///
+>                                                 {               
+  2. 
+. local lab: variable label `treat'
+  3. file write tablecontent ("`lab'") _tab
+  4.         
+. generaterow2, variable(`treat') condition("==1")
+  5. 
+. file write tablecontent _n
+  6. }
+
+. 
+. 
+. file close tablecontent
+
+. 
+. 
+. * Close log file 
+. log close
+      name:  <unnamed>
+       log:  /workspace/logs/03a_eth_table1_eth16_nocarehomes.log
+  log type:  text
+ closed on:   6 Jan 2021, 13:02:06
+-------------------------------------------------------------------------------

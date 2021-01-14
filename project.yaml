@@ -1,0 +1,168 @@
+version: "3.0"
+
+expectations:
+  population_size: 1000000
+
+actions:
+  generate_cohorts:
+    run: cohortextractor:latest generate_cohort --study-definition study_definition
+    outputs:
+      highly_sensitive:
+        cohort: output/input.csv
+
+
+  crmain:
+    run: stata-mp:latest analysis/01_eth_cr_analysis_dataset.do
+    needs: [generate_cohorts]
+    outputs:
+      highly_sensitive:
+        data: output/analysis_dataset.dta
+      moderately_sensitive:
+        log: logs/01_eth_cr_analysis_dataset.log
+
+  cr_sgss:
+    run: stata-mp:latest analysis/01b_eth_cr_stset_sgss.do
+    needs: [crmain]
+    outputs:
+      highly_sensitive:
+        stsettested: output/analysis_dataset_STSET_tested.dta
+        stsetpositiivetest: output/analysis_dataset_STSET_positivetest.dta
+      moderately_sensitive:
+        log: logs/01b_eth_cr_stset_sgss.log
+  
+  cr_hes_covid:
+    run: stata-mp:latest analysis/01c_eth_cr_stset_hes.do
+    needs: [crmain]
+    outputs:
+      highly_sensitive:
+        stsethes: output/analysis_dataset_STSET_hes.dta
+        stseticu: output/analysis_dataset_STSET_icu.dta
+        stsetonscoviddeath: output/analysis_dataset_STSET_onscoviddeath.dta
+      moderately_sensitive:
+        log: logs/01c_eth_cr_stset_hes_covid.log
+
+  cr_ons:
+    run: stata-mp:latest analysis/01d_eth_cr_stset_death.do
+    needs: [crmain]
+    outputs:
+      highly_sensitive:
+        stsetons_noncoviddeath: output/analysis_dataset_STSET_ons_noncoviddeath.dta
+        stsetonsdeath: output/analysis_dataset_STSET_onsdeath.dta 
+      moderately_sensitive:
+        log: logs/01d_eth_cr_stset_death.log
+
+  cr_confirmed:
+    run: stata-mp:latest analysis/01e_eth_cr_stset_confirmedcovid.do
+    needs: [crmain]
+    outputs:
+      highly_sensitive:
+        stset_onsconfirmeddeath: output/analysis_dataset_STSET_onsconfirmeddeath.dta 
+      moderately_sensitive:
+        log: logs/01e_eth_cr_stset_onsconfirmeddeath.log
+
+  cr_underlying:
+    run: stata-mp:latest analysis/01f_eth_cr_stset_underlyingcovid.do
+    needs: [crmain]
+    outputs:
+      highly_sensitive:
+        stset_onsconfirmeddeath: output/analysis_dataset_STSET_onsunderlyingdeath.dta 
+      moderately_sensitive:
+        log: logs/01e_eth_cr_stset_onsunderlyingdeath.log
+
+
+  check_region:
+    run: stata-mp:latest analysis/02b_eth_region_check.do
+    needs: [crmain]
+    outputs:
+      moderately_sensitive:
+        log: logs/02b_region_check.log
+        table: output/table0_region.txt
+
+  check_age:
+    run: stata-mp:latest analysis/05b_eth_table1_descriptives_eth5_agegroup.do
+    needs: [crmain]
+    outputs:
+      moderately_sensitive:
+        log: logs/05b_eth_table1_ages_eth5.log
+        table: output/table1_eth5_age.txt
+
+  check_tested:
+    run: stata-mp:latest analysis/21_eth_tested_characteristics.do
+    needs: [crmain]
+    outputs:
+      moderately_sensitive:
+        table: output/table1_tested.txt
+
+  main_carehomes_eth5:
+    run: stata-mp:latest analysis/06b_eth_an_multivariable_eth5_carehomesonly.do
+    needs: [cr_hes_covid]
+    outputs:
+      moderately_sensitive:
+        log: logs/06b_eth_an_hes_eth5_carehomesonly.log
+        table: output/table2_hes_eth5_carehomesonly.txt
+        estout: output/estout_table2_hes_eth5_carehomesonly.txt
+        graph: output/FP_hes_eth5_carehomesonly.txt
+        
+  sens_nostp_eth16:
+    run: stata-mp:latest analysis/07a_eth_sensanalysis_nostp_eth16.do
+    needs: [cr_sgss, cr_hes_covid, cr_ons]
+    outputs:
+      moderately_sensitive:
+        log: logs/07a_eth_sensanalysis_nostp_eth16.log
+        table: output/sens_nostp_eth16.txt
+        estout: output/estout_sens_nostp_eth16.txt
+        graph: output/FP_sens_nostp_eth16.txt
+
+  sens_nostp_eth5:
+    run: stata-mp:latest analysis/07b_eth_sensanalysis_nostp_eth5.do
+    needs: [cr_sgss, cr_hes_covid, cr_ons]
+    outputs:
+      moderately_sensitive:
+        log: logs/07b_eth_sensanalysis_nostp_eth5.log
+        table: output/sens_nostp_eth5.txt
+        estout: output/estout_sens_nostp_eth5.txt
+        graph: output/FP_sens_nostp_eth5.txt
+
+  sens_ruralurban_eth16:
+    run: stata-mp:latest analysis/07c_eth_sensanalysis_ruralurban_eth16.do
+    needs: [cr_sgss, cr_hes_covid, cr_ons]
+    outputs:
+      moderately_sensitive:
+        log: logs/07c_eth_sensanalysis_ruralurban_eth16.log
+        estout: output/estout_sens_ruralurban_eth16.txt
+
+  sens_confirmed_eth16:
+    run: stata-mp:latest analysis/06c_eth_sensanalysis_confirmedcovid_eth16.do
+    needs: [cr_confirmed]
+    outputs:
+      moderately_sensitive:
+        log: logs/06c_sens_onsconfirmeddeath_eth16.log
+        estout: output/estout_onsconfirmeddeath_eth16.txt
+        graph: output/FP_sens_onsconfirmeddeath_eth16.txt
+
+  sens_confirmed_eth5:
+    run: stata-mp:latest analysis/06d_eth_sensanalysis_confirmedcovid_eth5.do
+    needs: [cr_confirmed]
+    outputs:
+      moderately_sensitive:
+        log: logs/06d_sens_onsconfirmeddeath_eth5.log
+        estout: output/estout_onsconfirmeddeath_eth5.txt
+        graph: output/FP_sens_onsconfirmeddeath_eth5.txt
+
+  sens_underlying_eth16:
+    run: stata-mp:latest analysis/06f_eth_sensanalysis_underlyingcovid_eth16.do
+    needs: [cr_underlying]
+    outputs:
+      moderately_sensitive:
+        log: logs/06f_sens_onsunderlyingdeath_eth16.log
+        estout: output/estout_onsunderlyingdeath_eth16.txt
+        graph: output/FP_sens_onsunderlyingdeath_eth16.txt
+
+  sens_underlying_eth5:
+    run: stata-mp:latest analysis/06e_eth_sensanalysis_underlyingcovid_eth5.do
+    needs: [cr_underlying]
+    outputs:
+      moderately_sensitive:
+        log: logs/06e_sens_onsunderlyingdeath_eth5.log
+        estout: output/estout_onsunderlyingdeath_eth5.txt
+        graph: output/FP_sens_onsunderlyingdeath_eth5.txt

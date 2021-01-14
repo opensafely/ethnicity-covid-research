@@ -1,0 +1,402 @@
+--------------------------------------------------------------
+      name:  <unnamed>
+       log:  /Users/lsh152058/Documents/GitHub/ethnicity-covid
+> -research/logs/06d_sens_onsconfirmeddeath_eth5.log
+  log type:  text
+ opened on:  13 Jan 2021, 18:53:56
+
+. 
+. cap file close tablecontent
+
+. file open tablecontent using ./output/sens_onsconfirmeddeath
+> _eth5.txt, write text replace
+
+. file write tablecontent ("Table 2: Association between ethni
+> city in 5 categories and confirmed COVID-19 death") _n
+
+. file write tablecontent _tab ("Denominator") _tab ("Event") 
+> _tab ("Total person-weeks") _tab ("Rate per 1,000") _tab ("C
+> rude") _tab _tab ("Age/Sex Adjusted") _tab _tab ("Age/Sex/IM
+> D Adjusted") _tab _tab      ("plus co-morbidities") _tab _ta
+> b       ("plus hh siz")  _tab _tab  _n
+
+. file write tablecontent _tab _tab _tab _tab _tab   ("HR") _t
+> ab ("95% CI") _tab ("HR") _tab ("95% CI") _tab ("HR") _tab (
+> "95% CI") _tab ("HR") _tab ("95% CI") _tab ("HR") _tab ("95%
+>  CI") _tab _tab _n
+
+. 
+. 
+. use ./output/analysis_dataset_STSET_onsconfirmeddeath.dta, c
+> lear
+
+. drop if carehome==1
+(1,189 observations deleted)
+
+. tab eth5 onsconfirmeddeath, missing 
+
+            |        outcome
+      Eth 5 |   onsconfirmeddeath
+ categories |         0          1 |     Total
+------------+----------------------+----------
+      White |     1,002          1 |     1,003 
+South Asian |     1,031          1 |     1,032 
+      Black |       981          0 |       981 
+      Mixed |     1,026          1 |     1,027 
+      Other |       968          0 |       968 
+    Unknown |     1,656          1 |     1,657 
+------------+----------------------+----------
+      Total |     6,664          4 |     6,668 
+
+. 
+. /* Main Model===============================================
+> ==================*/
+. 
+. /* Univariable model */ 
+. 
+. stcox i.eth5, strata(stp) nolog
+
+         failure _d:  onsconfirmeddeath
+   analysis time _t:  (stime_onsconfirmeddeath-origin)
+             origin:  time indexdate
+  enter on or after:  time indexdate
+                 id:  patient_id
+
+Stratified Cox regr. -- no ties
+
+No. of subjects =        6,668                  Number of obs 
+>    =       6,668
+No. of failures =            4
+Time at risk    =      1226407
+                                                LR chi2(5)    
+>    =        2.96
+Log likelihood  =   -24.582106                  Prob > chi2   
+>    =      0.7063
+
+--------------------------------------------------------------
+> ----------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95%
+>  Con                                                        
+>     f. Interval]
+-------------+------------------------------------------------
+> ----------------
+        eth5 |
+South Asian  |   .9499788   1.344968    -0.04   0.971     .059
+> 2371                                                        
+>          15.2347
+      Black  |   1.91e-18   1.38e-09    -0.00   1.000         
+>    0                                                        
+>                .
+      Mixed  |   .9230752   1.305952    -0.06   0.955     .057
+> 6727                                                        
+>         14.77419
+      Other  |   1.91e-18   1.39e-09    -0.00   1.000         
+>    0                                                        
+>                .
+    Unknown  |   .5844851   .8270488    -0.38   0.704     .036
+> 5023                                                        
+>         9.358949
+--------------------------------------------------------------
+> ----------------
+                                             Stratified by stp
+
+. estimates save ./output/crude_onsconfirmeddeath_eth5, replac
+> e 
+file ./output/crude_onsconfirmeddeath_eth5.ster saved
+
+. eststo model1
+
+. parmest, label eform format(estimate p lb ub) saving(./outpu
+> t/crude_onsconfirmeddeath_eth5, replace) idstr("crude_onscon
+> firmeddeath_eth5") 
+file ./output/crude_onsconfirmeddeath_eth5.dta saved
+
+. local hr "`hr' ./output/crude_onsconfirmeddeath_eth5 "
+
+. 
+. 
+. /* Multivariable models */ 
+. *Age and gender
+. stcox i.eth5 i.male age1 age2 age3, strata(stp) nolog
+
+         failure _d:  onsconfirmeddeath
+   analysis time _t:  (stime_onsconfirmeddeath-origin)
+             origin:  time indexdate
+  enter on or after:  time indexdate
+                 id:  patient_id
+
+Stratified Cox regr. -- no ties
+
+No. of subjects =        6,668                  Number of obs 
+>    =       6,668
+No. of failures =            4
+Time at risk    =      1226407
+                                                LR chi2(7)    
+>    =       12.38
+Log likelihood  =   -19.873102                  Prob > chi2   
+>    =      0.0888
+
+--------------------------------------------------------------
+> ----------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95%
+>  Con                                                        
+>     f. Interval]
+-------------+------------------------------------------------
+> ----------------
+        eth5 |
+South Asian  |    .721427   1.036855    -0.23   0.820     .043
+> 1342                                                        
+>         12.06598
+      Black  |   8.87e-20          .        .       .         
+>    .                                                        
+>                .
+      Mixed  |   .8768038   1.274614    -0.09   0.928     .050
+> 7582                                                        
+>         15.14603
+      Other  |   6.11e-20          .        .       .         
+>    .                                                        
+>                .
+    Unknown  |   .5074872    .721103    -0.48   0.633     .031
+> 3277                                                        
+>         8.220943
+             |
+        male |
+       Male  |   .3075195   .3575655    -1.01   0.311     .031
+> 4881                                                        
+>         3.003304
+        age1 |   .6726842   .1665413    -1.60   0.109     .414
+> 0694                                                        
+>         1.092822
+        age2 |   3.655946   3.658664     1.30   0.195     .514
+> 2395                                                        
+>         25.99167
+        age3 |   .0628871   .1489788    -1.17   0.243     .000
+> 6054                                                        
+>         6.532034
+--------------------------------------------------------------
+> ----------------
+                                             Stratified by stp
+
+. estimates save ./output/model0_onsconfirmeddeath_eth5, repla
+> ce 
+file ./output/model0_onsconfirmeddeath_eth5.ster saved
+
+. eststo model2
+
+. 
+. parmest, label eform format(estimate p lb ub) saving(./outpu
+> t/model0_onsconfirmeddeath_eth5, replace) idstr("model0_onsc
+> onfirmeddeath_eth5")
+file ./output/model0_onsconfirmeddeath_eth5.dta saved
+
+. local hr "`hr' ./output/model0_onsconfirmeddeath_eth5 "
+
+.  
+. 
+. * Age, Gender, IMD
+. 
+. stcox i.eth5 i.male age1 age2 age3 i.imd, strata(stp) nolog
+
+         failure _d:  onsconfirmeddeath
+   analysis time _t:  (stime_onsconfirmeddeath-origin)
+             origin:  time indexdate
+  enter on or after:  time indexdate
+                 id:  patient_id
+
+Stratified Cox regr. -- no ties
+
+No. of subjects =        6,668                  Number of obs 
+>    =       6,668
+No. of failures =            4
+Time at risk    =      1226407
+                                                LR chi2(11)   
+>    =       15.05
+Log likelihood  =   -18.536478                  Prob > chi2   
+>    =      0.1802
+
+--------------------------------------------------------------
+> ----------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95%
+>  Con                                                        
+>     f. Interval]
+-------------+------------------------------------------------
+> ----------------
+        eth5 |
+South Asian  |   .9734292   1.452253    -0.02   0.986      .05
+> 2288                                                        
+>         18.12203
+      Black  |   5.59e-18   2.43e-09    -0.00   1.000         
+>    0                                                        
+>                .
+      Mixed  |   1.005772   1.483514     0.00   0.997      .05
+> 5844                                                        
+>         18.11433
+      Other  |   4.04e-18   1.84e-09    -0.00   1.000         
+>    0                                                        
+>                .
+    Unknown  |    .513518    .743874    -0.46   0.645     .030
+> 0275                                                        
+>         8.781987
+             |
+        male |
+       Male  |   .2982532   .3482515    -1.04   0.300     .030
+> 2476                                                        
+>         2.940896
+        age1 |   .6784473   .1656043    -1.59   0.112     .420
+> 4784                                                        
+>         1.094683
+        age2 |   3.501654   3.468335     1.27   0.206     .502
+> 5405                                                        
+>         24.39919
+        age3 |   .0706512   .1659543    -1.13   0.259     .000
+> 7075                                                        
+>         7.055486
+             |
+         imd |
+          4  |   3.765201   3.923409     1.27   0.203     .488
+> 4502                                                        
+>         29.02391
+5 most de..  |   1.03e-17   5.18e-09    -0.00   1.000         
+>    0                                                        
+>                .
+--------------------------------------------------------------
+> ----------------
+                                             Stratified by stp
+
+. if _rc==0{
+. estimates
+
+--------------------------------------------------------------
+active results
+--------------------------------------------------------------
+
+Stratified Cox regr. -- no ties
+
+No. of subjects =        6,668                  Number of obs 
+>    =       6,668
+No. of failures =            4
+Time at risk    =      1226407
+                                                LR chi2(11)   
+>    =       15.05
+Log likelihood  =   -18.536478                  Prob > chi2   
+>    =      0.1802
+
+--------------------------------------------------------------
+> ----------------
+          _t | Haz. Ratio   Std. Err.      z    P>|z|     [95%
+>  Con                                                        
+>     f. Interval]
+-------------+------------------------------------------------
+> ----------------
+        eth5 |
+South Asian  |   .9734292   1.452253    -0.02   0.986      .05
+> 2288                                                        
+>         18.12203
+      Black  |   5.59e-18   2.43e-09    -0.00   1.000         
+>    0                                                        
+>                .
+      Mixed  |   1.005772   1.483514     0.00   0.997      .05
+> 5844                                                        
+>         18.11433
+      Other  |   4.04e-18   1.84e-09    -0.00   1.000         
+>    0                                                        
+>                .
+    Unknown  |    .513518    .743874    -0.46   0.645     .030
+> 0275                                                        
+>         8.781987
+             |
+        male |
+       Male  |   .2982532   .3482515    -1.04   0.300     .030
+> 2476                                                        
+>         2.940896
+        age1 |   .6784473   .1656043    -1.59   0.112     .420
+> 4784                                                        
+>         1.094683
+        age2 |   3.501654   3.468335     1.27   0.206     .502
+> 5405                                                        
+>         24.39919
+        age3 |   .0706512   .1659543    -1.13   0.259     .000
+> 7075                                                        
+>         7.055486
+             |
+         imd |
+          4  |   3.765201   3.923409     1.27   0.203     .488
+> 4502                                                        
+>         29.02391
+5 most de..  |   1.03e-17   5.18e-09    -0.00   1.000         
+>    0                                                        
+>                .
+--------------------------------------------------------------
+> ----------------
+                                             Stratified by stp
+. estimates save ./output/model1_onsconfirmeddeath_eth5, repla
+> ce 
+file ./output/model1_onsconfirmeddeath_eth5.ster saved
+. eststo model3
+. 
+. parmest, label eform format(estimate p lb ub) saving(./outpu
+> t/model1_onsconfirmeddeath_eth5, replace) idstr("model1_onsc
+> onfirmeddeath_eth5") 
+file ./output/model1_onsconfirmeddeath_eth5.dta saved
+. local hr "`hr' ./output/model1_onsconfirmeddeath_eth5 "
+. }
+
+. else di "WARNING MODEL1 DID NOT FIT (OUTCOME onsconfirmeddea
+> th)"
+
+. 
+. * Age, Gender, IMD and Comorbidities 
+. stcox i.eth5 i.male age1 age2 age3      i.imd               
+>                             ///
+>                                                             
+>                     i.bmicat_sa     i.hba1ccat              
+>         ///
+>                                                             
+>                     gp_consult_count                        
+> ///
+>                                                             
+>                     i.smoke_nomiss                          
+> ///
+>                                                             
+>                     i.hypertension i.bp_cat         ///     
+>                                                             
+>                     i.asthma                                
+>         ///
+>                                                             
+>                     i.chronic_respiratory_disease ///
+>                                                             
+>                     i.chronic_cardiac_disease       ///
+>                                                             
+>                     i.dm_type                               
+>         ///     
+>                                                             
+>                     i.cancer                    ///
+>                                                             
+>                     i.chronic_liver_disease         ///
+>                                                             
+>                     i.stroke                                
+>         ///
+>                                                             
+>                     i.dementia                              
+>         ///
+>                                                             
+>                     i.other_neuro                           
+> ///
+>                                                             
+>                     i.egfr60                                
+>         ///
+>                                                             
+>                     i.esrf                                  
+>         ///
+>                                                             
+>                     i.immunosuppressed                      
+> ///
+>                                                             
+>                     i.ra_sle_psoriasis, strata(stp) nolog   
+>         
+
+         failure _d:  onsconfirmeddeath
+   analysis time _t:  (stime_onsconfirmeddeath-origin)
+             origin:  time indexdate
+  enter on or after:  time indexdate
+                 id:  patient_id

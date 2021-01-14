@@ -1,0 +1,53 @@
+-------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /workspace/logs/01e_eth_cr_stset_onsconfirmeddeath.log
+  log type:  text
+ opened on:  13 Jan 2021, 18:02:10
+
+. 
+. 
+. ****************************************************************
+. *  Create outcome specific datasets for the whole population  *
+. *****************************************************************
+.         use ./output/analysis_dataset.dta, clear
+
+.         drop if onsconfirmeddeath_date <= indexdate 
+(0 observations deleted)
+
+.         stset stime_onsconfirmeddeath, fail(onsconfirmeddeath)               
+>            ///     
+>         id(patient_id) enter(indexdate) origin(indexdate)
+
+                id:  patient_id
+     failure event:  onsconfirmeddeath != 0 & onsconfirmeddeath < .
+obs. time interval:  (stime_onsconfirmeddeath[_n-1], stime_onsconfirmeddeath]
+ enter on or after:  time indexdate
+ exit on or before:  failure
+    t for analysis:  (time-origin)
+            origin:  time indexdate
+
+------------------------------------------------------------------------------
+      7,857  total observations
+          0  exclusions
+------------------------------------------------------------------------------
+      7,857  observations remaining, representing
+      7,857  subjects
+          4  failures in single-failure-per-subject data
+  1,445,059  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =         0
+                                          last observed exit t =       184
+
+.         save ./output/analysis_dataset_STSET_onsconfirmeddeath.dta, replace
+(note: file ./output/analysis_dataset_STSET_onsconfirmeddeath.dta not found)
+file ./output/analysis_dataset_STSET_onsconfirmeddeath.dta saved
+
+. 
+.         
+. * Close log file 
+. log close
+      name:  <unnamed>
+       log:  /workspace/logs/01e_eth_cr_stset_onsconfirmeddeath.log
+  log type:  text
+ closed on:  13 Jan 2021, 18:02:10
+-------------------------------------------------------------------------------
