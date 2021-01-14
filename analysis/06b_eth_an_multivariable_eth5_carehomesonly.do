@@ -26,10 +26,9 @@ macro drop hr
 log using ./logs/06b_eth_an_hes_eth5_carehomesonly.log, replace t 
 
 
-
 cap file close tablecontent
-file open tablecontent using ./output/table2_hes_carehomesonly.txt, write text replace
-file write tablecontent ("Table 2: Association between ethnicity in 6 categories and COVID-19 outcomes - No care homes") _n
+file open tablecontent using ./output/table2_hes_eth5_carehomesonly.txt, write text replace
+file write tablecontent ("Table 2: Association between ethnicity in 6 categories and COVID-19 outcomes - care homes only") _n
 file write tablecontent _tab ("Denominator") _tab ("Event") _tab ("Total person-weeks") _tab ("Rate per 1,000") _tab ("Crude") _tab _tab ("Age/Sex Adjusted") _tab _tab ("Age/Sex/IMD Adjusted") _tab _tab 	("plus co-morbidities") _tab _tab  _n
 file write tablecontent _tab _tab _tab _tab _tab   ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _tab ("HR") _tab ("95% CI") _tab _tab _n
 
@@ -37,7 +36,7 @@ file write tablecontent _tab _tab _tab _tab _tab   ("HR") _tab ("95% CI") _tab (
 
 foreach i of global outcomes {
 use "./output/analysis_dataset_STSET_`i'.dta", clear
-drop if carehome==0
+keep if carehome==1
 safetab eth5 `i', missing row
 } //end outcomes
 
@@ -46,7 +45,7 @@ foreach i of global outcomes {
 	
 * Open Stata dataset
 use "./output/analysis_dataset_STSET_`i'.dta", clear
-drop if carehome==0
+keep if carehome==1
 
 /* Main Model=================================================================*/
 
@@ -108,7 +107,7 @@ local hr "`hr' ./output/model2_`i'_eth5 "
 
 
 /* Estout================================================================*/ 
-cap esttab model1 model2 model3 model4 using ./output/estout_table2_hes_carehomesonly.txt, b(a2) ci(2) label wide compress eform ///
+cap esttab model1 model2 model3 model4 using ./output/estout_table2_hes_eth5_carehomesonly.txt, b(a2) ci(2) label wide compress eform ///
 	title ("`i'") ///
 	varlabels(`e(labels)') ///
 	stats(N_sub) ///
