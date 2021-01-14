@@ -1,9 +1,8 @@
---------------------------------------------------------------
+-------------------------------------------------------------------------------
       name:  <unnamed>
-       log:  /Users/lsh152058/Documents/GitHub/ethnicity-covid
-> -research/logs/01_eth_cr_analysis_dataset.log
+       log:  /workspace/logs/01_eth_cr_analysis_dataset.log
   log type:  text
- opened on:  14 Jan 2021, 12:19:31
+ opened on:  14 Jan 2021, 12:20:50
 
 . 
 . clear
@@ -101,8 +100,8 @@ DROPPING GENDER NOT M/F:
 (imd: 7817 changes made)
 
 . 
-. label define imd 1 "1 least deprived" 2 "2" 3 "3" 4 "4" 5 "5
->  most deprived" .u "Unknown"
+. label define imd 1 "1 least deprived" 2 "2" 3 "3" 4 "4" 5 "5 most deprived" .
+> u "Unknown"
 
 . label values imd imd 
 
@@ -140,16 +139,16 @@ DROPPING GENDER NOT M/F:
 
 . 
 . 
-. ************************************************************
-> *******************
+. *****************************************************************************
+> **
 . 
 . 
 . 
-. /* CREATE VARIABLES=========================================
-> ==================*/
+. /* CREATE VARIABLES==========================================================
+> =*/
 . 
-. /* OUTCOME AND SURVIVAL TIME================================
-> ==================*/
+. /* OUTCOME AND SURVIVAL TIME=================================================
+> =*/
 . 
 .         
 . /****   Outcome definitions   ****/
@@ -165,43 +164,38 @@ DROPPING GENDER NOT M/F:
 
 . ren icu_date_admitted                   icu_date
 
-. ren died_date_cpns                              cpnsdeath_da
-> te
+. ren died_date_cpns                              cpnsdeath_date
 
-. ren died_date_ons                               onsdeath_dat
-> e
+. ren died_date_ons                               onsdeath_date
 
 . ren covid_admission_date                hes_date
 
 . 
 . * Date of Covid death in ONS
-. gen onscoviddeath_date = onsdeath_date if died_ons_covid_fla
-> g_any == 1
+. gen onscoviddeath_date = onsdeath_date if died_ons_covid_flag_any == 1
 (7,500 missing values generated)
 
-. gen onsconfirmeddeath_date = onsdeath_date if died_ons_confi
-> rmedcovid_flag_any ==1
+. gen onsconfirmeddeath_date = onsdeath_date if died_ons_confirmedcovid_flag_an
+> y ==1
 (7,496 missing values generated)
 
-. gen onssuspecteddeath_date = onsdeath_date if died_ons_suspe
-> ctedcovid_flag_any ==1
+. gen onssuspecteddeath_date = onsdeath_date if died_ons_suspectedcovid_flag_an
+> y ==1
 (7,502 missing values generated)
 
-. gen onsunderlyingdeath_date= onsdeath_date if died_ons_covid
-> _flag_underlying==1
+. gen onsunderlyingdeath_date= onsdeath_date if died_ons_covid_flag_underlying=
+> =1
 (7,477 missing values generated)
 
 . * Date of non-COVID death in ONS 
-. * If missing date of death resulting died_date will also be 
-> missing
-. gen ons_noncoviddeath_date = onsdeath_date if died_ons_covid
-> _flag_any != 1
+. * If missing date of death resulting died_date will also be missing
+. gen ons_noncoviddeath_date = onsdeath_date if died_ons_covid_flag_any != 1
 (6,576 missing values generated)
 
 . 
 . 
-. /* CONVERT STRINGS TO DATE FOR OUTCOME VARIABLES ===========
-> ==================*/
+. /* CONVERT STRINGS TO DATE FOR OUTCOME VARIABLES ============================
+> =*/
 . * Recode to dates from the strings 
 . *gen dummy date for infected and replace later on
 . 
@@ -228,8 +222,7 @@ DROPPING GENDER NOT M/F:
 . foreach i of global outcomes {
   2.         di "`i'"
   3.         count if `i'_date==indexdate
-  4.         replace `i'_date=`i'_date+1 if `i'_date==indexdat
-> e
+  4.         replace `i'_date=`i'_date+1 if `i'_date==indexdate
   5. }
 tested
   0
@@ -356,13 +349,12 @@ ons_noncovi |
 
 . 
 . /* CENSORING */
-. /* SET FU DATES=============================================
-> ==================*/ 
+. /* SET FU DATES==============================================================
+> =*/ 
 . 
-. * Censoring dates for each outcome (last date outcome data a
-> vailable)
-. *https://github.com/opensafely/rapid-reports/blob/master/not
-> ebooks/latest-dates.ipynb
+. * Censoring dates for each outcome (last date outcome data available)
+. *https://github.com/opensafely/rapid-reports/blob/master/notebooks/latest-dat
+> es.ipynb
 . gen tested_censor_date = d("03/08/2020")
 
 . gen positivetest_censor_date = d("03/08/2020")
@@ -385,58 +377,42 @@ ons_noncovi |
 
 . gen onsunderlyingdeath_censor_date=d("03/08/2020")
 
-. ************************************************************
-> *******************
+. *****************************************************************************
+> **
 . format *censor_date %d
 
 . sum *censor_date, format
 
-    Variable |        Obs        Mean    Std. Dev.       Min  
->       Max
--------------+------------------------------------------------
-> ---------
-tested_cen~e |      7,817   03aug2020           0  03aug2020  
-> 03aug2020
-posit~r_date |      7,817   03aug2020           0  03aug2020  
-> 03aug2020
-ae_censor_~e |      7,817   03aug2020           0  03aug2020  
-> 03aug2020
-hes_censor~e |      7,817   03aug2020           0  03aug2020  
-> 03aug2020
-icu_censor~e |      7,817   30jul2020           0  30jul2020  
-> 30jul2020
--------------+------------------------------------------------
-> ---------
-cpnsd~r_date |      7,817   03aug2020           0  03aug2020  
-> 03aug2020
-onsdeath_c~e |      7,817   03aug2020           0  03aug2020  
-> 03aug2020
-onscovidde.. |      7,817   03aug2020           0  03aug2020  
-> 03aug2020
-ons_n~r_date |      7,817   03aug2020           0  03aug2020  
-> 03aug2020
-onsconfirm.. |      7,817   03aug2020           0  03aug2020  
-> 03aug2020
--------------+------------------------------------------------
-> ---------
-onsun~r_date |      7,817   03aug2020           0  03aug2020  
-> 03aug2020
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+tested_cen~e |      7,817   03aug2020           0  03aug2020  03aug2020
+posit~r_date |      7,817   03aug2020           0  03aug2020  03aug2020
+ae_censor_~e |      7,817   03aug2020           0  03aug2020  03aug2020
+hes_censor~e |      7,817   03aug2020           0  03aug2020  03aug2020
+icu_censor~e |      7,817   30jul2020           0  30jul2020  30jul2020
+-------------+---------------------------------------------------------
+cpnsd~r_date |      7,817   03aug2020           0  03aug2020  03aug2020
+onsdeath_c~e |      7,817   03aug2020           0  03aug2020  03aug2020
+onscovidde.. |      7,817   03aug2020           0  03aug2020  03aug2020
+ons_n~r_date |      7,817   03aug2020           0  03aug2020  03aug2020
+onsconfirm.. |      7,817   03aug2020           0  03aug2020  03aug2020
+-------------+---------------------------------------------------------
+onsun~r_date |      7,817   03aug2020           0  03aug2020  03aug2020
 
 . 
 . 
 . /* DEMOGRAPHICS */ 
 . 
 . * Ethnicity (5 category)
-. label define ethnicity  1 "White"                           
->             ///
->                                                 2 "Mixed"   
->                                     ///
->                                                 3 "Asian or 
-> Asian British"      ///
->                                                 4 "Black"   
->                                     ///
->                                                 5 "Other"   
->                                     
+. label define ethnicity  1 "White"                                       ///
+>                                                 2 "Mixed"                    
+>                    ///
+>                                                 3 "Asian or Asian British"   
+>    ///
+>                                                 4 "Black"                    
+>                    ///
+>                                                 5 "Other"                    
+>                    
 
 .                                                 
 . label values ethnicity ethnicity
@@ -475,16 +451,16 @@ Asian or Asian British |      1,197       15.31       45.38
 (1,953 real changes made)
 
 . 
-.  label define eth5              1 "White"                   
->                     ///
->                                                 2 "South Asi
-> an"           ///                                           
->                                                 3 "Black"   
->                                     ///
->                                                 4 "Mixed"   
->                                     ///
->                                                 5 "Other"   
->                                     ///
+.  label define eth5              1 "White"                                    
+>    ///
+>                                                 2 "South Asian"           ///
+>                                            
+>                                                 3 "Black"                    
+>                    ///
+>                                                 4 "Mixed"                    
+>                    ///
+>                                                 5 "Other"                    
+>                    ///
 >                                                 6 "Unknown"
 
 .                                         
@@ -509,40 +485,36 @@ South Asian |      1,197       15.31       29.91
 . replace ethnicity_16 = 17 if ethnicity_16==.
 (1,915 real changes made)
 
-. label define ethnicity_16                                   
->                                     ///
->                                                 1 "British" 
->             ///
->                                                 2 "Irish"   
->                                                     ///
->                                                 3 "Other Whi
-> te"                                         ///
->                                                 4 "White + C
-> aribbean"           ///
->                                                 5 "White + A
-> frican"                     ///
->                                                 6 "White + A
-> sian"                                       ///
->                                                 7 "Other mix
-> ed"                                         ///
->                                                 8 "Indian"  
->             ///
->                                                 9 "Pakistani
-> "   ///
->                                                 10 "Banglade
-> shi" ///
->                                                 11 "Other As
-> ian"                                        ///
->                                                 12 "Caribbea
-> n"                                          ///
->                                                 13 "African"
->                                             ///
->                                                 14 "Other Bl
-> ack"                                        ///
->                                                 15 "Chinese"
->                                             ///
->                                                 16 "Other"  
->                                                     ///
+. label define ethnicity_16                                                    
+>                    ///
+>                                                 1 "British"             ///
+>                                                 2 "Irish"                    
+>                                    ///
+>                                                 3 "Other White"              
+>                            ///
+>                                                 4 "White + Caribbean"        
+>    ///
+>                                                 5 "White + African"          
+>            ///
+>                                                 6 "White + Asian"            
+>                            ///
+>                                                 7 "Other mixed"              
+>                            ///
+>                                                 8 "Indian"              ///
+>                                                 9 "Pakistani"   ///
+>                                                 10 "Bangladeshi" ///
+>                                                 11 "Other Asian"             
+>                            ///
+>                                                 12 "Caribbean"               
+>                            ///
+>                                                 13 "African"                 
+>                            ///
+>                                                 14 "Other Black"             
+>                            ///
+>                                                 15 "Chinese"                 
+>                            ///
+>                                                 16 "Other"                   
+>                                    ///
 >                                                 17 "Unknown"
 
 .                                                 
@@ -575,8 +547,7 @@ White + Caribbean |        375        4.80       18.96
 . 
 . 
 . * Ethnicity (16 category grouped further)
-. * Generate a version of the full breakdown with mixed in one
->  group
+. * Generate a version of the full breakdown with mixed in one group
 . gen eth16 = ethnicity_16
 
 . recode eth16 4/7 = 99 //mixed
@@ -617,32 +588,19 @@ White + Caribbean |        375        4.80       18.96
 
 . 
 . label define eth16      ///
->                                                 1 "British" 
-> ///
->                                                 2 "Irish" //
-> /
->                                                 3 "Other Whi
-> te" ///
->                                                 4 "Indian" /
-> //
->                                                 5 "Pakistani
-> " ///
->                                                 6 "Banglades
-> hi" ///     
->                                                 7 "Other Asi
-> an" ///
->                                                 8 "Caribbean
-> " ///
->                                                 9 "African" 
-> ///
->                                                 10 "Other Bl
-> ack" ///
->                                                 11 "Chinese"
->  ///
->                                                 12 "All mixe
-> d" ///
->                                                 13  "Other" 
-> ///
+>                                                 1 "British" ///
+>                                                 2 "Irish" ///
+>                                                 3 "Other White" ///
+>                                                 4 "Indian" ///
+>                                                 5 "Pakistani" ///
+>                                                 6 "Bangladeshi" ///     
+>                                                 7 "Other Asian" ///
+>                                                 8 "Caribbean" ///
+>                                                 9 "African" ///
+>                                                 10 "Other Black" ///
+>                                                 11 "Chinese" ///
+>                                                 12 "All mixed" ///
+>                                                 13  "Other" ///
 >                                                 14 "Unknown"
 
 . label values eth16 eth16
@@ -671,50 +629,50 @@ Other Black |        349        4.46       46.80
 . 
 . tab eth16 eth5, m
 
-            |               eth5
-      eth16 |     White  South Asi      Black |     Total
-------------+---------------------------------+----------
-    British |        52         52         60 |       355 
-      Irish |        43         55         51 |       358 
-Other White |        62         76         53 |       394 
-     Indian |        52         64         46 |       379 
-  Pakistani |        80         51         47 |       390 
-Bangladeshi |        44         49         58 |       369 
-Other Asian |        50         49         52 |       341 
-  Caribbean |        52         53         63 |       365 
-    African |        70         48         46 |       358 
-Other Black |        59         53         60 |       349 
-    Chinese |        56         59         55 |       377 
-  All mixed |       198        235        210 |     1,490 
-      Other |        51         64         61 |       377 
-    Unknown |       272        289        299 |     1,915 
-------------+---------------------------------+----------
-      Total |     1,141      1,197      1,161 |     7,817 
+            |                    eth5
+      eth16 |     White  South Asi      Black      Mixed |     Total
+------------+--------------------------------------------+----------
+    British |        52         52         60         50 |       355 
+      Irish |        43         55         51         70 |       358 
+Other White |        62         76         53         57 |       394 
+     Indian |        52         64         46         61 |       379 
+  Pakistani |        80         51         47         62 |       390 
+Bangladeshi |        44         49         58         57 |       369 
+Other Asian |        50         49         52         58 |       341 
+  Caribbean |        52         53         63         57 |       365 
+    African |        70         48         46         48 |       358 
+Other Black |        59         53         60         53 |       349 
+    Chinese |        56         59         55         56 |       377 
+  All mixed |       198        235        210        260 |     1,490 
+      Other |        51         64         61         49 |       377 
+    Unknown |       272        289        299        271 |     1,915 
+------------+--------------------------------------------+----------
+      Total |     1,141      1,197      1,161      1,209 |     7,817 
 
 
-            |               eth5
-      eth16 |     Mixed      Other    Unknown |     Total
-------------+---------------------------------+----------
-    British |        50         55         86 |       355 
-      Irish |        70         50         89 |       358 
-Other White |        57         54         92 |       394 
-     Indian |        61         47        109 |       379 
-  Pakistani |        62         59         91 |       390 
-Bangladeshi |        57         60        101 |       369 
-Other Asian |        58         53         79 |       341 
-  Caribbean |        57         59         81 |       365 
-    African |        48         50         96 |       358 
-Other Black |        53         52         72 |       349 
-    Chinese |        56         52         99 |       377 
-  All mixed |       260        227        360 |     1,490 
-      Other |        49         53         99 |       377 
-    Unknown |       271        285        499 |     1,915 
-------------+---------------------------------+----------
-      Total |     1,209      1,156      1,953 |     7,817 
+            |         eth5
+      eth16 |     Other    Unknown |     Total
+------------+----------------------+----------
+    British |        55         86 |       355 
+      Irish |        50         89 |       358 
+Other White |        54         92 |       394 
+     Indian |        47        109 |       379 
+  Pakistani |        59         91 |       390 
+Bangladeshi |        60        101 |       369 
+Other Asian |        53         79 |       341 
+  Caribbean |        59         81 |       365 
+    African |        50         96 |       358 
+Other Black |        52         72 |       349 
+    Chinese |        52         99 |       377 
+  All mixed |       227        360 |     1,490 
+      Other |        53         99 |       377 
+    Unknown |       285        499 |     1,915 
+------------+----------------------+----------
+      Total |     1,156      1,953 |     7,817 
 
 . bysort eth5: tab eth16, m
 
---------------------------------------------------------------
+-------------------------------------------------------------------------------
 -> eth5 = White
 
       eth16 |      Freq.     Percent        Cum.
@@ -736,7 +694,7 @@ Other Black |         59        5.17       49.43
 ------------+-----------------------------------
       Total |      1,141      100.00
 
---------------------------------------------------------------
+-------------------------------------------------------------------------------
 -> eth5 = South Asian
 
       eth16 |      Freq.     Percent        Cum.
@@ -758,7 +716,7 @@ Other Black |         53        4.43       45.95
 ------------+-----------------------------------
       Total |      1,197      100.00
 
---------------------------------------------------------------
+-------------------------------------------------------------------------------
 -> eth5 = Black
 
       eth16 |      Freq.     Percent        Cum.
@@ -780,7 +738,7 @@ Other Black |         60        5.17       46.17
 ------------+-----------------------------------
       Total |      1,161      100.00
 
---------------------------------------------------------------
+-------------------------------------------------------------------------------
 -> eth5 = Mixed
 
       eth16 |      Freq.     Percent        Cum.
@@ -802,7 +760,7 @@ Other Black |         53        4.38       47.39
 ------------+-----------------------------------
       Total |      1,209      100.00
 
---------------------------------------------------------------
+-------------------------------------------------------------------------------
 -> eth5 = Other
 
       eth16 |      Freq.     Percent        Cum.
@@ -824,7 +782,7 @@ Other Black |         52        4.50       46.63
 ------------+-----------------------------------
       Total |      1,156      100.00
 
---------------------------------------------------------------
+-------------------------------------------------------------------------------
 -> eth5 = Unknown
 
       eth16 |      Freq.     Percent        Cum.
@@ -878,18 +836,12 @@ Other Black |         72        3.69       45.88
 
 . 
 . label define agegroup   0 "0-<18" ///
->                                                 1 "18-<30" /
-> //
->                                                 2 "30-<40" /
-> //
->                                                 3 "40-<50" /
-> //
->                                                 4 "50-<60" /
-> //
->                                                 5 "60-<70" /
-> //
->                                                 6 "70-<80" /
-> //
+>                                                 1 "18-<30" ///
+>                                                 2 "30-<40" ///
+>                                                 3 "40-<50" ///
+>                                                 4 "50-<60" ///
+>                                                 5 "60-<70" ///
+>                                                 6 "70-<80" ///
 >                                                 7 "80+"
 
 .                                                 
@@ -901,8 +853,8 @@ Other Black |         72        3.69       45.88
 . 
 . 
 . 
-. **************************** HOUSEHOLD VARS*****************
-> **************************
+. **************************** HOUSEHOLD VARS**********************************
+> *********
 . **care home
 . encode care_home_type, gen(carehometype)
 
@@ -930,16 +882,14 @@ carehomety |       carehome
 . *check for missing household size values
 . codebook  hh_size, d
 
---------------------------------------------------------------
-hh_size                                            (unlabeled)
---------------------------------------------------------------
+-------------------------------------------------------------------------------
+hh_size                                                             (unlabeled)
+-------------------------------------------------------------------------------
 
                   type:  numeric (byte)
 
-                 range:  [4,11]                       units:  
-> 1
-         unique values:  8                        missing .:  
-> 0/7,817
+                 range:  [4,11]                       units:  1
+         unique values:  8                        missing .:  0/7,817
 
             tabulation:  Freq.  Value
                             14  4
@@ -985,45 +935,33 @@ hh_size                                            (unlabeled)
 
 . bysort  hh_total_cat: summ hh_size
 
---------------------------------------------------------------
+-------------------------------------------------------------------------------
 -> hh_total_cat = 2
 
-    Variable |        Obs        Mean    Std. Dev.       Min  
->       Max
--------------+------------------------------------------------
-> ---------
-     hh_size |        161    4.919255    .2732937          4  
->         5
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     hh_size |        161    4.919255    .2732937          4          5
 
---------------------------------------------------------------
+-------------------------------------------------------------------------------
 -> hh_total_cat = 3
 
-    Variable |        Obs        Mean    Std. Dev.       Min  
->       Max
--------------+------------------------------------------------
-> ---------
-     hh_size |      6,469    7.551863    .9666557          6  
->        10
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     hh_size |      6,469    7.551863    .9666557          6         10
 
---------------------------------------------------------------
+-------------------------------------------------------------------------------
 -> hh_total_cat = 4
 
-    Variable |        Obs        Mean    Std. Dev.       Min  
->       Max
--------------+------------------------------------------------
-> ---------
-     hh_size |         11          11           0         11  
->        11
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     hh_size |         11          11           0         11         11
 
---------------------------------------------------------------
+-------------------------------------------------------------------------------
 -> hh_total_cat = 5
 
-    Variable |        Obs        Mean    Std. Dev.       Min  
->       Max
--------------+------------------------------------------------
-> ---------
-     hh_size |      1,176    7.502551    1.016457          4  
->        10
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     hh_size |      1,176    7.502551    1.016457          4         10
 
 
 . 
@@ -1031,12 +969,11 @@ hh_size                                            (unlabeled)
 >                                                 2 "3-5" ///
 >                                                 3 "6-10" ///
 >                                                 4 "11+" ///
->                                                 5 "carehome"
->  ///
+>                                                 5 "carehome" ///
 >                                                 9 "Unknown"
 
-.                                                             
->                             
+.                                                                              
+>            
 . label values hh_total_cat hh_total_cat
 
 . 
@@ -1065,8 +1002,7 @@ hh_total_c |       carehome
      Total |     6,641      1,176 |     7,817 
 
 . 
-. *create second hh_total_cat excluding 11+ households for sen
-> sitivity analysis
+. *create second hh_total_cat excluding 11+ households for sensitivity analysis
 . gen hh_cat_2=hh_total_cat
 
 . replace hh_cat_2=. if hh_total_cat==4
@@ -1086,23 +1022,17 @@ hh_total_c |       carehome
 
 . sum hh_log_linear hh_linear
 
-    Variable |        Obs        Mean    Std. Dev.       Min  
->       Max
--------------+------------------------------------------------
-> ---------
-hh_log_lin~r |      7,817    2.004249    .1429966   1.386294  
->  2.397895
-   hh_linear |      7,817    7.495075    1.042474          4  
->        11
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+hh_log_lin~r |      7,817    2.004249    .1429966   1.386294   2.397895
+   hh_linear |      7,817    7.495075    1.042474          4         11
 
 . 
 . 
-. /* CONVERT STRINGS TO DATE==================================
-> ==================*/
-. /* Comorb dates dates are given with month only, so adding d
-> ay 
-> 15 to enable  them to be processed as dates                 
->       */
+. /* CONVERT STRINGS TO DATE===================================================
+> =*/
+. /* Comorb dates dates are given with month only, so adding day 
+> 15 to enable  them to be processed as dates                       */
 . 
 . *cr date for diabetes based on adjudicated type
 . gen diabetes=type1_diabetes if diabetes_type=="T1DM"
@@ -1111,8 +1041,7 @@ hh_log_lin~r |      7,817    2.004249    .1429966   1.386294
 . replace diabetes=type2_diabetes if diabetes_type=="T2DM"
 (291 real changes made)
 
-. replace diabetes=unknown_diabetes if diabetes_type=="UNKNOWN
-> _DM"
+. replace diabetes=unknown_diabetes if diabetes_type=="UNKNOWN_DM"
 (22 real changes made)
 
 . 
@@ -1120,55 +1049,37 @@ hh_log_lin~r |      7,817    2.004249    .1429966   1.386294
 
 . 
 . foreach var of varlist  chronic_respiratory_disease ///
->                                                 chronic_card
-> iac_disease  ///
+>                                                 chronic_cardiac_disease  ///
 >                                                 cancer  ///
->                                                 permanent_im
-> munodeficiency  ///
->                                                 temporary_im
-> munodeficiency  ///
->                                                 chronic_live
-> r_disease  ///
->                                                 other_neuro 
->  ///
->                                                 stroke      
->             ///
+>                                                 permanent_immunodeficiency  /
+> //
+>                                                 temporary_immunodeficiency  /
+> //
+>                                                 chronic_liver_disease  ///
+>                                                 other_neuro  ///
+>                                                 stroke                  ///
 >                                                 dementia ///
 >                                                 esrf  ///
->                                                 hypertension
->   ///
->                                                 ra_sle_psori
-> asis  ///
+>                                                 hypertension  ///
+>                                                 ra_sle_psoriasis  ///
 >                                                 diabetes ///
->                                                 bmi_date_mea
-> sured   ///
->                                                 bp_sys_date_
-> measured   ///
->                                                 bp_dias_date
-> _measured   ///
->                                                 creatinine_d
-> ate  ///
->                                                 hba1c_mmol_p
-> er_mol_date  ///
->                                                 hba1c_percen
-> tage_date ///
->                                                 smoking_stat
-> us_date ///
+>                                                 bmi_date_measured   ///
+>                                                 bp_sys_date_measured   ///
+>                                                 bp_dias_date_measured   ///
+>                                                 creatinine_date  ///
+>                                                 hba1c_mmol_per_mol_date  ///
+>                                                 hba1c_percentage_date ///
+>                                                 smoking_status_date ///
 >                                                 insulin ///
 >                                                 statin ///
->                                                 ace_inhibito
-> rs ///
+>                                                 ace_inhibitors ///
 >                                                 arbs ///
->                                                 alpha_blocke
-> rs ///
->                                                 betablockers
->  ///
->                                                 calcium_chan
-> nel_blockers ///
->                                                 spironolacto
-> ne  ///
->                                                 thiazide_diu
-> retics ///                                          
+>                                                 alpha_blockers ///
+>                                                 betablockers ///
+>                                                 calcium_channel_blockers ///
+>                                                 spironolactone  ///
+>                                                 thiazide_diuretics ///       
+>                                    
 >                                                 {
   2.                                                         
 .                 capture confirm string variable `var'
@@ -1178,15 +1089,12 @@ hh_log_lin~r |      7,817    2.004249    .1429966   1.386294
   6.                 }
   7.         
 .                 else {
-  8.                                 replace `var' = `var' + "
-> -15"
+  8.                                 replace `var' = `var' + "-15"
   9.                                 rename `var' `var'_dstr
- 10.                                 replace `var'_dstr = " " 
-> if `var'_dstr == "-15"
- 11.                                 gen `var'_date = date(`va
-> r'_dstr, "YMD") 
- 12.                                 order `var'_date, after(`
-> var'_dstr)
+ 10.                                 replace `var'_dstr = " " if `var'_dstr == 
+> "-15"
+ 11.                                 gen `var'_date = date(`var'_dstr, "YMD") 
+ 12.                                 order `var'_date, after(`var'_dstr)
  13.                                 drop `var'_dstr
  14.                 }
  15.         
@@ -1289,71 +1197,48 @@ variable statin was str7 now str10
 
 . rename temporary_immunodeficiency_date  temp_immunodef_date
 
-. rename bmi_date_measured_date                   bmi_measured
-> _date
+. rename bmi_date_measured_date                   bmi_measured_date
 
 . 
-. /* CREATE BINARY VARIABLES==================================
-> ==================*/
-. *  Make indicator variables for all conditions where relevan
-> t 
+. /* CREATE BINARY VARIABLES===================================================
+> =*/
+. *  Make indicator variables for all conditions where relevant 
 . 
 . foreach var of varlist  chronic_respiratory_disease ///
->                                                 chronic_card
-> iac_disease  ///
+>                                                 chronic_cardiac_disease  ///
 >                                                 cancer  ///
->                                                 perm_immunod
-> ef  ///
->                                                 temp_immunod
-> ef  ///
->                                                 chronic_live
-> r_disease  ///
->                                                 other_neuro 
->  ///
->                                                 stroke      
->             ///
+>                                                 perm_immunodef  ///
+>                                                 temp_immunodef  ///
+>                                                 chronic_liver_disease  ///
+>                                                 other_neuro  ///
+>                                                 stroke                  ///
 >                                                 dementia ///
 >                                                 esrf  ///
->                                                 hypertension
->   ///
->                                                 ra_sle_psori
-> asis  ///
->                                                 bmi_measured
-> _date   ///
->                                                 bp_sys_date_
-> measured   ///
->                                                 bp_dias_date
-> _measured   ///
->                                                 creatinine_d
-> ate  ///
->                                                 hba1c_mmol_p
-> er_mol_date  ///
->                                                 hba1c_percen
-> tage_date ///
->                                                 smoking_stat
-> us_date ///
+>                                                 hypertension  ///
+>                                                 ra_sle_psoriasis  ///
+>                                                 bmi_measured_date   ///
+>                                                 bp_sys_date_measured   ///
+>                                                 bp_dias_date_measured   ///
+>                                                 creatinine_date  ///
+>                                                 hba1c_mmol_per_mol_date  ///
+>                                                 hba1c_percentage_date ///
+>                                                 smoking_status_date ///
 >                                                 insulin ///
 >                                                 statin ///
->                                                 ace_inhibito
-> rs ///
+>                                                 ace_inhibitors ///
 >                                                 arbs ///
->                                                 alpha_blocke
-> rs ///
->                                                 betablockers
->  ///
->                                                 calcium_chan
-> nel_blockers ///
->                                                 spironolacto
-> ne  ///
->                                                 thiazide_diu
-> retics ///                                          
+>                                                 alpha_blockers ///
+>                                                 betablockers ///
+>                                                 calcium_channel_blockers ///
+>                                                 spironolactone  ///
+>                                                 thiazide_diuretics ///       
+>                                    
 >                                                 {
   2.                                                 
-.         /* date ranges are applied in python, so presence of
->  date indicates presence of 
+.         /* date ranges are applied in python, so presence of date indicates p
+> resence of 
 >           disease in the correct time frame */ 
-.         local newvar =  substr("`var'", 1, length("`var'") -
->  5)
+.         local newvar =  substr("`var'", 1, length("`var'") - 5)
   3.         gen `newvar' = (`var'!=. )
   4.         order `newvar', after(`var')
   5.         tab `newvar', m
@@ -1646,16 +1531,12 @@ thiazide_di |
 
 . 
 . label define bmicat 1 "Underweight (<18.5)"     ///
->                                         2 "Normal (18.5-24.9
-> )"          ///
->                                         3 "Overweight (25-29
-> .9)"        ///
->                                         4 "Obese I (30-34.9)
-> "           ///
->                                         5 "Obese II (35-39.9
-> )"          ///
->                                         6 "Obese III (40+)" 
->                     ///
+>                                         2 "Normal (18.5-24.9)"          ///
+>                                         3 "Overweight (25-29.9)"        ///
+>                                         4 "Obese I (30-34.9)"           ///
+>                                         5 "Obese II (35-39.9)"          ///
+>                                         6 "Obese III (40+)"                  
+>    ///
 >                                         .u "Unknown (.u)"
 
 . label values bmicat bmicat
@@ -1667,12 +1548,12 @@ thiazide_di |
 
 . 
 . label define obese4cat  1 "No record of obesity"        ///
->                                                 2 "Obese I (
-> 30-34.9)"           ///
->                                                 3 "Obese II 
-> (35-39.9)"          ///
->                                                 4 "Obese III
->  (40+)"             
+>                                                 2 "Obese I (30-34.9)"        
+>    ///
+>                                                 3 "Obese II (35-39.9)"       
+>    ///
+>                                                 4 "Obese III (40+)"          
+>    
 
 . label values obese4cat obese4cat
 
@@ -1682,9 +1563,8 @@ thiazide_di |
 . 
 . 
 . **generate BMI categories for south asians
-. *https://www.nice.org.uk/guidance/ph46/chapter/1-Recommendat
-> ions#recommendation-2-bmi-assessment-multi-component-interve
-> ntions-and-best-practice-standards
+. *https://www.nice.org.uk/guidance/ph46/chapter/1-Recommendations#recommendati
+> on-2-bmi-assessment-multi-component-interventions-and-best-practice-standards
 . 
 . gen bmicat_sa=bmicat
 (1,413 missing values generated)
@@ -1724,16 +1604,16 @@ thiazide_di |
 
 . 
 . label define bmicat_sa 1 "Underweight (<18.5)"  ///
->                                         2 "Normal (18.5-24.9
->  / 22.9)"           ///
->                                         3 "Overweight (25-29
-> .9 / 23-27.4)"      ///
->                                         4 "Obese I (30-34.9 
-> / 27.4-32.4)"               ///
->                                         5 "Obese II (35-39.9
->  / 32.5- 37.4)"             ///
->                                         6 "Obese III (40+ / 
-> 37.5+)"                     ///
+>                                         2 "Normal (18.5-24.9 / 22.9)"        
+>    ///
+>                                         3 "Overweight (25-29.9 / 23-27.4)"   
+>    ///
+>                                         4 "Obese I (30-34.9 / 27.4-32.4)"    
+>            ///
+>                                         5 "Obese II (35-39.9 / 32.5- 37.4)"  
+>            ///
+>                                         6 "Obese III (40+ / 37.5+)"          
+>            ///
 >                                         7 "Unknown"
 
 . label values bmicat_sa bmicat_sa
@@ -1744,14 +1624,13 @@ thiazide_di |
 (6212 differences between bmicat_sa and obese4cat_sa)
 
 . 
-. label define obese4cat_sa       1 "No record of obesity"    
->     ///
->                                                 2 "Obese I (
-> 30-34.9 / 27.5-32.5)"               ///
->                                                 3 "Obese II 
-> (35-39.9 / 32.5- 37.4)"             ///
->                                                 4 "Obese III
->  (40+ / 37.5+)"             
+. label define obese4cat_sa       1 "No record of obesity"        ///
+>                                                 2 "Obese I (30-34.9 / 27.5-32
+> .5)"               ///
+>                                                 3 "Obese II (35-39.9 / 32.5- 
+> 37.4)"             ///
+>                                                 4 "Obese III (40+ / 37.5+)"  
+>            
 
 . label values obese4cat_sa obese4cat_sa
 
@@ -1762,8 +1641,7 @@ thiazide_di |
 . /*  Smoking  */
 . 
 . * Smoking 
-. label define smoke 1 "Never" 2 "Former" 3 "Current" .u "Unkn
-> own (.u)"
+. label define smoke 1 "Never" 2 "Former" 3 "Current" .u "Unknown (.u)"
 
 . 
 . gen     smoke = 1  if smoking_status == "N"
@@ -1800,21 +1678,17 @@ thiazide_di |
 . /* CLINICAL COMORBIDITIES */ 
 . 
 . /*  Cancer */
-. label define cancer 1 "Never" 2 "Last year" 3 "2-5 years ago
-> " 4 "5+ years"
+. label define cancer 1 "Never" 2 "Last year" 3 "2-5 years ago" 4 "5+ years"
 
 . 
 . * malignancies
-. gen     cancer_cat = 4 if inrange(cancer_date, d(1/1/1900), 
-> d(1/2/2015))
+. gen     cancer_cat = 4 if inrange(cancer_date, d(1/1/1900), d(1/2/2015))
 (6,427 missing values generated)
 
-. replace cancer_cat = 3 if inrange(cancer_date, d(1/2/2015), 
-> d(1/2/2019))
+. replace cancer_cat = 3 if inrange(cancer_date, d(1/2/2015), d(1/2/2019))
 (125 real changes made)
 
-. replace cancer_cat = 2 if inrange(cancer_date, d(1/2/2019), 
-> d(1/2/2020))
+. replace cancer_cat = 2 if inrange(cancer_date, d(1/2/2019), d(1/2/2020))
 (26 real changes made)
 
 . recode  cancer_cat . = 1
@@ -1831,15 +1705,13 @@ thiazide_di |
 . gen temp1  = 1 if perm_immunodef_date!=.
 (6,243 missing values generated)
 
-. gen temp2  = inrange(temp_immunodef_date, (indexdate - 365),
->  indexdate)
+. gen temp2  = inrange(temp_immunodef_date, (indexdate - 365), indexdate)
 
 . 
 . 
 . gen immunosuppressed=0
 
-. replace immunosuppressed=1 if perm_immunodef==1 | temp_immun
-> odef==1
+. replace immunosuppressed=1 if perm_immunodef==1 | temp_immunodef==1
 (2,855 real changes made)
 
 . tab immunosuppressed
@@ -1857,8 +1729,8 @@ immunosuppr |
 . 
 . /*set implausible BP values to missing
 > https://onlinelibrary.wiley.com/doi/full/10.1111/jch.12743
-> SBP (DBP) values outside of the range of 50–300 (30–250) mm 
-> Hg were considered implausible and threrefore excluded. */
+> SBP (DBP) values outside of the range of 50–300 (30–250) mm Hg were considere
+> d implausible and threrefore excluded. */
 . 
 . replace bp_sys=. if bp_sys<50 | bp_sys>300
 (4 real changes made, 4 to missing)
@@ -1874,23 +1746,18 @@ immunosuppr |
 . replace bpcat = 2 if inrange(bp_sys, 120, 130) & bp_dias<80
 (0 real changes made)
 
-. replace bpcat = 3 if inrange(bp_sys, 130, 140) | inrange(bp_
-> dias, 80, 90)
+. replace bpcat = 3 if inrange(bp_sys, 130, 140) | inrange(bp_dias, 80, 90)
 (5 real changes made)
 
-. replace bpcat = 4 if (bp_sys>=140 & bp_sys<.) | (bp_dias>=90
->  & bp_dias<.) 
+. replace bpcat = 4 if (bp_sys>=140 & bp_sys<.) | (bp_dias>=90 & bp_dias<.) 
 (7,411 real changes made)
 
-. replace bpcat = 5 if bp_sys>=. | bp_dias>=. | bp_sys==0 | bp
-> _dias==0
+. replace bpcat = 5 if bp_sys>=. | bp_dias>=. | bp_sys==0 | bp_dias==0
 (770 real changes made)
 
 . 
-. label define bpcat 1 "Normal" 2 "Elevated" 3 "High, stage I"
->     ///
->                                         4 "High, stage II" 5
->  "Unknown"
+. label define bpcat 1 "Normal" 2 "Elevated" 3 "High, stage I"    ///
+>                                         4 "High, stage II" 5 "Unknown"
 
 . label values bpcat bpcat
 
@@ -1926,8 +1793,8 @@ immunosuppr |
 . *   eGFR   *
 . ************
 . 
-. * Set implausible creatinine values to missing (Note: zero c
-> hanged to missing)
+. * Set implausible creatinine values to missing (Note: zero changed to missing
+> )
 . replace creatinine = . if !inrange(creatinine, 20, 3000) 
 (29 real changes made, 29 to missing)
 
@@ -1981,8 +1848,7 @@ immunosuppr |
 . replace egfr=egfr*1.018 if male==0
 (3,746 real changes made)
 
-. label var egfr "egfr calculated using CKD-EPI formula with n
-> o eth"
+. label var egfr "egfr calculated using CKD-EPI formula with no eth"
 
 . 
 . * Categorise into ckd stages
@@ -1990,8 +1856,8 @@ immunosuppr |
 (421 missing values generated)
 
 . 
-. label define egfr_cat 5000 "None" 60 "Stage 3 egfr 30-6" 30 
-> "Stage 4/5 egfr<30"
+. label define egfr_cat 5000 "None" 60 "Stage 3 egfr 30-6" 30 "Stage 4/5 egfr<3
+> 0"
 
 . label values egfr_cat egfr_cat 
 
@@ -2043,20 +1909,15 @@ Stage 3 egfr 30-6 |      7,286       98.51      100.00
 . * Express all values as perecentage 
 . noi summ hba1c_percentage hba1c_mmol_per_mol 
 
-    Variable |        Obs        Mean    Std. Dev.       Min  
->       Max
--------------+------------------------------------------------
-> ---------
-hba1c_per~ge |      7,398    5.078346    1.985957   .0085355  
->  11.87057
-hba1c_mmol~l |      7,255    40.98353    18.68731   .0153172  
->  118.6232
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+hba1c_per~ge |      7,398    5.078346    1.985957   .0085355   11.87057
+hba1c_mmol~l |      7,255    40.98353    18.68731   .0153172   118.6232
 
 . gen     hba1c_pct = hba1c_percentage 
 (419 missing values generated)
 
-. replace hba1c_pct = (hba1c_mmol_per_mol/10.929)+2.15 if hba1
-> c_mmol_per_mol<. 
+. replace hba1c_pct = (hba1c_mmol_per_mol/10.929)+2.15 if hba1c_mmol_per_mol<. 
 (7,255 real changes made)
 
 . 
@@ -2086,27 +1947,15 @@ hba1c_mmol~l |      7,255    40.98353    18.68731   .0153172
 . 
 . tab dm_type diabetes_type
 
-           |          diabetes_type
-   dm_type |     NO_DM       T1DM       T2DM |     Total
------------+---------------------------------+----------
-         0 |     5,838          0          0 |     5,838 
-         1 |         0        238          0 |       238 
-         2 |         0          0      1,597 |     1,597 
-         3 |         0          0          0 |       144 
------------+---------------------------------+----------
-     Total |     5,838        238      1,597 |     7,817 
-
-
-           | diabetes_t
-           |    ype
-   dm_type | UNKNOWN.. |     Total
------------+-----------+----------
-         0 |         0 |     5,838 
-         1 |         0 |       238 
-         2 |         0 |     1,597 
-         3 |       144 |       144 
------------+-----------+----------
-     Total |       144 |     7,817 
+           |                diabetes_type
+   dm_type |     NO_DM       T1DM       T2DM  UNKNOWN.. |     Total
+-----------+--------------------------------------------+----------
+         0 |     5,838          0          0          0 |     5,838 
+         1 |         0        238          0          0 |       238 
+         2 |         0          0      1,597          0 |     1,597 
+         3 |         0          0          0        144 |       144 
+-----------+--------------------------------------------+----------
+     Total |     5,838        238      1,597        144 |     7,817 
 
 . label define dm_type 0"No DM" 1"T1DM" 2"T2DM" 3"UNKNOWN_DM"
 
@@ -2117,8 +1966,7 @@ hba1c_mmol~l |      7,255    40.98353    18.68731   .0153172
 . gen dm_type_exeter_os=1 if diabetes_exeter_os=="T1DM_EX_OS"
 (7,582 missing values generated)
 
-. replace dm_type_exeter_os=2 if diabetes_exeter_os=="T2DM_EX_
-> OS"
+. replace dm_type_exeter_os=2 if diabetes_exeter_os=="T2DM_EX_OS"
 (1,492 real changes made)
 
 . replace dm_type_exeter_os=0 if diabetes_exeter_os=="NO_DM"
@@ -2146,8 +1994,8 @@ hba1c_mmol~l |      7,255    40.98353    18.68731   .0153172
 . replace hba1ccat = 5 if hba1c_pct==.
 (28 real changes made)
 
-. label define hba1ccat 0 "<6.5%" 1">=6.5-7.4" 2">=7.5-7.9" 3"
-> >=8-8.9" 4">=9" 5"Unknown"
+. label define hba1ccat 0 "<6.5%" 1">=6.5-7.4" 2">=7.5-7.9" 3">=8-8.9" 4">=9" 5
+> "Unknown"
 
 . label values hba1ccat hba1ccat
 
@@ -2191,35 +2039,30 @@ hba1c_mmol~l |      7,255    40.98353    18.68731   .0153172
 . replace diabcat = 2 if dm_type==1 & inlist(hba1ccat, 0, 1)
 (197 real changes made)
 
-. replace diabcat = 3 if dm_type==1 & inlist(hba1ccat, 2, 3, 4
-> )
+. replace diabcat = 3 if dm_type==1 & inlist(hba1ccat, 2, 3, 4)
 (41 real changes made)
 
 . replace diabcat = 4 if dm_type==2 & inlist(hba1ccat, 0, 1)
 (1,299 real changes made)
 
-. replace diabcat = 5 if dm_type==2 & inlist(hba1ccat, 2, 3, 4
-> )
+. replace diabcat = 5 if dm_type==2 & inlist(hba1ccat, 2, 3, 4)
 (292 real changes made)
 
-. replace diabcat = 6 if dm_type==1 & hba1c_pct==. | dm_type==
-> 2 & hba1c_pct==.
+. replace diabcat = 6 if dm_type==1 & hba1c_pct==. | dm_type==2 & hba1c_pct==.
 (6 real changes made)
 
 . 
 . 
-. label define diabcat    1 "No diabetes"                     
->     ///
->                                                 2 "T1DM, con
-> trolled"            ///
->                                                 3 "T1DM, unc
-> ontrolled"          ///
->                                                 4 "T2DM, con
-> trolled"            ///
->                                                 5 "T2DM, unc
-> ontrolled"          ///
->                                                 6 "Diabetes,
->  no HbA1c"
+. label define diabcat    1 "No diabetes"                         ///
+>                                                 2 "T1DM, controlled"         
+>    ///
+>                                                 3 "T1DM, uncontrolled"       
+>    ///
+>                                                 4 "T2DM, controlled"         
+>    ///
+>                                                 5 "T2DM, uncontrolled"       
+>    ///
+>                                                 6 "Diabetes, no HbA1c"
 
 . label values diabcat diabcat
 
@@ -2271,26 +2114,18 @@ Diabetes, no HbA1c |          6        0.08       98.16
 
 . 
 . foreach var of varlist  chronic_respiratory_disease ///
->                                                 chronic_card
-> iac_disease  ///
+>                                                 chronic_cardiac_disease  ///
 >                                                 cancer  ///
->                                                 perm_immunod
-> ef  ///
->                                                 temp_immunod
-> ef  ///
->                                                 chronic_live
-> r_disease  ///
->                                                 other_neuro 
->  ///
->                                                 stroke      
->             ///
+>                                                 perm_immunodef  ///
+>                                                 temp_immunodef  ///
+>                                                 chronic_liver_disease  ///
+>                                                 other_neuro  ///
+>                                                 stroke                  ///
 >                                                 dementia ///
 >                                                 esrf  ///
->                                                 hypertension
->   ///
+>                                                 hypertension  ///
 >                                                 asthma ///
->                                                 ra_sle_psori
-> asis  ///
+>                                                 ra_sle_psoriasis  ///
 >                                                 {
   2. replace comorbidity_count=comorbidity_count+1 if `var'==1
   3.                                                 }
@@ -2311,72 +2146,53 @@ Diabetes, no HbA1c |          6        0.08       98.16
 . 
 . summ comorbidity_count
 
-    Variable |        Obs        Mean    Std. Dev.       Min  
->       Max
--------------+------------------------------------------------
-> ---------
-comorbidit~t |      7,817    2.431495    1.392312          0  
->         9
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+comorbidit~t |      7,817    2.431495    1.392312          0          9
 
 . 
 . *comorbidities category 
 . gen comorbidity_cat =comorbidity_count
 
-. replace comorbidity_cat=4 if comorbidity_count>=4 & comorbid
-> ity_count!=.
+. replace comorbidity_cat=4 if comorbidity_count>=4 & comorbidity_count!=.
 (593 real changes made)
 
 . bysort comorbidity_cat: sum comorbidity_count
 
---------------------------------------------------------------
+-------------------------------------------------------------------------------
 -> comorbidity_cat = 0
 
-    Variable |        Obs        Mean    Std. Dev.       Min  
->       Max
--------------+------------------------------------------------
-> ---------
-comorbidi~nt |        502           0           0          0  
->         0
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+comorbidi~nt |        502           0           0          0          0
 
---------------------------------------------------------------
+-------------------------------------------------------------------------------
 -> comorbidity_cat = 1
 
-    Variable |        Obs        Mean    Std. Dev.       Min  
->       Max
--------------+------------------------------------------------
-> ---------
-comorbidi~nt |      1,601           1           0          1  
->         1
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+comorbidi~nt |      1,601           1           0          1          1
 
---------------------------------------------------------------
+-------------------------------------------------------------------------------
 -> comorbidity_cat = 2
 
-    Variable |        Obs        Mean    Std. Dev.       Min  
->       Max
--------------+------------------------------------------------
-> ---------
-comorbidi~nt |      2,194           2           0          2  
->         2
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+comorbidi~nt |      2,194           2           0          2          2
 
---------------------------------------------------------------
+-------------------------------------------------------------------------------
 -> comorbidity_cat = 3
 
-    Variable |        Obs        Mean    Std. Dev.       Min  
->       Max
--------------+------------------------------------------------
-> ---------
-comorbidi~nt |      1,859           3           0          3  
->         3
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+comorbidi~nt |      1,859           3           0          3          3
 
---------------------------------------------------------------
+-------------------------------------------------------------------------------
 -> comorbidity_cat = 4
 
-    Variable |        Obs        Mean    Std. Dev.       Min  
->       Max
--------------+------------------------------------------------
-> ---------
-comorbidi~nt |      1,661    4.479831    .7463059          4  
->         9
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+comorbidi~nt |      1,661    4.479831    .7463059          4          9
 
 
 . tab comorbidity_cat,m
@@ -2424,8 +2240,8 @@ combination |
 . replace combination_bp_meds=0 if combination_bp_meds<0 
 (56 real changes made)
 
-. replace combination_bp_meds=1 if combination_bp_meds>0 & com
-> bination_bp_meds!=.
+. replace combination_bp_meds=1 if combination_bp_meds>0 & combination_bp_meds!
+> =.
 (1,591 real changes made)
 
 . tab combination_bp_meds
@@ -2446,30 +2262,25 @@ combination |
 
 . 
 . *GP consult count
-. replace gp_consult_count=0 if gp_consult_count==. | gp_consu
-> lt_count<0
+. replace gp_consult_count=0 if gp_consult_count==. | gp_consult_count<0
 (2,372 real changes made)
 
 . summ gp_consult_count
 
-    Variable |        Obs        Mean    Std. Dev.       Min  
->       Max
--------------+------------------------------------------------
-> ---------
-gp_consult~t |      7,817    2.503646    2.304599          0  
->        11
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+gp_consult~t |      7,817    2.503646    2.304599          0         11
 
 . 
 . /**** Create survival times  ****/
 . * For looping later, name must be stime_binary_outcome_name
 . 
-. * Survival time = last followup date (first: deregistration 
-> date, end study, death, or that outcome)
-. *Ventilation does not have a survival time because it is a y
-> es/no flag
+. * Survival time = last followup date (first: deregistration date, end study, 
+> death, or that outcome)
+. *Ventilation does not have a survival time because it is a yes/no flag
 . foreach i of global outcomes {
-  2.         gen stime_`i' = min(`i'_censor_date, onsdeath_dat
-> e, `i'_date, dereg_date)
+  2.         gen stime_`i' = min(`i'_censor_date, onsdeath_date, `i'_date, dere
+> g_date)
   3. }
 
 . 
@@ -2563,14 +2374,13 @@ ons_noncovi |
 . 
 . /*distribution of outcome dates
 > foreach i of global outcomes {
->         histogram `i'_date, discrete width(15) frequency yti
-> tle(`i') xtitle(Date) scheme(meta) 
-> graph export "$Tabfigdir/outcome_`i'_freq.svg", as(svg) repl
-> ace
+>         histogram `i'_date, discrete width(15) frequency ytitle(`i') xtitle(D
+> ate) scheme(meta) 
+> graph export "$Tabfigdir/outcome_`i'_freq.svg", as(svg) replace
 > }
 > */
-. /* LABEL VARIABLES==========================================
-> ==================*/
+. /* LABEL VARIABLES===========================================================
+> =*/
 . *  Label variables you are intending to keep, drop the rest 
 . 
 . *HH variable
@@ -2594,407 +2404,352 @@ ons_noncovi |
 . * Demographics
 . label var patient_id                            "Patient ID"
 
-. label var age                                           "Age
->  (years)"
+. label var age                                           "Age (years)"
 
-. label var agegroup                                      "Gro
-> uped age"
+. label var agegroup                                      "Grouped age"
 
-. label var sex                                           "Sex
-> "
+. label var sex                                           "Sex"
 
-. label var male                                          "Mal
-> e"
+. label var male                                          "Male"
 
-. label var bmi                                           "Bod
-> y Mass Index (BMI, kg/m2)"
+. label var bmi                                           "Body Mass Index (BMI
+> , kg/m2)"
 
-. label var bmicat                                        "BMI
-> "
+. label var bmicat                                        "BMI"
 
-. label var bmicat_sa                                     "BMI
->  with SA categories"
+. label var bmicat_sa                                     "BMI with SA categori
+> es"
 
-. label var bmi_measured_date             "Body Mass Index (BM
-> I, kg/m2), date measured"
+. label var bmi_measured_date             "Body Mass Index (BMI, kg/m2), date m
+> easured"
 
-. label var obese4cat                                     "Obe
-> sity (4 categories)"
+. label var obese4cat                                     "Obesity (4 categorie
+> s)"
 
-. label var obese4cat_sa                          "Obesity wit
-> h SA categories"
+. label var obese4cat_sa                          "Obesity with SA categories"
 
-. label var smoke                                         "Smo
-> king status"
+. label var smoke                                         "Smoking status"
 
-. label var smoke_nomiss                          "Smoking sta
-> tus (missing set to non)"
+. label var smoke_nomiss                          "Smoking status (missing set 
+> to non)"
 
-. label var imd                                           "Ind
-> ex of Multiple Deprivation (IMD)"
+. label var imd                                           "Index of Multiple De
+> privation (IMD)"
 
-. label var eth5                                          "Eth
->  5 categories"
+. label var eth5                                          "Eth 5 categories"
 
-. label var ethnicity_16                          "Eth 16 cate
-> gories"
+. label var ethnicity_16                          "Eth 16 categories"
 
-. label var eth16                                         "Eth
->  16 collapsed"
+. label var eth16                                         "Eth 16 collapsed"
 
-. label var stp                                           "Sus
-> tainability and Transformation Partnership"
+. label var stp                                           "Sustainability and T
+> ransformation Partnership"
 
-. label var age1                                          "Age
->  spline 1"
+. label var age1                                          "Age spline 1"
 
-. label var age2                                          "Age
->  spline 2"
+. label var age2                                          "Age spline 2"
 
-. label var age3                                          "Age
->  spline 3"
+. label var age3                                          "Age spline 3"
 
-. lab var region                                          "Reg
-> ion of England"
+. lab var region                                          "Region of England"
 
-. lab var rural_urban                                     "Rur
-> al-Urban Indicator"
+. lab var rural_urban                                     "Rural-Urban Indicato
+> r"
 
-. lab var carehome                                        "Car
-> e home y/n"
+. lab var carehome                                        "Care home y/n"
 
-. lab var hba1c_mmol_per_mol                      "HbA1c mmo/m
-> ol"
+. lab var hba1c_mmol_per_mol                      "HbA1c mmo/mol"
 
-. lab var hba1c_pct                                       "HbA
-> 1c %"
+. lab var hba1c_pct                                       "HbA1c %"
 
-. lab var hba1ccat                                        "HbA
-> 1c category"
+. lab var hba1ccat                                        "HbA1c category"
 
-. lab var hba1c75                                         "HbA
-> 1c >= 7.5%"
+. lab var hba1c75                                         "HbA1c >= 7.5%"
 
-. lab var gp_consult_count                        "Number of G
-> P consultations in the 12 months prior to baseline"
+. lab var gp_consult_count                        "Number of GP consultations i
+> n the 12 months prior to baseline"
 
 . 
 . * Comorbidities of interest 
-. label var comorbidity_count                     "Count of co
-> -morbid conditions"
+. label var comorbidity_count                     "Count of co-morbid condition
+> s"
 
-. label var comorbidity_cat                               "Cat
-> georised co-morbidity count"
+. label var comorbidity_cat                               "Catgeorised co-morbi
+> dity count"
 
-. label var asthma                                            
->     "Asthma category"
+. label var asthma                                                "Asthma categ
+> ory"
 
-. label var hypertension                              "Diagnos
-> ed hypertension"
+. label var hypertension                              "Diagnosed hypertension"
 
-. label var chronic_respiratory_disease   "Chronic Respiratory
->  Diseases"
+. label var chronic_respiratory_disease   "Chronic Respiratory Diseases"
 
-. label var chronic_cardiac_disease               "Chronic Car
-> diac Diseases"
+. label var chronic_cardiac_disease               "Chronic Cardiac Diseases"
 
-. label var dm_type                                           
->     "Diabetes Type"
+. label var dm_type                                               "Diabetes Typ
+> e"
 
-. label var dm_type_exeter_os                             "Dia
-> betes type (Exeter definition)"
+. label var dm_type_exeter_os                             "Diabetes type (Exete
+> r definition)"
 
-. label var cancer                                            
->     "Cancer"
+. label var cancer                                                "Cancer"
 
-. label var immunosuppressed                              "Imm
-> unosuppressed (perm or temp)"
+. label var immunosuppressed                              "Immunosuppressed (pe
+> rm or temp)"
 
-. label var chronic_liver_disease                 "Chronic liv
-> er disease"
+. label var chronic_liver_disease                 "Chronic liver disease"
 
-. label var other_neuro                                   "Neu
-> rological disease"                  
+. label var other_neuro                                   "Neurological disease
+> "                  
 
-. label var stroke                                            
-> "Stroke"
+. label var stroke                                            "Stroke"
 
-. lab var dementia                                            
->     "Dementia"                                              
->         
+. lab var dementia                                                "Dementia"   
+>                                                    
 
-. label var ra_sle_psoriasis                              "Aut
-> oimmune disease"
+. label var ra_sle_psoriasis                              "Autoimmune disease"
 
-. lab var egfr                                                
->     "eGFR"
+. lab var egfr                                                    "eGFR"
 
-. lab var egfr_cat                                            
->     "CKD category defined by eGFR"
+. lab var egfr_cat                                                "CKD category
+>  defined by eGFR"
 
-. lab var egfr60                                              
->     "CKD defined by egfr<60"
+. lab var egfr60                                                  "CKD defined 
+> by egfr<60"
 
-. lab var  bphigh                                             
->     "non-missing indicator of known high blood pressure"
+. lab var  bphigh                                                 "non-missing 
+> indicator of known high blood pressure"
 
-. lab var bp_cat                                              
->     "Blood pressure four levels non-missing"
+. lab var bp_cat                                                  "Blood pressu
+> re four levels non-missing"
 
-. lab var htdiag_or_highbp                                "Hig
-> h blood pressure or hypertension diagnosis"
+. lab var htdiag_or_highbp                                "High blood pressure 
+> or hypertension diagnosis"
 
-. lab var bp_sys                                              
->     "Systolic BP"
+. lab var bp_sys                                                  "Systolic BP"
 
-. lab var bp_dias                                             
->     "Diastolic BP"
+. lab var bp_dias                                                 "Diastolic BP
+> "
 
-. lab var bp_map                                              
->     "Mean Arterial Pressure"
+. lab var bp_map                                                  "Mean Arteria
+> l Pressure"
 
-. lab var esrf                                                
->     "end stage renal failure"
+. lab var esrf                                                    "end stage re
+> nal failure"
 
-. label var hypertension_date                                 
->     "Diagnosed hypertension Date"
+. label var hypertension_date                                     "Diagnosed hy
+> pertension Date"
 
-. label var chronic_respiratory_disease_date      "Other Respi
-> ratory Diseases Date"
+. label var chronic_respiratory_disease_date      "Other Respiratory Diseases D
+> ate"
 
-. label var chronic_cardiac_disease_date          "Other Heart
->  Diseases Date"
+. label var chronic_cardiac_disease_date          "Other Heart Diseases Date"
 
-. label var diabetes_date                                     
->     "Diabetes Date"
+. label var diabetes_date                                         "Diabetes Dat
+> e"
 
-. label var cancer_date                                       
->     "Cancer Date"
+. label var cancer_date                                           "Cancer Date"
 
-. label var chronic_liver_disease_date            "Chronic liv
-> er disease Date"
+. label var chronic_liver_disease_date            "Chronic liver disease Date"
 
-. label var other_neuro_date                                  
->     "Neurological disease  Date"
+. label var other_neuro_date                                      "Neurological
+>  disease  Date"
 
-. label var stroke_date                                   "Str
-> oke date"           
+. label var stroke_date                                   "Stroke date"        
+>    
 
-. label var dementia_date                                     
->     "DDementia date"                                        
+. label var dementia_date                                         "DDementia da
+> te"                                        
 
-. label var ra_sle_psoriasis_date                         "Aut
-> oimmune disease  Date"
+. label var ra_sle_psoriasis_date                         "Autoimmune disease  
+> Date"
 
-. lab var esrf_date                                           
->             "end stage renal failure"
+. lab var esrf_date                                                       "end 
+> stage renal failure"
 
-. lab var hba1c_percentage_date                           "HbA
-> 1c % date"
+. lab var hba1c_percentage_date                           "HbA1c % date"
 
 . 
 . 
 . *medications
-. lab var statin                                              
->             "Statin in last 12 months"
+. lab var statin                                                          "Stat
+> in in last 12 months"
 
-. lab var insulin                                             
->             "Insulin in last 12 months"
+. lab var insulin                                                         "Insu
+> lin in last 12 months"
 
-. lab var ace_inhibitors                                      
->     "ACE in last 12 months"
+. lab var ace_inhibitors                                          "ACE in last 
+> 12 months"
 
-. lab var alpha_blockers                                      
->     "Alpha blocker in last 12 months"
+. lab var alpha_blockers                                          "Alpha blocke
+> r in last 12 months"
 
-. lab var arbs                                                
->             "ARB in last 12 months"
+. lab var arbs                                                            "ARB 
+> in last 12 months"
 
-. lab var betablockers                                        
->     "Beta blocker in last 12 months"
-
-. lab var calcium_channel_blockers                        "CCB
+. lab var betablockers                                            "Beta blocker
 >  in last 12 months"
 
-. lab var combination_bp_meds                             "BP 
-> med in last 12 months"
+. lab var calcium_channel_blockers                        "CCB in last 12 month
+> s"
 
-. lab var spironolactone                                      
->     "Spironolactone in last 12 months"
+. lab var combination_bp_meds                             "BP med in last 12 mo
+> nths"
 
-. lab var thiazide_diuretics                                  
->     "TZD in last 12 months"
+. lab var spironolactone                                          "Spironolacto
+> ne in last 12 months"
+
+. lab var thiazide_diuretics                                      "TZD in last 
+> 12 months"
 
 . 
-. lab var statin_date                                         
->             "Statin in last 12 months"
+. lab var statin_date                                                     "Stat
+> in in last 12 months"
 
-. lab var insulin_date                                        
->     "Insulin in last 12 months"
+. lab var insulin_date                                            "Insulin in l
+> ast 12 months"
 
-. lab var ace_inhibitors_date                             "ACE
+. lab var ace_inhibitors_date                             "ACE in last 12 month
+> s"
+
+. lab var alpha_blockers_date                             "Alpha blocker in las
+> t 12 months"
+
+. lab var arbs_date                                                       "ARB 
+> in last 12 months"
+
+. lab var betablockers_date                                       "Beta blocker
 >  in last 12 months"
 
-. lab var alpha_blockers_date                             "Alp
-> ha blocker in last 12 months"
+. lab var calcium_channel_blockers_date           "CCB in last 12 months"
 
-. lab var arbs_date                                           
->             "ARB in last 12 months"
+. lab var spironolactone_date                             "Spironolactone in la
+> st 12 months"
 
-. lab var betablockers_date                                   
->     "Beta blocker in last 12 months"
-
-. lab var calcium_channel_blockers_date           "CCB in last
->  12 months"
-
-. lab var spironolactone_date                             "Spi
-> ronolactone in last 12 months"
-
-. lab var thiazide_diuretics_date                         "TZD
->  in last 12 months"
+. lab var thiazide_diuretics_date                         "TZD in last 12 month
+> s"
 
 . 
 . * Outcomes and follow-up
-. label var indexdate                                     "Dat
-> e of study start (Feb 1 2020)"
+. label var indexdate                                     "Date of study start 
+> (Feb 1 2020)"
 
 . foreach i of global outcomes {
-  2.         label var `i'_censor_date                "Date of
->  admin censoring"
+  2.         label var `i'_censor_date                "Date of admin censoring"
   3. }
 
 . *Outcome dates
 . foreach i of global outcomes {
-  2.         label var `i'_date                               
->        "Failure date:  `i'"
+  2.         label var `i'_date                                      "Failure d
+> ate:  `i'"
   3.         d `i'_date
   4. }
 
               storage   display    value
 variable name   type    format     label      variable label
---------------------------------------------------------------
-tested_date     float   %td                   Failure date:
-                                          tested
+-------------------------------------------------------------------------------
+tested_date     float   %td                   Failure date:  tested
 
               storage   display    value
 variable name   type    format     label      variable label
---------------------------------------------------------------
-positive~t_date float   %td                   Failure date:
-                                          positivetest
+-------------------------------------------------------------------------------
+positive~t_date float   %td                   Failure date:  positivetest
 
               storage   display    value
 variable name   type    format     label      variable label
---------------------------------------------------------------
-icu_date        float   %td                   Failure date:
-                                          icu
+-------------------------------------------------------------------------------
+icu_date        float   %td                   Failure date:  icu
 
               storage   display    value
 variable name   type    format     label      variable label
---------------------------------------------------------------
-hes_date        float   %td                   Failure date:
-                                          hes
+-------------------------------------------------------------------------------
+hes_date        float   %td                   Failure date:  hes
 
               storage   display    value
 variable name   type    format     label      variable label
---------------------------------------------------------------
-onscovid~h_date float   %td                   Failure date:
-                                          onscoviddeath
+-------------------------------------------------------------------------------
+onscovid~h_date float   %td                   Failure date:  onscoviddeath
 
               storage   display    value
 variable name   type    format     label      variable label
---------------------------------------------------------------
-onsconfi~h_date float   %td                   Failure date:
-                                          onsconfirmeddeath
+-------------------------------------------------------------------------------
+onsconfi~h_date float   %td                   Failure date:  onsconfirmeddeath
 
               storage   display    value
 variable name   type    format     label      variable label
---------------------------------------------------------------
-onsunder~h_date float   %td                   Failure date:
-                                          onsunderlyingdeath
+-------------------------------------------------------------------------------
+onsunder~h_date float   %td                   Failure date:  onsunderlyingdeath
 
               storage   display    value
 variable name   type    format     label      variable label
---------------------------------------------------------------
-ons_nonc~h_date float   %td                   Failure date:
-                                          ons_noncoviddeath
+-------------------------------------------------------------------------------
+ons_nonc~h_date float   %td                   Failure date:  ons_noncoviddeath
 
               storage   display    value
 variable name   type    format     label      variable label
---------------------------------------------------------------
-onsdeath_date   float   %td                   Failure date:
-                                          onsdeath
+-------------------------------------------------------------------------------
+onsdeath_date   float   %td                   Failure date:  onsdeath
 
 . 
 . * Survival times
 . foreach i of global outcomes {
-  2.         lab var stime_`i'                                
->        "Survivatime (date): `i'"
+  2.         lab var stime_`i'                                       "Survivati
+> me (date): `i'"
   3.         d stime_`i'
   4. }
 
               storage   display    value
 variable name   type    format     label      variable label
---------------------------------------------------------------
-stime_tested    float   %td                   Survivatime
-                                          (date): tested
+-------------------------------------------------------------------------------
+stime_tested    float   %td                   Survivatime (date): tested
 
               storage   display    value
 variable name   type    format     label      variable label
---------------------------------------------------------------
-stime_positiv~t float   %td                   Survivatime
-                                          (date): positivetest
+-------------------------------------------------------------------------------
+stime_positiv~t float   %td                   Survivatime (date): positivetest
 
               storage   display    value
 variable name   type    format     label      variable label
---------------------------------------------------------------
-stime_icu       float   %td                   Survivatime
-                                          (date): icu
+-------------------------------------------------------------------------------
+stime_icu       float   %td                   Survivatime (date): icu
 
               storage   display    value
 variable name   type    format     label      variable label
---------------------------------------------------------------
-stime_hes       float   %td                   Survivatime
-                                          (date): hes
+-------------------------------------------------------------------------------
+stime_hes       float   %td                   Survivatime (date): hes
 
               storage   display    value
 variable name   type    format     label      variable label
---------------------------------------------------------------
-stime_onscovi~h float   %td                   Survivatime
-                                          (date):
-                                          onscoviddeath
+-------------------------------------------------------------------------------
+stime_onscovi~h float   %td                   Survivatime (date): onscoviddeath
 
               storage   display    value
 variable name   type    format     label      variable label
---------------------------------------------------------------
-stime_onsconf~h float   %td                   Survivatime
-                                          (date):
-                                          onsconfirmeddeath
+-------------------------------------------------------------------------------
+stime_onsconf~h float   %td                   Survivatime (date):
+                                                onsconfirmeddeath
 
               storage   display    value
 variable name   type    format     label      variable label
---------------------------------------------------------------
-stime_onsunde~h float   %td                   Survivatime
-                                          (date):
-                                          onsunderlyingdeath
+-------------------------------------------------------------------------------
+stime_onsunde~h float   %td                   Survivatime (date):
+                                                onsunderlyingdeath
 
               storage   display    value
 variable name   type    format     label      variable label
---------------------------------------------------------------
-stime_ons_non~h float   %td                   Survivatime
-                                          (date):
-                                          ons_noncoviddeath
+-------------------------------------------------------------------------------
+stime_ons_non~h float   %td                   Survivatime (date):
+                                                ons_noncoviddeath
 
               storage   display    value
 variable name   type    format     label      variable label
---------------------------------------------------------------
-stime_onsdeath  float   %td                   Survivatime
-                                          (date): onsdeath
+-------------------------------------------------------------------------------
+stime_onsdeath  float   %td                   Survivatime (date): onsdeath
 
 . 
 . * binary outcome indicators
 . foreach i of global outcomes {
-  2.         lab var `i'                                     "
-> outcome `i'"
+  2.         lab var `i'                                     "outcome `i'"
   3.         tab `i'
   4. }
 
@@ -3073,41 +2828,37 @@ ons_noncovi |
 ------------+-----------------------------------
       Total |      7,817      100.00
 
-. label var advanced_resp_support_flag            "outcome: Ad
-> vanced respiratory support"
+. label var advanced_resp_support_flag            "outcome: Advanced respirator
+> y support"
 
 . 
-. label var basic_resp_support_flag               "outcome: Ba
-> sic respiratory support"
+. label var basic_resp_support_flag               "outcome: Basic respiratory s
+> upport"
 
-. label var any_resp_support_flag "outcome: Any respiratory su
-> pport"
+. label var any_resp_support_flag "outcome: Any respiratory support"
 
 . 
-. /* TIDY DATA================================================
-> ==================*/
+. /* TIDY DATA=================================================================
+> =*/
 . *  Drop variables that are not needed (those not labelled)
 . ds, not(varlabel)
-confirmed_~e  ~l_date_date  died_ons_s~y  cpnsd~r_date
-primary_c~se  hba1c~l_date  died_ons_c~g  carehometype
-primary_c~re  hba1c_perc..  ethnicity     bmi_time
-suspected_~e  crea~te_date  has_consul~y  bmi_age
-ae_date       crea~ne_date  hba1c_per~ge  cancer_cat
-cpnsd~h_date  smoki~e_date  creatinine    temp1
-ethni~6_date  smoki~s_date  diabetes_t~e  temp2
-ethni~y_date  perm_immun~e  diabetes_e~s  SCr_adj
-bmi_measured  perm_immun~f  diabetes_e~r  min
-bp_sys_dat~e  temp_immun~e  index         max
-bp_sys_dat~d  temp_immun~f  onssuspect~e  diabcat
-bp_dias_da~e  died_ons_c..  dereg_date
-bp_dias_da~d  d~nfirmedc~y  ae_censor_~e
+confirmed_~e  bp_sys_dat~d  perm_immun~e  hba1c_per~ge  carehometype
+primary_c~se  bp_dias_da~e  perm_immun~f  creatinine    bmi_time
+primary_c~re  bp_dias_da~d  temp_immun~e  diabetes_t~e  bmi_age
+suspected_~e  ~l_date_date  temp_immun~f  diabetes_e~s  cancer_cat
+ae_date       hba1c~l_date  died_ons_c..  diabetes_e~r  temp1
+cpnsd~h_date  hba1c_perc..  d~nfirmedc~y  index         temp2
+ethni~6_date  crea~te_date  died_ons_s~y  onssuspect~e  SCr_adj
+ethni~y_date  crea~ne_date  died_ons_c~g  dereg_date    min
+bmi_measured  smoki~e_date  ethnicity     ae_censor_~e  max
+bp_sys_dat~e  smoki~s_date  has_consul~y  cpnsd~r_date  diabcat
 
 . drop `r(varlist)'
 
 .         
 . 
-. /* APPLY INCLUSION/EXCLUIONS================================
-> ==================*/ 
+. /* APPLY INCLUSION/EXCLUIONS=================================================
+> =*/ 
 . 
 . count
   7,817
@@ -3138,25 +2889,21 @@ DROP IF DIED BEFORE INDEX
 . sort patient_id
 
 . save ./output/analysis_dataset.dta, replace
+(note: file ./output/analysis_dataset.dta not found)
 file ./output/analysis_dataset.dta saved
 
 . 
-. /***********************************************************
-> *****
-> *  Create outcome specific datasets for the whole population
->   *
-> ************************************************************
-> *****
+. /****************************************************************
+> *  Create outcome specific datasets for the whole population  *
+> *****************************************************************
 > 
 > 
 > foreach i of global outcomes {
 >         use ./output/analysis_dataset.dta, clear
 >         drop if `i'_date <= indexdate 
->         stset stime_`i', fail(`i')                          
->     ///     
+>         stset stime_`i', fail(`i')                              ///     
 >         id(patient_id) enter(indexdate) origin(indexdate)
->         save ./output/analysis_dataset_STSET_`i'.dta, replac
-> e
+>         save ./output/analysis_dataset_STSET_`i'.dta, replace
 > }       
 > 
 > 
@@ -3167,4 +2914,3 @@ file ./output/analysis_dataset.dta saved
 > 
 
 end of do-file
-

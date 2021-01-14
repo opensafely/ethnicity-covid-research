@@ -60,6 +60,15 @@ actions:
       moderately_sensitive:
         log: logs/01e_eth_cr_stset_onsconfirmeddeath.log
 
+  cr_underlying:
+    run: stata-mp:latest analysis/01f_eth_cr_stset_underlyingcovid.do
+    needs: [crmain]
+    outputs:
+      highly_sensitive:
+        stset_onsconfirmeddeath: output/analysis_dataset_STSET_onsunderlyingdeath.dta 
+      moderately_sensitive:
+        log: logs/01e_eth_cr_stset_onsunderlyingdeath.log
+
 
   check_region:
     run: stata-mp:latest analysis/02b_eth_region_check.do
@@ -132,3 +141,20 @@ actions:
         estout: output/estout_onsconfirmeddeath_eth5.txt
         graph: output/FP_sens_onsconfirmeddeath_eth5.txt
 
+  sens_underlying_eth16:
+    run: stata-mp:latest analysis/06f_eth_sensanalysis_underlyingcovid_eth16.do
+    needs: [cr_underlying]
+    outputs:
+      moderately_sensitive:
+        log: logs/06c_sens_onsunderlyingdeath_eth16.log
+        estout: output/estout_onsunderlyingdeath_eth16.txt
+        graph: output/FP_sens_onsunderlyingdeath_eth16.txt
+
+  sens_underlying_eth5:
+    run: stata-mp:latest analysis/06e_eth_sensanalysis_underlyingcovid_eth5.do
+    needs: [cr_underlying]
+    outputs:
+      moderately_sensitive:
+        log: logs/06d_sens_onsunderlyingdeath_eth5.log
+        estout: output/estout_onsunderlyingdeath_eth5.txt
+        graph: output/FP_sens_onsunderlyingdeath_eth5.txt
