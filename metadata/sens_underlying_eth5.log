@@ -1,21 +1,17 @@
-2021-01-14T12:33:36.284335600Z Traceback (most recent call last):
-2021-01-14T12:33:36.284596800Z   File "/tmp/entrypoint.py", line 82, in <module>
-2021-01-14T12:33:36.284638000Z     main()
-2021-01-14T12:33:36.284667400Z   File "/tmp/entrypoint.py", line 77, in main
-2021-01-14T12:33:36.284716000Z     raise FileNotFoundError("/workspace/" + options.script)
-2021-01-14T12:33:36.284745500Z FileNotFoundError: /workspace/analysis/06e_eth_sensanalysis_underlyingcovid_eth5.do
 
 
-state: failed
+state: succeeded
 commit: none
 docker_image_id: sha256:e4a676ff497b1550742032051cce1ba5502f65b172e86e4d82aadbaa1e056935
-job_id: pybyxljulutrovkl
+job_id: vby55jbmg5e7bjiz
 run_by_user: None
-created_at: 2021-01-14T12:32:42Z
-started_at: 2021-01-14T12:33:36Z
-completed_at: 2021-01-14T12:33:39Z
+created_at: 2021-01-14T12:35:07Z
+started_at: 2021-01-14T12:35:54Z
+completed_at: 2021-01-14T12:36:13Z
 
-Job exited with an error code
+Completed successfully
 
 outputs:
-  (no outputs)
+  logs/06e_sens_onsunderlyingdeath_eth5.log   - moderately_sensitive
+  output/FP_sens_onsunderlyingdeath_eth5.txt  - moderately_sensitive
+  output/estout_onsunderlyingdeath_eth5.txt   - moderately_sensitive

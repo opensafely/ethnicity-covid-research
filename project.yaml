@@ -93,7 +93,16 @@ actions:
       moderately_sensitive:
         table: output/table1_tested.txt
 
-
+  main_carehomes_eth5:
+    run: stata-mp:latest analysis/06b_eth_an_multivariable_eth5_carehomesonly.do
+    needs: [cr_hes_covid]
+    outputs:
+      moderately_sensitive:
+        log: logs/06b_eth_an_multivariable_eth5_carehomesonly.log.log
+        table: output/table2_hes_carehomesonly.txt.txt
+        estout: output/estout_table2_hes_carehomesonly.txt
+        graph: output/FP_multivariable_hes_carehomesonly.txt
+        
   sens_nostp_eth16:
     run: stata-mp:latest analysis/07a_eth_sensanalysis_nostp_eth16.do
     needs: [cr_sgss, cr_hes_covid, cr_ons]
@@ -103,7 +112,6 @@ actions:
         table: output/sens_nostp_eth16.txt
         estout: output/estout_sens_nostp_eth16.txt
         graph: output/FP_sens_nostp_eth16.txt
-
 
   sens_nostp_eth5:
     run: stata-mp:latest analysis/07b_eth_sensanalysis_nostp_eth5.do
