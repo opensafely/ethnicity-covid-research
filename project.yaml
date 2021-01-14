@@ -146,7 +146,7 @@ actions:
     needs: [cr_underlying]
     outputs:
       moderately_sensitive:
-        log: logs/06c_sens_onsunderlyingdeath_eth16.log
+        log: logs/06f_sens_onsunderlyingdeath_eth16.log
         estout: output/estout_onsunderlyingdeath_eth16.txt
         graph: output/FP_sens_onsunderlyingdeath_eth16.txt
 
@@ -155,6 +155,6 @@ actions:
     needs: [cr_underlying]
     outputs:
       moderately_sensitive:
-        log: logs/06d_sens_onsunderlyingdeath_eth5.log
+        log: logs/06e_sens_onsunderlyingdeath_eth5.log
         estout: output/estout_onsunderlyingdeath_eth5.txt
         graph: output/FP_sens_onsunderlyingdeath_eth5.txt
