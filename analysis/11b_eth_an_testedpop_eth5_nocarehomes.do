@@ -1,35 +1,41 @@
 /*==============================================================================
-DO FILE NAME:			11b_eth_an_testedpop_eth5_nocarehomes
+DO FILE NAME:			1b_eth_an_testedpop_eth5
 PROJECT:				Ethnicity and COVID
 AUTHOR:					R Mathur (modified from A wong and A Schultze)
 DATE: 					15 July 2020					
 DESCRIPTION OF FILE:	Risk of test positive in people receiving a test 
 						univariable regression
 						multivariable regression 
-DATASETS USED:			data in memory ($tempdir/analysis_dataset)
+DATASETS USED:			data in memory ($output/analysis_dataset)
 DATASETS CREATED: 		none
-OTHER OUTPUT: 			logfiles, printed to folder analysis/$logdir
+OTHER OUTPUT: 			logfiles, printed to folder analysis/$logs
 						table2, printed to analysis/$outdir
 						
 							
 ==============================================================================*/
+global outcomes "positivetest hes onscoviddeath ons_noncoviddeath onsdeath"
+sysdir set PLUS ./analysis/adofiles
+adopath + ./analysis/adofiles
+sysdir
+
+
 
 * Open a log file
 
 cap log close
-log using "$Logdir/11b_eth_an_testedpop_eth5_nocarehomes", replace t
+log using ./logs/11b_eth_an_testedpop_eth5.log, replace t
 
 cap file close tablecontent
-file open tablecontent using $Tabfigdir/table4_testedpop_eth5_nocarehomes.txt, write text replace
-file write tablecontent ("Table 4: Odds of testing positive amongst those receiving a test - No care homes") _n
+file open tablecontent using ./output/table3_testedpop_eth5_nocarehomes.txt, write text replace
+file write tablecontent ("Table 3: Odds of testing positive amongst those receiving a test - No care homes") _n
 file write tablecontent _tab ("Denominator") _tab ("Event") _tab ("%") _tab ("Crude") _tab _tab ("Age/Sex Adjusted") _tab _tab ("Age/Sex/IMD Adjusted") _tab _tab 	("plus co-morbidities") _tab _tab 	("plus hh size")  _n
 
 file write tablecontent _tab _tab _tab _tab   ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("95% CI") _tab ("95% CI") _n
 
 
-
+foreach i of global outcomes {
 * Open Stata dataset
-use "$Tempdir/analysis_dataset.dta", clear
+use ./output/analysis_dataset.dta, clear
 
 safecount
 
@@ -42,38 +48,40 @@ safecount
 
 
 
-
 /* Sense check outcomes=======================================================*/ 
-safetab positivetest
+safetab tested `i'
 
-safetab eth5 positivetest, missing row
+safetab eth5 `i', missing row
 
 
 /* Main Model=================================================================*/
 
 /* Univariable model */ 
 
-logistic positivetest i.eth5 i.stp, nolog 
-estimates save "$Tempdir/crude_positivetest_eth5", replace 
-parmest, label eform format(estimate p lb ub) saving("$Tempdir/crude_positivetest_eth5", replace) idstr("crude_positivetest_eth5") 
+logistic `i' i.eth5 i.stp, nolog 
+estimates save ./output/crude_`i'_eth5, replace 
+parmest, label eform format(estimate p lb ub) saving(./output/crude_`i'_eth5, replace) idstr("crude_`i'_eth5") 
 eststo model1
+local hr "`hr' ./output/crude_`i'_eth5 "
 
 
 /* Multivariable models */ 
 *Age Gender
-logistic positivetest i.eth5 i.male age1 age2 age3 i.stp, nolog 
-estimates save "$Tempdir/model0_positivetest_eth5", replace 
-parmest, label eform format(estimate p lb ub) saving("$Tempdir/model0_positivetest_eth5", replace) idstr("model0_positivetest_eth5") 
+logistic `i' i.eth5 i.male age1 age2 age3 i.stp, nolog 
+estimates save ./output/model0_`i'_eth5, replace 
+parmest, label eform format(estimate p lb ub) saving(./output/model0_`i'_eth5, replace) idstr("model0_`i'_eth5") 
 eststo model2
+local hr "`hr' ./output/model0_`i'_eth5 "
 
 * Age, Gender, IMD
-logistic positivetest i.eth5 i.male age1 age2 age3 i.imd i.stp , nolog 
-estimates save "$Tempdir/model1_positivetest_eth5", replace 
-parmest, label eform format(estimate p lb ub) saving("$Tempdir/model1_positivetest_eth5", replace) idstr("model1_positivetest_eth5") 
+logistic `i' i.eth5 i.male age1 age2 age3 i.imd i.stp , nolog 
+estimates save ./output/model1_`i'_eth5, replace 
+parmest, label eform format(estimate p lb ub) saving(./output/model1_`i'_eth5, replace) idstr("model1_`i'_eth5") 
 eststo model3
+local hr "`hr' ./output/model1_`i'_eth5 "
 
 * Age, Gender, IMD and Comorbidities  
-cap logistic positivetest i.eth5 i.male age1 age2 age3 	i.imd						///
+cap logistic `i' i.eth5 i.male age1 age2 age3 	i.imd						///
 										i.bmicat_sa	i.hba1ccat			///
 										gp_consult_count			///
 										i.smoke_nomiss				///
@@ -92,12 +100,13 @@ cap logistic positivetest i.eth5 i.male age1 age2 age3 	i.imd						///
 										i.immunosuppressed	 		///
 										i.ra_sle_psoriasis	i. stp, nolog 		
 										
-cap estimates save "$Tempdir/model2_positivetest_eth5", replace 
-parmest, label eform format(estimate p lb ub) saving("$Tempdir/model2_positivetest_eth5", replace) idstr("model2_positivetest_eth5") 
+cap estimates save ./output/model2_`i'_eth5, replace 
+parmest, label eform format(estimate p lb ub) saving(./output/model2_`i'_eth5, replace) idstr("model2_`i'_eth5") 
 eststo model4
+local hr "`hr' ./output/model2_`i'_eth5 "
 
 * Age, Gender, IMD and Comorbidities  and household size 
-cap logistic positivetest i.eth5 i.male age1 age2 age3 	i.imd						///
+cap logistic `i' i.eth5 i.male age1 age2 age3 	i.imd						///
 										i.bmicat_sa	i.hba1ccat			///
 										gp_consult_count			///
 										i.smoke_nomiss				///
@@ -117,12 +126,13 @@ cap logistic positivetest i.eth5 i.male age1 age2 age3 	i.imd						///
 										i.ra_sle_psoriasis			///
 										i.hh_total_cat i.stp, nolog 		
 										
-cap estimates save "$Tempdir/model3_positivetest_eth5", replace 
-parmest, label eform format(estimate p lb ub) saving("$Tempdir/model3_positivetest_eth5", replace) idstr("model3_positivetest_eth5") 
+cap estimates save ./output/model3_`i'_eth5, replace 
+parmest, label eform format(estimate p lb ub) saving(./output/model3_`i'_eth5, replace) idstr("model3_`i'_eth5") 
 eststo model5
+local hr "`hr' ./output/model3_`i'_eth5 "
 
 /* Estout================================================================*/ 
-esttab model1 model2 model3 model4 model5   using "$Tabfigdir/estout_table4_testedpop_eth5_nocarehomes.txt", b(a2) ci(2) label wide compress eform ///
+esttab model1 model2 model3 model4 model5   using ./output/estout_table3_testedpop_eth5_nocarehomes.txt, b(a2) ci(2) label wide compress eform ///
 	title ("`i'") ///
 	varlabels(`e(labels)') ///
 	stats(N_sub) ///
@@ -136,7 +146,7 @@ eststo clear
 
 
 * Column headings 
-file write tablecontent ("Positive Test") _n
+file write tablecontent ("`i'") _n
 
 * eth5 labelled columns
 
@@ -146,12 +156,13 @@ local lab3: label eth5 3
 local lab4: label eth5 4
 local lab5: label eth5 5
 local lab6: label eth5 6
+
 /* Counts */
  
 * First row, eth5 = 1 (White) reference cat
 	qui safecount if eth5==1
 	local denominator = r(N)
-	qui safecount if eth5 == 1 & positivetest == 1
+	qui safecount if eth5 == 1 & `i' == 1
 	local event = r(N)
 	local pct =(`event'/`denominator')
 	file write tablecontent  ("`lab1'") _tab (`denominator') _tab (`event') _tab %3.2f (`pct') _tab
@@ -161,53 +172,48 @@ local lab6: label eth5 6
 forvalues eth=2/6 {
 	qui safecount if eth5==`eth'
 	local denominator = r(N)
-	qui safecount if eth5 == `eth' & positivetest == 1
+	qui safecount if eth5 == `eth' & `i' == 1
 	local event = r(N)
 	local pct =(`event'/`denominator')
-	file write tablecontent  ("`lab`eth''") _tab (`denominator') _tab (`event') _tab %3.2f (`pct')
-	cap estimates use "$Tempdir/crude_positivetest_eth5" 
+	file write tablecontent  ("`lab`eth''") _tab (`denominator') _tab (`event') _tab %3.2f (`pct') _tab
+	cap estimates use ./output/crude_`i'_eth5" 
 	cap lincom `eth'.eth5, eform
 	file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (" - ") %4.2f (r(ub)) (")") _tab 
 	cap estimates clear
-	cap estimates use "$Tempdir/model0_positivetest_eth5" 
+	cap estimates use ./output/model0_`i'_eth5" 
 	cap lincom `eth'.eth5, eform
 	file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (" - ") %4.2f (r(ub)) (")") _tab 
 	cap estimates clear
-	cap estimates use "$Tempdir/model1_positivetest_eth5" 
+	cap estimates use ./output/model1_`i'_eth5" 
 	cap lincom `eth'.eth5, eform
 	file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (" - ") %4.2f (r(ub)) (")") _tab 
 	cap estimates clear
-	cap estimates use "$Tempdir/model2_positivetest_eth5" 
+	cap estimates use ./output/model2_`i'_eth5" 
 	cap lincom `eth'.eth5, eform
 	file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (" - ") %4.2f (r(ub)) (")") _tab 
 	cap estimates clear
-	cap estimates use "$Tempdir/model3_positivetest_eth5" 
+	cap estimates use ./output/model3_`i'_eth5" 
 	cap lincom `eth'.eth5, eform
 	file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (" - ") %4.2f (r(ub)) (")") _n
 }  //end ethnic group
 
-
+} //end outcomes
 file close tablecontent
 
-/* Foresplot================================================================*/ 
-
-dsconcat "$Tempdir/model0_positivetest_eth5"  "$Tempdir/model1_positivetest_eth5" "$Tempdir/model2_positivetest_eth5" "$Tempdir/model3_positivetest_eth5" 
+************************************************create forestplot dataset
+dsconcat `hr'
 duplicates drop
-
 split idstr, p(_)
-drop idstr
 ren idstr1 model
-drop idstr2 idstr3 eq
+ren idstr2 outcome
+drop idstr idstr3
+tab model
 
 *save dataset for later
-outsheet using "$Tabfigdir/FP_testedpop_eth5_nocarehomes.txt", replace
-
+outsheet using ./output/FP_testedpop_eth5.txt, replace
 
 * Close log file 
 log close
-insheet using "$Tabfigdir/table4_testedpop_eth5_nocarehomes.txt", clear
-insheet using "$Tabfigdir/estout_table4_testedpop_eth5_nocarehomes.txt", clear
-
 
 
 

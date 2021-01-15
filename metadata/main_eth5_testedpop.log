@@ -1,0 +1,18 @@
+
+
+state: succeeded
+commit: none
+docker_image_id: sha256:e4a676ff497b1550742032051cce1ba5502f65b172e86e4d82aadbaa1e056935
+job_id: 5rzb47b56xnzuk5l
+run_by_user: None
+created_at: 2021-01-15T15:45:25Z
+started_at: 2021-01-15T15:49:08Z
+completed_at: 2021-01-15T15:49:23Z
+
+Completed successfully
+
+outputs:
+  logs/11b_eth_an_testedpop_eth5.log                   - moderately_sensitive
+  output/FP_testedpop_eth5.txt                         - moderately_sensitive
+  output/estout_table3_testedpop_eth5_nocarehomes.txt  - moderately_sensitive
+  output/table3_testedpop_eth5_nocarehomes.txt         - moderately_sensitive

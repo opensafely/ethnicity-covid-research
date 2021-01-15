@@ -1,0 +1,325 @@
+-----------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/logs/07b_eth_an_testedp
+> op_eth5.log
+  log type:  text
+ opened on:  15 Jan 2021, 15:31:51
+
+. 
+. cap file close tablecontent
+
+. file open tablecontent using ./output/table3_testedpop_eth5_nocarehomes.txt, write text repla
+> ce
+
+. file write tablecontent ("Table 3: Odds of testing positive amongst those receiving a test - 
+> No care homes") _n
+
+. file write tablecontent _tab ("Denominator") _tab ("Event") _tab ("%") _tab ("Crude") _tab _t
+> ab ("Age/Sex Adjusted") _tab _tab ("Age/Sex/IMD Adjusted") _tab _tab       ("plus co-morbidit
+> ies") _tab _tab       ("plus hh size")  _n
+
+. 
+. file write tablecontent _tab _tab _tab _tab   ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% C
+> I") _tab ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("95% CI") _tab ("95% CI") _
+> n
+
+. 
+. 
+. foreach i of global outcomes {
+  2. * Open Stata dataset
+. use ./output/analysis_dataset.dta, clear
+  3. 
+. safecount
+  4. 
+. *define population as anyone who has received a test
+. keep if tested==1
+  5. safecount
+  6. 
+. keep if carehome==0
+  7. safecount
+  8. 
+. 
+. 
+. /* Sense check outcomes=======================================================*/ 
+. safetab tested `i'
+  9. 
+. safetab eth5 `i', missing row
+ 10. 
+. 
+. /* Main Model=================================================================*/
+. 
+. /* Univariable model */ 
+. 
+. logistic `i' i.eth5 i.stp, nolog 
+ 11. estimates save ./output/crude_`i'_eth5, replace 
+ 12. parmest, label eform format(estimate p lb ub) saving(./output/crude_`i'_eth5, replace) ids
+> tr("crude_`i'_eth5") 
+ 13. eststo model1
+ 14. local hr "`hr' ./output/crude_`i'_eth5 "
+ 15. 
+. 
+. /* Multivariable models */ 
+. *Age Gender
+. logistic `i' i.eth5 i.male age1 age2 age3 i.stp, nolog 
+ 16. estimates save ./output/model0_`i'_eth5, replace 
+ 17. parmest, label eform format(estimate p lb ub) saving(./output/model0_`i'_eth5, replace) id
+> str("model0_`i'_eth5") 
+ 18. eststo model2
+ 19. local hr "`hr' ./output/model0_`i'_eth5 "
+ 20. 
+. * Age, Gender, IMD
+. logistic `i' i.eth5 i.male age1 age2 age3 i.imd i.stp , nolog 
+ 21. estimates save ./output/model1_`i'_eth5, replace 
+ 22. parmest, label eform format(estimate p lb ub) saving(./output/model1_`i'_eth5, replace) id
+> str("model1_`i'_eth5") 
+ 23. eststo model3
+ 24. local hr "`hr' ./output/model1_`i'_eth5 "
+ 25. 
+. * Age, Gender, IMD and Comorbidities  
+. cap logistic `i' i.eth5 i.male age1 age2 age3   i.imd                                        
+>    ///
+>                                                                                 i.bmicat_sa  
+>    i.hba1ccat                      ///
+>                                                                                 gp_consult_co
+> unt                        ///
+>                                                                                 i.smoke_nomis
+> s                          ///
+>                                                                                 i.hypertensio
+> n i.bp_cat         ///     
+>                                                                                 i.asthma     
+>                                    ///
+>                                                                                 i.chronic_res
+> piratory_disease ///
+>                                                                                 i.chronic_car
+> diac_disease       ///
+>                                                                                 i.dm_type    
+>                                    ///     
+>                                                                                 i.cancer     
+>                ///
+>                                                                                 i.chronic_liv
+> er_disease         ///
+>                                                                                 i.stroke     
+>                                    ///
+>                                                                                 i.dementia   
+>                                    ///
+>                                                                                 i.other_neuro
+>                            ///
+>                                                                                 i.egfr60     
+>                                    ///
+>                                                                                 i.esrf       
+>                                    ///
+>                                                                                 i.immunosuppr
+> essed                      ///
+>                                                                                 i.ra_sle_psor
+> iasis      i. stp, nolog           
+ 26.                                                                                 
+. cap estimates save ./output/model2_`i'_eth5, replace 
+ 27. parmest, label eform format(estimate p lb ub) saving(./output/model2_`i'_eth5, replace) id
+> str("model2_`i'_eth5") 
+ 28. eststo model4
+ 29. local hr "`hr' ./output/model2_`i'_eth5 "
+ 30. 
+. * Age, Gender, IMD and Comorbidities  and household size 
+. cap logistic `i' i.eth5 i.male age1 age2 age3   i.imd                                        
+>    ///
+>                                                                                 i.bmicat_sa  
+>    i.hba1ccat                      ///
+>                                                                                 gp_consult_co
+> unt                        ///
+>                                                                                 i.smoke_nomis
+> s                          ///
+>                                                                                 i.hypertensio
+> n i.bp_cat         ///     
+>                                                                                 i.asthma     
+>                                    ///
+>                                                                                 i.chronic_res
+> piratory_disease ///
+>                                                                                 i.chronic_car
+> diac_disease       ///
+>                                                                                 i.dm_type    
+>                                    ///     
+>                                                                                 i.cancer     
+>                ///
+>                                                                                 i.chronic_liv
+> er_disease         ///
+>                                                                                 i.stroke     
+>                                    ///
+>                                                                                 i.dementia   
+>                                    ///
+>                                                                                 i.other_neuro
+>                            ///
+>                                                                                 i.egfr60     
+>                                    ///
+>                                                                                 i.esrf       
+>                                    ///
+>                                                                                 i.immunosuppr
+> essed                      ///
+>                                                                                 i.ra_sle_psor
+> iasis                      ///
+>                                                                                 i.hh_total_ca
+> t i.stp, nolog             
+ 31.                                                                                 
+. cap estimates save ./output/model3_`i'_eth5, replace 
+ 32. parmest, label eform format(estimate p lb ub) saving(./output/model3_`i'_eth5, replace) id
+> str("model3_`i'_eth5") 
+ 33. eststo model5
+ 34. local hr "`hr' ./output/model3_`i'_eth5 "
+ 35. 
+. /* Estout================================================================*/ 
+. esttab model1 model2 model3 model4 model5   using ./output/estout_table3_testedpop_eth5_nocar
+> ehomes.txt, b(a2) ci(2) label wide compress eform ///
+>         title ("`i'") ///
+>         varlabels(`e(labels)') ///
+>         stats(N_sub) ///
+>         append 
+ 36. eststo clear
+ 37. 
+. 
+. 
+. /* Print table================================================================*/ 
+. *  Print the results for the main model 
+. 
+. 
+. * Column headings 
+. file write tablecontent ("`i'") _n
+ 38. 
+. * eth5 labelled columns
+. 
+. local lab1: label eth5 1
+ 39. local lab2: label eth5 2
+ 40. local lab3: label eth5 3
+ 41. local lab4: label eth5 4
+ 42. local lab5: label eth5 5
+ 43. local lab6: label eth5 6
+ 44. local lab7: label eth5 7
+ 45. local lab8: label eth5 8
+ 46. local lab9: label eth5 9
+ 47. local lab10: label eth5 10
+ 48. local lab11: label eth5 11
+ 49. local lab12: label eth5 12
+ 50. local lab13: label eth5 13
+ 51. local lab14: label eth5 14
+ 52. local lab15: label eth5 15
+ 53. local lab16: label eth5 16
+ 54. local lab17: label eth5 17
+ 55. 
+. /* Counts */
+.  
+. * First row, eth5 = 1 (White) reference cat
+.         qui safecount if eth5==1
+ 56.         local denominator = r(N)
+ 57.         qui safecount if eth5 == 1 & `i' == 1
+ 58.         local event = r(N)
+ 59.         local pct =(`event'/`denominator')
+ 60.         file write tablecontent  ("`lab1'") _tab (`denominator') _tab (`event') _tab %3.2f
+>  (`pct') _tab
+ 61.         file write tablecontent ("1.00") _tab _tab ("1.00") _tab _tab ("1.00")  _tab _tab 
+> ("1.00") _tab _tab ("1.00") _n
+ 62.         
+. * Subsequent ethnic groups
+. forvalues eth=2/17 {
+ 63.         qui safecount if eth5==`eth'
+ 64.         local denominator = r(N)
+ 65.         qui safecount if eth5 == `eth' & `i' == 1
+ 66.         local event = r(N)
+ 67.         local pct =(`event'/`denominator')
+ 68.         file write tablecontent  ("`lab`eth''") _tab (`denominator') _tab (`event') _tab %
+> 3.2f (`pct') _tab
+ 69.         cap estimates use ./output/crude_`i'_eth5" 
+ 70.         cap lincom `eth'.eth5, eform
+ 71.         file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (" - ") %4.2
+> f (r(ub)) (")") _tab 
+ 72.         cap estimates clear
+ 73.         cap estimates use ./output/model0_`i'_eth5" 
+ 74.         cap lincom `eth'.eth5, eform
+ 75.         file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (" - ") %4.2
+> f (r(ub)) (")") _tab 
+ 76.         cap estimates clear
+ 77.         cap estimates use ./output/model1_`i'_eth5" 
+ 78.         cap lincom `eth'.eth5, eform
+ 79.         file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (" - ") %4.2
+> f (r(ub)) (")") _tab 
+ 80.         cap estimates clear
+ 81.         cap estimates use ./output/model2_`i'_eth5" 
+ 82.         cap lincom `eth'.eth5, eform
+ 83.         file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (" - ") %4.2
+> f (r(ub)) (")") _tab 
+ 84.         cap estimates clear
+ 85.         cap estimates use ./output/model3_`i'_eth5" 
+ 86.         cap lincom `eth'.eth5, eform
+ 87.         file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (" - ") %4.2
+> f (r(ub)) (")") _n
+ 88. }  //end ethnic group
+ 89. 
+. } //end outcomes
+  7,872
+(7,858 observations deleted)
+  14
+(0 observations deleted)
+  14
+
+           |  outcome
+           | positivete
+   outcome |     st
+    tested |         0 |     Total
+-----------+-----------+----------
+         1 |        14 |        14 
+-----------+-----------+----------
+     Total |        14 |        14 
+
+**TABLE OF eth5 positivetest REDACTED DUE TO SMALL N**
+
+outcome does not vary; remember:
+                                  0 = negative outcome,
+        all other nonmissing values = positive outcome
+r(2000);
+
+end of do-file
+
+r(2000);
+
+. do "/Users/lsh152058/Documents/GitHub/ethnicity-covid-research/analysis/11b_eth_an_testedpop_
+> eth5_nocarehomes.do"
+
+. /*==============================================================================
+> DO FILE NAME:                   1b_eth_an_testedpop_eth5
+> PROJECT:                                Ethnicity and COVID
+> AUTHOR:                                 R Mathur (modified from A wong and A Schultze)
+> DATE:                                   15 July 2020                                    
+> DESCRIPTION OF FILE:    Risk of test positive in people receiving a test 
+>                                                 univariable regression
+>                                                 multivariable regression 
+> DATASETS USED:                  data in memory ($output/analysis_dataset)
+> DATASETS CREATED:               none
+> OTHER OUTPUT:                   logfiles, printed to folder analysis/$logs
+>                                                 table2, printed to analysis/$outdir
+>                                                 
+>                                                         
+> ==============================================================================*/
+. global outcomes "positivetest hes onscoviddeath ons_noncoviddeath onsdeath"
+
+. sysdir set PLUS ./analysis/adofiles
+
+. adopath + ./analysis/adofiles
+  [1]  (BASE)      "/Applications/Stata/ado/base/"
+  [2]  (SITE)      "/Applications/Stata/ado/site/"
+  [3]              "."
+  [4]  (PERSONAL)  "/Users/lsh152058/Documents/Stata/ado/personal/"
+  [5]  (PLUS)      "./analysis/adofiles/"
+  [6]  (OLDPLACE)  "~/ado/"
+  [7]              "./analysis/adofiles"
+
+. sysdir
+   STATA:  /Applications/Stata/
+    BASE:  /Applications/Stata/ado/base/
+    SITE:  /Applications/Stata/ado/site/
+    PLUS:  ./analysis/adofiles/
+PERSONAL:  /Users/lsh152058/Documents/Stata/ado/personal/
+OLDPLACE:  ~/ado/
+
+. 
+. 
+. 
+. * Open a log file
+. 
+. cap log close
