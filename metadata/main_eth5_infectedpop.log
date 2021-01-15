@@ -1,0 +1,18 @@
+
+
+state: succeeded
+commit: none
+docker_image_id: sha256:e4a676ff497b1550742032051cce1ba5502f65b172e86e4d82aadbaa1e056935
+job_id: wjrlxw5r5phfj275
+run_by_user: None
+created_at: 2021-01-15T16:52:32Z
+started_at: 2021-01-15T16:54:16Z
+completed_at: 2021-01-15T16:54:31Z
+
+Completed successfully
+
+outputs:
+  logs/11b_eth_an_infectedpop_eth5.log                   - moderately_sensitive
+  output/FP_infectedpop_eth5.txt                         - moderately_sensitive
+  output/estout_table4_infectedpop_eth5_nocarehomes.txt  - moderately_sensitive
+  output/table4_infectedpop_eth5_nocarehomes.txt         - moderately_sensitive

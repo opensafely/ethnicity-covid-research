@@ -1,5 +1,5 @@
-/*==============================================================================
-DO FILE NAME:			1b_eth_an_testedpop_eth5
+/*=============================================================================
+DO FILE NAME:			11b_eth_an_infectedpop_eth5
 PROJECT:				Ethnicity and COVID
 AUTHOR:					R Mathur (modified from A wong and A Schultze)
 DATE: 					15 July 2020					
@@ -13,7 +13,7 @@ OTHER OUTPUT: 			logfiles, printed to folder analysis/$logs
 						
 							
 ==============================================================================*/
-global outcomes "positivetest icu hes onscoviddeath ons_noncoviddeath onsdeath"
+global outcomes "hes icu onscoviddeath ons_noncoviddeath onsdeath"
 sysdir set PLUS ./analysis/adofiles
 adopath + ./analysis/adofiles
 sysdir
@@ -23,10 +23,10 @@ sysdir
 * Open a log file
 
 cap log close
-log using ./logs/11b_eth_an_testedpop_eth5.log, replace t
+log using ./logs/11b_eth_an_infectedpop_eth5.log, replace t
 
 cap file close tablecontent
-file open tablecontent using ./output/table3_testedpop_eth5_nocarehomes.txt, write text replace
+file open tablecontent using ./output/table4_infectedpop_eth5_nocarehomes.txt, write text replace
 file write tablecontent ("Table 3: Odds of testing positive amongst those receiving a test - No care homes") _n
 file write tablecontent _tab ("Denominator") _tab ("Event") _tab ("%") _tab ("Crude") _tab _tab ("Age/Sex Adjusted") _tab _tab ("Age/Sex/IMD Adjusted") _tab _tab 	("plus co-morbidities") _tab _tab 	("plus hh size")  _n
 
@@ -40,7 +40,7 @@ use ./output/analysis_dataset.dta, clear
 safecount
 
 *define population as anyone who has received a test
-keep if tested==1
+keep if positivetest==1
 safecount
 
 keep if carehome==0
@@ -49,7 +49,7 @@ safecount
 
 
 /* Sense check outcomes=======================================================*/ 
-safetab tested `i'
+safetab positivetest `i'
 
 safetab eth5 `i', missing row
 
@@ -132,14 +132,12 @@ eststo model5
 local hr "`hr' ./output/model3_`i'_eth5 "
 
 /* Estout================================================================*/ 
-esttab model1 model2 model3 model4 model5   using ./output/estout_table3_testedpop_eth5_nocarehomes.txt, b(a2) ci(2) label wide compress eform ///
+esttab model1 model2 model3 model4 model5   using ./output/estout_table4_infectedpop_eth5_nocarehomes.txt, b(a2) ci(2) label wide compress eform ///
 	title ("`i'") ///
 	varlabels(`e(labels)') ///
 	stats(N_sub) ///
 	append 
 eststo clear
-
-
 
 /* Print table================================================================*/ 
 *  Print the results for the main model 
@@ -210,7 +208,7 @@ drop idstr idstr3
 tab model
 
 *save dataset for later
-outsheet using ./output/FP_testedpop_eth5.txt, replace
+outsheet using ./output/FP_infectedpop_eth5.txt, replace
 
 * Close log file 
 log close
