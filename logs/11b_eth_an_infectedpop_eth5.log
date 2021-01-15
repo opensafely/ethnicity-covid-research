@@ -1,0 +1,1091 @@
+-------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /workspace/logs/11b_eth_an_infectedpop_eth5.log
+  log type:  text
+ opened on:  15 Jan 2021, 16:54:16
+
+. 
+. cap file close tablecontent
+
+. file open tablecontent using ./output/table4_infectedpop_eth5_nocarehomes.txt
+> , write text replace
+(note: file ./output/table4_infectedpop_eth5_nocarehomes.txt not found)
+
+. file write tablecontent ("Table 3: Odds of testing positive amongst those rec
+> eiving a test - No care homes") _n
+
+. file write tablecontent _tab ("Denominator") _tab ("Event") _tab ("%") _tab (
+> "Crude") _tab _tab ("Age/Sex Adjusted") _tab _tab ("Age/Sex/IMD Adjusted") _t
+> ab _tab       ("plus co-morbidities") _tab _tab       ("plus hh size")  _n
+
+. 
+. file write tablecontent _tab _tab _tab _tab   ("OR") _tab ("95% CI") _tab ("O
+> R") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _
+> tab ("95% CI") _tab ("95% CI") _n
+
+. 
+. 
+. foreach i of global outcomes {
+  2. * Open Stata dataset
+. use ./output/analysis_dataset.dta, clear
+  3. 
+. safecount
+  4. 
+. *define population as anyone who has received a test
+. keep if positivetest==1
+  5. safecount
+  6. 
+. keep if carehome==0
+  7. safecount
+  8. 
+. 
+. 
+. /* Sense check outcomes======================================================
+> =*/ 
+. safetab positivetest `i'
+  9. 
+. safetab eth5 `i', missing row
+ 10. 
+. 
+. /* Main Model================================================================
+> =*/
+. 
+. /* Univariable model */ 
+. 
+. logistic `i' i.eth5 i.stp, nolog 
+ 11. estimates save ./output/crude_`i'_eth5, replace 
+ 12. parmest, label eform format(estimate p lb ub) saving(./output/crude_`i'_et
+> h5, replace) idstr("crude_`i'_eth5") 
+ 13. eststo model1
+ 14. local hr "`hr' ./output/crude_`i'_eth5 "
+ 15. 
+. 
+. /* Multivariable models */ 
+. *Age Gender
+. logistic `i' i.eth5 i.male age1 age2 age3 i.stp, nolog 
+ 16. estimates save ./output/model0_`i'_eth5, replace 
+ 17. parmest, label eform format(estimate p lb ub) saving(./output/model0_`i'_e
+> th5, replace) idstr("model0_`i'_eth5") 
+ 18. eststo model2
+ 19. local hr "`hr' ./output/model0_`i'_eth5 "
+ 20. 
+. * Age, Gender, IMD
+. logistic `i' i.eth5 i.male age1 age2 age3 i.imd i.stp , nolog 
+ 21. estimates save ./output/model1_`i'_eth5, replace 
+ 22. parmest, label eform format(estimate p lb ub) saving(./output/model1_`i'_e
+> th5, replace) idstr("model1_`i'_eth5") 
+ 23. eststo model3
+ 24. local hr "`hr' ./output/model1_`i'_eth5 "
+ 25. 
+. * Age, Gender, IMD and Comorbidities  
+. cap logistic `i' i.eth5 i.male age1 age2 age3   i.imd                        
+>                    ///
+>                                                                              
+>    i.bmicat_sa     i.hba1ccat                      ///
+>                                                                              
+>    gp_consult_count                        ///
+>                                                                              
+>    i.smoke_nomiss                          ///
+>                                                                              
+>    i.hypertension i.bp_cat         ///     
+>                                                                              
+>    i.asthma                                        ///
+>                                                                              
+>    i.chronic_respiratory_disease ///
+>                                                                              
+>    i.chronic_cardiac_disease       ///
+>                                                                              
+>    i.dm_type                                       ///     
+>                                                                              
+>    i.cancer                    ///
+>                                                                              
+>    i.chronic_liver_disease         ///
+>                                                                              
+>    i.stroke                                        ///
+>                                                                              
+>    i.dementia                                      ///
+>                                                                              
+>    i.other_neuro                           ///
+>                                                                              
+>    i.egfr60                                        ///
+>                                                                              
+>    i.esrf                                          ///
+>                                                                              
+>    i.immunosuppressed                      ///
+>                                                                              
+>    i.ra_sle_psoriasis      i. stp, nolog           
+ 26.                                                                           
+>       
+. cap estimates save ./output/model2_`i'_eth5, replace 
+ 27. parmest, label eform format(estimate p lb ub) saving(./output/model2_`i'_e
+> th5, replace) idstr("model2_`i'_eth5") 
+ 28. eststo model4
+ 29. local hr "`hr' ./output/model2_`i'_eth5 "
+ 30. 
+. * Age, Gender, IMD and Comorbidities  and household size 
+. cap logistic `i' i.eth5 i.male age1 age2 age3   i.imd                        
+>                    ///
+>                                                                              
+>    i.bmicat_sa     i.hba1ccat                      ///
+>                                                                              
+>    gp_consult_count                        ///
+>                                                                              
+>    i.smoke_nomiss                          ///
+>                                                                              
+>    i.hypertension i.bp_cat         ///     
+>                                                                              
+>    i.asthma                                        ///
+>                                                                              
+>    i.chronic_respiratory_disease ///
+>                                                                              
+>    i.chronic_cardiac_disease       ///
+>                                                                              
+>    i.dm_type                                       ///     
+>                                                                              
+>    i.cancer                    ///
+>                                                                              
+>    i.chronic_liver_disease         ///
+>                                                                              
+>    i.stroke                                        ///
+>                                                                              
+>    i.dementia                                      ///
+>                                                                              
+>    i.other_neuro                           ///
+>                                                                              
+>    i.egfr60                                        ///
+>                                                                              
+>    i.esrf                                          ///
+>                                                                              
+>    i.immunosuppressed                      ///
+>                                                                              
+>    i.ra_sle_psoriasis                      ///
+>                                                                              
+>    i.hh_total_cat i.stp, nolog             
+ 31.                                                                           
+>       
+. cap estimates save ./output/model3_`i'_eth5, replace 
+ 32. parmest, label eform format(estimate p lb ub) saving(./output/model3_`i'_e
+> th5, replace) idstr("model3_`i'_eth5") 
+ 33. eststo model5
+ 34. local hr "`hr' ./output/model3_`i'_eth5 "
+ 35. 
+. /* Estout================================================================*/ 
+. esttab model1 model2 model3 model4 model5   using ./output/estout_table4_infe
+> ctedpop_eth5_nocarehomes.txt, b(a2) ci(2) label wide compress eform ///
+>         title ("`i'") ///
+>         varlabels(`e(labels)') ///
+>         stats(N_sub) ///
+>         append 
+ 36. eststo clear
+ 37. 
+. /* Print table===============================================================
+> =*/ 
+. *  Print the results for the main model 
+. 
+. 
+. * Column headings 
+. file write tablecontent ("`i'") _n
+ 38. 
+. * eth5 labelled columns
+. 
+. local lab1: label eth5 1
+ 39. local lab2: label eth5 2
+ 40. local lab3: label eth5 3
+ 41. local lab4: label eth5 4
+ 42. local lab5: label eth5 5
+ 43. local lab6: label eth5 6
+ 44. 
+. /* Counts */
+.  
+. * First row, eth5 = 1 (White) reference cat
+.         qui safecount if eth5==1
+ 45.         local denominator = r(N)
+ 46.         qui safecount if eth5 == 1 & `i' == 1
+ 47.         local event = r(N)
+ 48.         local pct =(`event'/`denominator')
+ 49.         file write tablecontent  ("`lab1'") _tab (`denominator') _tab (`ev
+> ent') _tab %3.2f (`pct') _tab
+ 50.         file write tablecontent ("1.00") _tab _tab ("1.00") _tab _tab ("1.
+> 00")  _tab _tab ("1.00") _tab _tab ("1.00") _n
+ 51.         
+. * Subsequent ethnic groups
+. forvalues eth=2/6 {
+ 52.         qui safecount if eth5==`eth'
+ 53.         local denominator = r(N)
+ 54.         qui safecount if eth5 == `eth' & `i' == 1
+ 55.         local event = r(N)
+ 56.         local pct =(`event'/`denominator')
+ 57.         file write tablecontent  ("`lab`eth''") _tab (`denominator') _tab 
+> (`event') _tab %3.2f (`pct') _tab
+ 58.         cap estimates use ./output/crude_`i'_eth5" 
+ 59.         cap lincom `eth'.eth5, eform
+ 60.         file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(l
+> b)) (" - ") %4.2f (r(ub)) (")") _tab 
+ 61.         cap estimates clear
+ 62.         cap estimates use ./output/model0_`i'_eth5" 
+ 63.         cap lincom `eth'.eth5, eform
+ 64.         file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(l
+> b)) (" - ") %4.2f (r(ub)) (")") _tab 
+ 65.         cap estimates clear
+ 66.         cap estimates use ./output/model1_`i'_eth5" 
+ 67.         cap lincom `eth'.eth5, eform
+ 68.         file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(l
+> b)) (" - ") %4.2f (r(ub)) (")") _tab 
+ 69.         cap estimates clear
+ 70.         cap estimates use ./output/model2_`i'_eth5" 
+ 71.         cap lincom `eth'.eth5, eform
+ 72.         file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(l
+> b)) (" - ") %4.2f (r(ub)) (")") _tab 
+ 73.         cap estimates clear
+ 74.         cap estimates use ./output/model3_`i'_eth5" 
+ 75.         cap lincom `eth'.eth5, eform
+ 76.         file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(l
+> b)) (" - ") %4.2f (r(ub)) (")") _n
+ 77. }  //end ethnic group
+ 78. 
+. } //end outcomes
+  78,684
+(68,938 observations deleted)
+  9,746
+(1,521 observations deleted)
+  8,225
+
+   outcome |
+positivete |      outcome hes
+        st |         0          1 |     Total
+-----------+----------------------+----------
+         1 |     7,138      1,087 |     8,225 
+-----------+----------------------+----------
+     Total |     7,138      1,087 |     8,225 
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+      Eth 5 |      outcome hes
+ categories |         0          1 |     Total
+------------+----------------------+----------
+      White |     1,061        184 |     1,245 
+            |     85.22      14.78 |    100.00 
+------------+----------------------+----------
+South Asian |     1,081        142 |     1,223 
+            |     88.39      11.61 |    100.00 
+------------+----------------------+----------
+      Black |     1,094        172 |     1,266 
+            |     86.41      13.59 |    100.00 
+------------+----------------------+----------
+      Mixed |     1,008        160 |     1,168 
+            |     86.30      13.70 |    100.00 
+------------+----------------------+----------
+      Other |     1,097        193 |     1,290 
+            |     85.04      14.96 |    100.00 
+------------+----------------------+----------
+    Unknown |     1,797        236 |     2,033 
+            |     88.39      11.61 |    100.00 
+------------+----------------------+----------
+      Total |     7,138      1,087 |     8,225 
+            |     86.78      13.22 |    100.00 
+
+Logistic regression                             Number of obs     =      8,225
+                                                LR chi2(14)       =      18.88
+                                                Prob > chi2       =     0.1698
+Log likelihood = -3202.1666                     Pseudo R2         =     0.0029
+
+------------------------------------------------------------------------------
+         hes | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |   .7577848   .0908139    -2.31   0.021     .5991518     .958418
+      Black  |   .9058323   .1037674    -0.86   0.388     .7236668    1.133854
+      Mixed  |   .9145897    .106794    -0.76   0.445     .7275015     1.14979
+      Other  |   1.015437   .1134793     0.14   0.891     .8156945    1.264091
+    Unknown  |   .7557379   .0799324    -2.65   0.008     .6142453    .9298236
+             |
+         stp |
+          2  |   1.052339   .1468314     0.37   0.715     .8005507     1.38332
+          3  |   .8600145    .127368    -1.02   0.309     .6433436    1.149658
+          4  |    .975756   .1386214    -0.17   0.863     .7386092    1.289044
+          5  |   .9266348   .1336226    -0.53   0.597     .6984956    1.229288
+          6  |   .9397692   .1322113    -0.44   0.659     .7132964    1.238147
+          7  |    .851062   .1232823    -1.11   0.266     .6407058    1.130482
+          8  |   .8810064   .1277777    -0.87   0.382     .6630163    1.170669
+          9  |   .8295568   .1217136    -1.27   0.203     .6222384     1.10595
+         10  |   .9517948   .1357421    -0.35   0.729     .7196934    1.258749
+             |
+       _cons |   .1871875   .0228752   -13.71   0.000      .147318    .2378471
+------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+file ./output/crude_hes_eth5.ster saved
+file ./output/crude_hes_eth5.dta saved
+
+Logistic regression                             Number of obs     =      8,225
+                                                LR chi2(18)       =      22.17
+                                                Prob > chi2       =     0.2247
+Log likelihood = -3200.5206                     Pseudo R2         =     0.0035
+
+------------------------------------------------------------------------------
+         hes | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |   .7556617   .0906103    -2.34   0.019     .5973943    .9558589
+      Black  |   .9016617   .1033633    -0.90   0.367     .7202196    1.128814
+      Mixed  |   .9105901   .1064129    -0.80   0.423     .7241862    1.144974
+      Other  |   1.012906   .1132777     0.11   0.909     .8135339    1.261138
+    Unknown  |   .7526698   .0796649    -2.68   0.007     .6116609    .9261862
+             |
+        male |
+       Male  |   1.093776   .0713632     1.37   0.169     .9624805    1.242982
+        age1 |   .9961268   .0089199    -0.43   0.665     .9787966    1.013764
+        age2 |   1.000707   .0334752     0.02   0.983     .9372013    1.068516
+        age3 |   1.009956   .0923458     0.11   0.914     .8442525    1.208182
+             |
+         stp |
+          2  |   1.050344   .1466169     0.35   0.725     .7989376    1.380862
+          3  |   .8593947   .1273325    -1.02   0.306     .6427974    1.148977
+          4  |   .9779243   .1389994    -0.16   0.875     .7401467     1.29209
+          5  |    .927725   .1338334    -0.52   0.603     .6992382    1.230873
+          6  |   .9387166    .132104    -0.45   0.653     .7124367    1.236866
+          7  |   .8516103   .1234043    -1.11   0.268     .6410558    1.131321
+          8  |   .8826026   .1280471    -0.86   0.389     .6641615    1.172888
+          9  |   .8322897   .1221626    -1.25   0.211     .6242177    1.109719
+         10  |   .9544608   .1361974    -0.33   0.744      .721598    1.262469
+             |
+       _cons |   .2092928   .0603846    -5.42   0.000     .1188961    .3684178
+------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+file ./output/model0_hes_eth5.ster saved
+file ./output/model0_hes_eth5.dta saved
+
+Logistic regression                             Number of obs     =      8,225
+                                                LR chi2(20)       =      24.18
+                                                Prob > chi2       =     0.2347
+Log likelihood = -3199.5153                     Pseudo R2         =     0.0038
+
+------------------------------------------------------------------------------
+         hes | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |   .7547403   .0905168    -2.35   0.019     .5966395    .9547355
+      Black  |   .8989334    .103097    -0.93   0.353     .7179675    1.125512
+      Mixed  |   .9106764   .1064418    -0.80   0.423     .7242256    1.145129
+      Other  |   1.012052   .1132074     0.11   0.915     .8128078    1.260136
+    Unknown  |   .7522586   .0796369    -2.69   0.007     .6113021    .9257176
+             |
+        male |
+       Male  |   1.093916   .0713823     1.38   0.169     .9625868    1.243164
+        age1 |   .9960258   .0089217    -0.44   0.657     .9786923    1.013666
+        age2 |    1.00081   .0334925     0.02   0.981     .9372726    1.068655
+        age3 |   1.009929   .0923899     0.11   0.914     .8441534    1.208259
+             |
+         imd |
+          4  |   .9219219   .0761993    -0.98   0.325     .7840434    1.084047
+5 most de..  |   .8754591   .1012809    -1.15   0.250     .6978487    1.098273
+             |
+         stp |
+          2  |   1.047492   .1462601     0.33   0.740     .7967064    1.377219
+          3  |   .8574958   .1270764    -1.04   0.300     .6413401    1.146504
+          4  |   .9777645   .1389954    -0.16   0.874      .739998    1.291927
+          5  |   .9244757   .1334037    -0.54   0.586     .6967315    1.226664
+          6  |   .9384308   .1320841    -0.45   0.652     .7121896    1.236542
+          7  |    .848924   .1230671    -1.13   0.259     .6389567    1.127888
+          8  |    .883775   .1282402    -0.85   0.395     .6650098    1.174506
+          9  |    .830522   .1219342    -1.26   0.206     .6228463    1.107443
+         10  |   .9538085    .136125    -0.33   0.740     .7210743     1.26166
+             |
+       _cons |   .2167067   .0627637    -5.28   0.000     .1228409    .3822977
+------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+file ./output/model1_hes_eth5.ster saved
+file ./output/model1_hes_eth5.dta saved
+file ./output/model2_hes_eth5.dta saved
+file ./output/model3_hes_eth5.dta saved
+(note: file ./output/estout_table4_infectedpop_eth5_nocarehomes.txt not found)
+(output written to ./output/estout_table4_infectedpop_eth5_nocarehomes.txt)
+  78,684
+(68,938 observations deleted)
+  9,746
+(1,521 observations deleted)
+  8,225
+
+   outcome |
+positivete |      outcome icu
+        st |         0          1 |     Total
+-----------+----------------------+----------
+         1 |     7,253        972 |     8,225 
+-----------+----------------------+----------
+     Total |     7,253        972 |     8,225 
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+      Eth 5 |      outcome icu
+ categories |         0          1 |     Total
+------------+----------------------+----------
+      White |     1,074        171 |     1,245 
+            |     86.27      13.73 |    100.00 
+------------+----------------------+----------
+South Asian |     1,089        134 |     1,223 
+            |     89.04      10.96 |    100.00 
+------------+----------------------+----------
+      Black |     1,126        140 |     1,266 
+            |     88.94      11.06 |    100.00 
+------------+----------------------+----------
+      Mixed |     1,036        132 |     1,168 
+            |     88.70      11.30 |    100.00 
+------------+----------------------+----------
+      Other |     1,149        141 |     1,290 
+            |     89.07      10.93 |    100.00 
+------------+----------------------+----------
+    Unknown |     1,779        254 |     2,033 
+            |     87.51      12.49 |    100.00 
+------------+----------------------+----------
+      Total |     7,253        972 |     8,225 
+            |     88.18      11.82 |    100.00 
+
+Logistic regression                             Number of obs     =      8,225
+                                                LR chi2(14)       =      15.89
+                                                Prob > chi2       =     0.3199
+Log likelihood = -2979.9949                     Pseudo R2         =     0.0027
+
+------------------------------------------------------------------------------
+         icu | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |   .7746581   .0954567    -2.07   0.038     .6084451    .9862766
+      Black  |   .7803041   .0950376    -2.04   0.042     .6145982    .9906872
+      Mixed  |   .8021307    .099355    -1.78   0.075     .6292338    1.022535
+      Other  |   .7692384   .0934797    -2.16   0.031     .6062069    .9761152
+    Unknown  |     .89906   .0955681    -1.00   0.317     .7299747    1.107311
+             |
+         stp |
+          2  |   1.061797   .1620497     0.39   0.694     .7872859    1.432024
+          3  |   .9930804   .1566476    -0.04   0.965     .7289817    1.352858
+          4  |   .9678135   .1511671    -0.21   0.834     .7125883    1.314452
+          5  |   1.022975   .1587573     0.15   0.884     .7546842    1.386642
+          6  |   1.125339    .168131     0.79   0.429     .8396722    1.508193
+          7  |   1.143693   .1720318     0.89   0.372     .8516739    1.535837
+          8  |   .9863921    .153732    -0.09   0.930      .726754    1.338788
+          9  |   1.278704   .1901996     1.65   0.098     .9553423    1.711517
+         10  |   .9032681    .142941    -0.64   0.520     .6623922    1.231738
+             |
+       _cons |   .1517886   .0199091   -14.37   0.000     .1173797    .1962842
+------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+file ./output/crude_icu_eth5.ster saved
+file ./output/crude_icu_eth5.dta saved
+
+Logistic regression                             Number of obs     =      8,225
+                                                LR chi2(18)       =      17.29
+                                                Prob > chi2       =     0.5031
+Log likelihood = -2979.2957                     Pseudo R2         =     0.0029
+
+------------------------------------------------------------------------------
+         icu | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |   .7731269   .0953115    -2.09   0.037     .6071754    .9844357
+      Black  |   .7797338   .0950152    -2.04   0.041     .6140765      .99008
+      Mixed  |   .8013328   .0993221    -1.79   0.074     .6285065    1.021683
+      Other  |   .7679196   .0933692    -2.17   0.030     .6050908    .9745654
+    Unknown  |   .8981344   .0955293    -1.01   0.312     .7291284    1.106315
+             |
+        male |
+       Male  |   .9325908   .0639218    -1.02   0.309     .8153572    1.066681
+        age1 |   1.003539   .0095699     0.37   0.711     .9849563    1.022472
+        age2 |   .9848084   .0348193    -0.43   0.665     .9188747    1.055473
+        age3 |   1.039966   .1003736     0.41   0.685     .8607252    1.256533
+             |
+         stp |
+          2  |   1.065347   .1626363     0.41   0.678     .7898529    1.436931
+          3  |   .9952912   .1570528    -0.03   0.976     .7305234     1.35602
+          4  |   .9703038   .1516142    -0.19   0.847     .7143381    1.317989
+          5  |   1.022416   .1587213     0.14   0.886     .7541991     1.38602
+          6  |   1.124743   .1680685     0.79   0.431     .8391887    1.507464
+          7  |   1.145065   .1722757     0.90   0.368     .8526413    1.537779
+          8  |   .9870086   .1538574    -0.08   0.933     .7271658    1.339703
+          9  |   1.277439   .1900708     1.65   0.100     .9543095    1.709979
+         10  |   .9050118   .1432786    -0.63   0.528     .6635823     1.23428
+             |
+       _cons |   .1444607   .0446122    -6.26   0.000     .0788647    .2646165
+------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+file ./output/model0_icu_eth5.ster saved
+file ./output/model0_icu_eth5.dta saved
+
+Logistic regression                             Number of obs     =      8,225
+                                                LR chi2(20)       =      19.54
+                                                Prob > chi2       =     0.4873
+Log likelihood = -2978.1738                     Pseudo R2         =     0.0033
+
+------------------------------------------------------------------------------
+         icu | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |   .7717926   .0951673    -2.10   0.036     .6060964    .9827873
+      Black  |   .7767506   .0946908    -2.07   0.038     .6116665    .9863895
+      Mixed  |   .8026946   .0995075    -1.77   0.076      .629549    1.023461
+      Other  |   .7662273   .0931822    -2.19   0.029     .6037284    .9724642
+    Unknown  |   .8963913   .0953652    -1.03   0.304     .7276794    1.104219
+             |
+        male |
+       Male  |   .9333086   .0639841    -1.01   0.314     .8159624    1.067531
+        age1 |   1.003708    .009572     0.39   0.698     .9851215    1.022645
+        age2 |   .9840123   .0347935    -0.46   0.649     .9181276    1.054625
+        age3 |   1.042462   .1006258     0.43   0.667     .8627722    1.259575
+             |
+         imd |
+          4  |   .8885963   .0783892    -1.34   0.181      .747505    1.056318
+5 most de..  |   1.048828   .1201995     0.42   0.677     .8378253    1.312971
+             |
+         stp |
+          2  |    1.06289   .1623035     0.40   0.690     .7879698    1.433728
+          3  |   .9941749   .1569112    -0.04   0.970     .7296544    1.354592
+          4  |   .9697584   .1515466    -0.20   0.844     .7139112    1.317295
+          5  |   1.020377   .1584549     0.13   0.897     .7526224    1.383389
+          6  |   1.123047     .16784     0.78   0.437     .8378865    1.505256
+          7  |   1.138861   .1714208     0.86   0.388     .8479071    1.529654
+          8  |   .9874232   .1539438    -0.08   0.935     .7274398    1.340323
+          9  |   1.272683     .18942     1.62   0.105      .950674    1.703762
+         10  |   .9049972   .1432927    -0.63   0.528     .6635479    1.234304
+             |
+       _cons |   .1469619   .0455385    -6.19   0.000     .0800657    .2697511
+------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+file ./output/model1_icu_eth5.ster saved
+file ./output/model1_icu_eth5.dta saved
+file ./output/model2_icu_eth5.dta saved
+file ./output/model3_icu_eth5.dta saved
+(output written to ./output/estout_table4_infectedpop_eth5_nocarehomes.txt)
+  78,684
+(68,938 observations deleted)
+  9,746
+(1,521 observations deleted)
+  8,225
+
+   outcome |
+positivete | outcome onscoviddeath
+        st |         0          1 |     Total
+-----------+----------------------+----------
+         1 |     8,087        138 |     8,225 
+-----------+----------------------+----------
+     Total |     8,087        138 |     8,225 
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+      Eth 5 | outcome onscoviddeath
+ categories |         0          1 |     Total
+------------+----------------------+----------
+      White |     1,227         18 |     1,245 
+            |     98.55       1.45 |    100.00 
+------------+----------------------+----------
+South Asian |     1,198         25 |     1,223 
+            |     97.96       2.04 |    100.00 
+------------+----------------------+----------
+      Black |     1,247         19 |     1,266 
+            |     98.50       1.50 |    100.00 
+------------+----------------------+----------
+      Mixed |     1,151         17 |     1,168 
+            |     98.54       1.46 |    100.00 
+------------+----------------------+----------
+      Other |     1,269         21 |     1,290 
+            |     98.37       1.63 |    100.00 
+------------+----------------------+----------
+    Unknown |     1,995         38 |     2,033 
+            |     98.13       1.87 |    100.00 
+------------+----------------------+----------
+      Total |     8,087        138 |     8,225 
+            |     98.32       1.68 |    100.00 
+
+Logistic regression                             Number of obs     =      8,225
+                                                LR chi2(14)       =      11.12
+                                                Prob > chi2       =     0.6768
+Log likelihood =  -695.3767                     Pseudo R2         =     0.0079
+
+------------------------------------------------------------------------------
+onscovidde~h | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |   1.432515   .4469936     1.15   0.249     .7771326    2.640603
+      Black  |   1.046578   .3470483     0.14   0.891     .5464001    2.004622
+      Mixed  |   1.012114   .3450334     0.04   0.972     .5188616    1.974273
+      Other  |   1.136243    .368088     0.39   0.693     .6021749    2.143974
+    Unknown  |     1.3087   .3777708     0.93   0.351     .7432435    2.304352
+             |
+         stp |
+          2  |   .9074837   .3662892    -0.24   0.810     .4114025    2.001754
+          3  |   1.577855   .5738352     1.25   0.210     .7735738    3.218345
+          4  |   1.094022   .4249936     0.23   0.817     .5109293    2.342564
+          5  |   .7079069   .3091237    -0.79   0.429     .3008012    1.665991
+          6  |   1.020816   .3965301     0.05   0.958     .4767637    2.185706
+          7  |   1.458535   .5300879     1.04   0.299     .7154137    2.973557
+          8  |    1.01423   .4011766     0.04   0.972      .467138    2.202051
+          9  |   1.262211   .4757241     0.62   0.537     .6029985     2.64209
+         10  |   .6910505   .3017293    -0.85   0.397     .2936667    1.626166
+             |
+       _cons |   .0136314   .0048235   -12.14   0.000     .0068131    .0272733
+------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+file ./output/crude_onscoviddeath_eth5.ster saved
+file ./output/crude_onscoviddeath_eth5.dta saved
+
+Logistic regression                             Number of obs     =      8,225
+                                                LR chi2(18)       =      25.32
+                                                Prob > chi2       =     0.1163
+Log likelihood = -688.27451                     Pseudo R2         =     0.0181
+
+------------------------------------------------------------------------------
+onscovidde~h | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |   1.400649   .4377093     1.08   0.281     .7591457    2.584246
+      Black  |   1.028047   .3412898     0.08   0.934     .5363298    1.970579
+      Mixed  |   1.008206   .3441917     0.02   0.981      .516366    1.968526
+      Other  |   1.110996   .3603213     0.32   0.746     .5883668     2.09786
+    Unknown  |   1.293973   .3740642     0.89   0.373     .7342741    2.280301
+             |
+        male |
+       Male  |   .8324238   .1441925    -1.06   0.290     .5927879    1.168933
+        age1 |    1.05407   .0254114     2.18   0.029     1.005423     1.10507
+        age2 |   .7604089   .0673783    -3.09   0.002      .639181    .9046289
+        age3 |   2.218383   .5334497     3.31   0.001     1.384682    3.554047
+             |
+         stp |
+          2  |   .9237434   .3731715    -0.20   0.844       .41849    2.039002
+          3  |   1.611327   .5869105     1.31   0.190     .7891173    3.290226
+          4  |   1.130495   .4396675     0.32   0.752     .5275003    2.422783
+          5  |   .7175223   .3136269    -0.76   0.448     .3046335    1.690025
+          6  |   1.025385   .3986267     0.06   0.949     .4786027     2.19684
+          7  |   1.469992   .5348457     1.06   0.290      .720463    2.999289
+          8  |    1.03012   .4078637     0.07   0.940     .4740945    2.238262
+          9  |   1.254717   .4734111     0.60   0.548     .5989398    2.628503
+         10  |   .7111923   .3108476    -0.78   0.436     .3019565    1.675058
+             |
+       _cons |   .0041701   .0033565    -6.81   0.000      .000861    .0201966
+------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+file ./output/model0_onscoviddeath_eth5.ster saved
+file ./output/model0_onscoviddeath_eth5.dta saved
+
+Logistic regression                             Number of obs     =      8,225
+                                                LR chi2(20)       =      27.72
+                                                Prob > chi2       =     0.1163
+Log likelihood = -687.07765                     Pseudo R2         =     0.0198
+
+------------------------------------------------------------------------------
+onscovidde~h | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |   1.414646   .4422767     1.11   0.267     .7665266     2.61077
+      Black  |   1.043452   .3466458     0.13   0.898     .5441192    2.001016
+      Mixed  |   1.006669    .343777     0.02   0.984      .515468    1.965946
+      Other  |   1.118884    .363011     0.35   0.729      .592408    2.113241
+    Unknown  |   1.303727   .3771004     0.92   0.359     .7395686    2.298238
+             |
+        male |
+       Male  |   .8296909     .14375    -1.08   0.281     .5907985    1.165181
+        age1 |   1.053682   .0254239     2.17   0.030     1.005012    1.104709
+        age2 |   .7619848   .0675435    -3.07   0.002     .6404637    .9065631
+        age3 |   2.204242   .5300598     3.29   0.001     1.375842    3.531424
+             |
+         imd |
+          4  |   1.371411   .2746228     1.58   0.115     .9262238    2.030577
+5 most de..  |   1.046256   .3138827     0.15   0.880     .5811295    1.883663
+             |
+         stp |
+          2  |   .9322374   .3767057    -0.17   0.862     .4222469    2.058196
+          3  |   1.623349   .5914317     1.33   0.184     .7948681    3.315344
+          4  |    1.13602   .4419531     0.33   0.743     .5299536    2.435198
+          5  |   .7234966   .3163425    -0.74   0.459     .3070832    1.704578
+          6  |   1.030999    .400925     0.08   0.937     .4811173    2.209354
+          7  |    1.49323   .5436794     1.10   0.271     .7314881    3.048218
+          8  |   1.027758   .4070095     0.07   0.945     .4729345    2.233475
+          9  |    1.26748    .478418     0.63   0.530     .6048527    2.656026
+         10  |   .7156143   .3128388    -0.77   0.444     .3037852    1.685743
+             |
+       _cons |   .0038475   .0031114    -6.88   0.000     .0007886    .0187724
+------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+file ./output/model1_onscoviddeath_eth5.ster saved
+file ./output/model1_onscoviddeath_eth5.dta saved
+file ./output/model2_onscoviddeath_eth5.dta saved
+file ./output/model3_onscoviddeath_eth5.dta saved
+(output written to ./output/estout_table4_infectedpop_eth5_nocarehomes.txt)
+  78,684
+(68,938 observations deleted)
+  9,746
+(1,521 observations deleted)
+  8,225
+
+   outcome |        outcome
+positivete |   ons_noncoviddeath
+        st |         0          1 |     Total
+-----------+----------------------+----------
+         1 |     7,776        449 |     8,225 
+-----------+----------------------+----------
+     Total |     7,776        449 |     8,225 
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+            |        outcome
+      Eth 5 |   ons_noncoviddeath
+ categories |         0          1 |     Total
+------------+----------------------+----------
+      White |     1,184         61 |     1,245 
+            |     95.10       4.90 |    100.00 
+------------+----------------------+----------
+South Asian |     1,145         78 |     1,223 
+            |     93.62       6.38 |    100.00 
+------------+----------------------+----------
+      Black |     1,207         59 |     1,266 
+            |     95.34       4.66 |    100.00 
+------------+----------------------+----------
+      Mixed |     1,102         66 |     1,168 
+            |     94.35       5.65 |    100.00 
+------------+----------------------+----------
+      Other |     1,207         83 |     1,290 
+            |     93.57       6.43 |    100.00 
+------------+----------------------+----------
+    Unknown |     1,931        102 |     2,033 
+            |     94.98       5.02 |    100.00 
+------------+----------------------+----------
+      Total |     7,776        449 |     8,225 
+            |     94.54       5.46 |    100.00 
+
+Logistic regression                             Number of obs     =      8,225
+                                                LR chi2(14)       =      20.39
+                                                Prob > chi2       =     0.1182
+Log likelihood = -1731.9704                     Pseudo R2         =     0.0059
+
+------------------------------------------------------------------------------
+ons_noncov~h | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |   1.312413   .2310648     1.54   0.123     .9294094     1.85325
+      Black  |   .9388793   .1758572    -0.34   0.736     .6503918    1.355328
+      Mixed  |   1.162624   .2123612     0.82   0.409     .8127582    1.663095
+      Other  |   1.323063   .2298526     1.61   0.107     .9412458    1.859763
+    Unknown  |   1.016146   .1688716     0.10   0.923     .7336625    1.407394
+             |
+         stp |
+          2  |   1.881456   .4130176     2.88   0.004     1.223596    2.893011
+          3  |   1.355346   .3205296     1.29   0.199     .8526035    2.154533
+          4  |   1.560325   .3545443     1.96   0.050     .9995421     2.43573
+          5  |   1.360964   .3185674     1.32   0.188      .860205    2.153236
+          6  |   1.038574   .2521945     0.16   0.876     .6452713    1.671601
+          7  |   1.363755   .3160926     1.34   0.181     .8658528    2.147973
+          8  |   1.332784   .3118884     1.23   0.220     .8424958    2.108394
+          9  |   1.433141   .3309426     1.56   0.119     .9114407    2.253457
+         10  |   1.257654   .2971735     0.97   0.332       .79146     1.99845
+             |
+       _cons |   .0382803   .0081136   -15.39   0.000     .0252674    .0579949
+------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+file ./output/crude_ons_noncoviddeath_eth5.ster saved
+file ./output/crude_ons_noncoviddeath_eth5.dta saved
+
+Logistic regression                             Number of obs     =      8,225
+                                                LR chi2(18)       =      21.09
+                                                Prob > chi2       =     0.2751
+Log likelihood = -1731.6241                     Pseudo R2         =     0.0061
+
+------------------------------------------------------------------------------
+ons_noncov~h | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |    1.31192   .2310909     1.54   0.123     .9289036    1.852866
+      Black  |   .9371912   .1756194    -0.35   0.729      .649116    1.353113
+      Mixed  |    1.16163   .2122942     0.82   0.412     .8119064    1.661994
+      Other  |   1.322126    .229811     1.61   0.108     .9404111    1.858781
+    Unknown  |   1.014831   .1687404     0.09   0.929     .7325898    1.405811
+             |
+        male |
+       Male  |   1.069534   .1040254     0.69   0.489     .8839028    1.294149
+        age1 |   .9966775   .0134334    -0.25   0.805     .9706932    1.023357
+        age2 |   1.005833    .050412     0.12   0.908     .9117253    1.109654
+        age3 |   .9934128   .1357802    -0.05   0.961     .7599536    1.298591
+             |
+         stp |
+          2  |   1.877806   .4123036     2.87   0.004     1.221111    2.887661
+          3  |   1.353298   .3201246     1.28   0.201      .851217    2.151525
+          4  |   1.561535   .3549221     1.96   0.050     1.000188    2.437933
+          5  |   1.362055   .3189044     1.32   0.187     .8607932    2.155215
+          6  |   1.039181   .2523685     0.16   0.874     .6456153    1.672662
+          7  |   1.363097   .3159807     1.34   0.181     .8653845    2.147062
+          8  |   1.333598   .3121204     1.23   0.219     .8429589     2.10981
+          9  |   1.436224   .3317316     1.57   0.117     .9133058    2.258543
+         10  |    1.25862    .297487     0.97   0.330     .7919633     2.00025
+             |
+       _cons |   .0412068   .0184403    -7.13   0.000     .0171416    .0990574
+------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+file ./output/model0_ons_noncoviddeath_eth5.ster saved
+file ./output/model0_ons_noncoviddeath_eth5.dta saved
+
+Logistic regression                             Number of obs     =      8,225
+                                                LR chi2(20)       =      23.95
+                                                Prob > chi2       =     0.2446
+Log likelihood = -1730.1922                     Pseudo R2         =     0.0069
+
+------------------------------------------------------------------------------
+ons_noncov~h | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |   1.309381   .2306985     1.53   0.126     .9270301    1.849432
+      Black  |   .9330179   .1749067    -0.37   0.712     .6461314    1.347284
+      Mixed  |   1.161167   .2122514     0.82   0.414      .811526    1.661449
+      Other  |   1.320935   .2296557     1.60   0.109      .939492    1.857249
+    Unknown  |   1.013289    .168526     0.08   0.937     .7314165    1.403788
+             |
+        male |
+       Male  |   1.069473   .1040395     0.69   0.490     .8838205    1.294123
+        age1 |   .9964598   .0134385    -0.26   0.793     .9704659     1.02315
+        age2 |   1.006163   .0504698     0.12   0.903     .9119507    1.110108
+        age3 |   .9929354   .1358481    -0.05   0.959     .7593887    1.298308
+             |
+         imd |
+          4  |   .8899883   .1105713    -0.94   0.348     .6976408    1.135368
+5 most de..  |   .7627833   .1390362    -1.49   0.137     .5336402     1.09032
+             |
+         stp |
+          2  |   1.869188    .410529     2.85   0.004     1.215357    2.874763
+          3  |   1.347789   .3188925     1.26   0.207     .8476649    2.142988
+          4  |   1.559577    .354534     1.95   0.051     .9988624     2.43505
+          5  |   1.354209   .3171485     1.29   0.195     .8557343    2.143051
+          6  |   1.038988   .2523504     0.16   0.875      .645461    1.672442
+          7  |   1.357465   .3147806     1.32   0.188     .8616777    2.138516
+          8  |   1.335342   .3125938     1.24   0.217     .8439809    2.112772
+          9  |    1.43217   .3308733     1.55   0.120     .9106299    2.252408
+         10  |   1.256471   .2970258     0.97   0.334      .790553     1.99698
+             |
+       _cons |   .0437042   .0196308    -6.97   0.000     .0181211    .1054048
+------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+file ./output/model1_ons_noncoviddeath_eth5.ster saved
+file ./output/model1_ons_noncoviddeath_eth5.dta saved
+file ./output/model2_ons_noncoviddeath_eth5.dta saved
+file ./output/model3_ons_noncoviddeath_eth5.dta saved
+(output written to ./output/estout_table4_infectedpop_eth5_nocarehomes.txt)
+  78,684
+(68,938 observations deleted)
+  9,746
+(1,521 observations deleted)
+  8,225
+
+   outcome |
+positivete |   outcome onsdeath
+        st |         0          1 |     Total
+-----------+----------------------+----------
+         1 |     7,638        587 |     8,225 
+-----------+----------------------+----------
+     Total |     7,638        587 |     8,225 
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+      Eth 5 |   outcome onsdeath
+ categories |         0          1 |     Total
+------------+----------------------+----------
+      White |     1,166         79 |     1,245 
+            |     93.65       6.35 |    100.00 
+------------+----------------------+----------
+South Asian |     1,120        103 |     1,223 
+            |     91.58       8.42 |    100.00 
+------------+----------------------+----------
+      Black |     1,188         78 |     1,266 
+            |     93.84       6.16 |    100.00 
+------------+----------------------+----------
+      Mixed |     1,085         83 |     1,168 
+            |     92.89       7.11 |    100.00 
+------------+----------------------+----------
+      Other |     1,186        104 |     1,290 
+            |     91.94       8.06 |    100.00 
+------------+----------------------+----------
+    Unknown |     1,893        140 |     2,033 
+            |     93.11       6.89 |    100.00 
+------------+----------------------+----------
+      Total |     7,638        587 |     8,225 
+            |     92.86       7.14 |    100.00 
+
+Logistic regression                             Number of obs     =      8,225
+                                                LR chi2(14)       =      20.52
+                                                Prob > chi2       =     0.1147
+Log likelihood = -2104.9052                     Pseudo R2         =     0.0048
+
+------------------------------------------------------------------------------
+    onsdeath | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |   1.351902   .2101664     1.94   0.052     .9968217    1.833466
+      Black  |   .9630308   .1589122    -0.23   0.819     .6969172    1.330758
+      Mixed  |   1.130666   .1841856     0.75   0.451     .8216246    1.555948
+      Other  |   1.287785     .19961     1.63   0.103     .9503971    1.744946
+    Unknown  |   1.086175    .158266     0.57   0.571     .8163409      1.4452
+             |
+         stp |
+          2  |   1.618459   .3132262     2.49   0.013     1.107556    2.365036
+          3  |   1.434542   .2884001     1.79   0.073     .9673599    2.127349
+          4  |   1.440573   .2856045     1.84   0.066     .9767376    2.124674
+          5  |   1.177903    .243728     0.79   0.429     .7852025    1.767004
+          6  |   1.034601   .2156203     0.16   0.870     .6876617    1.556579
+          7  |   1.404266   .2782873     1.71   0.087     .9522794    2.070782
+          8  |   1.248961   .2543432     1.09   0.275     .8379283    1.861619
+          9  |   1.397032   .2787677     1.68   0.094     .9448333    2.065654
+         10  |   1.098044   .2290579     0.45   0.654     .7295492    1.652666
+             |
+       _cons |   .0530577    .009748   -15.98   0.000     .0370136    .0760564
+------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+file ./output/crude_onsdeath_eth5.ster saved
+file ./output/crude_onsdeath_eth5.dta saved
+
+Logistic regression                             Number of obs     =      8,225
+                                                LR chi2(18)       =      24.33
+                                                Prob > chi2       =     0.1445
+Log likelihood =  -2102.998                     Pseudo R2         =     0.0058
+
+------------------------------------------------------------------------------
+    onsdeath | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |   1.343624   .2090244     1.90   0.058      .990509    1.822624
+      Black  |   .9586139   .1582709    -0.26   0.798     .6935967    1.324892
+      Mixed  |   1.128141   .1839065     0.74   0.460     .8196012     1.55283
+      Other  |    1.27896   .1983754     1.59   0.113     .9436914    1.733342
+    Unknown  |   1.081665   .1577177     0.54   0.590     .8127909    1.439483
+             |
+        male |
+       Male  |   1.007196   .0864906     0.08   0.933     .8511751    1.191815
+        age1 |   1.010845    .012024     0.91   0.364     .9875511    1.034689
+        age2 |   .9378467   .0413173    -1.46   0.145     .8602641    1.022426
+        age3 |   1.214909   .1457561     1.62   0.105      .960335    1.536968
+             |
+         stp |
+          2  |   1.623396   .3143037     2.50   0.012     1.110771      2.3726
+          3  |   1.439863   .2896097     1.81   0.070     .9707627    2.135646
+          4  |   1.452508   .2881081     1.88   0.060     .9846475    2.142674
+          5  |   1.183913   .2450741     0.82   0.415     .7890745    1.776321
+          6  |   1.036343   .2160303     0.17   0.864     .6887586    1.559338
+          7  |   1.406472    .278809     1.72   0.085     .9536634     2.07428
+          8  |   1.255138   .2556778     1.12   0.265     .8419713     1.87105
+          9  |   1.397378   .2789446     1.68   0.094     .9449242    2.066478
+         10  |   1.106821   .2310019     0.49   0.627     .7352335     1.66621
+             |
+       _cons |   .0418219   .0165361    -8.03   0.000     .0192684    .0907743
+------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+file ./output/model0_onsdeath_eth5.ster saved
+file ./output/model0_onsdeath_eth5.dta saved
+
+Logistic regression                             Number of obs     =      8,225
+                                                LR chi2(20)       =      25.99
+                                                Prob > chi2       =     0.1660
+Log likelihood = -2102.1657                     Pseudo R2         =     0.0061
+
+------------------------------------------------------------------------------
+    onsdeath | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        eth5 |
+South Asian  |   1.343349   .2090195     1.90   0.058     .9902514    1.822352
+      Black  |   .9582023   .1582655    -0.26   0.796     .6932102    1.324492
+      Mixed  |   1.126689   .1836956     0.73   0.464     .8185103    1.550901
+      Other  |    1.27975   .1985344     1.59   0.112     .9442212    1.734509
+    Unknown  |   1.082373   .1578528     0.54   0.587     .8132762    1.440509
+             |
+        male |
+       Male  |   1.007049   .0864859     0.08   0.935     .8510385     1.19166
+        age1 |   1.010637   .0120273     0.89   0.374     .9873365    1.034487
+        age2 |   .9383474   .0413643    -1.44   0.149     .8606785    1.023025
+        age3 |   1.213369   .1456712     1.61   0.107     .9589631    1.535268
+             |
+         imd |
+          4  |   .9955769   .1063993    -0.04   0.967     .8074305    1.227565
+5 most de..  |    .821094   .1294254    -1.25   0.211     .6028674    1.118315
+             |
+         stp |
+          2  |   1.620752   .3138572     2.49   0.013     1.108874    2.368923
+          3  |   1.436913   .2890632     1.80   0.072     .9687114    2.131407
+          4  |   1.451082   .2878607     1.88   0.061     .9836335    2.140673
+          5  |     1.1807   .2444611     0.80   0.422      .786865    1.771653
+          6  |   1.036926   .2161689     0.17   0.862     .6891231    1.560265
+          7  |   1.406653   .2789429     1.72   0.085     .9536551    2.074829
+          8  |   1.255522    .255789     1.12   0.264     .8421863    1.871719
+          9  |   1.397759    .279074     1.68   0.093     .9451116    2.067196
+         10  |   1.105441   .2307383     0.48   0.631     .7342851    1.664204
+             |
+       _cons |   .0429273   .0170391    -7.93   0.000     .0197182    .0934544
+------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+file ./output/model1_onsdeath_eth5.ster saved
+file ./output/model1_onsdeath_eth5.dta saved
+file ./output/model2_onsdeath_eth5.dta saved
+file ./output/model3_onsdeath_eth5.dta saved
+(output written to ./output/estout_table4_infectedpop_eth5_nocarehomes.txt)
+
+. file close tablecontent
+
+. 
+. ************************************************create forestplot dataset
+. dsconcat `hr'
+
+. duplicates drop
+
+Duplicates in terms of all variables
+
+(0 observations are duplicates)
+
+. split idstr, p(_)
+variables created as string: 
+idstr1  idstr2  idstr3  idstr4
+
+. ren idstr1 model
+
+. ren idstr2 outcome
+
+. drop idstr idstr3
+
+. tab model
+
+      model |      Freq.     Percent        Cum.
+------------+-----------------------------------
+      crude |         85        7.83        7.83
+     model0 |        110       10.14       17.97
+     model1 |        125       11.52       29.49
+     model2 |        375       34.56       64.06
+     model3 |        390       35.94      100.00
+------------+-----------------------------------
+      Total |      1,085      100.00
+
+. 
+. *save dataset for later
+. outsheet using ./output/FP_infectedpop_eth5.txt, replace
+(note: file ./output/FP_infectedpop_eth5.txt not found)
+
+. 
+. * Close log file 
+. log close
+      name:  <unnamed>
+       log:  /workspace/logs/11b_eth_an_infectedpop_eth5.log
+  log type:  text
+ closed on:  15 Jan 2021, 16:54:29
+-------------------------------------------------------------------------------

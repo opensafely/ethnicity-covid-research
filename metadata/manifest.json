@@ -60,12 +60,24 @@
       "created_by_action": "sens_ruralurban_eth16",
       "privacy_level": "moderately_sensitive"
     },
+    "logs/11a_eth_an_infectedpop_eth16.log": {
+      "created_by_action": "main_eth16_infectedpop",
+      "privacy_level": "moderately_sensitive"
+    },
+    "logs/11b_eth_an_infectedpop_eth5.log": {
+      "created_by_action": "main_eth5_infectedpop",
+      "privacy_level": "moderately_sensitive"
+    },
     "logs/11b_eth_an_testedpop_eth5.log": {
       "created_by_action": "main_eth5_testedpop",
       "privacy_level": "moderately_sensitive"
     },
     "output/FP_hes_eth5_carehomesonly.txt": {
       "created_by_action": "main_carehomes_eth5",
+      "privacy_level": "moderately_sensitive"
+    },
+    "output/FP_infectedpop_eth16.txt": {
+      "created_by_action": "main_eth16_infectedpop",
       "privacy_level": "moderately_sensitive"
     },
     "output/FP_infectedpop_eth5.txt": {
@@ -176,6 +188,10 @@
       "created_by_action": "main_eth5_testedpop",
       "privacy_level": "moderately_sensitive"
     },
+    "output/estout_table4_infectedpop_eth16_nocarehomes.txt": {
+      "created_by_action": "main_eth16_infectedpop",
+      "privacy_level": "moderately_sensitive"
+    },
     "output/estout_table4_infectedpop_eth5_nocarehomes.txt": {
       "created_by_action": "main_eth5_infectedpop",
       "privacy_level": "moderately_sensitive"
@@ -214,6 +230,10 @@
     },
     "output/table3_testedpop_eth5_nocarehomes.txt": {
       "created_by_action": "main_eth5_testedpop",
+      "privacy_level": "moderately_sensitive"
+    },
+    "output/table4_infectedpop_eth16_nocarehomes.txt": {
+      "created_by_action": "main_eth16_infectedpop",
       "privacy_level": "moderately_sensitive"
     },
     "output/table4_infectedpop_eth5_nocarehomes.txt": {
@@ -403,13 +423,22 @@
       "completed_at": "2021-01-15T16:38:56Z"
     },
     "main_eth5_infectedpop": {
-      "state": "failed",
+      "state": "succeeded",
       "commit": "none",
       "docker_image_id": "sha256:e4a676ff497b1550742032051cce1ba5502f65b172e86e4d82aadbaa1e056935",
-      "job_id": "6cxlbslftf2cie57",
+      "job_id": "wjrlxw5r5phfj275",
       "run_by_user": null,
-      "created_at": "2021-01-15T16:49:16Z",
-      "completed_at": "2021-01-15T16:51:31Z"
+      "created_at": "2021-01-15T16:52:32Z",
+      "completed_at": "2021-01-15T16:54:31Z"
+    },
+    "main_eth16_infectedpop": {
+      "state": "succeeded",
+      "commit": "none",
+      "docker_image_id": "sha256:e4a676ff497b1550742032051cce1ba5502f65b172e86e4d82aadbaa1e056935",
+      "job_id": "pqr5iaaoiqhj4ku3",
+      "run_by_user": null,
+      "created_at": "2021-01-15T16:54:55Z",
+      "completed_at": "2021-01-15T16:57:18Z"
     }
   }
 }
