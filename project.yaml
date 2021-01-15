@@ -166,3 +166,25 @@ actions:
         log: logs/06e_sens_onsunderlyingdeath_eth5.log
         estout: output/estout_onsunderlyingdeath_eth5.txt
         graph: output/FP_sens_onsunderlyingdeath_eth5.txt
+
+  main_eth16_testedpop:
+    run: stata-mp:latest analysis/07a_eth_an_testedpop_eth16_nocarehomes.do
+    needs: [crmain]
+    outputs:
+      moderately_sensitive:
+        log: logs/07a_eth_an_testedpop_eth16.log
+        table: output/table3_testedpop_eth16_nocarehomes.txt
+        estout: output/estout_table3_testedpop_eth16_nocarehomes.txt
+        graph: output/FP_testedpop_eth16.txt
+
+  main_eth5_testedpop:
+    run: stata-mp:latest analysis/07b_eth_an_testedpop_eth5_nocarehomes.do
+    needs: [crmain]
+    outputs:
+      moderately_sensitive:
+        log: logs/07b_eth_an_testedpop_eth5.log
+        table: output/table3_testedpop_eth5_nocarehomes.txt
+        estout: output/estout_table3_testedpop_eth5_nocarehomes.txt
+        graph: output/FP_testedpop_eth5.txt
+
+

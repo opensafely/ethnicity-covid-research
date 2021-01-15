@@ -1,18 +1,17 @@
-2021-01-14T12:17:52.545004000Z Generating cohort for study_definition...
-2021-01-14T12:17:52.545241300Z Running. Please wait...
-2021-01-14T12:17:59.823260200Z Successfully created cohort and covariates at output/input.csv
+2021-01-15T15:10:39.795242500Z Generating cohort for study_definition...
+2021-01-15T15:10:39.795304500Z Running. Please wait...
 
 
-state: succeeded
+state: failed
 commit: none
 docker_image_id: sha256:0f0f84e012c45836511e3970e9b97fd2203057a2108ff0b58ce544393f9637cc
-job_id: wbeuhydypvhuhryx
+job_id: n6lnej7xednucibl
 run_by_user: None
-created_at: 2021-01-14T12:16:58Z
-started_at: 2021-01-14T12:17:49Z
-completed_at: 2021-01-14T12:18:01Z
+created_at: 2021-01-15T15:08:39Z
+started_at: 2021-01-15T15:10:35Z
+completed_at: 2021-01-15T15:11:50Z
 
-Completed successfully
+Job exited with an error code
 
 outputs:
-  output/input.csv  - highly_sensitive
+  (no outputs)
