@@ -198,7 +198,7 @@ actions:
         graph: output/FP_infectedpop_eth16.txt
 
   main_eth5_infectedpop:
-    run: stata-mp:latest analysis/11b_eth_an_infectedpop_eth16_nocarehomes.do
+    run: stata-mp:latest analysis/11b_eth_an_infectedpop_eth5_nocarehomes.do
     needs: [crmain]
     outputs:
       moderately_sensitive:
