@@ -1,5 +1,5 @@
-/*==============================================================================
-DO FILE NAME:			011a_eth_an_testedpop_eth16
+/*=============================================================================
+DO FILE NAME:			11a_eth_an_testedpop_eth16
 PROJECT:				Ethnicity and COVID
 AUTHOR:					R Mathur (modified from A wong and A Schultze)
 DATE: 					15 July 2020					
@@ -23,7 +23,7 @@ sysdir
 * Open a log file
 
 cap log close
-log using ./logs/011a_eth_an_testedpop_eth16.log, replace t
+log using ./logs/11a_eth_an_testedpop_eth16.log, replace t
 
 cap file close tablecontent
 file open tablecontent using ./output/table3_testedpop_eth16_nocarehomes.txt, write text replace
