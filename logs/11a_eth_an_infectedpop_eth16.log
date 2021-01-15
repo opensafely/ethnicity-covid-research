@@ -1,0 +1,1147 @@
+-----------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/logs/11a_et
+> h_an_infectedpop_eth16.log
+  log type:  text
+ opened on:  15 Jan 2021, 16:26:30
+
+. 
+. cap file close tablecontent
+
+. file open tablecontent using ./output/table4_infectedpop_eth16_nocarehomes.txt, w
+> rite text replace
+(note: file ./output/table4_infectedpop_eth16_nocarehomes.txt not found)
+
+. file write tablecontent ("Table 3: Odds of testing positive amongst those receivi
+> ng a test - No care homes") _n
+
+. file write tablecontent _tab ("Denominator") _tab ("Event") _tab ("%") _tab ("Cru
+> de") _tab _tab ("Age/Sex Adjusted") _tab _tab ("Age/Sex/IMD Adjusted") _tab _tab 
+>       ("plus co-morbidities") _tab _tab       ("plus hh size")  _n
+
+. 
+. file write tablecontent _tab _tab _tab _tab   ("OR") _tab ("95% CI") _tab ("OR") 
+> _tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("95
+> % CI") _tab ("95% CI") _n
+
+. 
+. 
+. foreach i of global outcomes {
+  2. * Open Stata dataset
+. use ./output/analysis_dataset.dta, clear
+  3. 
+. safecount
+  4. 
+. *define population as anyone who has received a test
+. keep if positivetest==1
+  5. safecount
+  6. 
+. keep if carehome==0
+  7. safecount
+  8. 
+. 
+. 
+. /* Sense check outcomes=======================================================*/ 
+. safetab positivetest `i'
+  9. 
+. safetab ethnicity_16 `i', missing row
+ 10. 
+. 
+. /* Main Model=================================================================*/
+. 
+. /* Univariable model */ 
+. 
+. logistic `i' i.ethnicity_16 i.stp, nolog 
+ 11. estimates save ./output/crude_`i'_eth16, replace 
+ 12. parmest, label eform format(estimate p lb ub) saving(./output/crude_`i'_eth16,
+>  replace) idstr("crude_`i'_eth16") 
+ 13. eststo model1
+ 14. local hr "`hr' ./output/crude_`i'_eth16 "
+ 15. 
+. 
+. /* Multivariable models */ 
+. *Age Gender
+. logistic `i' i.ethnicity_16 i.male age1 age2 age3 i.stp, nolog 
+ 16. estimates save ./output/model0_`i'_eth16, replace 
+ 17. parmest, label eform format(estimate p lb ub) saving(./output/model0_`i'_eth16
+> , replace) idstr("model0_`i'_eth16") 
+ 18. eststo model2
+ 19. local hr "`hr' ./output/model0_`i'_eth16 "
+ 20. 
+. * Age, Gender, IMD
+. logistic `i' i.ethnicity_16 i.male age1 age2 age3 i.imd i.stp , nolog 
+ 21. estimates save ./output/model1_`i'_eth16, replace 
+ 22. parmest, label eform format(estimate p lb ub) saving(./output/model1_`i'_eth16
+> , replace) idstr("model1_`i'_eth16") 
+ 23. eststo model3
+ 24. local hr "`hr' ./output/model1_`i'_eth16 "
+ 25. 
+. * Age, Gender, IMD and Comorbidities  
+. cap logistic `i' i.ethnicity_16 i.male age1 age2 age3   i.imd                    
+>                        ///
+>                                                                                 i
+> .bmicat_sa     i.hba1ccat                      ///
+>                                                                                 g
+> p_consult_count                        ///
+>                                                                                 i
+> .smoke_nomiss                          ///
+>                                                                                 i
+> .hypertension i.bp_cat         ///     
+>                                                                                 i
+> .asthma                                        ///
+>                                                                                 i
+> .chronic_respiratory_disease ///
+>                                                                                 i
+> .chronic_cardiac_disease       ///
+>                                                                                 i
+> .dm_type                                       ///     
+>                                                                                 i
+> .cancer                    ///
+>                                                                                 i
+> .chronic_liver_disease         ///
+>                                                                                 i
+> .stroke                                        ///
+>                                                                                 i
+> .dementia                                      ///
+>                                                                                 i
+> .other_neuro                           ///
+>                                                                                 i
+> .egfr60                                        ///
+>                                                                                 i
+> .esrf                                          ///
+>                                                                                 i
+> .immunosuppressed                      ///
+>                                                                                 i
+> .ra_sle_psoriasis      i. stp, nolog           
+ 26.                                                                               
+>   
+. cap estimates save ./output/model2_`i'_eth16, replace 
+ 27. parmest, label eform format(estimate p lb ub) saving(./output/model2_`i'_eth16
+> , replace) idstr("model2_`i'_eth16") 
+ 28. eststo model4
+ 29. local hr "`hr' ./output/model2_`i'_eth16 "
+ 30. 
+. * Age, Gender, IMD and Comorbidities  and household size 
+. cap logistic `i' i.ethnicity_16 i.male age1 age2 age3   i.imd                    
+>                        ///
+>                                                                                 i
+> .bmicat_sa     i.hba1ccat                      ///
+>                                                                                 g
+> p_consult_count                        ///
+>                                                                                 i
+> .smoke_nomiss                          ///
+>                                                                                 i
+> .hypertension i.bp_cat         ///     
+>                                                                                 i
+> .asthma                                        ///
+>                                                                                 i
+> .chronic_respiratory_disease ///
+>                                                                                 i
+> .chronic_cardiac_disease       ///
+>                                                                                 i
+> .dm_type                                       ///     
+>                                                                                 i
+> .cancer                    ///
+>                                                                                 i
+> .chronic_liver_disease         ///
+>                                                                                 i
+> .stroke                                        ///
+>                                                                                 i
+> .dementia                                      ///
+>                                                                                 i
+> .other_neuro                           ///
+>                                                                                 i
+> .egfr60                                        ///
+>                                                                                 i
+> .esrf                                          ///
+>                                                                                 i
+> .immunosuppressed                      ///
+>                                                                                 i
+> .ra_sle_psoriasis                      ///
+>                                                                                 i
+> .hh_total_cat i.stp, nolog             
+ 31.                                                                               
+>   
+. cap estimates save ./output/model3_`i'_eth16, replace 
+ 32. parmest, label eform format(estimate p lb ub) saving(./output/model3_`i'_eth16
+> , replace) idstr("model3_`i'_eth16") 
+ 33. eststo model5
+ 34. local hr "`hr' ./output/model3_`i'_eth16 "
+ 35. 
+. /* Estout================================================================*/ 
+. esttab model1 model2 model3 model4 model5   using ./output/estout_table4_infected
+> pop_eth16_nocarehomes.txt, b(a2) ci(2) label wide compress eform ///
+>         title ("`i'") ///
+>         varlabels(`e(labels)') ///
+>         stats(N_sub) ///
+>         append 
+ 36. eststo clear
+ 37. 
+. 
+. 
+. /* Print table================================================================*/ 
+. *  Print the results for the main model 
+. 
+. 
+. * Column headings 
+. file write tablecontent ("`i'") _n
+ 38. 
+. * eth16 labelled columns
+. 
+. local lab1: label ethnicity_16 1
+ 39. local lab2: label ethnicity_16 2
+ 40. local lab3: label ethnicity_16 3
+ 41. local lab4: label ethnicity_16 4
+ 42. local lab5: label ethnicity_16 5
+ 43. local lab6: label ethnicity_16 6
+ 44. local lab7: label ethnicity_16 7
+ 45. local lab8: label ethnicity_16 8
+ 46. local lab9: label ethnicity_16 9
+ 47. local lab10: label ethnicity_16 10
+ 48. local lab11: label ethnicity_16 11
+ 49. local lab12: label ethnicity_16 12
+ 50. local lab13: label ethnicity_16 13
+ 51. local lab14: label ethnicity_16 14
+ 52. local lab15: label ethnicity_16 15
+ 53. local lab16: label ethnicity_16 16
+ 54. local lab17: label ethnicity_16 17
+ 55. 
+. /* Counts */
+.  
+. * First row, eth16 = 1 (White) reference cat
+.         qui safecount if ethnicity_16==1
+ 56.         local denominator = r(N)
+ 57.         qui safecount if ethnicity_16 == 1 & `i' == 1
+ 58.         local event = r(N)
+ 59.         local pct =(`event'/`denominator')
+ 60.         file write tablecontent  ("`lab1'") _tab (`denominator') _tab (`event'
+> ) _tab %3.2f (`pct') _tab
+ 61.         file write tablecontent ("1.00") _tab _tab ("1.00") _tab _tab ("1.00")
+>   _tab _tab ("1.00") _tab _tab ("1.00") _n
+ 62.         
+. * Subsequent ethnic groups
+. forvalues eth=2/17 {
+ 63.         qui safecount if ethnicity_16==`eth'
+ 64.         local denominator = r(N)
+ 65.         qui safecount if ethnicity_16 == `eth' & `i' == 1
+ 66.         local event = r(N)
+ 67.         local pct =(`event'/`denominator')
+ 68.         file write tablecontent  ("`lab`eth''") _tab (`denominator') _tab (`ev
+> ent') _tab %3.2f (`pct') _tab
+ 69.         cap estimates use ./output/crude_`i'_eth16" 
+ 70.         cap lincom `eth'.ethnicity_16, eform
+ 71.         file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) 
+> (" - ") %4.2f (r(ub)) (")") _tab 
+ 72.         cap estimates clear
+ 73.         cap estimates use ./output/model0_`i'_eth16" 
+ 74.         cap lincom `eth'.ethnicity_16, eform
+ 75.         file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) 
+> (" - ") %4.2f (r(ub)) (")") _tab 
+ 76.         cap estimates clear
+ 77.         cap estimates use ./output/model1_`i'_eth16" 
+ 78.         cap lincom `eth'.ethnicity_16, eform
+ 79.         file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) 
+> (" - ") %4.2f (r(ub)) (")") _tab 
+ 80.         cap estimates clear
+ 81.         cap estimates use ./output/model2_`i'_eth16" 
+ 82.         cap lincom `eth'.ethnicity_16, eform
+ 83.         file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) 
+> (" - ") %4.2f (r(ub)) (")") _tab 
+ 84.         cap estimates clear
+ 85.         cap estimates use ./output/model3_`i'_eth16" 
+ 86.         cap lincom `eth'.ethnicity_16, eform
+ 87.         file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) 
+> (" - ") %4.2f (r(ub)) (")") _n
+ 88. }  //end ethnic group
+ 89. 
+. } //end outcomes
+  78,716
+(68,979 observations deleted)
+  9,737
+(1,461 observations deleted)
+  8,276
+
+   outcome |
+positivete |      outcome hes
+        st |         0          1 |     Total
+-----------+----------------------+----------
+         1 |     7,221      1,055 |     8,276 
+-----------+----------------------+----------
+     Total |     7,221      1,055 |     8,276 
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+                  |      outcome hes
+Eth 16 categories |         0          1 |     Total
+------------------+----------------------+----------
+          British |       341         50 |       391 
+                  |     87.21      12.79 |    100.00 
+------------------+----------------------+----------
+            Irish |       325         45 |       370 
+                  |     87.84      12.16 |    100.00 
+------------------+----------------------+----------
+      Other White |       326         46 |       372 
+                  |     87.63      12.37 |    100.00 
+------------------+----------------------+----------
+White + Caribbean |       325         43 |       368 
+                  |     88.32      11.68 |    100.00 
+------------------+----------------------+----------
+  White + African |       300         49 |       349 
+                  |     85.96      14.04 |    100.00 
+------------------+----------------------+----------
+    White + Asian |       359         43 |       402 
+                  |     89.30      10.70 |    100.00 
+------------------+----------------------+----------
+      Other mixed |       351         38 |       389 
+                  |     90.23       9.77 |    100.00 
+------------------+----------------------+----------
+           Indian |       377         52 |       429 
+                  |     87.88      12.12 |    100.00 
+------------------+----------------------+----------
+        Pakistani |       358         47 |       405 
+                  |     88.40      11.60 |    100.00 
+------------------+----------------------+----------
+      Bangladeshi |       322         43 |       365 
+                  |     88.22      11.78 |    100.00 
+------------------+----------------------+----------
+      Other Asian |       311         57 |       368 
+                  |     84.51      15.49 |    100.00 
+------------------+----------------------+----------
+        Caribbean |       318         61 |       379 
+                  |     83.91      16.09 |    100.00 
+------------------+----------------------+----------
+          African |       327         55 |       382 
+                  |     85.60      14.40 |    100.00 
+------------------+----------------------+----------
+      Other Black |       334         51 |       385 
+                  |     86.75      13.25 |    100.00 
+------------------+----------------------+----------
+          Chinese |       325         61 |       386 
+                  |     84.20      15.80 |    100.00 
+------------------+----------------------+----------
+            Other |       334         41 |       375 
+                  |     89.07      10.93 |    100.00 
+------------------+----------------------+----------
+          Unknown |     1,888        273 |     2,161 
+                  |     87.37      12.63 |    100.00 
+------------------+----------------------+----------
+            Total |     7,221      1,055 |     8,276 
+                  |     87.25      12.75 |    100.00 
+
+Logistic regression                             Number of obs     =      8,276
+                                                LR chi2(25)       =      30.72
+                                                Prob > chi2       =     0.1986
+Log likelihood = -3142.4521                     Pseudo R2         =     0.0049
+
+----------------------------------------------------------------------------------
+             hes | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-----------------+----------------------------------------------------------------
+    ethnicity_16 |
+          Irish  |   .9279115   .2040889    -0.34   0.734     .6029615    1.427985
+    Other White  |   .9583202   .2096749    -0.19   0.846     .6241265    1.471461
+White + Carib..  |     .90494   .2010685    -0.45   0.653     .5854522    1.398776
+White + African  |   1.118129   .2418842     0.52   0.606     .7317316    1.708566
+  White + Asian  |   .8107275    .179638    -0.95   0.344     .5251324    1.251645
+    Other mixed  |   .7369607   .1684042    -1.34   0.182     .4709065    1.153331
+         Indian  |   .9423036    .199755    -0.28   0.779     .6219396    1.427689
+      Pakistani  |   .8824725    .191656    -0.58   0.565     .5765496    1.350721
+    Bangladeshi  |   .9044215   .2010017    -0.45   0.651     .5850554    1.398121
+    Other Asian  |   1.240004   .2594997     1.03   0.304      .822791    1.868775
+      Caribbean  |   1.311573   .2705729     1.31   0.189     .8753721    1.965135
+        African  |   1.148531   .2416795     0.66   0.510     .7603762    1.734829
+    Other Black  |   1.041067   .2223791     0.19   0.851      .684946    1.582345
+        Chinese  |   1.272108   .2623856     1.17   0.243     .8490915    1.905869
+          Other  |   .8380603   .1882143    -0.79   0.431      .539647     1.30149
+        Unknown  |   .9829583   .1620982    -0.10   0.917     .7114832    1.358018
+                 |
+             stp |
+              2  |   1.056909   .1604937     0.36   0.715     .7848396    1.423293
+              3  |   .9746736   .1508606    -0.17   0.868     .7196308    1.320106
+              4  |    1.19154   .1795395     1.16   0.245     .8868513    1.600908
+              5  |   1.270413   .1875738     1.62   0.105     .9511887     1.69677
+              6  |   1.281406   .1936251     1.64   0.101     .9529438    1.723084
+              7  |   .9964108   .1551015    -0.02   0.982     .7344128    1.351875
+              8  |   1.047297   .1605845     0.30   0.763     .7754491    1.414447
+              9  |   1.305421   .1868283     1.86   0.063     .9861179    1.728113
+             10  |   1.307953   .1910058     1.84   0.066     .9823986    1.741393
+                 |
+           _cons |   .1288008   .0236798   -11.15   0.000     .0898311     .184676
+----------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+file ./output/crude_hes_eth16.ster saved
+file ./output/crude_hes_eth16.dta saved
+
+Logistic regression                             Number of obs     =      8,276
+                                                LR chi2(29)       =      31.18
+                                                Prob > chi2       =     0.3568
+Log likelihood = -3142.2183                     Pseudo R2         =     0.0049
+
+----------------------------------------------------------------------------------
+             hes | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-----------------+----------------------------------------------------------------
+    ethnicity_16 |
+          Irish  |   .9304447   .2047079    -0.33   0.743     .6045289     1.43207
+    Other White  |   .9618373   .2105332    -0.18   0.859     .6263039    1.477128
+White + Carib..  |   .9060506   .2013371    -0.44   0.657      .586143    1.400559
+White + African  |   1.122638   .2430057     0.53   0.593      .734495    1.715894
+  White + Asian  |    .812928   .1801633    -0.93   0.350     .5265098    1.255156
+    Other mixed  |   .7369742   .1684506    -1.34   0.182     .4708609    1.153485
+         Indian  |   .9458268    .200602    -0.26   0.793     .6241355    1.433324
+      Pakistani  |   .8836736   .1919503    -0.57   0.569     .5772914     1.35266
+    Bangladeshi  |   .9078343   .2018531    -0.43   0.664     .5871453    1.403678
+    Other Asian  |   1.242804   .2601357     1.04   0.299     .8245834    1.873142
+      Caribbean  |   1.315176   .2715061     1.33   0.184     .8775278    1.971091
+        African  |   1.151029   .2422593     0.67   0.504     .7619602    1.738762
+    Other Black  |   1.043393    .222913     0.20   0.842     .6864284    1.585991
+        Chinese  |   1.274409   .2629717     1.18   0.240     .8504822    1.909645
+          Other  |   .8404743   .1888243    -0.77   0.439     .5411157    1.305445
+        Unknown  |   .9850171   .1624985    -0.09   0.927     .7128873    1.361027
+                 |
+            male |
+           Male  |   .9948816   .0658409    -0.08   0.938     .8738546    1.132671
+            age1 |     1.0005   .0091438     0.05   0.956     .9827384    1.018583
+            age2 |   .9961556   .0319289    -0.12   0.904     .9355011    1.060743
+            age3 |   1.016437   .0865848     0.19   0.848     .8601439    1.201129
+                 |
+             stp |
+              2  |   1.056637   .1604579     0.36   0.717     .7846301    1.422941
+              3  |   .9743989   .1508444    -0.17   0.867     .7193897    1.319804
+              4  |   1.191815    .179596     1.16   0.244     .8870345    1.601318
+              5  |   1.270855    .187647     1.62   0.105     .9515084    1.697381
+              6  |   1.280737     .19354     1.64   0.102     .9524221    1.722226
+              7  |   .9957972   .1550239    -0.03   0.978     .7339347     1.35109
+              8  |    1.04611   .1604374     0.29   0.769     .7745191    1.412936
+              9  |   1.303753   .1866283     1.85   0.064     .9848011    1.726006
+             10  |   1.307157   .1909185     1.83   0.067     .9817576    1.740408
+                 |
+           _cons |    .126331   .0411838    -6.35   0.000     .0666835    .2393322
+----------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+file ./output/model0_hes_eth16.ster saved
+file ./output/model0_hes_eth16.dta saved
+
+Logistic regression                             Number of obs     =      8,276
+                                                LR chi2(31)       =      31.73
+                                                Prob > chi2       =     0.4298
+Log likelihood =  -3141.944                     Pseudo R2         =     0.0050
+
+----------------------------------------------------------------------------------
+             hes | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-----------------+----------------------------------------------------------------
+    ethnicity_16 |
+          Irish  |   .9288371   .2043784    -0.34   0.737     .6034536    1.429668
+    Other White  |   .9580168   .2097678    -0.20   0.845     .6237258    1.471474
+White + Carib..  |   .9037193    .200859    -0.46   0.649     .5845842    1.397076
+White + African  |    1.11872   .2422403     0.52   0.604     .7318256    1.710153
+  White + Asian  |   .8109431   .1797877    -0.95   0.345     .5251427    1.252286
+    Other mixed  |    .734514   .1679645    -1.35   0.177     .4691937    1.149868
+         Indian  |   .9445062   .2003422    -0.27   0.788     .6232378    1.431383
+      Pakistani  |   .8811536   .1914558    -0.58   0.560     .5755774    1.348961
+    Bangladeshi  |   .9057241   .2014117    -0.45   0.656     .5857452      1.4005
+    Other Asian  |   1.238724   .2593932     1.02   0.307     .8217314    1.867322
+      Caribbean  |    1.31343   .2711747     1.32   0.187     .8763252     1.96856
+        African  |   1.148305   .2417277     0.66   0.511     .7601028    1.734771
+    Other Black  |   1.038844   .2220698     0.18   0.859       .68327     1.57946
+        Chinese  |   1.267608   .2617398     1.15   0.251     .8457191    1.899957
+          Other  |   .8372206   .1881654    -0.79   0.429       .53893    1.300611
+        Unknown  |    .982555   .1621519    -0.11   0.915     .7110209    1.357786
+                 |
+            male |
+           Male  |   .9957173   .0659082    -0.06   0.948      .874568    1.133649
+            age1 |   1.000476   .0091449     0.05   0.958      .982712    1.018561
+            age2 |   .9962373   .0319373    -0.12   0.906     .9355673    1.060842
+            age3 |   1.016252   .0865841     0.19   0.850     .8599622    1.200945
+                 |
+             imd |
+              4  |   1.019682   .0856519     0.23   0.817     .8648986    1.202167
+5 most deprived  |   .9277937    .106684    -0.65   0.515     .7405843    1.162327
+                 |
+             stp |
+              2  |    1.05648   .1604671     0.36   0.718     .7844648    1.422816
+              3  |   .9753663   .1510264    -0.16   0.872     .7200574    1.321199
+              4  |   1.190447   .1794409     1.16   0.247     .8859412    1.599614
+              5  |   1.272079   .1878522     1.63   0.103     .9523888     1.69908
+              6  |   1.282279   .1938211     1.64   0.100     .9534992    1.724427
+              7  |    .996027   .1550879    -0.03   0.980     .7340632    1.351477
+              8  |   1.046587   .1605224     0.30   0.767     .7748549    1.413611
+              9  |   1.303404   .1865928     1.85   0.064     .9845159    1.725581
+             10  |   1.306453   .1908314     1.83   0.067     .9812061    1.739512
+                 |
+           _cons |   .1271113   .0415526    -6.31   0.000     .0669772    .2412358
+----------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+file ./output/model1_hes_eth16.ster saved
+file ./output/model1_hes_eth16.dta saved
+file ./output/model2_hes_eth16.dta saved
+file ./output/model3_hes_eth16.dta saved
+(note: file ./output/estout_table4_infectedpop_eth16_nocarehomes.txt not found)
+(output written to ./output/estout_table4_infectedpop_eth16_nocarehomes.txt)
+  78,716
+(68,979 observations deleted)
+  9,737
+(1,461 observations deleted)
+  8,276
+
+   outcome |
+positivete | outcome onscoviddeath
+        st |         0          1 |     Total
+-----------+----------------------+----------
+         1 |     8,139        137 |     8,276 
+-----------+----------------------+----------
+     Total |     8,139        137 |     8,276 
+
+**TABLE OF ethnicity_16 onscoviddeath REDACTED DUE TO SMALL N**
+
+
+Logistic regression                             Number of obs     =      8,276
+                                                LR chi2(25)       =      34.35
+                                                Prob > chi2       =     0.1006
+Log likelihood = -680.53864                     Pseudo R2         =     0.0246
+
+----------------------------------------------------------------------------------
+   onscoviddeath | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-----------------+----------------------------------------------------------------
+    ethnicity_16 |
+          Irish  |   1.932917   1.089123     1.17   0.242     .6406109    5.832195
+    Other White  |   2.191558   1.212884     1.42   0.156     .7407446    6.483918
+White + Carib..  |   1.936304   1.090469     1.17   0.241      .642099    5.839087
+White + African  |   1.365769   .8340858     0.51   0.610     .4126118    4.520773
+  White + Asian  |   .5818133   .4272278    -0.74   0.461     .1379568    2.453716
+    Other mixed  |   1.203659   .7347411     0.30   0.761     .3638402    3.981956
+         Indian  |   2.388162    1.26975     1.64   0.102     .8423497    6.770723
+      Pakistani  |   1.161276   .7090595     0.24   0.807      .350916    3.842976
+    Bangladeshi  |   2.198667   1.216407     1.42   0.154     .7434204    6.502561
+    Other Asian  |   .8541289   .5767906    -0.23   0.815     .2273577     3.20876
+      Caribbean  |   .8258316   .5575555    -0.28   0.777     .2198911    3.101526
+        African  |   1.250067    .763168     0.37   0.715     .3778101    4.136121
+    Other Black  |   1.020656   .6502295     0.03   0.974     .2928223    3.557579
+        Chinese  |   2.075351   1.148343     1.32   0.187     .7016176    6.138785
+          Other  |   .4216673   .3543283    -1.03   0.304     .0812275    2.188956
+        Unknown  |   1.059073   .5167088     0.12   0.906     .4070382    2.755603
+                 |
+             stp |
+              2  |   1.198667   .4120447     0.53   0.598     .6110774    2.351263
+              3  |   .6989812   .2766082    -0.90   0.365     .3218244     1.51814
+              4  |   .7375444   .2919633    -0.77   0.442     .3394945    1.602299
+              5  |    .843625   .3183431    -0.45   0.652     .4026682    1.767468
+              6  |   .9726826    .360716    -0.07   0.940     .4702253    2.012038
+              7  |   1.356639   .4610879     0.90   0.369     .6968867    2.640989
+              8  |   .4496104    .205244    -1.75   0.080     .1837675    1.100028
+              9  |   .6363426   .2515891    -1.14   0.253     .2931931     1.38111
+             10  |   .9067699    .329975    -0.27   0.788     .4443688    1.850336
+                 |
+           _cons |   .0146963   .0075101    -8.26   0.000     .0053979    .0400121
+----------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+file ./output/crude_onscoviddeath_eth16.ster saved
+file ./output/crude_onscoviddeath_eth16.dta saved
+
+Logistic regression                             Number of obs     =      8,276
+                                                LR chi2(29)       =      34.74
+                                                Prob > chi2       =     0.2133
+Log likelihood = -680.34637                     Pseudo R2         =     0.0249
+
+----------------------------------------------------------------------------------
+   onscoviddeath | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-----------------+----------------------------------------------------------------
+    ethnicity_16 |
+          Irish  |   1.931452   1.088449     1.17   0.243     .6400271    5.828671
+    Other White  |   2.182412   1.208275     1.41   0.159     .7373535    6.459483
+White + Carib..  |   1.937823   1.091447     1.17   0.240     .6425231    5.844396
+White + African  |   1.361856   .8321383     0.51   0.613      .411168     4.51069
+  White + Asian  |   .5812657   .4268606    -0.74   0.460     .1378107    2.451695
+    Other mixed  |   1.207092   .7371272     0.31   0.758     .3647059    3.995197
+         Indian  |   2.378973   1.265296     1.63   0.103     .8388109    6.747068
+      Pakistani  |   1.161787   .7094115     0.25   0.806     .3510469    3.844926
+    Bangladeshi  |   2.196163   1.215407     1.42   0.155     .7423176    6.497394
+    Other Asian  |    .853104   .5761454    -0.24   0.814     .2270604    3.205254
+      Caribbean  |   .8201139   .5539488    -0.29   0.769     .2182364    3.081919
+        African  |   1.250791   .7636697     0.37   0.714     .3779935    4.138904
+    Other Black  |   1.018408    .648846     0.03   0.977     .2921502    3.550075
+        Chinese  |   2.082451   1.152754     1.33   0.185     .7036986    6.162582
+          Other  |   .4196784   .3527018    -1.03   0.302     .0808274    2.179088
+        Unknown  |   1.055853   .5152605     0.11   0.911     .4057081    2.747851
+                 |
+            male |
+           Male  |   .9685103    .167622    -0.18   0.853     .6898984    1.359638
+            age1 |   .9901635    .023543    -0.42   0.678     .9450788    1.037399
+            age2 |   1.045562   .0878115     0.53   0.596     .8868733    1.232645
+            age3 |   .8816283   .1976218    -0.56   0.574     .5681774    1.368003
+                 |
+             stp |
+              2  |    1.20015   .4125876     0.53   0.596     .6117995    2.354299
+              3  |   .6986203   .2765223    -0.91   0.365     .3216069    1.517599
+              4  |   .7356038   .2912331    -0.78   0.438     .3385669    1.598245
+              5  |   .8423563   .3179017    -0.45   0.649     .4020277    1.764963
+              6  |   .9731187   .3608761    -0.07   0.941     .4704376    2.012934
+              7  |   1.353186   .4600557     0.89   0.374     .6949704    2.634806
+              8  |   .4492413   .2050972    -1.75   0.080     .1835993     1.09923
+              9  |   .6368267   .2518266    -1.14   0.254     .2933744    1.382357
+             10  |   .9062533   .3298424    -0.27   0.787     .4440624    1.849504
+                 |
+           _cons |   .0192003   .0165999    -4.57   0.000     .0035269    .1045269
+----------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+file ./output/model0_onscoviddeath_eth16.ster saved
+file ./output/model0_onscoviddeath_eth16.dta saved
+
+Logistic regression                             Number of obs     =      8,276
+                                                LR chi2(31)       =      37.63
+                                                Prob > chi2       =     0.1917
+Log likelihood = -678.90046                     Pseudo R2         =     0.0270
+
+----------------------------------------------------------------------------------
+   onscoviddeath | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-----------------+----------------------------------------------------------------
+    ethnicity_16 |
+          Irish  |   1.950656   1.099689     1.19   0.236     .6461194    5.889095
+    Other White  |   2.192721   1.214873     1.42   0.156     .7402471    6.495165
+White + Carib..  |   1.948702   1.098048     1.18   0.236     .6458226    5.880004
+White + African  |   1.376909   .8416997     0.52   0.601     .4154977    4.562909
+  White + Asian  |   .5937026     .43613    -0.71   0.478      .140696    2.505278
+    Other mixed  |   1.236359   .7555068     0.35   0.728     .3732481    4.095356
+         Indian  |   2.381533   1.266978     1.63   0.103     .8394919    6.756112
+      Pakistani  |   1.178344    .719892     0.27   0.788     .3558306    3.902125
+    Bangladeshi  |     2.1971   1.216507     1.42   0.155     .7422498    6.503538
+    Other Asian  |   .8708385   .5883922    -0.20   0.838     .2316399    3.273873
+      Caribbean  |   .8275402   .5590693    -0.28   0.779      .220158    3.110596
+        African  |   1.259159   .7690903     0.38   0.706     .3803377    4.168615
+    Other Black  |   1.035761   .6602894     0.06   0.956     .2969106    3.613214
+        Chinese  |   2.099188   1.163169     1.34   0.181     .7085928    6.218789
+          Other  |   .4241747   .3565831    -1.02   0.308     .0816546    2.203478
+        Unknown  |   1.066441   .5207104     0.13   0.895     .4095633     2.77685
+                 |
+            male |
+           Male  |   .9672846   .1674685    -0.19   0.848     .6889435    1.358079
+            age1 |   .9902913   .0236206    -0.41   0.683     .9450612    1.037686
+            age2 |   1.045908   .0880349     0.53   0.594     .8868439    1.233502
+            age3 |   .8800025   .1975642    -0.57   0.569     .5667423    1.366414
+                 |
+             imd |
+              4  |   1.392119   .2854468     1.61   0.107     .9314126    2.080707
+5 most deprived  |   1.296429   .3578054     0.94   0.347     .7547848    2.226765
+                 |
+             stp |
+              2  |   1.182868   .4068921     0.49   0.625      .602745    2.321343
+              3  |   .6897454   .2730956    -0.94   0.348     .3174438    1.498686
+              4  |   .7267979   .2879032    -0.81   0.420     .3343729    1.579779
+              5  |   .8344812    .315075    -0.48   0.632     .3981333     1.74906
+              6  |   .9593364   .3559505    -0.11   0.911     .4635992    1.985177
+              7  |    1.33499   .4541084     0.85   0.396     .6853846    2.600289
+              8  |     .44434    .202917    -1.78   0.076     .1815502    1.087512
+              9  |   .6316134   .2498571    -1.16   0.245     .2908898    1.371432
+             10  |   .9030086   .3287251    -0.28   0.779     .4424114    1.843136
+                 |
+           _cons |   .0172805   .0150296    -4.67   0.000     .0031422    .0950343
+----------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+file ./output/model1_onscoviddeath_eth16.ster saved
+file ./output/model1_onscoviddeath_eth16.dta saved
+file ./output/model2_onscoviddeath_eth16.dta saved
+file ./output/model3_onscoviddeath_eth16.dta saved
+(output written to ./output/estout_table4_infectedpop_eth16_nocarehomes.txt)
+  78,716
+(68,979 observations deleted)
+  9,737
+(1,461 observations deleted)
+  8,276
+
+   outcome |        outcome
+positivete |   ons_noncoviddeath
+        st |         0          1 |     Total
+-----------+----------------------+----------
+         1 |     7,815        461 |     8,276 
+-----------+----------------------+----------
+     Total |     7,815        461 |     8,276 
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+                  |        outcome
+                  |   ons_noncoviddeath
+Eth 16 categories |         0          1 |     Total
+------------------+----------------------+----------
+          British |       364         27 |       391 
+                  |     93.09       6.91 |    100.00 
+------------------+----------------------+----------
+            Irish |       356         14 |       370 
+                  |     96.22       3.78 |    100.00 
+------------------+----------------------+----------
+      Other White |       350         22 |       372 
+                  |     94.09       5.91 |    100.00 
+------------------+----------------------+----------
+White + Caribbean |       341         27 |       368 
+                  |     92.66       7.34 |    100.00 
+------------------+----------------------+----------
+  White + African |       322         27 |       349 
+                  |     92.26       7.74 |    100.00 
+------------------+----------------------+----------
+    White + Asian |       384         18 |       402 
+                  |     95.52       4.48 |    100.00 
+------------------+----------------------+----------
+      Other mixed |       365         24 |       389 
+                  |     93.83       6.17 |    100.00 
+------------------+----------------------+----------
+           Indian |       402         27 |       429 
+                  |     93.71       6.29 |    100.00 
+------------------+----------------------+----------
+        Pakistani |       387         18 |       405 
+                  |     95.56       4.44 |    100.00 
+------------------+----------------------+----------
+      Bangladeshi |       348         17 |       365 
+                  |     95.34       4.66 |    100.00 
+------------------+----------------------+----------
+      Other Asian |       341         27 |       368 
+                  |     92.66       7.34 |    100.00 
+------------------+----------------------+----------
+        Caribbean |       359         20 |       379 
+                  |     94.72       5.28 |    100.00 
+------------------+----------------------+----------
+          African |       357         25 |       382 
+                  |     93.46       6.54 |    100.00 
+------------------+----------------------+----------
+      Other Black |       360         25 |       385 
+                  |     93.51       6.49 |    100.00 
+------------------+----------------------+----------
+          Chinese |       367         19 |       386 
+                  |     95.08       4.92 |    100.00 
+------------------+----------------------+----------
+            Other |       354         21 |       375 
+                  |     94.40       5.60 |    100.00 
+------------------+----------------------+----------
+          Unknown |     2,058        103 |     2,161 
+                  |     95.23       4.77 |    100.00 
+------------------+----------------------+----------
+            Total |     7,815        461 |     8,276 
+                  |     94.43       5.57 |    100.00 
+
+Logistic regression                             Number of obs     =      8,276
+                                                LR chi2(25)       =      23.89
+                                                Prob > chi2       =     0.5258
+Log likelihood = -1767.2086                     Pseudo R2         =     0.0067
+
+----------------------------------------------------------------------------------
+ons_noncovidde~h | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-----------------+----------------------------------------------------------------
+    ethnicity_16 |
+          Irish  |   .5314793   .1796276    -1.87   0.061     .2740313    1.030796
+    Other White  |   .8547057   .2539549    -0.53   0.597     .4774225    1.530137
+White + Carib..  |   1.071373   .3028073     0.24   0.807     .6156892    1.864317
+White + African  |   1.130981   .3200843     0.43   0.664     .6494604    1.969509
+  White + Asian  |    .631892    .197925    -1.47   0.143     .3419986    1.167512
+    Other mixed  |   .8834005   .2565799    -0.43   0.669     .4999537    1.560937
+         Indian  |   .8935144    .251918    -0.40   0.690     .5141777    1.552708
+      Pakistani  |   .6322908   .1981202    -1.46   0.143     .3421399    1.168503
+    Bangladeshi  |   .6562713   .2091827    -1.32   0.186     .3513726    1.225742
+    Other Asian  |    1.06752   .3017305     0.23   0.817     .6134615    1.857655
+      Caribbean  |   .7500511   .2283286    -0.94   0.345     .4130193    1.362107
+        African  |   .9447822   .2717425    -0.20   0.843     .5376571    1.660191
+    Other Black  |    .928192   .2668917    -0.26   0.796      .528304    1.630766
+        Chinese  |   .7024591   .2169031    -1.14   0.253     .3835215    1.286626
+          Other  |   .7928617   .2383894    -0.77   0.440     .4398119    1.429315
+        Unknown  |   .6693846   .1497964    -1.79   0.073     .4317098    1.037909
+                 |
+             stp |
+              2  |   .7688281   .1608888    -1.26   0.209     .5101555     1.15866
+              3  |   .6852531   .1483864    -1.75   0.081     .4482597    1.047544
+              4  |   .8806968   .1813661    -0.62   0.537     .5882127    1.318616
+              5  |   .9892759   .1963985    -0.05   0.957     .6703945    1.459837
+              6  |   .7705642   .1672033    -1.20   0.230     .5036261    1.178988
+              7  |   .8337324   .1735238    -0.87   0.382      .554456    1.253679
+              8  |   .9177352   .1857831    -0.42   0.672     .6171677    1.364683
+              9  |   .7973852    .161097    -1.12   0.262     .5366592     1.18478
+             10  |   .8147301   .1686389    -0.99   0.322     .5430324    1.222368
+                 |
+           _cons |   .0879601   .0210499   -10.16   0.000     .0550279     .140601
+----------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+file ./output/crude_ons_noncoviddeath_eth16.ster saved
+file ./output/crude_ons_noncoviddeath_eth16.dta saved
+
+Logistic regression                             Number of obs     =      8,276
+                                                LR chi2(29)       =      28.79
+                                                Prob > chi2       =     0.4762
+Log likelihood = -1764.7589                     Pseudo R2         =     0.0081
+
+----------------------------------------------------------------------------------
+ons_noncovidde~h | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-----------------+----------------------------------------------------------------
+    ethnicity_16 |
+          Irish  |   .5348774   .1808653    -1.85   0.064     .2756932    1.037725
+    Other White  |   .8640816   .2569561    -0.49   0.623     .4824239    1.547678
+White + Carib..  |   1.072545   .3032888     0.25   0.804     .6161938     1.86687
+White + African  |   1.143484   .3239995     0.47   0.636     .6562164    1.992568
+  White + Asian  |   .6357978   .1992414    -1.45   0.148      .344014    1.175065
+    Other mixed  |   .8768463   .2548619    -0.45   0.651     .4960386    1.549999
+         Indian  |   .9001208   .2540196    -0.37   0.709     .5177099    1.565003
+      Pakistani  |    .632545   .1982758    -1.46   0.144      .342197    1.169248
+    Bangladeshi  |   .6624904   .2113194    -1.29   0.197     .3545403    1.237923
+    Other Asian  |    1.07637    .304382     0.26   0.795     .6183777    1.873567
+      Caribbean  |   .7543617   .2298735    -0.93   0.355     .4151418    1.370764
+        African  |   .9493419   .2732006    -0.18   0.857     .5400883    1.668709
+    Other Black  |   .9316419   .2680399    -0.25   0.806     .5300933    1.637366
+        Chinese  |   .7062792   .2182099    -1.13   0.260      .385471     1.29408
+          Other  |   .7939935   .2388892    -0.77   0.443     .4402664    1.431919
+        Unknown  |   .6740148   .1509326    -1.76   0.078     .4345695    1.045393
+                 |
+            male |
+           Male  |   1.015521   .0976866     0.16   0.873     .8410251    1.226222
+            age1 |   1.027733   .0143383     1.96   0.050     1.000011    1.056224
+            age2 |   .9176593   .0436191    -1.81   0.071     .8360289     1.00726
+            age3 |   1.247127   .1561216     1.76   0.078     .9757823    1.593926
+                 |
+             stp |
+              2  |   .7684714   .1608659    -1.26   0.208     .5098515    1.158275
+              3  |   .6866148     .14875    -1.74   0.083     .4490623    1.049832
+              4  |   .8828488    .181892    -0.60   0.545     .5895418    1.322081
+              5  |   .9930294   .1972149    -0.04   0.972     .6728436    1.465582
+              6  |   .7691117   .1669805    -1.21   0.227     .5025585    1.177043
+              7  |   .8363476   .1741521    -0.86   0.391     .5560856    1.257859
+              8  |   .9209142   .1865421    -0.41   0.684     .6191532    1.369746
+              9  |   .7934815   .1603938    -1.14   0.252     .5339191    1.179229
+             10  |    .815294   .1688391    -0.99   0.324     .5432991    1.223459
+                 |
+           _cons |   .0377429   .0182225    -6.79   0.000     .0146511    .0972301
+----------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+file ./output/model0_ons_noncoviddeath_eth16.ster saved
+file ./output/model0_ons_noncoviddeath_eth16.dta saved
+
+Logistic regression                             Number of obs     =      8,276
+                                                LR chi2(31)       =      33.37
+                                                Prob > chi2       =     0.3528
+Log likelihood = -1762.4683                     Pseudo R2         =     0.0094
+
+----------------------------------------------------------------------------------
+ons_noncovidde~h | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-----------------+----------------------------------------------------------------
+    ethnicity_16 |
+          Irish  |   .5306804   .1794948    -1.87   0.061     .2734807    1.029768
+    Other White  |   .8546101   .2543091    -0.53   0.598     .4769504    1.531309
+White + Carib..  |   1.060602   .3000792     0.21   0.835     .6091433    1.846653
+White + African  |    1.12731   .3196555     0.42   0.673      .646666      1.9652
+  White + Asian  |   .6245522   .1958348    -1.50   0.133     .3378047    1.154707
+    Other mixed  |   .8582676   .2496821    -0.53   0.599     .4852843    1.517921
+         Indian  |   .8972842   .2533229    -0.38   0.701     .5159615    1.560424
+      Pakistani  |   .6228429    .195344    -1.51   0.131     .3368323     1.15171
+    Bangladeshi  |   .6576578   .2098505    -1.31   0.189      .351878    1.229158
+    Other Asian  |   1.054878   .2985807     0.19   0.850     .6057196      1.8371
+      Caribbean  |    .748549   .2281806    -0.95   0.342     .4118585    1.360481
+        African  |   .9423919    .271312    -0.21   0.837     .5360102    1.656876
+    Other Black  |   .9126035   .2628117    -0.32   0.751     .5189828    1.604765
+        Chinese  |   .6951285    .214961    -1.18   0.240     .3791753    1.274354
+          Other  |   .7806255   .2350566    -0.82   0.411      .432648     1.40848
+        Unknown  |   .6648194   .1489858    -1.82   0.069      .428499    1.031472
+                 |
+            male |
+           Male  |   1.017572   .0979409     0.18   0.856      .842631    1.228833
+            age1 |   1.027465   .0143239     1.94   0.052      .999771    1.055926
+            age2 |   .9181685   .0436328    -1.80   0.072     .8365117    1.007796
+            age3 |   1.246359   .1560351     1.76   0.079     .9751667    1.592969
+                 |
+             imd |
+              4  |   .8355247    .106778    -1.41   0.160     .6503959    1.073349
+5 most deprived  |   .7327874   .1318249    -1.73   0.084      .515052    1.042569
+                 |
+             stp |
+              2  |   .7729687   .1618826    -1.23   0.219     .5127374    1.165276
+              3  |   .6919923   .1499858    -1.70   0.089     .4524886    1.058266
+              4  |   .8872822   .1829042    -0.58   0.562      .592373     1.32901
+              5  |   .9974912   .1981761    -0.01   0.990      .675767    1.472384
+              6  |   .7753527   .1684132    -1.17   0.241     .5065369    1.186827
+              7  |   .8427231   .1755522    -0.82   0.411     .5602301    1.267662
+              8  |   .9246881   .1873651    -0.39   0.699     .6216135     1.37553
+              9  |   .7954795   .1608345    -1.13   0.258      .535215    1.182305
+             10  |    .816061   .1690592    -0.98   0.327     .5437303     1.22479
+                 |
+           _cons |   .0406889   .0196726    -6.62   0.000     .0157736    .1049594
+----------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+file ./output/model1_ons_noncoviddeath_eth16.ster saved
+file ./output/model1_ons_noncoviddeath_eth16.dta saved
+file ./output/model2_ons_noncoviddeath_eth16.dta saved
+file ./output/model3_ons_noncoviddeath_eth16.dta saved
+(output written to ./output/estout_table4_infectedpop_eth16_nocarehomes.txt)
+  78,716
+(68,979 observations deleted)
+  9,737
+(1,461 observations deleted)
+  8,276
+
+   outcome |
+positivete |   outcome onsdeath
+        st |         0          1 |     Total
+-----------+----------------------+----------
+         1 |     7,678        598 |     8,276 
+-----------+----------------------+----------
+     Total |     7,678        598 |     8,276 
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+                  |   outcome onsdeath
+Eth 16 categories |         0          1 |     Total
+------------------+----------------------+----------
+          British |       359         32 |       391 
+                  |     91.82       8.18 |    100.00 
+------------------+----------------------+----------
+            Irish |       347         23 |       370 
+                  |     93.78       6.22 |    100.00 
+------------------+----------------------+----------
+      Other White |       340         32 |       372 
+                  |     91.40       8.60 |    100.00 
+------------------+----------------------+----------
+White + Caribbean |       332         36 |       368 
+                  |     90.22       9.78 |    100.00 
+------------------+----------------------+----------
+  White + African |       316         33 |       349 
+                  |     90.54       9.46 |    100.00 
+------------------+----------------------+----------
+    White + Asian |       381         21 |       402 
+                  |     94.78       5.22 |    100.00 
+------------------+----------------------+----------
+      Other mixed |       359         30 |       389 
+                  |     92.29       7.71 |    100.00 
+------------------+----------------------+----------
+           Indian |       389         40 |       429 
+                  |     90.68       9.32 |    100.00 
+------------------+----------------------+----------
+        Pakistani |       381         24 |       405 
+                  |     94.07       5.93 |    100.00 
+------------------+----------------------+----------
+      Bangladeshi |       338         27 |       365 
+                  |     92.60       7.40 |    100.00 
+------------------+----------------------+----------
+      Other Asian |       337         31 |       368 
+                  |     91.58       8.42 |    100.00 
+------------------+----------------------+----------
+        Caribbean |       355         24 |       379 
+                  |     93.67       6.33 |    100.00 
+------------------+----------------------+----------
+          African |       351         31 |       382 
+                  |     91.88       8.12 |    100.00 
+------------------+----------------------+----------
+      Other Black |       355         30 |       385 
+                  |     92.21       7.79 |    100.00 
+------------------+----------------------+----------
+          Chinese |       357         29 |       386 
+                  |     92.49       7.51 |    100.00 
+------------------+----------------------+----------
+            Other |       352         23 |       375 
+                  |     93.87       6.13 |    100.00 
+------------------+----------------------+----------
+          Unknown |     2,029        132 |     2,161 
+                  |     93.89       6.11 |    100.00 
+------------------+----------------------+----------
+            Total |     7,678        598 |     8,276 
+                  |     92.77       7.23 |    100.00 
+
+Logistic regression                             Number of obs     =      8,276
+                                                LR chi2(25)       =      27.66
+                                                Prob > chi2       =     0.3235
+Log likelihood = -2133.2825                     Pseudo R2         =     0.0064
+
+----------------------------------------------------------------------------------
+        onsdeath | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-----------------+----------------------------------------------------------------
+    ethnicity_16 |
+          Irish  |    .745615   .2116441    -1.03   0.301      .427464    1.300558
+    Other White  |   1.069811   .2797698     0.26   0.796     .6407768    1.786108
+White + Carib..  |   1.219969   .3108841     0.78   0.435     .7403508    2.010296
+White + African  |   1.175211   .3056657     0.62   0.535     .7058675    1.956629
+  White + Asian  |   .6186419   .1797466    -1.65   0.098     .3500438    1.093343
+    Other mixed  |   .9337903   .2475766    -0.26   0.796     .5553535    1.570107
+         Indian  |   1.138622   .2829521     0.52   0.601     .6996047    1.853133
+      Pakistani  |   .7112445    .199324    -1.22   0.224     .4106505    1.231872
+    Bangladeshi  |   .8958738   .2439245    -0.40   0.686     .5253946    1.527595
+    Other Asian  |   1.033678   .2722698     0.13   0.900     .6168498    1.732171
+      Caribbean  |   .7581479   .2125647    -0.99   0.323     .4376223    1.313435
+        African  |   .9948429   .2618288    -0.02   0.984      .593923    1.666398
+    Other Black  |   .9427377   .2499406    -0.22   0.824     .5606845    1.585124
+        Chinese  |   .9181366   .2454904    -0.32   0.749     .5436431    1.550603
+          Other  |   .7313292   .2075016    -1.10   0.270     .4193723     1.27534
+        Unknown  |   .7267406   .1492726    -1.55   0.120     .4858951    1.086967
+                 |
+             stp |
+              2  |   .8631622   .1561522    -0.81   0.416     .6054859    1.230498
+              3  |    .681538   .1311562    -1.99   0.046     .4673945    .9937944
+              4  |   .8438144   .1561718    -0.92   0.359     .5870944    1.212791
+              5  |   .9541712   .1700451    -0.26   0.792     .6728707    1.353072
+              6  |   .8126987    .154307    -1.09   0.275       .56016     1.17909
+              7  |   .9506897   .1708316    -0.28   0.778     .6684739    1.352051
+              8  |   .8038499   .1492649    -1.18   0.240     .5586213    1.156731
+              9  |   .7552926   .1374667    -1.54   0.123     .5286797    1.079041
+             10  |    .831983   .1518674    -1.01   0.314     .5817534    1.189844
+                 |
+           _cons |   .1051156   .0230142   -10.29   0.000      .068439    .1614473
+----------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+file ./output/crude_onsdeath_eth16.ster saved
+file ./output/crude_onsdeath_eth16.dta saved
+
+Logistic regression                             Number of obs     =      8,276
+                                                LR chi2(29)       =      30.81
+                                                Prob > chi2       =     0.3744
+Log likelihood =  -2131.709                     Pseudo R2         =     0.0072
+
+----------------------------------------------------------------------------------
+        onsdeath | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-----------------+----------------------------------------------------------------
+    ethnicity_16 |
+          Irish  |   .7495293   .2128404    -1.02   0.310     .4296124    1.307677
+    Other White  |   1.079353    .282453     0.29   0.770     .6462716    1.802653
+White + Carib..  |   1.221345   .3113428     0.78   0.433     .7410569    2.012912
+White + African  |    1.18478   .3084426     0.65   0.515     .7112755    1.973501
+  White + Asian  |   .6217444   .1807025    -1.64   0.102     .3517389    1.099014
+    Other mixed  |   .9294252   .2465626    -0.28   0.783     .5525904    1.563239
+         Indian  |   1.144102   .2845338     0.54   0.588      .702707    1.862754
+      Pakistani  |   .7120186   .1995906    -1.21   0.226     .4110413    1.233381
+    Bangladeshi  |    .902554    .245899    -0.38   0.707     .5291333    1.539506
+    Other Asian  |   1.039916   .2740017     0.15   0.882     .6204689    1.742917
+      Caribbean  |    .761393   .2136455    -0.97   0.331     .4393021    1.319637
+        African  |   .9988663   .2629805    -0.00   0.997     .5962163    1.673443
+    Other Black  |   .9455834   .2507886    -0.21   0.833      .562268    1.590217
+        Chinese  |   .9232975   .2469976    -0.30   0.765     .5465513    1.559741
+          Other  |   .7315695   .2076687    -1.10   0.271     .4193988    1.276098
+        Unknown  |   .7304907   .1501171    -1.53   0.126     .4883051    1.092794
+                 |
+            male |
+           Male  |   1.004389   .0855953     0.05   0.959     .8498879    1.186978
+            age1 |   1.018835   .0124056     1.53   0.125     .9948087    1.043443
+            age2 |   .9457825    .039596    -1.33   0.183     .8712744    1.026662
+            age3 |    1.15175    .127411     1.28   0.202     .9272467    1.430611
+                 |
+             stp |
+              2  |   .8625711   .1560798    -0.82   0.414     .6050237    1.229752
+              3  |   .6821585   .1313223    -1.99   0.047     .4677573    .9948327
+              4  |   .8446204   .1563685    -0.91   0.362     .5875904    1.214083
+              5  |   .9567929   .1705519    -0.25   0.804     .6746649      1.3569
+              6  |   .8114693   .1541323    -1.10   0.271     .5592332    1.177474
+              7  |    .952327   .1711921    -0.27   0.786     .6695339    1.354564
+              8  |   .8055248   .1496373    -1.16   0.244     .5597016    1.159315
+              9  |   .7522048   .1369568    -1.56   0.118      .526447    1.074775
+             10  |   .8318074   .1518908    -1.01   0.313     .5815546    1.189748
+                 |
+           _cons |   .0585675   .0248682    -6.68   0.000     .0254818    .1346119
+----------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+file ./output/model0_onsdeath_eth16.ster saved
+file ./output/model0_onsdeath_eth16.dta saved
+
+Logistic regression                             Number of obs     =      8,276
+                                                LR chi2(31)       =      32.16
+                                                Prob > chi2       =     0.4093
+Log likelihood = -2131.0371                     Pseudo R2         =     0.0075
+
+----------------------------------------------------------------------------------
+        onsdeath | Odds Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-----------------+----------------------------------------------------------------
+    ethnicity_16 |
+          Irish  |   .7461987   .2119272    -1.03   0.303     .4276668    1.301978
+    Other White  |   1.071598   .2805585     0.26   0.792     .6414692    1.790143
+White + Carib..  |    1.21431   .3096364     0.76   0.446     .7366851    2.001599
+White + African  |    1.17534   .3061245     0.62   0.535     .7054443    1.958232
+  White + Asian  |   .6164656   .1792372    -1.66   0.096     .3486762    1.089922
+    Other mixed  |   .9197118   .2441434    -0.32   0.753     .5466317    1.547422
+         Indian  |    1.14153    .283941     0.53   0.595     .7010711    1.858715
+      Pakistani  |   .7063237   .1980681    -1.24   0.215     .4076702    1.223767
+    Bangladeshi  |   .8986215   .2448734    -0.39   0.695     .5267752    1.532951
+    Other Asian  |   1.029495   .2714207     0.11   0.912     .6140585    1.725992
+      Caribbean  |   .7582032   .2127817    -0.99   0.324     .4374264    1.314215
+        African  |   .9939874   .2617578    -0.02   0.982     .5932319    1.665472
+    Other Black  |   .9355321   .2482841    -0.25   0.802     .5561032    1.573845
+        Chinese  |   .9141866   .2447445    -0.34   0.738     .5409444    1.544959
+          Other  |   .7248996   .2058767    -1.13   0.257     .4154612     1.26481
+        Unknown  |    .725364   .1491378    -1.56   0.118     .4847808    1.085342
+                 |
+            male |
+           Male  |   1.005913   .0857543     0.07   0.945     .8511285    1.188845
+            age1 |   1.018741   .0124019     1.53   0.127      .994721     1.04334
+            age2 |   .9459521   .0396032    -1.33   0.184     .8714306    1.026846
+            age3 |   1.151577   .1274057     1.28   0.202     .9270846    1.430429
+                 |
+             imd |
+              4  |   .9503224   .1041753    -0.46   0.642     .7665869    1.178096
+5 most deprived  |   .8455362   .1288254    -1.10   0.271     .6272543    1.139779
+                 |
+             stp |
+              2  |    .864426   .1564616    -0.80   0.421     .6062613    1.232525
+              3  |   .6846541   .1318381    -1.97   0.049      .469421    .9985732
+              4  |   .8454176   .1565699    -0.91   0.365     .5880716    1.215381
+              5  |    .959252   .1710188    -0.23   0.815     .6763594    1.360467
+              6  |    .814685   .1547866    -1.08   0.281     .5613906    1.182264
+              7  |   .9556475   .1718294    -0.25   0.801     .6718126      1.3594
+              8  |   .8070953   .1499465    -1.15   0.249     .5607691    1.161624
+              9  |    .752846   .1370855    -1.56   0.119     .5268793    1.075725
+             10  |   .8318092   .1519129    -1.01   0.313     .5815261    1.189812
+                 |
+           _cons |   .0604846   .0257406    -6.59   0.000     .0262662    .1392815
+----------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+file ./output/model1_onsdeath_eth16.ster saved
+file ./output/model1_onsdeath_eth16.dta saved
+file ./output/model2_onsdeath_eth16.dta saved
+file ./output/model3_onsdeath_eth16.dta saved
+(output written to ./output/estout_table4_infectedpop_eth16_nocarehomes.txt)
+
+. file close tablecontent
+
+. 
+. ************************************************create forestplot dataset
+. dsconcat `hr'
+
+. duplicates drop
+
+Duplicates in terms of all variables
+
+(0 observations are duplicates)
+
+. split idstr, p(_)
+variables created as string: 
+idstr1  idstr2  idstr3  idstr4
+
+. ren idstr1 model
+
+. ren idstr2 outcome
+
+. drop idstr idstr3
+
+. tab model
+
+      model |      Freq.     Percent        Cum.
+------------+-----------------------------------
+      crude |        112       10.22       10.22
+     model0 |        132       12.04       22.26
+     model1 |        144       13.14       35.40
+     model2 |        348       31.75       67.15
+     model3 |        360       32.85      100.00
+------------+-----------------------------------
+      Total |      1,096      100.00
+
+. 
+. *save dataset for later
+. outsheet using ./output/FP_infectedpop_eth16.txt, replace
+(note: file ./output/FP_infectedpop_eth16.txt not found)
+
+. 
+. * Close log file 
+. log close
+      name:  <unnamed>
+       log:  /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/logs/11a_et
+> h_an_infectedpop_eth16.log
+  log type:  text
+ closed on:  15 Jan 2021, 16:26:57
+-----------------------------------------------------------------------------------

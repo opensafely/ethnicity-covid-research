@@ -13,7 +13,7 @@ OTHER OUTPUT: 			logfiles, printed to folder analysis/$logs
 						
 							
 ==============================================================================*/
-global outcomes "positivetest hes onscoviddeath ons_noncoviddeath onsdeath"
+global outcomes "positivetest hes icu onscoviddeath ons_noncoviddeath onsdeath"
 sysdir set PLUS ./analysis/adofiles
 adopath + ./analysis/adofiles
 sysdir

@@ -354,33 +354,6 @@
       "created_at": "2021-01-14T14:10:56Z",
       "completed_at": "2021-01-14T14:12:31Z"
     },
-    "generate_cohorts": {
-      "state": "succeeded",
-      "commit": "none",
-      "docker_image_id": "sha256:0f0f84e012c45836511e3970e9b97fd2203057a2108ff0b58ce544393f9637cc",
-      "job_id": "egpylelnkq3z3n7m",
-      "run_by_user": null,
-      "created_at": "2021-01-15T15:45:25Z",
-      "completed_at": "2021-01-15T15:46:49Z"
-    },
-    "crmain": {
-      "state": "succeeded",
-      "commit": "none",
-      "docker_image_id": "sha256:e4a676ff497b1550742032051cce1ba5502f65b172e86e4d82aadbaa1e056935",
-      "job_id": "vyh2d3zzewwbqcrl",
-      "run_by_user": null,
-      "created_at": "2021-01-15T15:45:25Z",
-      "completed_at": "2021-01-15T15:48:06Z"
-    },
-    "main_eth5_testedpop": {
-      "state": "succeeded",
-      "commit": "none",
-      "docker_image_id": "sha256:e4a676ff497b1550742032051cce1ba5502f65b172e86e4d82aadbaa1e056935",
-      "job_id": "5rzb47b56xnzuk5l",
-      "run_by_user": null,
-      "created_at": "2021-01-15T15:45:25Z",
-      "completed_at": "2021-01-15T15:49:23Z"
-    },
     "main_eth16_testedpop": {
       "state": "failed",
       "commit": "none",
@@ -389,6 +362,33 @@
       "run_by_user": null,
       "created_at": "2021-01-15T15:51:16Z",
       "completed_at": "2021-01-15T15:53:05Z"
+    },
+    "generate_cohorts": {
+      "state": "succeeded",
+      "commit": "none",
+      "docker_image_id": "sha256:0f0f84e012c45836511e3970e9b97fd2203057a2108ff0b58ce544393f9637cc",
+      "job_id": "zsrh3njdg4xfvsqm",
+      "run_by_user": null,
+      "created_at": "2021-01-15T16:31:43Z",
+      "completed_at": "2021-01-15T16:34:14Z"
+    },
+    "crmain": {
+      "state": "succeeded",
+      "commit": "none",
+      "docker_image_id": "sha256:e4a676ff497b1550742032051cce1ba5502f65b172e86e4d82aadbaa1e056935",
+      "job_id": "oid7b43r3k6di3mb",
+      "run_by_user": null,
+      "created_at": "2021-01-15T16:31:43Z",
+      "completed_at": "2021-01-15T16:36:13Z"
+    },
+    "main_eth5_testedpop": {
+      "state": "succeeded",
+      "commit": "none",
+      "docker_image_id": "sha256:e4a676ff497b1550742032051cce1ba5502f65b172e86e4d82aadbaa1e056935",
+      "job_id": "axq363jdy7mzmtoi",
+      "run_by_user": null,
+      "created_at": "2021-01-15T16:31:43Z",
+      "completed_at": "2021-01-15T16:38:56Z"
     }
   }
 }
