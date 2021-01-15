@@ -187,7 +187,7 @@ actions:
         estout: output/estout_table3_testedpop_eth5_nocarehomes.txt
         graph: output/FP_testedpop_eth5.txt
 
-main_eth16_infectedpop:
+  main_eth16_infectedpop:
     run: stata-mp:latest analysis/11a_eth_an_infectedpop_eth16_nocarehomes.do
     needs: [crmain]
     outputs:
@@ -197,7 +197,7 @@ main_eth16_infectedpop:
         estout: output/estout_table4_infectedpop_eth16_nocarehomes.txt
         graph: output/FP_infectedpop_eth16.txt
 
-main_eth5_infectedpop:
+  main_eth5_infectedpop:
     run: stata-mp:latest analysis/11b_eth_an_infectedpop_eth16_nocarehomes.do
     needs: [crmain]
     outputs:
