@@ -3,11 +3,11 @@
 state: failed
 commit: none
 docker_image_id: sha256:e4a676ff497b1550742032051cce1ba5502f65b172e86e4d82aadbaa1e056935
-job_id: d7hmobnsnctjc7lo
+job_id: 6cxlbslftf2cie57
 run_by_user: None
-created_at: 2021-01-15T16:46:25Z
-started_at: 2021-01-15T16:48:04Z
-completed_at: 2021-01-15T16:48:23Z
+created_at: 2021-01-15T16:49:16Z
+started_at: 2021-01-15T16:51:12Z
+completed_at: 2021-01-15T16:51:31Z
 
 No outputs found matching patterns:
  - logs/11b_eth_an_infecteddpop_eth5.log
@@ -116,6 +116,7 @@ Did you mean to match one of these files instead?
  - logs/07b_eth_an_testedpop_eth5.log
  - logs/11a_eth_an_infectedpop_eth16.log
  - logs/11a_eth_an_infectedpop_eth5.log
+ - logs/11b_eth_an_infectedpop_eth5.log
  - logs/21_eth_outcome_characteristics.log
  - output/.DS_Store
  - output/FP_multivariable_eth5_carehomesonly.txt, replace

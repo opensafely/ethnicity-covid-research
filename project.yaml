@@ -192,7 +192,7 @@ actions:
     needs: [crmain]
     outputs:
       moderately_sensitive:
-        log: logs/11a_eth_an_infecteddpop_eth16.log
+        log: logs/11a_eth_an_infectedpop_eth16.log
         table: output/table4_infectedpop_eth16_nocarehomes.txt
         estout: output/estout_table4_infectedpop_eth16_nocarehomes.txt
         graph: output/FP_infectedpop_eth16.txt
@@ -202,7 +202,7 @@ actions:
     needs: [crmain]
     outputs:
       moderately_sensitive:
-        log: logs/11b_eth_an_infecteddpop_eth5.log
+        log: logs/11b_eth_an_infectedpop_eth5.log
         table: output/table4_infectedpop_eth5_nocarehomes.txt
         estout: output/estout_table4_infectedpop_eth5_nocarehomes.txt
         graph: output/FP_infectedpop_eth5.txt
