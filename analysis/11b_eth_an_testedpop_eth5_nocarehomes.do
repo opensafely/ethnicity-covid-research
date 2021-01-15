@@ -1,5 +1,5 @@
 /*==============================================================================
-DO FILE NAME:			07b_eth_an_testedpop_eth5
+DO FILE NAME:			1b_eth_an_testedpop_eth5
 PROJECT:				Ethnicity and COVID
 AUTHOR:					R Mathur (modified from A wong and A Schultze)
 DATE: 					15 July 2020					
@@ -23,7 +23,7 @@ sysdir
 * Open a log file
 
 cap log close
-log using ./logs/07b_eth_an_testedpop_eth5.log, replace t
+log using ./logs/11b_eth_an_testedpop_eth5.log, replace t
 
 cap file close tablecontent
 file open tablecontent using ./output/table3_testedpop_eth5_nocarehomes.txt, write text replace
@@ -156,17 +156,6 @@ local lab3: label eth5 3
 local lab4: label eth5 4
 local lab5: label eth5 5
 local lab6: label eth5 6
-local lab7: label eth5 7
-local lab8: label eth5 8
-local lab9: label eth5 9
-local lab10: label eth5 10
-local lab11: label eth5 11
-local lab12: label eth5 12
-local lab13: label eth5 13
-local lab14: label eth5 14
-local lab15: label eth5 15
-local lab16: label eth5 16
-local lab17: label eth5 17
 
 /* Counts */
  
@@ -180,7 +169,7 @@ local lab17: label eth5 17
 	file write tablecontent ("1.00") _tab _tab ("1.00") _tab _tab ("1.00")  _tab _tab ("1.00") _tab _tab ("1.00") _n
 	
 * Subsequent ethnic groups
-forvalues eth=2/17 {
+forvalues eth=2/6 {
 	qui safecount if eth5==`eth'
 	local denominator = r(N)
 	qui safecount if eth5 == `eth' & `i' == 1
