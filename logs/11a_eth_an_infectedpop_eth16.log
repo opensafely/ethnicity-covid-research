@@ -3,7 +3,7 @@
        log:  /Users/lsh152058/Documents/GitHub/ethnicity-c
 > ovid-research/logs/11a_eth_an_infectedpop_eth16.log
   log type:  text
- opened on:  16 Jan 2021, 20:46:32
+ opened on:  16 Jan 2021, 20:51:24
 
 . 
 . cap file close tablecontent
@@ -577,33 +577,17 @@ ons_noncov | ons_noncoviddeath_30
 > orestplot dataset
 . cap dsconcat `hr'
 
-. duplicates drop
+. cap duplicates drop
 
-Duplicates in terms of all variables
+. cap split idstr, p(_)
 
-(0 observations are duplicates)
+. cap ren idstr1 model
 
-. split idstr, p(_)
-variables created as string: 
-idstr1  idstr2  idstr3  idstr4
+. cap ren idstr2 outcome
 
-. ren idstr1 model
+. cap drop idstr idstr3
 
-. ren idstr2 outcome
-
-. drop idstr idstr3
-
-. tab model
-
-      model |      Freq.     Percent        Cum.
-------------+-----------------------------------
-      crude |        140       10.29       10.29
-     model0 |        165       12.13       22.43
-     model1 |        180       13.24       35.66
-     model2 |        430       31.62       67.28
-     model3 |        445       32.72      100.00
-------------+-----------------------------------
-      Total |      1,360      100.00
+. cap tab model
 
 . 
 . *save dataset for later
@@ -617,5 +601,5 @@ idstr1  idstr2  idstr3  idstr4
        log:  /Users/lsh152058/Documents/GitHub/ethnicity-c
 > ovid-research/logs/11a_eth_an_infectedpop_eth16.log
   log type:  text
- closed on:  16 Jan 2021, 20:46:38
+ closed on:  16 Jan 2021, 20:51:32
 ----------------------------------------------------------

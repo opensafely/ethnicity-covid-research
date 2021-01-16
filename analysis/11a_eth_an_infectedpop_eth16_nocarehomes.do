@@ -221,12 +221,12 @@ file close tablecontent
 
 ************************************************create forestplot dataset
 cap dsconcat `hr'
-duplicates drop
-split idstr, p(_)
-ren idstr1 model
-ren idstr2 outcome
-drop idstr idstr3
-tab model
+cap duplicates drop
+cap split idstr, p(_)
+cap ren idstr1 model
+cap ren idstr2 outcome
+cap drop idstr idstr3
+cap tab model
 
 *save dataset for later
 outsheet using ./output/FP_infectedpop_eth16.txt, replace
