@@ -293,10 +293,6 @@ label define agegroup 	0 "0-<18" ///
 label values agegroup agegroup
 
 
-
-
-
-
 **************************** HOUSEHOLD VARS*******************************************
 **care home
 encode care_home_type, gen(carehometype)
