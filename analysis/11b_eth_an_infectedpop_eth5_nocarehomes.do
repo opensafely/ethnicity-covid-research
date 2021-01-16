@@ -47,41 +47,52 @@ keep if carehome==0
 safecount
 
 
+/* keep those with at least 30 days f-up after positivetest =======================================================*/ 
+gen fup=stime_`i'-positivetest_date
+sum fup
+drop if fup<30
+sum fup
+
+/* Create outcomes to be within 30 days of positivetest =======================================================*/ 
+
+gen `i'_30=0
+replace `i'_30=1 if (`i'_date - positivetest_date) <=30  & `i'_date <= stime_`i'
+tab `i' `i'_30
 
 /* Sense check outcomes=======================================================*/ 
-safetab positivetest `i'
+safetab positivetest `i'_30
 
-safetab eth5 `i', missing row
+safetab eth5 `i'_30, missing row
 
 
 /* Main Model=================================================================*/
 
 /* Univariable model */ 
 
-logistic `i' i.eth5 i.stp, nolog 
-estimates save ./output/crude_`i'_eth5, replace 
-parmest, label eform format(estimate p lb ub) saving(./output/crude_`i'_eth5, replace) idstr("crude_`i'_eth5") 
-eststo model1
+cap logistic `i'_30 i.eth5 i.stp, nolog 
+cap estimates save ./output/crude_`i'_eth5, replace 
+cap parmest, label eform format(estimate p lb ub) saving(./output/crude_`i'_eth5, replace) idstr("crude_`i'_eth5") 
+cap eststo model1
 local hr "`hr' ./output/crude_`i'_eth5 "
 
 
 /* Multivariable models */ 
 *Age Gender
-logistic `i' i.eth5 i.male age1 age2 age3 i.stp, nolog 
-estimates save ./output/model0_`i'_eth5, replace 
-parmest, label eform format(estimate p lb ub) saving(./output/model0_`i'_eth5, replace) idstr("model0_`i'_eth5") 
-eststo model2
+cap logistic `i'_30 i.eth5 i.male age1 age2 age3 i.stp, nolog 
+cap estimates save ./output/model0_`i'_eth5, replace 
+cap parmest, label eform format(estimate p lb ub) saving(./output/model0_`i'_eth5, replace) idstr("model0_`i'_eth5") 
+cap eststo model2
 local hr "`hr' ./output/model0_`i'_eth5 "
 
 * Age, Gender, IMD
-logistic `i' i.eth5 i.male age1 age2 age3 i.imd i.stp , nolog 
-estimates save ./output/model1_`i'_eth5, replace 
-parmest, label eform format(estimate p lb ub) saving(./output/model1_`i'_eth5, replace) idstr("model1_`i'_eth5") 
-eststo model3
+cap logistic `i'_30 i.eth5 i.male age1 age2 age3 i.imd i.stp , nolog 
+cap estimates save ./output/model1_`i'_eth5, replace 
+cap parmest, label eform format(estimate p lb ub) saving(./output/model1_`i'_eth5, replace) idstr("model1_`i'_eth5") 
+cap eststo model3
 local hr "`hr' ./output/model1_`i'_eth5 "
 
 * Age, Gender, IMD and Comorbidities  
-cap logistic `i' i.eth5 i.male age1 age2 age3 	i.imd						///
+cap logistic `i'_30 i.eth5 i.male age1 age2 age3 	i.imd						///
 										i.bmicat_sa	i.hba1ccat			///
 										gp_consult_count			///
 										i.smoke_nomiss				///
@@ -101,12 +112,12 @@ cap logistic `i' i.eth5 i.male age1 age2 age3 	i.imd						///
 										i.ra_sle_psoriasis	i. stp, nolog 		
 										
 cap estimates save ./output/model2_`i'_eth5, replace 
-parmest, label eform format(estimate p lb ub) saving(./output/model2_`i'_eth5, replace) idstr("model2_`i'_eth5") 
-eststo model4
+cap parmest, label eform format(estimate p lb ub) saving(./output/model2_`i'_eth5, replace) idstr("model2_`i'_eth5") 
+cap eststo model4
 local hr "`hr' ./output/model2_`i'_eth5 "
 
 * Age, Gender, IMD and Comorbidities  and household size 
-cap logistic `i' i.eth5 i.male age1 age2 age3 	i.imd						///
+cap logistic `i'_30 i.eth5 i.male age1 age2 age3 	i.imd						///
 										i.bmicat_sa	i.hba1ccat			///
 										gp_consult_count			///
 										i.smoke_nomiss				///
@@ -127,12 +138,12 @@ cap logistic `i' i.eth5 i.male age1 age2 age3 	i.imd						///
 										i.hh_total_cat i.stp, nolog 		
 										
 cap estimates save ./output/model3_`i'_eth5, replace 
-parmest, label eform format(estimate p lb ub) saving(./output/model3_`i'_eth5, replace) idstr("model3_`i'_eth5") 
-eststo model5
+cap parmest, label eform format(estimate p lb ub) saving(./output/model3_`i'_eth5, replace) idstr("model3_`i'_eth5") 
+cap eststo model5
 local hr "`hr' ./output/model3_`i'_eth5 "
 
 /* Estout================================================================*/ 
-esttab model1 model2 model3 model4 model5   using ./output/estout_table4_infectedpop_eth5_nocarehomes.txt, b(a2) ci(2) label wide compress eform ///
+cap esttab model1 model2 model3 model4 model5   using ./output/estout_table4_infectedpop_eth5_nocarehomes.txt, b(a2) ci(2) label wide compress eform ///
 	title ("`i'") ///
 	varlabels(`e(labels)') ///
 	stats(N_sub) ///
