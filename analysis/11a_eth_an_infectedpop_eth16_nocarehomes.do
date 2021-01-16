@@ -220,7 +220,7 @@ forvalues eth=2/17 {
 file close tablecontent
 
 ************************************************create forestplot dataset
-dsconcat `hr'
+cap dsconcat `hr'
 duplicates drop
 split idstr, p(_)
 ren idstr1 model

@@ -1,27 +1,30 @@
-------------------------------------------------------------------------------------
+----------------------------------------------------------
       name:  <unnamed>
-       log:  /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/logs/11a_eth
-> _an_infectedpop_eth16.log
+       log:  /Users/lsh152058/Documents/GitHub/ethnicity-c
+> ovid-research/logs/11a_eth_an_infectedpop_eth16.log
   log type:  text
- opened on:  16 Jan 2021, 20:16:27
+ opened on:  16 Jan 2021, 20:46:32
 
 . 
 . cap file close tablecontent
 
-. file open tablecontent using ./output/table4_infectedpop_eth16_nocarehomes.txt, wr
-> ite text replace
+. file open tablecontent using ./output/table4_infectedpop
+> _eth16_nocarehomes.txt, write text replace
 
-. file write tablecontent ("Table 3: Odds of testing positive amongst those receivin
-> g a test - No care homes") _n
+. file write tablecontent ("Table 3: Odds of testing posit
+> ive amongst those receiving a test - No care homes") _n
 
-. file write tablecontent _tab ("Denominator") _tab ("Event") _tab ("%") _tab ("Crud
-> e") _tab _tab ("Age/Sex Adjusted") _tab _tab ("Age/Sex/IMD Adjusted") _tab _tab   
->     ("plus co-morbidities") _tab _tab       ("plus hh size")  _n
+. file write tablecontent _tab ("Denominator") _tab ("Even
+> t") _tab ("%") _tab ("Crude") _tab _tab ("Age/Sex Adjust
+> ed") _tab _tab ("Age/Sex/IMD Adjusted") _tab _tab       
+> ("plus co-morbidities") _tab _tab       ("plus hh size")
+>   _n
 
 . 
-. file write tablecontent _tab _tab _tab _tab   ("OR") _tab ("95% CI") _tab ("OR") _
-> tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("95% 
-> CI") _tab ("95% CI") _n
+. file write tablecontent _tab _tab _tab _tab   ("OR") _ta
+> b ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("OR") _ta
+> b ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("95% CI")
+>  _tab ("95% CI") _n
 
 . 
 . 
@@ -36,151 +39,202 @@
 . keep if carehome==0 
   6. safecount
   7. 
-. /* keep those with at least 30 days f-up after positivetest ======================
-> =================================*/ 
+. /* keep those with at least 30 days f-up after positivet
+> est ====================================================
+> ===*/ 
 . gen fup=stime_`i'-positivetest_date
   8. sum fup
   9. drop if fup<30
  10. sum fup
  11. 
-. /* Create outcomes to be within 30 days of positivetest ==========================
-> =============================*/ 
+. /* Create outcomes to be within 30 days of positivetest 
+> =======================================================*
+> / 
 . 
 . gen `i'_30=0
- 12. replace `i'_30=1 if (`i'_date - positivetest_date) <=30  & `i'_date <= stime_`i
-> '
+ 12. replace `i'_30=1 if (`i'_date - positivetest_date) <=
+> 30  & `i'_date <= stime_`i'
  13. tab `i' `i'_30
  14. 
-. /* Sense check outcomes=======================================================*/ 
+. /* Sense check outcomes=================================
+> ======================*/ 
 . safetab positivetest `i'_30
  15. 
 . safetab ethnicity_16 `i'_30, missing row
  16. 
 . 
-. /* Main Model=================================================================*/
+. /* Main Model===========================================
+> ======================*/
 . 
 . /* Univariable model */ 
 . 
 . cap logistic `i'_30 i.ethnicity_16 i.stp, nolog 
  17. cap estimates save ./output/crude_`i'_eth16, replace 
- 18. cap parmest, label eform format(estimate p lb ub) saving(./output/crude_`i'_eth
-> 16, replace) idstr("crude_`i'_eth16") 
+ 18. cap parmest, label eform format(estimate p lb ub) sav
+> ing(./output/crude_`i'_eth16, replace) idstr("crude_`i'_
+> eth16") 
  19. cap eststo model1
  20. local hr "`hr' ./output/crude_`i'_eth16 "
  21. 
 . 
 . /* Multivariable models */ 
 . *Age Gender
-. cap logistic `i'_30 i.ethnicity_16 i.male age1 age2 age3 i.stp, nolog 
- 22. cap estimates save ./output/model0_`i'_eth16, replace 
- 23. cap parmest, label eform format(estimate p lb ub) saving(./output/model0_`i'_et
-> h16, replace) idstr("model0_`i'_eth16") 
+. cap logistic `i'_30 i.ethnicity_16 i.male age1 age2 age3
+>  i.stp, nolog 
+ 22. cap estimates save ./output/model0_`i'_eth16, replace
+>  
+ 23. cap parmest, label eform format(estimate p lb ub) sav
+> ing(./output/model0_`i'_eth16, replace) idstr("model0_`i
+> '_eth16") 
  24. cap eststo model2
  25. local hr "`hr' ./output/model0_`i'_eth16 "
  26. 
 . * Age, Gender, IMD
-. cap logistic `i'_30 i.ethnicity_16 i.male age1 age2 age3 i.imd i.stp , nolog 
- 27. cap estimates save ./output/model1_`i'_eth16, replace 
- 28. cap parmest, label eform format(estimate p lb ub) saving(./output/model1_`i'_et
-> h16, replace) idstr("model1_`i'_eth16") 
+. cap logistic `i'_30 i.ethnicity_16 i.male age1 age2 age3
+>  i.imd i.stp , nolog 
+ 27. cap estimates save ./output/model1_`i'_eth16, replace
+>  
+ 28. cap parmest, label eform format(estimate p lb ub) sav
+> ing(./output/model1_`i'_eth16, replace) idstr("model1_`i
+> '_eth16") 
  29. cap eststo model3
  30. local hr "`hr' ./output/model1_`i'_eth16 "
  31. 
 . * Age, Gender, IMD and Comorbidities  
-. cap logistic `i'_30 i.ethnicity_16 i.male age1 age2 age3        i.imd             
->                               ///
->                                                                                 i.
-> bmicat_sa     i.hba1ccat                      ///
->                                                                                 gp
-> _consult_count                        ///
->                                                                                 i.
-> smoke_nomiss                          ///
->                                                                                 i.
-> hypertension i.bp_cat         ///     
->                                                                                 i.
-> asthma                                        ///
->                                                                                 i.
-> chronic_respiratory_disease ///
->                                                                                 i.
-> chronic_cardiac_disease       ///
->                                                                                 i.
-> dm_type                                       ///     
->                                                                                 i.
-> cancer                    ///
->                                                                                 i.
-> chronic_liver_disease         ///
->                                                                                 i.
-> stroke                                        ///
->                                                                                 i.
-> dementia                                      ///
->                                                                                 i.
-> other_neuro                           ///
->                                                                                 i.
-> egfr60                                        ///
->                                                                                 i.
-> esrf                                          ///
->                                                                                 i.
-> immunosuppressed                      ///
->                                                                                 i.
-> ra_sle_psoriasis      i. stp, nolog           
- 32.                                                                                
->  
+. cap logistic `i'_30 i.ethnicity_16 i.male age1 age2 age3
+>         i.imd                                           
+> ///
+>                                                         
+>                         i.bmicat_sa     i.hba1ccat      
+>                 ///
+>                                                         
+>                         gp_consult_count                
+>         ///
+>                                                         
+>                         i.smoke_nomiss                  
+>         ///
+>                                                         
+>                         i.hypertension i.bp_cat         
+> ///     
+>                                                         
+>                         i.asthma                        
+>                 ///
+>                                                         
+>                         i.chronic_respiratory_disease //
+> /
+>                                                         
+>                         i.chronic_cardiac_disease       
+> ///
+>                                                         
+>                         i.dm_type                       
+>                 ///     
+>                                                         
+>                         i.cancer                    ///
+>                                                         
+>                         i.chronic_liver_disease         
+> ///
+>                                                         
+>                         i.stroke                        
+>                 ///
+>                                                         
+>                         i.dementia                      
+>                 ///
+>                                                         
+>                         i.other_neuro                   
+>         ///
+>                                                         
+>                         i.egfr60                        
+>                 ///
+>                                                         
+>                         i.esrf                          
+>                 ///
+>                                                         
+>                         i.immunosuppressed              
+>         ///
+>                                                         
+>                         i.ra_sle_psoriasis      i. stp, 
+> nolog           
+ 32.                                                      
+>                            
 . cap estimates save ./output/model2_`i'_eth16, replace 
- 33. cap parmest, label eform format(estimate p lb ub) saving(./output/model2_`i'_et
-> h16, replace) idstr("model2_`i'_eth16") 
+ 33. cap parmest, label eform format(estimate p lb ub) sav
+> ing(./output/model2_`i'_eth16, replace) idstr("model2_`i
+> '_eth16") 
  34. cap eststo model4
  35. local hr "`hr' ./output/model2_`i'_eth16 "
  36. 
-. * Age, Gender, IMD and Comorbidities  and household size 
-. cap logistic `i'_30 i.ethnicity_16 i.male age1 age2 age3        i.imd             
->                               ///
->                                                                                 i.
-> bmicat_sa     i.hba1ccat                      ///
->                                                                                 gp
-> _consult_count                        ///
->                                                                                 i.
-> smoke_nomiss                          ///
->                                                                                 i.
-> hypertension i.bp_cat         ///     
->                                                                                 i.
-> asthma                                        ///
->                                                                                 i.
-> chronic_respiratory_disease ///
->                                                                                 i.
-> chronic_cardiac_disease       ///
->                                                                                 i.
-> dm_type                                       ///     
->                                                                                 i.
-> cancer                    ///
->                                                                                 i.
-> chronic_liver_disease         ///
->                                                                                 i.
-> stroke                                        ///
->                                                                                 i.
-> dementia                                      ///
->                                                                                 i.
-> other_neuro                           ///
->                                                                                 i.
-> egfr60                                        ///
->                                                                                 i.
-> esrf                                          ///
->                                                                                 i.
-> immunosuppressed                      ///
->                                                                                 i.
-> ra_sle_psoriasis                      ///
->                                                                                 i.
-> hh_total_cat i.stp, nolog             
- 37.                                                                                
+. * Age, Gender, IMD and Comorbidities  and household size
 >  
+. cap logistic `i'_30 i.ethnicity_16 i.male age1 age2 age3
+>         i.imd                                           
+> ///
+>                                                         
+>                         i.bmicat_sa     i.hba1ccat      
+>                 ///
+>                                                         
+>                         gp_consult_count                
+>         ///
+>                                                         
+>                         i.smoke_nomiss                  
+>         ///
+>                                                         
+>                         i.hypertension i.bp_cat         
+> ///     
+>                                                         
+>                         i.asthma                        
+>                 ///
+>                                                         
+>                         i.chronic_respiratory_disease //
+> /
+>                                                         
+>                         i.chronic_cardiac_disease       
+> ///
+>                                                         
+>                         i.dm_type                       
+>                 ///     
+>                                                         
+>                         i.cancer                    ///
+>                                                         
+>                         i.chronic_liver_disease         
+> ///
+>                                                         
+>                         i.stroke                        
+>                 ///
+>                                                         
+>                         i.dementia                      
+>                 ///
+>                                                         
+>                         i.other_neuro                   
+>         ///
+>                                                         
+>                         i.egfr60                        
+>                 ///
+>                                                         
+>                         i.esrf                          
+>                 ///
+>                                                         
+>                         i.immunosuppressed              
+>         ///
+>                                                         
+>                         i.ra_sle_psoriasis              
+>         ///
+>                                                         
+>                         i.hh_total_cat i.stp, nolog     
+>         
+ 37.                                                      
+>                            
 . cap estimates save ./output/model3_`i'_eth16, replace 
- 38. cap parmest, label eform format(estimate p lb ub) saving(./output/model3_`i'_et
-> h16, replace) idstr("model3_`i'_eth16") 
+ 38. cap parmest, label eform format(estimate p lb ub) sav
+> ing(./output/model3_`i'_eth16, replace) idstr("model3_`i
+> '_eth16") 
  39. cap eststo model5
  40. local hr "`hr' ./output/model3_`i'_eth16 "
  41. 
-. /* Estout================================================================*/ 
-. cap esttab model1 model2 model3 model4 model5  using ./output/estout_table4_infect
-> edpop_eth16_nocarehomes.txt, b(a2) ci(2) label wide compress eform ///
+. /* Estout===============================================
+> =================*/ 
+. cap esttab model1 model2 model3 model4 model5  using ./o
+> utput/estout_table4_infectedpop_eth16_nocarehomes.txt, b
+> (a2) ci(2) label wide compress eform ///
 >         title ("`i'") ///
 >         varlabels(`e(labels)') ///
 >         stats(N_sub) ///
@@ -189,7 +243,8 @@
  43. 
 . 
 . 
-. /* Print table================================================================*/ 
+. /* Print table==========================================
+> ======================*/ 
 . *  Print the results for the main model 
 . 
 . 
@@ -224,44 +279,50 @@
  63.         qui safecount if ethnicity_16 == 1 & `i' == 1
  64.         local event = r(N)
  65.         local pct =(`event'/`denominator')
- 66.         file write tablecontent  ("`lab1'") _tab (`denominator') _tab (`event')
->  _tab %3.2f (`pct') _tab
- 67.         file write tablecontent ("1.00") _tab _tab ("1.00") _tab _tab ("1.00") 
->  _tab _tab ("1.00") _tab _tab ("1.00") _n
+ 66.         file write tablecontent  ("`lab1'") _tab (`de
+> nominator') _tab (`event') _tab %3.2f (`pct') _tab
+ 67.         file write tablecontent ("1.00") _tab _tab ("
+> 1.00") _tab _tab ("1.00")  _tab _tab ("1.00") _tab _tab 
+> ("1.00") _n
  68.         
 . * Subsequent ethnic groups
 . forvalues eth=2/17 {
  69.         qui safecount if ethnicity_16==`eth'
  70.         local denominator = r(N)
- 71.         qui safecount if ethnicity_16 == `eth' & `i' == 1
+ 71.         qui safecount if ethnicity_16 == `eth' & `i' 
+> == 1
  72.         local event = r(N)
  73.         local pct =(`event'/`denominator')
- 74.         file write tablecontent  ("`lab`eth''") _tab (`denominator') _tab (`eve
-> nt') _tab %3.2f (`pct') _tab
+ 74.         file write tablecontent  ("`lab`eth''") _tab 
+> (`denominator') _tab (`event') _tab %3.2f (`pct') _tab
  75.         cap estimates use ./output/crude_`i'_eth16" 
  76.         cap lincom `eth'.ethnicity_16, eform
- 77.         file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (
-> " - ") %4.2f (r(ub)) (")") _tab 
+ 77.         file write tablecontent  %4.2f (r(estimate)) 
+> _tab ("(") %4.2f (r(lb)) (" - ") %4.2f (r(ub)) (")") _ta
+> b 
  78.         cap estimates clear
  79.         cap estimates use ./output/model0_`i'_eth16" 
  80.         cap lincom `eth'.ethnicity_16, eform
- 81.         file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (
-> " - ") %4.2f (r(ub)) (")") _tab 
+ 81.         file write tablecontent  %4.2f (r(estimate)) 
+> _tab ("(") %4.2f (r(lb)) (" - ") %4.2f (r(ub)) (")") _ta
+> b 
  82.         cap estimates clear
  83.         cap estimates use ./output/model1_`i'_eth16" 
  84.         cap lincom `eth'.ethnicity_16, eform
- 85.         file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (
-> " - ") %4.2f (r(ub)) (")") _tab 
+ 85.         file write tablecontent  %4.2f (r(estimate)) 
+> _tab ("(") %4.2f (r(lb)) (" - ") %4.2f (r(ub)) (")") _ta
+> b 
  86.         cap estimates clear
  87.         cap estimates use ./output/model2_`i'_eth16" 
  88.         cap lincom `eth'.ethnicity_16, eform
- 89.         file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (
-> " - ") %4.2f (r(ub)) (")") _tab 
+ 89.         file write tablecontent  %4.2f (r(estimate)) 
+> _tab ("(") %4.2f (r(lb)) (" - ") %4.2f (r(ub)) (")") _ta
+> b 
  90.         cap estimates clear
  91.         cap estimates use ./output/model3_`i'_eth16" 
  92.         cap lincom `eth'.ethnicity_16, eform
- 93.         file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (
-> " - ") %4.2f (r(ub)) (")") _n
+ 93.         file write tablecontent  %4.2f (r(estimate)) 
+> _tab ("(") %4.2f (r(lb)) (" - ") %4.2f (r(ub)) (")") _n
  94. }  //end ethnic group
  95. 
 . } //end outcomes
@@ -270,14 +331,20 @@
 (1,521 observations deleted)
   8,225
 
-    Variable |        Obs        Mean    Std. Dev.       Min        Max
--------------+---------------------------------------------------------
-         fup |      8,225    77.44195    64.34212       -178        183
+    Variable |        Obs        Mean    Std. Dev.       M
+> in        Max
+-------------+--------------------------------------------
+> -------------
+         fup |      8,225    77.44195    64.34212       -1
+> 78        183
 (1,976 observations deleted)
 
-    Variable |        Obs        Mean    Std. Dev.       Min        Max
--------------+---------------------------------------------------------
-         fup |      6,249    104.1301    44.01002         30        183
+    Variable |        Obs        Mean    Std. Dev.       M
+> in        Max
+-------------+--------------------------------------------
+> -------------
+         fup |      6,249    104.1301    44.01002         
+> 30        183
 (1 real change made)
 
    outcome |        hes_30
@@ -298,14 +365,20 @@
 (1,521 observations deleted)
   8,225
 
-    Variable |        Obs        Mean    Std. Dev.       Min        Max
--------------+---------------------------------------------------------
-         fup |      8,225     75.0817    63.00366       -180        179
+    Variable |        Obs        Mean    Std. Dev.       M
+> in        Max
+-------------+--------------------------------------------
+> -------------
+         fup |      8,225     75.0817    63.00366       -1
+> 80        179
 (2,044 observations deleted)
 
-    Variable |        Obs        Mean    Std. Dev.       Min        Max
--------------+---------------------------------------------------------
-         fup |      6,181    101.9298    43.12947         30        179
+    Variable |        Obs        Mean    Std. Dev.       M
+> in        Max
+-------------+--------------------------------------------
+> -------------
+         fup |      6,181    101.9298    43.12947         
+> 30        179
 (4 real changes made)
 
    outcome |        icu_30
@@ -326,14 +399,20 @@
 (1,521 observations deleted)
   8,225
 
-    Variable |        Obs        Mean    Std. Dev.       Min        Max
--------------+---------------------------------------------------------
-         fup |      8,225    89.66553    53.25271          0        183
+    Variable |        Obs        Mean    Std. Dev.       M
+> in        Max
+-------------+--------------------------------------------
+> -------------
+         fup |      8,225    89.66553    53.25271         
+>  0        183
 (1,435 observations deleted)
 
-    Variable |        Obs        Mean    Std. Dev.       Min        Max
--------------+---------------------------------------------------------
-         fup |      6,790    105.6495    44.21588         30        183
+    Variable |        Obs        Mean    Std. Dev.       M
+> in        Max
+-------------+--------------------------------------------
+> -------------
+         fup |      6,790    105.6495    44.21588         
+> 30        183
 (0 real changes made)
 
    outcome | onscovidde
@@ -422,14 +501,20 @@ White + Caribbean |       331 |       331
 (1,521 observations deleted)
   8,225
 
-    Variable |        Obs        Mean    Std. Dev.       Min        Max
--------------+---------------------------------------------------------
-         fup |      8,225    89.66553    53.25271          0        183
+    Variable |        Obs        Mean    Std. Dev.       M
+> in        Max
+-------------+--------------------------------------------
+> -------------
+         fup |      8,225    89.66553    53.25271         
+>  0        183
 (1,435 observations deleted)
 
-    Variable |        Obs        Mean    Std. Dev.       Min        Max
--------------+---------------------------------------------------------
-         fup |      6,790    105.6495    44.21588         30        183
+    Variable |        Obs        Mean    Std. Dev.       M
+> in        Max
+-------------+--------------------------------------------
+> -------------
+         fup |      6,790    105.6495    44.21588         
+> 30        183
 (3 real changes made)
 
    outcome |
@@ -441,24 +526,32 @@ ons_noncov | ons_noncoviddeath_30
 -----------+----------------------+----------
      Total |     6,787          3 |     6,790 
 
-**TABLE OF positivetest ons_noncoviddeath_30 REDACTED DUE TO SMALL N**
+**TABLE OF positivetest ons_noncoviddeath_30 REDACTED DUE 
+> TO SMALL N**
 
 
-**TABLE OF ethnicity_16 ons_noncoviddeath_30 REDACTED DUE TO SMALL N**
+**TABLE OF ethnicity_16 ons_noncoviddeath_30 REDACTED DUE 
+> TO SMALL N**
 
 (68,938 observations deleted)
   9,746
 (1,521 observations deleted)
   8,225
 
-    Variable |        Obs        Mean    Std. Dev.       Min        Max
--------------+---------------------------------------------------------
-         fup |      8,225    89.66553    53.25271          0        183
+    Variable |        Obs        Mean    Std. Dev.       M
+> in        Max
+-------------+--------------------------------------------
+> -------------
+         fup |      8,225    89.66553    53.25271         
+>  0        183
 (1,435 observations deleted)
 
-    Variable |        Obs        Mean    Std. Dev.       Min        Max
--------------+---------------------------------------------------------
-         fup |      6,790    105.6495    44.21588         30        183
+    Variable |        Obs        Mean    Std. Dev.       M
+> in        Max
+-------------+--------------------------------------------
+> -------------
+         fup |      6,790    105.6495    44.21588         
+> 30        183
 (3 real changes made)
 
    outcome |      onsdeath_30
@@ -469,17 +562,20 @@ ons_noncov | ons_noncoviddeath_30
 -----------+----------------------+----------
      Total |     6,787          3 |     6,790 
 
-**TABLE OF positivetest onsdeath_30 REDACTED DUE TO SMALL N**
+**TABLE OF positivetest onsdeath_30 REDACTED DUE TO SMALL 
+> N**
 
 
-**TABLE OF ethnicity_16 onsdeath_30 REDACTED DUE TO SMALL N**
+**TABLE OF ethnicity_16 onsdeath_30 REDACTED DUE TO SMALL 
+> N**
 
 
 . file close tablecontent
 
 . 
-. ************************************************create forestplot dataset
-. dsconcat `hr'
+. ************************************************create f
+> orestplot dataset
+. cap dsconcat `hr'
 
 . duplicates drop
 
@@ -511,14 +607,15 @@ idstr1  idstr2  idstr3  idstr4
 
 . 
 . *save dataset for later
-. outsheet using ./output/FP_infectedpop_eth16.txt, replace
+. outsheet using ./output/FP_infectedpop_eth16.txt, replac
+> e
 
 . 
 . * Close log file 
 . log close
       name:  <unnamed>
-       log:  /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/logs/11a_eth
-> _an_infectedpop_eth16.log
+       log:  /Users/lsh152058/Documents/GitHub/ethnicity-c
+> ovid-research/logs/11a_eth_an_infectedpop_eth16.log
   log type:  text
- closed on:  16 Jan 2021, 20:16:32
-------------------------------------------------------------------------------------
+ closed on:  16 Jan 2021, 20:46:38
+----------------------------------------------------------
