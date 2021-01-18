@@ -78,14 +78,6 @@ actions:
         log: logs/02b_region_check.log
         table: output/table0_region.txt
 
-  check_age:
-    run: stata-mp:latest analysis/05b_eth_table1_descriptives_eth5_agegroup.do
-    needs: [crmain]
-    outputs:
-      moderately_sensitive:
-        log: logs/05b_eth_table1_ages_eth5.log
-        table: output/table1_eth5_age.txt
-
   check_tested:
     run: stata-mp:latest analysis/21_eth_tested_characteristics.do
     needs: [crmain]

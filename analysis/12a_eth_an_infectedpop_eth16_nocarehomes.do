@@ -27,7 +27,7 @@ log using ./logs/12a_eth_an_infectedpop_eth16.log, replace t
 
 cap file close tablecontent
 file open tablecontent using ./output/table4_infectedpop_eth16_nocarehomes.txt, write text replace
-file write tablecontent ("Table 3: Odds of each outcome amongst those testing positive - No care homes") _n
+file write tablecontent ("Table 4: Odds of each outcome amongst those testing positive - No care homes") _n
 file write tablecontent _tab ("Denominator") _tab ("Event") _tab ("%") _tab ("Crude") _tab _tab ("Age/Sex Adjusted") _tab _tab ("Age/Sex/IMD Adjusted") _tab _tab 	("plus co-morbidities") _tab _tab 	("plus hh size")  _n
 
 file write tablecontent _tab _tab _tab _tab   ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("95% CI") _tab ("95% CI") _n
