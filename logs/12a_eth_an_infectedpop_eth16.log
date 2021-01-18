@@ -1,0 +1,80 @@
+--------------------------------------------------------
+      name:  <unnamed>
+       log:  /Users/lsh152058/Documents/GitHub/ethnicity
+> -covid-research/logs/12a_eth_an_infectedpop_eth16.log
+  log type:  text
+ opened on:  18 Jan 2021, 13:48:46
+
+. 
+. cap file close tablecontent
+
+. file open tablecontent using ./output/table4_infectedp
+> op_eth16_nocarehomes.txt, write text replace
+
+. file write tablecontent ("Table 3: Odds of testing pos
+> itive amongst those receiving a test - No care homes")
+>  _n
+
+. file write tablecontent _tab ("Denominator") _tab ("Ev
+> ent") _tab ("%") _tab ("Crude") _tab _tab ("Age/Sex Ad
+> justed") _tab _tab ("Age/Sex/IMD Adjusted") _tab _tab 
+>       ("plus co-morbidities") _tab _tab       ("plus h
+> h size")  _n
+
+. 
+. file write tablecontent _tab _tab _tab _tab   ("OR") _
+> tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("OR")
+>  _tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("95
+> % CI") _tab ("95% CI") _n
+
+. 
+. 
+. foreach i of global outcomes {
+  2. * Open Stata dataset
+. use ./output/analysis_dataset.dta, clear
+  3. 
+. *define population as anyone who has received a test
+. keep if positivetest==1
+  4. safecount
+  5. 
+. keep if carehome==0 
+  6. safecount
+  7. 
+unexpected end of file
+r(612);
+
+end of do-file
+
+r(612);
+. do "/var/folders/jg/zvg1wn090ps86p3lwtn901140000gn/T//
+> SD58121.000000"
+
+. safecount
+  9,746
+
+. 
+end of do-file
+
+. do "/var/folders/jg/zvg1wn090ps86p3lwtn901140000gn/T//
+> SD58121.000000"
+
+. use ./output/analysis_dataset.dta, clear
+
+. 
+. *define population as anyone who has received a test
+. keep if positivetest==1
+(68,938 observations deleted)
+
+. safecount
+  9,746
+
+. 
+. keep if carehome==0 
+(1,521 observations deleted)
+
+. safecount
+  8,225
+
+. 
+end of do-file
+

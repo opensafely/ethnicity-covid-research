@@ -1,5 +1,5 @@
 /*=============================================================================
-DO FILE NAME:			11a_eth_an_infectedpop_eth16
+DO FILE NAME:			12a_eth_an_infectedpop_eth16
 PROJECT:				Ethnicity and COVID
 AUTHOR:					R Mathur (modified from A wong and A Schultze)
 DATE: 					15 July 2020					
@@ -23,7 +23,7 @@ sysdir
 * Open a log file
 
 cap log close
-log using ./logs/11a_eth_an_infectedpop_eth16.log, replace t
+log using ./logs/12a_eth_an_infectedpop_eth16.log, replace t
 
 cap file close tablecontent
 file open tablecontent using ./output/table4_infectedpop_eth16_nocarehomes.txt, write text replace
@@ -44,7 +44,7 @@ safecount
 keep if carehome==0 
 safecount
 
-/* keep those with at least 30 days f-up after positivetest =======================================================*/ 
+/* keep those with at least 30 days f-up prior to censoring date for each outcome =======================================================*/ 
 gen fup=stime_`i'-positivetest_date
 sum fup
 drop if fup<30
