@@ -1,0 +1,530 @@
+------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/logs/12b_eth
+> _an_infectedpop_eth5.log
+  log type:  text
+ opened on:  18 Jan 2021, 14:08:44
+
+. 
+. cap file close tablecontent
+
+. file open tablecontent using ./output/table4_infectedpop_eth5_nocarehomes.txt, wri
+> te text replace
+
+. file write tablecontent ("Table 4: Odds of each outcome amongst those testing posi
+> tive - No care homes") _n
+
+. file write tablecontent _tab ("Denominator") _tab ("Event") _tab ("%") _tab ("Crud
+> e") _tab _tab ("Age/Sex Adjusted") _tab _tab ("Age/Sex/IMD Adjusted") _tab _tab   
+>     ("plus co-morbidities") _tab _tab       ("plus hh size")  _n
+
+. 
+. file write tablecontent _tab _tab _tab _tab   ("OR") _tab ("95% CI") _tab ("OR") _
+> tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("OR") _tab ("95% CI") _tab ("95% 
+> CI") _tab ("95% CI") _n
+
+. 
+. 
+. foreach i of global outcomes {
+  2. * Open Stata dataset
+. use ./output/analysis_dataset.dta, clear
+  3. 
+. safecount
+  4. 
+. *define population as anyone who has received a test
+. keep if positivetest==1
+  5. safecount
+  6. 
+. keep if carehome==0
+  7. safecount
+  8. 
+. 
+. /* keep those with at least 30 days f-up prior to censoring date for each outcome 
+> =======================================================*/ 
+. drop if `i'_censor_date -  positivetest_date <30
+  9. 
+. /* Create outcomes to be within 30 days of positivetest ==========================
+> =============================*/ 
+. 
+. gen `i'_30=0
+ 10. replace `i'_30=1 if (`i'_date - positivetest_date) <=30  & `i'_date <= stime_`i
+> '
+ 11. tab `i' `i'_30
+ 12. 
+. /* Sense check outcomes=======================================================*/ 
+. safetab positivetest `i'_30
+ 13. 
+. safetab eth5 `i'_30, missing row
+ 14. 
+. 
+. /* Main Model=================================================================*/
+. 
+. /* Univariable model */ 
+. 
+. cap logistic `i'_30 i.eth5 i.stp, nolog 
+ 15. cap estimates save ./output/crude_`i'_eth5, replace 
+ 16. cap parmest, label eform format(estimate p lb ub) saving(./output/crude_`i'_eth
+> 5, replace) idstr("crude_`i'_eth5") 
+ 17. cap eststo model1
+ 18. local hr "`hr' ./output/crude_`i'_eth5 "
+ 19. 
+. 
+. /* Multivariable models */ 
+. *Age Gender
+. cap logistic `i'_30 i.eth5 i.male age1 age2 age3 i.stp, nolog 
+ 20. cap estimates save ./output/model0_`i'_eth5, replace 
+ 21. cap parmest, label eform format(estimate p lb ub) saving(./output/model0_`i'_et
+> h5, replace) idstr("model0_`i'_eth5") 
+ 22. cap eststo model2
+ 23. local hr "`hr' ./output/model0_`i'_eth5 "
+ 24. 
+. * Age, Gender, IMD
+. cap logistic `i'_30 i.eth5 i.male age1 age2 age3 i.imd i.stp , nolog 
+ 25. cap estimates save ./output/model1_`i'_eth5, replace 
+ 26. cap parmest, label eform format(estimate p lb ub) saving(./output/model1_`i'_et
+> h5, replace) idstr("model1_`i'_eth5") 
+ 27. cap eststo model3
+ 28. local hr "`hr' ./output/model1_`i'_eth5 "
+ 29. 
+. * Age, Gender, IMD and Comorbidities  
+. cap logistic `i'_30 i.eth5 i.male age1 age2 age3        i.imd                     
+>                       ///
+>                                                                                 i.
+> bmicat_sa     i.hba1ccat                      ///
+>                                                                                 gp
+> _consult_count                        ///
+>                                                                                 i.
+> smoke_nomiss                          ///
+>                                                                                 i.
+> hypertension i.bp_cat         ///     
+>                                                                                 i.
+> asthma                                        ///
+>                                                                                 i.
+> chronic_respiratory_disease ///
+>                                                                                 i.
+> chronic_cardiac_disease       ///
+>                                                                                 i.
+> dm_type                                       ///     
+>                                                                                 i.
+> cancer                    ///
+>                                                                                 i.
+> chronic_liver_disease         ///
+>                                                                                 i.
+> stroke                                        ///
+>                                                                                 i.
+> dementia                                      ///
+>                                                                                 i.
+> other_neuro                           ///
+>                                                                                 i.
+> egfr60                                        ///
+>                                                                                 i.
+> esrf                                          ///
+>                                                                                 i.
+> immunosuppressed                      ///
+>                                                                                 i.
+> ra_sle_psoriasis      i. stp, nolog           
+ 30.                                                                                
+>  
+. cap estimates save ./output/model2_`i'_eth5, replace 
+ 31. cap parmest, label eform format(estimate p lb ub) saving(./output/model2_`i'_et
+> h5, replace) idstr("model2_`i'_eth5") 
+ 32. cap eststo model4
+ 33. local hr "`hr' ./output/model2_`i'_eth5 "
+ 34. 
+. * Age, Gender, IMD and Comorbidities  and household size 
+. cap logistic `i'_30 i.eth5 i.male age1 age2 age3        i.imd                     
+>                       ///
+>                                                                                 i.
+> bmicat_sa     i.hba1ccat                      ///
+>                                                                                 gp
+> _consult_count                        ///
+>                                                                                 i.
+> smoke_nomiss                          ///
+>                                                                                 i.
+> hypertension i.bp_cat         ///     
+>                                                                                 i.
+> asthma                                        ///
+>                                                                                 i.
+> chronic_respiratory_disease ///
+>                                                                                 i.
+> chronic_cardiac_disease       ///
+>                                                                                 i.
+> dm_type                                       ///     
+>                                                                                 i.
+> cancer                    ///
+>                                                                                 i.
+> chronic_liver_disease         ///
+>                                                                                 i.
+> stroke                                        ///
+>                                                                                 i.
+> dementia                                      ///
+>                                                                                 i.
+> other_neuro                           ///
+>                                                                                 i.
+> egfr60                                        ///
+>                                                                                 i.
+> esrf                                          ///
+>                                                                                 i.
+> immunosuppressed                      ///
+>                                                                                 i.
+> ra_sle_psoriasis                      ///
+>                                                                                 i.
+> hh_total_cat i.stp, nolog             
+ 35.                                                                                
+>  
+. cap estimates save ./output/model3_`i'_eth5, replace 
+ 36. cap parmest, label eform format(estimate p lb ub) saving(./output/model3_`i'_et
+> h5, replace) idstr("model3_`i'_eth5") 
+ 37. cap eststo model5
+ 38. local hr "`hr' ./output/model3_`i'_eth5 "
+ 39. 
+. /* Estout================================================================*/ 
+. cap esttab model1 model2 model3 model4 model5   using ./output/estout_table4_infec
+> tedpop_eth5_nocarehomes.txt, b(a2) ci(2) label wide compress eform ///
+>         title ("`i'") ///
+>         varlabels(`e(labels)') ///
+>         stats(N_sub) ///
+>         append 
+ 40. eststo clear
+ 41. 
+. /* Print table================================================================*/ 
+. *  Print the results for the main model 
+. 
+. 
+. * Column headings 
+. file write tablecontent ("`i'") _n
+ 42. 
+. * eth5 labelled columns
+. 
+. local lab1: label eth5 1
+ 43. local lab2: label eth5 2
+ 44. local lab3: label eth5 3
+ 45. local lab4: label eth5 4
+ 46. local lab5: label eth5 5
+ 47. local lab6: label eth5 6
+ 48. 
+. /* Counts */
+.  
+. * First row, eth5 = 1 (White) reference cat
+.         qui safecount if eth5==1
+ 49.         local denominator = r(N)
+ 50.         qui safecount if eth5 == 1 & `i' == 1
+ 51.         local event = r(N)
+ 52.         local pct =(`event'/`denominator')
+ 53.         file write tablecontent  ("`lab1'") _tab (`denominator') _tab (`event')
+>  _tab %3.2f (`pct') _tab
+ 54.         file write tablecontent ("1.00") _tab _tab ("1.00") _tab _tab ("1.00") 
+>  _tab _tab ("1.00") _tab _tab ("1.00") _n
+ 55.         
+. * Subsequent ethnic groups
+. forvalues eth=2/6 {
+ 56.         qui safecount if eth5==`eth'
+ 57.         local denominator = r(N)
+ 58.         qui safecount if eth5 == `eth' & `i' == 1
+ 59.         local event = r(N)
+ 60.         local pct =(`event'/`denominator')
+ 61.         file write tablecontent  ("`lab`eth''") _tab (`denominator') _tab (`eve
+> nt') _tab %3.2f (`pct') _tab
+ 62.         cap estimates use ./output/crude_`i'_eth5" 
+ 63.         cap lincom `eth'.eth5, eform
+ 64.         file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (
+> " - ") %4.2f (r(ub)) (")") _tab 
+ 65.         cap estimates clear
+ 66.         cap estimates use ./output/model0_`i'_eth5" 
+ 67.         cap lincom `eth'.eth5, eform
+ 68.         file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (
+> " - ") %4.2f (r(ub)) (")") _tab 
+ 69.         cap estimates clear
+ 70.         cap estimates use ./output/model1_`i'_eth5" 
+ 71.         cap lincom `eth'.eth5, eform
+ 72.         file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (
+> " - ") %4.2f (r(ub)) (")") _tab 
+ 73.         cap estimates clear
+ 74.         cap estimates use ./output/model2_`i'_eth5" 
+ 75.         cap lincom `eth'.eth5, eform
+ 76.         file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (
+> " - ") %4.2f (r(ub)) (")") _tab 
+ 77.         cap estimates clear
+ 78.         cap estimates use ./output/model3_`i'_eth5" 
+ 79.         cap lincom `eth'.eth5, eform
+ 80.         file write tablecontent  %4.2f (r(estimate)) _tab ("(") %4.2f (r(lb)) (
+> " - ") %4.2f (r(ub)) (")") _n
+ 81. }  //end ethnic group
+ 82. 
+. } //end outcomes
+  79,015
+(69,381 observations deleted)
+  9,634
+(1,461 observations deleted)
+  8,173
+(1,271 observations deleted)
+(493 real changes made)
+
+   outcome |        hes_30
+       hes |         0          1 |     Total
+-----------+----------------------+----------
+         0 |     6,048          0 |     6,048 
+         1 |       361        493 |       854 
+-----------+----------------------+----------
+     Total |     6,409        493 |     6,902 
+
+   outcome |
+positivete |        hes_30
+        st |         0          1 |     Total
+-----------+----------------------+----------
+         1 |     6,409        493 |     6,902 
+-----------+----------------------+----------
+     Total |     6,409        493 |     6,902 
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+      Eth 5 |        hes_30
+ categories |         0          1 |     Total
+------------+----------------------+----------
+      White |       953         71 |     1,024 
+            |     93.07       6.93 |    100.00 
+------------+----------------------+----------
+South Asian |       922         76 |       998 
+            |     92.38       7.62 |    100.00 
+------------+----------------------+----------
+      Black |     1,006         66 |     1,072 
+            |     93.84       6.16 |    100.00 
+------------+----------------------+----------
+      Mixed |     1,002         68 |     1,070 
+            |     93.64       6.36 |    100.00 
+------------+----------------------+----------
+      Other |       940         68 |     1,008 
+            |     93.25       6.75 |    100.00 
+------------+----------------------+----------
+    Unknown |     1,586        144 |     1,730 
+            |     91.68       8.32 |    100.00 
+------------+----------------------+----------
+      Total |     6,409        493 |     6,902 
+            |     92.86       7.14 |    100.00 
+  79,015
+(69,381 observations deleted)
+  9,634
+(1,461 observations deleted)
+  8,173
+(1,466 observations deleted)
+(512 real changes made)
+
+   outcome |        icu_30
+       icu |         0          1 |     Total
+-----------+----------------------+----------
+         0 |     5,836          0 |     5,836 
+         1 |       359        512 |       871 
+-----------+----------------------+----------
+     Total |     6,195        512 |     6,707 
+
+   outcome |
+positivete |        icu_30
+        st |         0          1 |     Total
+-----------+----------------------+----------
+         1 |     6,195        512 |     6,707 
+-----------+----------------------+----------
+     Total |     6,195        512 |     6,707 
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+      Eth 5 |        icu_30
+ categories |         0          1 |     Total
+------------+----------------------+----------
+      White |       912         82 |       994 
+            |     91.75       8.25 |    100.00 
+------------+----------------------+----------
+South Asian |       892         72 |       964 
+            |     92.53       7.47 |    100.00 
+------------+----------------------+----------
+      Black |       974         74 |     1,048 
+            |     92.94       7.06 |    100.00 
+------------+----------------------+----------
+      Mixed |       953         82 |     1,035 
+            |     92.08       7.92 |    100.00 
+------------+----------------------+----------
+      Other |       901         79 |       980 
+            |     91.94       8.06 |    100.00 
+------------+----------------------+----------
+    Unknown |     1,563        123 |     1,686 
+            |     92.70       7.30 |    100.00 
+------------+----------------------+----------
+      Total |     6,195        512 |     6,707 
+            |     92.37       7.63 |    100.00 
+  79,015
+(69,381 observations deleted)
+  9,634
+(1,461 observations deleted)
+  8,173
+(1,271 observations deleted)
+(47 real changes made)
+
+   outcome |
+onscovidde |   onscoviddeath_30
+       ath |         0          1 |     Total
+-----------+----------------------+----------
+         0 |     6,752          0 |     6,752 
+         1 |       103         47 |       150 
+-----------+----------------------+----------
+     Total |     6,855         47 |     6,902 
+
+   outcome |
+positivete |   onscoviddeath_30
+        st |         0          1 |     Total
+-----------+----------------------+----------
+         1 |     6,855         47 |     6,902 
+-----------+----------------------+----------
+     Total |     6,855         47 |     6,902 
+
+**TABLE OF eth5 onscoviddeath_30 REDACTED DUE TO SMALL N**
+
+  79,015
+(69,381 observations deleted)
+  9,634
+(1,461 observations deleted)
+  8,173
+(1,271 observations deleted)
+(130 real changes made)
+
+   outcome |
+ons_noncov | ons_noncoviddeath_30
+   iddeath |         0          1 |     Total
+-----------+----------------------+----------
+         0 |     6,484          0 |     6,484 
+         1 |       288        130 |       418 
+-----------+----------------------+----------
+     Total |     6,772        130 |     6,902 
+
+   outcome |
+positivete | ons_noncoviddeath_30
+        st |         0          1 |     Total
+-----------+----------------------+----------
+         1 |     6,772        130 |     6,902 
+-----------+----------------------+----------
+     Total |     6,772        130 |     6,902 
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+      Eth 5 | ons_noncoviddeath_30
+ categories |         0          1 |     Total
+------------+----------------------+----------
+      White |     1,010         14 |     1,024 
+            |     98.63       1.37 |    100.00 
+------------+----------------------+----------
+South Asian |       973         25 |       998 
+            |     97.49       2.51 |    100.00 
+------------+----------------------+----------
+      Black |     1,047         25 |     1,072 
+            |     97.67       2.33 |    100.00 
+------------+----------------------+----------
+      Mixed |     1,054         16 |     1,070 
+            |     98.50       1.50 |    100.00 
+------------+----------------------+----------
+      Other |       994         14 |     1,008 
+            |     98.61       1.39 |    100.00 
+------------+----------------------+----------
+    Unknown |     1,694         36 |     1,730 
+            |     97.92       2.08 |    100.00 
+------------+----------------------+----------
+      Total |     6,772        130 |     6,902 
+            |     98.12       1.88 |    100.00 
+  79,015
+(69,381 observations deleted)
+  9,634
+(1,461 observations deleted)
+  8,173
+(1,271 observations deleted)
+(177 real changes made)
+
+   outcome |      onsdeath_30
+  onsdeath |         0          1 |     Total
+-----------+----------------------+----------
+         0 |     6,334          0 |     6,334 
+         1 |       391        177 |       568 
+-----------+----------------------+----------
+     Total |     6,725        177 |     6,902 
+
+   outcome |
+positivete |      onsdeath_30
+        st |         0          1 |     Total
+-----------+----------------------+----------
+         1 |     6,725        177 |     6,902 
+-----------+----------------------+----------
+     Total |     6,725        177 |     6,902 
+
++----------------+
+| Key            |
+|----------------|
+|   frequency    |
+| row percentage |
++----------------+
+
+      Eth 5 |      onsdeath_30
+ categories |         0          1 |     Total
+------------+----------------------+----------
+      White |     1,000         24 |     1,024 
+            |     97.66       2.34 |    100.00 
+------------+----------------------+----------
+South Asian |       963         35 |       998 
+            |     96.49       3.51 |    100.00 
+------------+----------------------+----------
+      Black |     1,042         30 |     1,072 
+            |     97.20       2.80 |    100.00 
+------------+----------------------+----------
+      Mixed |     1,047         23 |     1,070 
+            |     97.85       2.15 |    100.00 
+------------+----------------------+----------
+      Other |       990         18 |     1,008 
+            |     98.21       1.79 |    100.00 
+------------+----------------------+----------
+    Unknown |     1,683         47 |     1,730 
+            |     97.28       2.72 |    100.00 
+------------+----------------------+----------
+      Total |     6,725        177 |     6,902 
+            |     97.44       2.56 |    100.00 
+
+. file close tablecontent
+
+. 
+. ************************************************create forestplot dataset
+. cap dsconcat `hr'
+
+. cap duplicates drop
+
+. cap split idstr, p(_)
+
+. cap ren idstr1 model
+
+. cap ren idstr2 outcome
+
+. cap drop idstr idstr3
+
+. cap tab model
+
+. 
+. *save dataset for later
+. outsheet using ./output/FP_infectedpop_eth5.txt, replace
+
+. 
+. * Close log file 
+. log close
+      name:  <unnamed>
+       log:  /Users/lsh152058/Documents/GitHub/ethnicity-covid-research/logs/12b_eth
+> _an_infectedpop_eth5.log
+  log type:  text
+ closed on:  18 Jan 2021, 14:08:59
+------------------------------------------------------------------------------------

@@ -78,14 +78,6 @@ actions:
         log: logs/02b_region_check.log
         table: output/table0_region.txt
 
-  check_age:
-    run: stata-mp:latest analysis/05b_eth_table1_descriptives_eth5_agegroup.do
-    needs: [crmain]
-    outputs:
-      moderately_sensitive:
-        log: logs/05b_eth_table1_ages_eth5.log
-        table: output/table1_eth5_age.txt
-
   check_tested:
     run: stata-mp:latest analysis/21_eth_tested_characteristics.do
     needs: [crmain]
@@ -188,21 +180,21 @@ actions:
         graph: output/FP_testedpop_eth5.txt
 
   main_eth16_infectedpop:
-    run: stata-mp:latest analysis/11a_eth_an_infectedpop_eth16_nocarehomes.do
+    run: stata-mp:latest analysis/12a_eth_an_infectedpop_eth16_nocarehomes.do
     needs: [crmain]
     outputs:
       moderately_sensitive:
-        log: logs/11a_eth_an_infectedpop_eth16.log
+        log: logs/12a_eth_an_infectedpop_eth16.log
         table: output/table4_infectedpop_eth16_nocarehomes.txt
         estout: output/estout_table4_infectedpop_eth16_nocarehomes.txt
         graph: output/FP_infectedpop_eth16.txt
 
   main_eth5_infectedpop:
-    run: stata-mp:latest analysis/11b_eth_an_infectedpop_eth5_nocarehomes.do
+    run: stata-mp:latest analysis/12b_eth_an_infectedpop_eth5_nocarehomes.do
     needs: [crmain]
     outputs:
       moderately_sensitive:
-        log: logs/11b_eth_an_infectedpop_eth5.log
+        log: logs/12b_eth_an_infectedpop_eth5.log
         table: output/table4_infectedpop_eth5_nocarehomes.txt
         estout: output/estout_table4_infectedpop_eth5_nocarehomes.txt
         graph: output/FP_infectedpop_eth5.txt
