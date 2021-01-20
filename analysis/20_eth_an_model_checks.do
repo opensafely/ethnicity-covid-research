@@ -45,33 +45,25 @@ estat phtest, detail
 local univar_p = round(r(p),0.001)
 di `univar_p'
 
-stphplot, by(eth5)
-graph export ./output/stphplot_crude_`i'.svg, as(svg) replace
+stphplot, by(eth5) title("`i'") legend(size(tiny) cols(3)) graphregion(color(white))	
+graph save ./output/stphplot_crude_`i'.gph, replace
 
 sts graph, by(eth5) 						///
 			failure yscale(range(0, 0.012)) 				///
 			ylabel(0 (0.0025) 0.01, angle(0) format(%5.4f))	///
-			noorigin										///
-			xscale(range(30, 84)) 							///
-			xlabel(30 (10) 80)							
+			noorigin llegend(size(tiny) cols(3))  			///
+			xscale(range(30, 84)) title("`i'") 							///
+			xlabel(30 (10) 80)	graphregion(color(white)) 					
 
-graph export ./output/kmplot_crude_`i'.svg, replace as(svg)
+graph save ./output/kmplot_crude_`i'.gph, replace
 
 stcox i.eth5 i.male age1 age2 age3										
 estat phtest, detail
 local multivar2_p = round(r(phtest)[2,4],0.001)
 di `multivar2_p'
 
-stphplot, by(eth5)
-graph export ./output/stphplot_agesex_`i'.svg, as(svg) replace
-
-sts graph, by(eth5) adjustfor(i.male age1 age2 age3	) 						///
-			failure yscale(range(0, 0.012)) 				///
-			ylabel(0 (0.0025) 0.01, angle(0) format(%5.4f))	///
-			noorigin										///
-			xscale(range(30, 84)) 							///
-			xlabel(30 (10) 80)							
-graph export ./output/kmplot_agesex_`i'.svg, replace as(svg)
+stphplot, by(eth5) title("age-sex")	legend(size(tiny) cols(3)) graphregion(color(white))	
+graph save ./output/stphplot_agesex_`i'.gph, replace
 			  		  
 stcox i.eth5 i.male age1 age2 age3  	i.imd						///
 										i.bmicat_sa	i.hba1ccat			///
@@ -95,9 +87,8 @@ estat phtest, detail
 local multivar3_p = round(r(phtest)[2,4],0.001)
 di `multivar3_p'
 
-stphplot, by(eth5)
-graph export ./output/stphplot_full_`i'.svg, as(svg) replace
-
+stphplot, by(eth5) title("fully adjusted") legend(size(tiny) cols(3)) 	graphregion(color(white)) 
+graph save ./output/stphplot_full_`i'.gph, replace
 
 
 * Print table of results======================================================*/	
@@ -107,6 +98,26 @@ file write tablecontent ("`i'") _tab  ("`univar_p'") _tab ("`multivar2_p'") _tab
 } //end outcomes
 
 file close tablecontent
+
+*output kmplots
+grc1leg ./output/kmplot_crude_tested.gph ///
+				./output/kmplot_crude_positivetest.gph ///
+				./output/kmplot_crude_hes.gph ///
+				./output/kmplot_crude_icu.gph ///
+				./output/kmplot_crude_onscoviddeath.gph ///
+				./output/kmplot_crude_ons_noncoviddeath.gph, graphregion(color(white)) cols(2) altshrink
+graph export ./output/kmplots_combined.svg, as(svg) replace
+
+*combine stph plots
+grc1leg ./output/stphplot_crude_tested.gph ///
+				./output/stphplot_crude_positivetest.gph ///
+				./output/stphplot_crude_hes.gph ///
+				./output/stphplot_crude_icu.gph ///
+				./output/stphplot_crude_onscoviddeath.gph ///
+				./output/stphplot_crude_ons_noncoviddeath.gph,  ///
+				graphregion(color(white)) cols(2) xsize(4) ysize(7) 
+				
+graph export ./output/stphplots_combined.svg, as(svg) replace
 
 * Close log file 
 log close
