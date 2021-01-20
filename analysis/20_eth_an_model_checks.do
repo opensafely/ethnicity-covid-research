@@ -13,6 +13,10 @@ OTHER OUTPUT: 			logfiles, printed to folder analysis/$logdir
 						schoenplots1-x, printed to analysis?$outdir 
 							
 ==============================================================================*/
+sysdir set PLUS ./analysis/adofiles
+adopath + ./analysis/adofiles
+sysdir
+
 global outcomes "tested positivetest icu hes onscoviddeath ons_noncoviddeath onsdeath"
 
 * Open a log file
