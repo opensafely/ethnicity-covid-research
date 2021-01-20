@@ -112,6 +112,10 @@
       "created_by_action": "main_eth5_testedpop",
       "privacy_level": "moderately_sensitive"
     },
+    "output/Table_phtest_eth5.txt": {
+      "created_by_action": "check_ph",
+      "privacy_level": "moderately_sensitive"
+    },
     "output/analysis_dataset.dta": {
       "created_by_action": "crmain",
       "privacy_level": "highly_sensitive"
@@ -444,10 +448,10 @@
       "state": "failed",
       "commit": "none",
       "docker_image_id": "sha256:e4a676ff497b1550742032051cce1ba5502f65b172e86e4d82aadbaa1e056935",
-      "job_id": "zcbejwew5o2adcoa",
+      "job_id": "j2j4ssiwq42othma",
       "run_by_user": null,
-      "created_at": "2021-01-20T15:23:36Z",
-      "completed_at": "2021-01-20T15:29:13Z"
+      "created_at": "2021-01-20T15:29:45Z",
+      "completed_at": "2021-01-20T15:34:17Z"
     }
   }
 }

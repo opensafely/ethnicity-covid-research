@@ -1,21 +1,275 @@
-2021-01-20T15:29:10.463272700Z Traceback (most recent call last):
-2021-01-20T15:29:10.463380100Z   File "/tmp/entrypoint.py", line 82, in <module>
-2021-01-20T15:29:10.463410300Z     main()
-2021-01-20T15:29:10.463438100Z   File "/tmp/entrypoint.py", line 77, in main
-2021-01-20T15:29:10.463465800Z     raise FileNotFoundError("/workspace/" + options.script)
-2021-01-20T15:29:10.463493600Z FileNotFoundError: /workspace/analysis/21_eth_an_model_checks.do
+2021-01-20T15:34:14.357134900Z Traceback (most recent call last):
+2021-01-20T15:34:14.357290600Z   File "/tmp/entrypoint.py", line 82, in <module>
+2021-01-20T15:34:14.357323300Z     main()
+2021-01-20T15:34:14.357351000Z   File "/tmp/entrypoint.py", line 78, in main
+2021-01-20T15:34:14.357378700Z     run_model(options.script, *options.args)
+2021-01-20T15:34:14.357406300Z   File "/tmp/entrypoint.py", line 41, in run_model
+2021-01-20T15:34:14.357433800Z     return check_output(log_file)
+2021-01-20T15:34:14.357461300Z   File "/tmp/entrypoint.py", line 56, in check_output
+2021-01-20T15:34:14.357489000Z     raise RuntimeError(f"Problem found running stata script:\n\n{output}")
+2021-01-20T15:34:14.357518200Z RuntimeError: Problem found running stata script:
+2021-01-20T15:34:14.357545700Z 
+2021-01-20T15:34:14.357572700Z 
+2021-01-20T15:34:14.357600300Z   ___  ____  ____  ____  ____ (R)
+2021-01-20T15:34:14.357627800Z  /__    /   ____/   /   ____/
+2021-01-20T15:34:14.357655200Z ___/   /   /___/   /   /___/   16.1   Copyright 1985-2019 StataCorp LLC
+2021-01-20T15:34:14.357682600Z   Statistics/Data Analysis            StataCorp
+2021-01-20T15:34:14.357710000Z                                       4905 Lakeway Drive
+2021-01-20T15:34:14.357737600Z      MP - Parallel Edition            College Station, Texas 77845 USA
+2021-01-20T15:34:14.357765400Z                                       800-STATA-PC        http://www.stata.com
+2021-01-20T15:34:14.357793200Z                                       979-696-4600        stata@stata.com
+2021-01-20T15:34:14.357821000Z                                       979-696-4601 (fax)
+2021-01-20T15:34:14.357848800Z 
+2021-01-20T15:34:14.357876000Z 3-user 32-core Stata network license expires 29 Apr 2021:
+2021-01-20T15:34:14.357903600Z        Serial number:  501609309502
+2021-01-20T15:34:14.357931200Z          Licensed to:  EBM DataLab
+2021-01-20T15:34:14.357958800Z                        University of Oxford
+2021-01-20T15:34:14.357986700Z 
+2021-01-20T15:34:14.358014200Z Notes:
+2021-01-20T15:34:14.358041700Z       1.  Stata is running in batch mode.
+2021-01-20T15:34:14.358069300Z Some Unicode string functions will not behave correctly because ICU data file
+2021-01-20T15:34:14.358098000Z     icudt54l.dat cannot be found at directory: "/usr/local/stata/utilities"
+2021-01-20T15:34:14.358126100Z       2.  Unicode is supported; see help unicode_advice.
+2021-01-20T15:34:14.358153900Z       3.  More than 2 billion observations are allowed; see help obs_advice.
+2021-01-20T15:34:14.358182000Z       4.  Maximum number of variables is set to 5000; see help set_maxvar.
+2021-01-20T15:34:14.358209800Z 
+2021-01-20T15:34:14.358237300Z . do analysis/20_eth_an_model_checks.do 
+2021-01-20T15:34:14.358265500Z 
+2021-01-20T15:34:14.358303000Z . /*===========================================================================
+2021-01-20T15:34:14.358331500Z > ===
+2021-01-20T15:34:14.358359200Z > DO FILE NAME:                   20_eth_an_model_checks
+2021-01-20T15:34:14.358388200Z > PROJECT:                                Ethnicity & COVID
+2021-01-20T15:34:14.358574200Z > DATE:                                   11th Dec 2020
+2021-01-20T15:34:14.358602700Z > AUTHOR:                                 R. Mathur based on A Schultze 
+2021-01-20T15:34:14.358630600Z > VERSION:                                Stata 16.1                           
+2021-01-20T15:34:14.358660800Z >                                            
+2021-01-20T15:34:14.358688700Z > DESCRIPTION OF FILE:    program 20 
+2021-01-20T15:34:14.358716200Z >                                                 check the PH assumption, prod
+2021-01-20T15:34:14.358743800Z > uce graphs 
+2021-01-20T15:34:14.358771600Z > DATASETS USED:                  data in memory ($tempdir/analysis_dataset_STS
+2021-01-20T15:34:14.358799400Z > ET_outcome)
+2021-01-20T15:34:14.358827200Z > DATASETS CREATED:               none
+2021-01-20T15:34:14.358854900Z > OTHER OUTPUT:                   logfiles, printed to folder analysis/$logdir
+2021-01-20T15:34:14.358882700Z >                                                 table4, printed to analysis/$
+2021-01-20T15:34:14.358910500Z > outdir
+2021-01-20T15:34:14.358938100Z >                                                 schoenplots1-x, printed to an
+2021-01-20T15:34:14.358965800Z > alysis?$outdir 
+2021-01-20T15:34:14.358993300Z >                                                         
+2021-01-20T15:34:14.359021000Z > =============================================================================
+2021-01-20T15:34:14.359048700Z > =*/
+2021-01-20T15:34:14.359076100Z . global outcomes "tested positivetest icu hes onscoviddeath ons_noncoviddeath 
+2021-01-20T15:34:14.359103800Z > onsdeath"
+2021-01-20T15:34:14.359131300Z 
+2021-01-20T15:34:14.359158800Z . 
+2021-01-20T15:34:14.359186200Z . * Open a log file
+2021-01-20T15:34:14.359213900Z . 
+2021-01-20T15:34:14.359241300Z . cap log close
+2021-01-20T15:34:14.359269200Z 
+2021-01-20T15:34:14.359296600Z . log using ./logs/20_eth_an_model_checks.log, replace t
+2021-01-20T15:34:14.359324300Z -------------------------------------------------------------------------------
+2021-01-20T15:34:14.359441500Z       name:  <unnamed>
+2021-01-20T15:34:14.359474100Z        log:  /workspace/logs/20_eth_an_model_checks.log
+2021-01-20T15:34:14.359501800Z   log type:  text
+2021-01-20T15:34:14.359529400Z  opened on:  20 Jan 2021, 15:34:08
+2021-01-20T15:34:14.359565500Z 
+2021-01-20T15:34:14.359593300Z . 
+2021-01-20T15:34:14.359620700Z . cap file close tablecontent
+2021-01-20T15:34:14.359648400Z 
+2021-01-20T15:34:14.359675800Z . file open tablecontent using ./output/Table_phtest_eth5.txt, write text repla
+2021-01-20T15:34:14.359703600Z > ce
+2021-01-20T15:34:14.359733300Z (note: file ./output/Table_phtest_eth5.txt not found)
+2021-01-20T15:34:14.359761000Z 
+2021-01-20T15:34:14.359788800Z . 
+2021-01-20T15:34:14.359821000Z . * Column headings 
+2021-01-20T15:34:14.359854200Z . file write tablecontent ("Testing the PH assumption for $tableoutcome- $popul
+2021-01-20T15:34:14.359885900Z > ation Population") _n
+2021-01-20T15:34:14.359918000Z 
+2021-01-20T15:34:14.359951700Z . file write tablecontent _tab ("Univariable") _tab ("Age/Sex Adjusted") _tab /
+2021-01-20T15:34:14.359985400Z > //
+2021-01-20T15:34:14.360019100Z >                                                 ("Fully Adjusted") _tab _n
+2021-01-20T15:34:14.360052700Z 
+2021-01-20T15:34:14.360080900Z .                                                 
+2021-01-20T15:34:14.360113900Z . file write tablecontent _tab ("p-value") _tab ("p-value") _tab ("p-value") _t
+2021-01-20T15:34:14.360147800Z > ab _n
+2021-01-20T15:34:14.360370000Z 
+2021-01-20T15:34:14.360432600Z . 
+2021-01-20T15:34:14.360466200Z . 
+2021-01-20T15:34:14.360590100Z . * Open Stata dataset
+2021-01-20T15:34:14.360623400Z . foreach i of global outcomes {
+2021-01-20T15:34:14.360651500Z   2.         di "`i'"
+2021-01-20T15:34:14.360679000Z   3.         
+2021-01-20T15:34:14.360706700Z .         use ./output/analysis_dataset_STSET_`i'.dta, clear
+2021-01-20T15:34:14.360734500Z   4.         drop if carehome==1
+2021-01-20T15:34:14.360762000Z   5. 
+2021-01-20T15:34:14.360789500Z . /* Quietly run models, perform test and store results in local macro=========
+2021-01-20T15:34:14.360817000Z > =*/
+2021-01-20T15:34:14.360844700Z . 
+2021-01-20T15:34:14.360872200Z . stcox i.eth5 
+2021-01-20T15:34:14.360899800Z   6. estat phtest, detail
+2021-01-20T15:34:14.360930000Z   7. local univar_p = round(r(p),0.001)
+2021-01-20T15:34:14.360957900Z   8. di `univar_p'
+2021-01-20T15:34:14.360985400Z   9. 
+2021-01-20T15:34:14.361012900Z . stphplot, by(eth5) title("`i'") legend(size(tiny) cols(3)) graphregion(color(
+2021-01-20T15:34:14.361040600Z > white))    
+2021-01-20T15:34:14.361068100Z  10. graph save ./output/stphplot_crude_`i'.gph, replace
+2021-01-20T15:34:14.361095600Z  11. 
+2021-01-20T15:34:14.361138300Z . sts graph, by(eth5)                                             ///
+2021-01-20T15:34:14.361166600Z >                         failure yscale(range(0, 0.012))                      
+2021-01-20T15:34:14.361194400Z >            ///
+2021-01-20T15:34:14.361221900Z >                         ylabel(0 (0.0025) 0.01, angle(0) format(%5.4f)) ///
+2021-01-20T15:34:14.361249500Z >                         noorigin llegend(size(tiny) cols(3))                 
+2021-01-20T15:34:14.361277100Z >    ///
+2021-01-20T15:34:14.361304600Z >                         xscale(range(30, 84)) title("`i'")                   
+2021-01-20T15:34:14.361332500Z >                                    ///
+2021-01-20T15:34:14.361360100Z >                         xlabel(30 (10) 80)      graphregion(color(white))    
+2021-01-20T15:34:14.361525100Z >                                    
+2021-01-20T15:34:14.361561200Z  12. 
+2021-01-20T15:34:14.361596500Z . graph save ./output/kmplot_crude_`i'.gph, replace
+2021-01-20T15:34:14.361631100Z  13. 
+2021-01-20T15:34:14.361664400Z . stcox i.eth5 i.male age1 age2 age3                                           
+2021-01-20T15:34:14.361698200Z >                                    
+2021-01-20T15:34:14.361731300Z  14. estat phtest, detail
+2021-01-20T15:34:14.361765100Z  15. local multivar2_p = round(r(phtest)[2,4],0.001)
+2021-01-20T15:34:14.361800500Z  16. di `multivar2_p'
+2021-01-20T15:34:14.361834500Z  17. 
+2021-01-20T15:34:14.361869000Z . stphplot, by(eth5) title("age-sex")     legend(size(tiny) cols(3)) graphregio
+2021-01-20T15:34:14.361904300Z > n(color(white))    
+2021-01-20T15:34:14.361941000Z  18. graph save ./output/stphplot_agesex_`i'.gph, replace
+2021-01-20T15:34:14.361976600Z  19.                                           
+2021-01-20T15:34:14.362013500Z . stcox i.eth5 i.male age1 age2 age3      i.imd                                
+2021-01-20T15:34:14.362048600Z >            ///
+2021-01-20T15:34:14.362100200Z >                                                                              
+2021-01-20T15:34:14.362140000Z >    i.bmicat_sa     i.hba1ccat                      ///
+2021-01-20T15:34:14.362168000Z >                                                                              
+2021-01-20T15:34:14.362195600Z >    gp_consult_count                        ///
+2021-01-20T15:34:14.362223300Z >                                                                              
+2021-01-20T15:34:14.362251000Z >    i.smoke_nomiss                          ///
+2021-01-20T15:34:14.362278600Z >                                                                              
+2021-01-20T15:34:14.362306100Z >    i.hypertension i.bp_cat         ///     
+2021-01-20T15:34:14.362333700Z >                                                                              
+2021-01-20T15:34:14.362486400Z >    i.asthma                                        ///
+2021-01-20T15:34:14.362530700Z >                                                                              
+2021-01-20T15:34:14.362655700Z >    i.chronic_respiratory_disease ///
+2021-01-20T15:34:14.362687100Z >                                                                              
+2021-01-20T15:34:14.363262600Z >    i.chronic_cardiac_disease       ///
+2021-01-20T15:34:14.363308900Z >                                                                              
+2021-01-20T15:34:14.363344900Z >    i.dm_type                                       ///     
+2021-01-20T15:34:14.363379500Z >                                                                              
+2021-01-20T15:34:14.363414000Z >    i.cancer                    ///
+2021-01-20T15:34:14.363448400Z >                                                                              
+2021-01-20T15:34:14.363485200Z >    i.chronic_liver_disease         ///
+2021-01-20T15:34:14.363516600Z >                                                                              
+2021-01-20T15:34:14.363544700Z >    i.stroke                                        ///
+2021-01-20T15:34:14.363572400Z >                                                                              
+2021-01-20T15:34:14.363600100Z >    i.dementia                                      ///
+2021-01-20T15:34:14.363627500Z >                                                                              
+2021-01-20T15:34:14.363655100Z >    i.other_neuro                           ///
+2021-01-20T15:34:14.363682600Z >                                                                              
+2021-01-20T15:34:14.363710200Z >    i.egfr60                                        ///
+2021-01-20T15:34:14.363737600Z >                                                                              
+2021-01-20T15:34:14.363765200Z >    i.esrf                                          ///
+2021-01-20T15:34:14.363792700Z >                                                                              
+2021-01-20T15:34:14.363820500Z >    i.immunosuppressed                      ///
+2021-01-20T15:34:14.363848600Z >                                                                              
+2021-01-20T15:34:14.363876400Z >    i.ra_sle_psoriasis, strata(stp) nolog
+2021-01-20T15:34:14.363903900Z  20. estat phtest, detail
+2021-01-20T15:34:14.363931100Z  21. local multivar3_p = round(r(phtest)[2,4],0.001)
+2021-01-20T15:34:14.363958600Z  22. di `multivar3_p'
+2021-01-20T15:34:14.363986100Z  23. 
+2021-01-20T15:34:14.364013400Z . stphplot, by(eth5) title("fully adjusted") legend(size(tiny) cols(3))   graph
+2021-01-20T15:34:14.364041000Z > region(color(white)) 
+2021-01-20T15:34:14.364082900Z  24. graph save ./output/stphplot_full_`i'.gph, replace
+2021-01-20T15:34:14.364111000Z  25. 
+2021-01-20T15:34:14.364138200Z . 
+2021-01-20T15:34:14.364165400Z . * Print table of results=====================================================
+2021-01-20T15:34:14.364193000Z > =*/        
+2021-01-20T15:34:14.364220300Z . 
+2021-01-20T15:34:14.364247400Z . 
+2021-01-20T15:34:14.364274600Z . file write tablecontent ("`i'") _tab  ("`univar_p'") _tab ("`multivar2_p'") _
+2021-01-20T15:34:14.364302400Z > tab ("`multivar3_p'") _n
+2021-01-20T15:34:14.364330100Z  26. } //end outcomes
+2021-01-20T15:34:14.364357200Z tested
+2021-01-20T15:34:14.364387500Z (1,189 observations deleted)
+2021-01-20T15:34:14.364518700Z 
+2021-01-20T15:34:14.364551500Z          failure _d:  tested
+2021-01-20T15:34:14.364578900Z    analysis time _t:  (stime_tested-origin)
+2021-01-20T15:34:14.364598700Z              origin:  time indexdate
+2021-01-20T15:34:14.364621500Z   enter on or after:  time indexdate
+2021-01-20T15:34:14.364649000Z                  id:  patient_id
+2021-01-20T15:34:14.364685300Z 
+2021-01-20T15:34:14.364713300Z Iteration 0:   log likelihood = -123.24312
+2021-01-20T15:34:14.364740900Z Iteration 1:   log likelihood = -121.23085
+2021-01-20T15:34:14.364768200Z Iteration 2:   log likelihood = -121.19399
+2021-01-20T15:34:14.364795600Z Iteration 3:   log likelihood = -121.19391
+2021-01-20T15:34:14.364823000Z Refining estimates:
+2021-01-20T15:34:14.364850200Z Iteration 0:   log likelihood = -121.19391
+2021-01-20T15:34:14.364877600Z 
+2021-01-20T15:34:14.364904900Z Cox regression -- Breslow method for ties
+2021-01-20T15:34:14.364932200Z 
+2021-01-20T15:34:14.364959500Z No. of subjects =        6,668                  Number of obs    =       6,668
+2021-01-20T15:34:14.364987100Z No. of failures =           14
+2021-01-20T15:34:14.365014600Z Time at risk    =      1225947
+2021-01-20T15:34:14.365042000Z                                                 LR chi2(5)       =        4.10
+2021-01-20T15:34:14.365069300Z Log likelihood  =   -121.19391                  Prob > chi2      =      0.5353
+2021-01-20T15:34:14.365096800Z 
+2021-01-20T15:34:14.365123800Z ------------------------------------------------------------------------------
+2021-01-20T15:34:14.365151100Z           _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+2021-01-20T15:34:14.365178600Z -------------+----------------------------------------------------------------
+2021-01-20T15:34:14.365206100Z         eth5 |
+2021-01-20T15:34:14.365233300Z South Asian  |    .972746   1.375671    -0.02   0.984     .0608441    15.55178
+2021-01-20T15:34:14.365268400Z       Black  |   1.023346   1.447229     0.02   0.987     .0640091    16.36075
+2021-01-20T15:34:14.365296800Z       Mixed  |   1.955392   2.394856     0.55   0.584     .1773083    21.56446
+2021-01-20T15:34:14.365430700Z       Other  |   3.114115    3.59587     0.98   0.325     .3239304    29.93763
+2021-01-20T15:34:14.365462100Z     Unknown  |   3.635193   3.926458     1.19   0.232     .4376478    30.19467
+2021-01-20T15:34:14.365489900Z ------------------------------------------------------------------------------
+2021-01-20T15:34:14.365517400Z 
+2021-01-20T15:34:14.365544700Z       Test of proportional-hazards assumption
+2021-01-20T15:34:14.365572100Z 
+2021-01-20T15:34:14.365599300Z       Time:  Time
+2021-01-20T15:34:14.365626500Z       ----------------------------------------------------------------
+2021-01-20T15:34:14.365653900Z                   |       rho            chi2       df       Prob>chi2
+2021-01-20T15:34:14.365681400Z       ------------+---------------------------------------------------
+2021-01-20T15:34:14.365708900Z       1b.eth5     |            .            .        1             .
+2021-01-20T15:34:14.365736300Z       2.eth5      |     -0.10225         0.15        1         0.7020
+2021-01-20T15:34:14.365764000Z       3.eth5      |     -0.15730         0.35        1         0.5562
+2021-01-20T15:34:14.365794200Z       4.eth5      |      0.09995         0.14        1         0.7084
+2021-01-20T15:34:14.365821900Z       5.eth5      |      0.04509         0.03        1         0.8660
+2021-01-20T15:34:14.365849700Z       6.eth5      |     -0.02573         0.01        1         0.9233
+2021-01-20T15:34:14.365877100Z       ------------+---------------------------------------------------
+2021-01-20T15:34:14.365904800Z       global test |                      1.57        5         0.9053
+2021-01-20T15:34:14.365933000Z       ----------------------------------------------------------------
+2021-01-20T15:34:14.365961100Z .905
+2021-01-20T15:34:14.365989300Z 
+2021-01-20T15:34:14.366017800Z          failure _d:  tested
+2021-01-20T15:34:14.366045800Z    analysis time _t:  (stime_tested-origin)
+2021-01-20T15:34:14.366073900Z              origin:  time indexdate
+2021-01-20T15:34:14.366101900Z   enter on or after:  time indexdate
+2021-01-20T15:34:14.366130400Z                  id:  patient_id
+2021-01-20T15:34:14.366157900Z (file ./output/stphplot_crude_tested.gph saved)
+2021-01-20T15:34:14.366186100Z 
+2021-01-20T15:34:14.366214800Z          failure _d:  tested
+2021-01-20T15:34:14.366244300Z    analysis time _t:  (stime_tested-origin)
+2021-01-20T15:34:14.366273600Z              origin:  time indexdate
+2021-01-20T15:34:14.366303100Z   enter on or after:  time indexdate
+2021-01-20T15:34:14.366332700Z                  id:  patient_id
+2021-01-20T15:34:14.366372400Z option llegend() not allowed
+2021-01-20T15:34:14.366485600Z r(198);
+2021-01-20T15:34:14.366520800Z 
+2021-01-20T15:34:14.366551500Z end of do-file
+2021-01-20T15:34:14.366579000Z r(198);
+2021-01-20T15:34:14.366606300Z 
 
 
 state: failed
 commit: none
 docker_image_id: sha256:e4a676ff497b1550742032051cce1ba5502f65b172e86e4d82aadbaa1e056935
-job_id: zcbejwew5o2adcoa
+job_id: j2j4ssiwq42othma
 run_by_user: None
-created_at: 2021-01-20T15:23:36Z
-started_at: 2021-01-20T15:29:10Z
-completed_at: 2021-01-20T15:29:13Z
+created_at: 2021-01-20T15:29:45Z
+started_at: 2021-01-20T15:34:07Z
+completed_at: 2021-01-20T15:34:17Z
 
 Job exited with an error code
 
 outputs:
-  (no outputs)
+  output/Table_phtest_eth5.txt  - moderately_sensitive

@@ -51,7 +51,7 @@ graph save ./output/stphplot_crude_`i'.gph, replace
 sts graph, by(eth5) 						///
 			failure yscale(range(0, 0.012)) 				///
 			ylabel(0 (0.0025) 0.01, angle(0) format(%5.4f))	///
-			noorigin llegend(size(tiny) cols(3))  			///
+			noorigin legend(size(tiny) cols(3))  			///
 			xscale(range(30, 84)) title("`i'") 							///
 			xlabel(30 (10) 80)	graphregion(color(white)) 					
 
