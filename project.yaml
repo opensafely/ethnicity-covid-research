@@ -200,7 +200,7 @@ actions:
         graph: output/FP_infectedpop_eth5.txt
 
   check_ph:
-    run: stata-mp:latest analysis/12b_eth_an_infectedpop_eth5_nocarehomes.do
+    run: stata-mp:latest analysis/21_eth_an_model_checks.do
     needs: [cr_sgss, cr_hes_covid, cr_ons]
     outputs:
       moderately_sensitive:
