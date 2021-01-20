@@ -1,0 +1,21 @@
+2021-01-20T15:29:10.463272700Z Traceback (most recent call last):
+2021-01-20T15:29:10.463380100Z   File "/tmp/entrypoint.py", line 82, in <module>
+2021-01-20T15:29:10.463410300Z     main()
+2021-01-20T15:29:10.463438100Z   File "/tmp/entrypoint.py", line 77, in main
+2021-01-20T15:29:10.463465800Z     raise FileNotFoundError("/workspace/" + options.script)
+2021-01-20T15:29:10.463493600Z FileNotFoundError: /workspace/analysis/21_eth_an_model_checks.do
+
+
+state: failed
+commit: none
+docker_image_id: sha256:e4a676ff497b1550742032051cce1ba5502f65b172e86e4d82aadbaa1e056935
+job_id: zcbejwew5o2adcoa
+run_by_user: None
+created_at: 2021-01-20T15:23:36Z
+started_at: 2021-01-20T15:29:10Z
+completed_at: 2021-01-20T15:29:13Z
+
+Job exited with an error code
+
+outputs:
+  (no outputs)
