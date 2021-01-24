@@ -1,0 +1,10 @@
+Testing the PH assumption for -  Population
+	Univariable	Age/Sex Adjusted	Fully Adjusted	
+	p-value	p-value	p-value	
+tested	0	0	0
+positivetest	0	0	0
+icu	0	0	0
+hes	0	0	0
+onscoviddeath	0	.003	.416
+ons_noncoviddeath	.172	.308	.752
+onsdeath	.013	.021	.504
