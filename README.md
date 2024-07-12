@@ -6,7 +6,7 @@
 * If you are interested in how we defined our code lists, look in the [codelists folder](./codelists/) or visit https://www.opencodelists.org/
 * Developers and epidemiologists interested in the code should review
 [DEVELOPERS.md](docs/DEVELOPERS.md).
-* The original pre-print of our paper is available on MedRxiv [here](https://www.medrxiv.org/content/10.1101/2020.09.22.20198754v1) when available
+* The original pre-print of our paper is available on MedRxiv [here](https://www.medrxiv.org/content/10.1101/2020.09.22.20198754v1)
 
 # About the OpenSAFELY framework
 
