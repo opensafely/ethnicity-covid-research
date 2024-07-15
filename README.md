@@ -8,18 +8,14 @@
 [DEVELOPERS.md](docs/DEVELOPERS.md).
 * The original pre-print of our paper is available on MedRxiv [here](https://www.medrxiv.org/content/10.1101/2020.09.22.20198754v1)
 
+
 # About the OpenSAFELY framework
 
-The OpenSAFELY framework is a new secure analytics platform for
-electronic health records research in the NHS.
+The OpenSAFELY framework is a Trusted Research Environment (TRE) for electronic
+health records research in the NHS, with a focus on public accountability and
+research quality.
 
-Instead of requesting access for slices of patient data and
-transporting them elsewhere for analysis, the framework supports
-developing analytics against dummy data, and then running against the
-real data *within the same infrastructure that the data is stored*.
 Read more at [OpenSAFELY.org](https://opensafely.org).
 
-The framework is under fast, active development to support rapid
-analytics relating to COVID19; we're currently seeking funding to make
-it easier for outside collaborators to work with our system.  You can
-read our current roadmap [here](ROADMAP.md).
+# Licences
+As standard, research projects have a MIT license. 
